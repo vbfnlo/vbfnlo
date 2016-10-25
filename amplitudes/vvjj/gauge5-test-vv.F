@@ -543,6 +543,8 @@ c         print*," j = ",j," virtual ward ratio = ",mv5(j)/mvc(j)
 	 if( abs((abs(mv5(j)/mvc(j))-1d0)).gt.1e-1 ) then
 		bad_gauge_sin = .true.
 	 endif
+         if ((mv5(j).ne.mv5(j)).or.
+     &       (mvc(j).ne.mvc(j))) bad_gauge_sin = .true.
       enddo
 c      print*," virtual sum ",mv5(1)+mv5(2)+mv5(3),mvc(1),mvc(2),mvc(3)
 
@@ -648,6 +650,8 @@ c     #		" virtual ward ratio = ",mv5(j,isig)/mvc(j,isig)
  	 if( abs((abs(mv5(j,isig)/mvc(j,isig))-1d0)).gt.1e0 ) then
 		bad_gauge_isig = .true.
  	 endif
+         if ((mv5(j,isig).ne.mv5(j,isig)).or.
+     &       (mvc(j,isig).ne.mvc(j,isig))) bad_gauge_isig = .true.
    
       enddo
       enddo !isig
@@ -754,6 +758,8 @@ c	 print*
 		bad_gauge_sin = .true.
 c		print*,'mv5,mvc:',mv5(2),mvc(2)
 	 endif
+         if ((mv5(2).ne.mv5(2)).or.
+     &       (mvc(2).ne.mvc(2))) bad_gauge_sin = .true.
 c	 print*,'bad_gauge=',bad_gauge_sin
 c	 print*,'re-im:',dreal(mv5(2))/dreal(mvc(2)),dimag(mv5(2))/dimag(mvc(2))
 c	 print*,'rat-abs:',abs(mv5(2))/abs(mvc(2))

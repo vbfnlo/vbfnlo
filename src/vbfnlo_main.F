@@ -10,8 +10,12 @@
 
       PROGRAM vbfnlo
       implicit none
+#include "VBFNLO/utilities/global.inc"
 
       call ParseOptions
+      ldoscales = .true.
+      lglobalprint = .true.
+      ldoblha = .false.
       call dovbfnlo
 
       end

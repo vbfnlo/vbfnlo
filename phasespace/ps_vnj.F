@@ -92,27 +92,29 @@ C collinear cutoff: for numerical purposes only
  73   format ( " boson ",i2," has mass ",f6.2," GeV" )
  80   format ( " Minimal mom.transfer or mass for parton pair: ",f8.2,
      1         " MeV" )
-      write(6,*)
-      write(6,*) "       phase space generator information  "
-      write(6,*) "-----------------------------------------------"
-      write(6,*)
-      if (sqrt(rm2).ne.0d0) then 
-         write(6,72) bos,sqrt(rm2),rmg/sqrt(rm2)
-      else
-         write(6,73) bos,sqrt(rm2)
+      if (.not.ldoblha) then
+        write(6,*)
+        write(6,*) "       phase space generator information  "
+        write(6,*) "-----------------------------------------------"
+        write(6,*)
+        if (sqrt(rm2).ne.0d0) then 
+           write(6,72) bos,sqrt(rm2),rmg/sqrt(rm2)
+        else
+           write(6,73) bos,sqrt(rm2)
+        endif
+        write(6,70) bos,sqrt(rm2min),sqrt(rm2max)
+        write(6,*)
+        write(6,10) ptjmin
+        write(6,20) ejmin
+        write(6,30) yjmin
+        write(6,40) yjmax
+        write(6,50) infoj
+        write(6,60) sqrt(s)
+        write(6,80) sqrt(m2min)*1000.d0
+        write(6,*)
+        write(6,*) "-----------------------------------------------"
+        write(6,*)
       endif
-      write(6,70) bos,sqrt(rm2min),sqrt(rm2max)
-      write(6,*)
-      write(6,10) ptjmin
-      write(6,20) ejmin
-      write(6,30) yjmin
-      write(6,40) yjmax
-      write(6,50) infoj
-      write(6,60) sqrt(s)
-      write(6,80) sqrt(m2min)*1000.d0
-      write(6,*)
-      write(6,*) "-----------------------------------------------"
-      write(6,*)
       
       end
 

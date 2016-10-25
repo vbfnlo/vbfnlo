@@ -34,6 +34,7 @@ c
 #include "tensorz.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/coupl_haddecay.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       integer N_gen_W
       real*8 fac_W, mjj2
@@ -114,6 +115,9 @@ c
                res(i,j) = 0
             enddo
          enddo
+      else if (ldoblha) then
+        h = 1
+        init = 1
       else
          if (bos.eq.33) then      
             write(6,*) ' '
@@ -351,6 +355,51 @@ c
 c  end debugging
 c
 c  ---------------------------------------------------------------------
+
+       if (ldoblha) then
+
+         if (procid .eq. WmWmjj) then
+           physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc) 
+           physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+           physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+           physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+           physToDiag(5)=blha_physdiagmap(5,blha_cursubproc,blha_curproc)
+c flip both fermion lines
+           do i=1,5
+             if (physToDiag(i).eq.1) then 
+               physToDiag(i)=2 
+             elseif (physToDiag(i).eq.2) then 
+               physToDiag(i)=1 
+             elseif (physToDiag(i).eq.3) then 
+               physToDiag(i)=4 
+             elseif (physToDiag(i).eq.4) then 
+               physToDiag(i)=3 
+             endif
+           enddo
+c first argument of blha_fsign is diagtophys(i)!
+           fsign(1) = -blha_fsign(2,blha_cursubproc,blha_curproc)
+           fsign(2) = -blha_fsign(1,blha_cursubproc,blha_curproc)
+           fsign(3) = -blha_fsign(4,blha_cursubproc,blha_curproc)
+           fsign(4) = -blha_fsign(3,blha_cursubproc,blha_curproc)
+           gsign    =  blha_fsign(5,blha_cursubproc,blha_curproc) ! initial-/final-state is conserved
+         else
+           physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+           physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+           physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+           physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+           physToDiag(5)=blha_physdiagmap(5,blha_cursubproc,blha_curproc)
+           fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+           fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+           fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+           fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+           gsign    = blha_fsign(5,blha_cursubproc,blha_curproc)
+         endif
+
+         call wbf_wpp3j(xi,p,v,physToDiag,fsign,gsign,bos,  nlo,lok,xuz,
+     1            pdf,res,nmin,nmax)
+
+         return
+       endif
 
 c
 c call PDF subroutine in order to determine parton
@@ -796,7 +845,7 @@ c
 
       loldp = e_in(1).eq.p(0,3,1) .and. e_in(2).eq.p(0,4,1)
 c  reset the LO amplitude to 0 to avoid wrong subtraction for initial gluon
-      if (.not.loldp) then            ! this is a new phase space point
+      if (.not.loldp.or.ldoblha) then            ! this is a new phase space point
          e_in(1) = p(0,3,1)
          e_in(2) = p(0,4,1)
          do i = -1,1
@@ -851,6 +900,10 @@ c            call qqwpmqqj_comp(pbar,fsign,qbar,gsign,bos,ucds(1))
          print*," in call of wbf_wpp3j. Must be 33"
          stop
       endif   ! end of if bos = ..
+
+      if (ldoblha) then
+        return
+      endif
 
 
       if (bos.eq.33) then  ! W+W+jj

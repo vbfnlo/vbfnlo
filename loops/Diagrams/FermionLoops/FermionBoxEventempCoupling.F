@@ -73,6 +73,15 @@ c*******************************************************************************
      -           B12R,B12I, B13R,B13I,
      &           B14R,B14I,B23R,B23I,
      -           B24R,B24I, B34R, B34I
+      Common/musqInv/musqcp
+      real*8 musqcp
+       logical printmy
+      common/mprint/printmy
+      logical printB,printC,printD
+      musqcp=musq
+      printB=.true.
+      printC=.true.
+      printD=.true.
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************
@@ -248,6 +257,65 @@ c*******************************************************************************
 c************************************************************************************
 c************************************************************************************
        endif  
+
+
+cfc
+cfc       If(PrintB) then
+cfc       write(*,*)"B12"
+cfc       write(*,*) "B12=", B012
+cfc       endif
+cfc       If(PrintB) then
+cfc       write(*,*)"B23"
+cfc       write(*,*) "B23=", B023
+cfc       endif
+cfc       If(PrintB) then
+cfc       write(*,*)"B34"
+cfc       write(*,*) "B34=", B034
+cfc       endif
+cfc
+cfc       If(PrintB) then
+cfc       write(*,*)"B13"
+cfc       write(*,*) "B13=", B013
+cfc       endif
+cfc       If(PrintB) then
+cfc       write(*,*)"B14"
+cfc       write(*,*) "B14=", B014
+cfc       endif
+cfc       If(PrintB) then
+cfc       write(*,*)"B24"
+cfc       write(*,*) "B24=", B024
+cfc       endif
+cfc
+cfc       If(PrintC) then
+cfc       write(*,*)"C123",C0123R,C0123I
+cfc       
+cfc       call print_CijR3(DCMPLX(C0123),C123R,C123I)
+cfc       Endif
+cfc       If(PrintC) then
+cfc       write(*,*)"C124",C0124R,C0124I
+cfc       call print_CijR3(DCMPLX(C0124),C124R,C124I)
+cfc       Endif
+cfc
+cfc       If(PrintC) then
+cfc       write(*,*)"C234",C0234R,C0234I
+cfc       call print_CijR3(DCMPLX(C0234),C234R,C234I)
+cfc       Endif
+cfc
+cfc
+cfc       If(PrintC) then
+cfc       write(*,*)"C134",C0134R,C0134I
+cfc       call print_CijR3(DCMPLX(C0134),C134R,C134I)
+cfc       Endif
+cfc
+cfc
+cfc       If(PrintD) then
+cfc       write(*,*)"D1234",D01234R,D01234I
+cfc       write(*,*)"D1234",D01234R,D01234I
+cfc       call print_DijR4(DCMPLX(D01234),D1234R,D1234I)
+cfc       endif
+
+
+
 
 c       Definition of the F,P functions:Independent of the currents    
 c************************************************************************************
@@ -3261,8 +3329,55 @@ c*******************************************************************************
      -   up4*F(131)+p2mup4*F(132)+p4mup4*F(133))+p4mup1*p4mup2*p4mup3
      -   *(p2mup4*F(134)+p4mup4*F(135))
 
+       if(printmy)then
+       print*, "RESULT",resultn(1)
+       endif
+
 
         if (comp.gt.0) then    
+
+       if(printmy)then
+       resultn(2) = abs(mup2mup4*p2mup3*F(136))
+     &    +abs(p1mup4*p2mup2*p2mup3*F(137))
+     -   +abs(mup2mup3*p2mup4*F(138))
+     &   +abs(p1mup2*p1mup3*p2mup4*F(139))
+     &   +abs(p1mup3*p2mup2*p2mup4*F(140))
+     &   +abs(p1mup2*p2mup3*p2mup4*F(141))
+     &   +abs(p2mup2*p2mup3*p2mup4*F(142))
+     &   +abs(p2mup3*p2mup4*p4mup2*F(143))
+     &   +abs(p2mup2*p2mup4*p4mup3*F(144))
+     &   +abs(p2mup4*p4mup2*p4mup3*F(145))
+     &   +abs(p2mup2*p2mup3*p4mup4*F(146))
+     &   +abs(mup3mup4*p2mup2*F(147))
+     &   +abs(mup2mup3*p1mup4*F(148))
+     &   +abs(mup2mup4*p1mup3*F(149))
+     &   +abs(mup3mup4*p1mup2*F(150))
+     &   +abs(p1mup3*p2mup4*p4mup2*F(151))
+     &   +abs(p1mup2*p2mup4*p4mup3*F(152))
+     &   +abs(mup2mup3*p4mup4*F(153))
+     &   +abs(mup2mup4*p4mup3*F(154))
+     &   +abs(mup3mup4*p4mup2*F(155))
+     &   +abs(p1mup2*p1mup4*p2mup3*F(156))
+     &   +abs(p1mup3*p1mup4*p2mup2*F(157))
+     &   +abs(p1mup3*p2mup2*p4mup4*F(158))
+     &   +abs(p1mup2*p2mup3*p4mup4*F(159))
+     &   +abs(p1mup4*p2mup3*p4mup2*F(160))
+     &   +abs(p1mup4*p2mup2*p4mup3*F(161))
+     &   +abs(p2mup2*p4mup3*p4mup4*F(162))
+     &   +abs(p2mup3*p4mup2*p4mup4*F(163))
+     &   +abs(p1mup3*p1mup4*p4mup2*F(164))
+     &   +abs(p1mup2*p1mup3*p1mup4*F(165))
+     &   +abs(p1mup2*p1mup3*p4mup4*F(166))
+     &   +abs(p1mup2*p1mup4*p4mup3*F(167))
+     &   +abs(p1mup3*p4mup2*p4mup4*F(168))
+     &   +abs(p1mup4*p4mup2*p4mup3*F(169))
+     &   +abs(p1mup2*p4mup3*p4mup4*F(170))
+     &   +abs(p4mup2*p4mup3*p4mup4*F(171))
+
+       print*, "ABS resultn(2)",resultn(2)
+       endif
+
+
 
 
        resultn(2) = mup2mup4*p2mup3*F(136)+p1mup4*p2mup2*p2mup3*F(137)
@@ -3282,6 +3397,12 @@ c*******************************************************************************
      -   p1mup4*p4mup3*F(167)+p1mup3*p4mup2*p4mup4*F(168)+p1mup4*p4mu
      -   p2*p4mup3*F(169)+p1mup2*p4mup3*p4mup4*F(170)+p4mup2*p4mup3*p
      -   4mup4*F(171)
+
+
+       if(printmy) then
+       print*, "ABS resultn(2)",resultn(2)
+       endif
+
        resultn(3) = mup1mup3*p1mup4*F(172)+p1mup1*p1mup3*p1mup4*F(173)
      -   +p1mup3*p1mup4*p2mup1*F(174)+p1mup3*p1mup4*p4mup1*F(175)+p1m
      -   up1*p1mup4*p2mup3*F(176)+p1mup4*p2mup1*p2mup3*F(177)+p1mup1*

@@ -33,14 +33,18 @@ c are stored in common blocks in anomV_cplg.inc
 #include "process.inc"
 
 
-      print *," "
-      print *,"  Information on anomalous coupling parameters  "
-      print *,"------------------------------------------------"
-
-      call loadfile("anomV.dat",.true.)
+      if (lglobalprint) then
+        print *," "
+        print *,"  Information on anomalous coupling parameters  "
+        print *,"------------------------------------------------"
+        call loadfile("anomV.dat",.true.)
+      else
+        call loadfile("anomV.dat",.false.)
+      endif
 
 ** Read switches controlling whether we use a formfactor:
       call read_logical("FORMFAC",formfact,.false.)
+      call read_logical("KMATRIX",kmatrix,.false.)
       call read_logical("FORMFAC_IND",formfac_ind,.false.)
 ** universal formfactors:
       if (formfact) then

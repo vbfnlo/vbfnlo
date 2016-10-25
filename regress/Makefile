@@ -60,11 +60,13 @@ ALLDIRS = \
   520_ZAA   \
   521_ZnuAA \
   530_AAA   \
+  600_WWj   \
   610_WmAj  \
   620_WpAj  \
   620_WpAj_anom \
   630_WmZj  \
   640_WpZj  \
+  650_ZZj   \
   2100_HAjj \
   2101_HAjj_AA \
   2102_HAjj_mu \
@@ -85,6 +87,8 @@ ALLDIRS = \
   4330_GFZZ    \
   4360_GFZA    \
   4370_GFAA    \
+  4600_GFWWj   \
+  4650_GFZZj   \
   191_AAjj_spin2 \
   195_Sp2jj_WW \
   196_Sp2jj_ZZ_llll \
@@ -160,7 +164,7 @@ ALLDIRS = \
 
 
 
-INPUTFILES := `$(MAKE) -s -f ../src/Makefile printinputfiles`
+INPUTFILES := `$(MAKE) -s -C ../src printinputfiles`
 
 ifeq ($(strip $(DIRS)),)
 DIRS = $(ALLDIRS)

@@ -32,6 +32,10 @@ endif
 SUBDIRS += vvj
 libVBFNLOAmplitudes_la_FFLAGS += -DWITH_DIBOSONJET
 libVBFNLOAmplitudes_la_LIBADD += vvj/libvvj.la
+if WITH_GGFLO
+libGGFLOAmplitudes_la_FFLAGS += -DWITH_DIBOSONJET
+libGGFLOAmplitudes_la_LIBADD += vvj/libvvj.la
+endif
 endif
 
 if WITH_QCDV

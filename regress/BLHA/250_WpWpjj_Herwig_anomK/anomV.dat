@@ -1,0 +1,100 @@
+! Parameters for anomalous gauge boson couplings.  
+! As explained in the manual, not all of the parameters below are used for all processes.
+
+
+! Anomalous couplings WWZ and WW-photon can be entered in one of two parametrisations:
+TRIANOM       = 1        ! switches between parametrisations of WWZ and WW-photon
+
+! Parametrisation 1: coefficients of dim-6-operators (already divided by Lambda^2):
+FWWW          = 0D-6     ! fwww
+FW            = 0D-6     ! fw
+FB            = 0D-6     ! fb
+
+! Parametrisation 2: modifications around SM Lagrangian
+LAMBDA0       = 0D0      ! Lambda_0 for Z boson and photon
+ZDELTAKAPPA0  = 0D0      ! Delta kappa_0 for Z boson
+ZDELTAG1      = 0D0      ! Delta g_1 for Z boson
+ADELTAKAPPA0  = 0D0      ! Delta kappa_0 for photon
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! The following are the coefficients of the remaining dim-6-operators (already divided by Lambda^2)
+! They can be used in the processes for diboson production (procIDs = 300 - 323, 340, 350), 
+! triboson production (procIDs = 400 - 530, 800, 810) and diboson production in VBF (procID = 200 - 280)
+
+FWW   = 0D0     ! fww
+FBB   = 0D0     ! fbb
+FWWt  = 0D0     ! fwwtilde
+FBWt  = 0D0     ! fbwtilde
+FBBt  = 0D0     ! fbbtilde
+FWt   = 0D0     ! fwtilde
+FBt   = 0D0     ! fbtilde
+FWWWt = 0D0     ! fwwwtilde
+FDWt  = 0D0     ! fdwtilde
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! The following are the coefficients of the dim-8-operators (already divided by Lambda^4):
+! They can be used in the processes for triboson production (procIDs = 400 - 530, 800, 810)
+! and diboson production in VBF (procID = 200 - 280).
+! Please be aware that our definition of the field strengths is slightly different than
+! the ones from [Eboli et al., 2006], which are used for example in the UFO model extension
+! for MadGraph 5. In this case you have to rescale the coupling constants. More details 
+! can be found in the appendix of the VBFNLO manual.
+
+FS0          = 0D-12     ! fs0
+FS1          = 100D-12     ! fs1
+
+FM0          = 0D-12     ! fm0
+FM1          = 0D-12     ! fm1
+FM2          = 0D-12     ! fm2
+FM3          = 0D-12     ! fm3
+FM4          = 0D-12     ! fm4
+FM5          = 0D-12     ! fm5
+FM6          = 0D-12     ! fm6
+FM7          = 0D-12     ! fm7
+
+FT0          = 0D-12     ! ft0     T3, T4 are zero!
+FT1          = 0D-12     ! ft1
+FT2          = 0D-12     ! ft2
+FT5          = 0D-12     ! ft5
+FT6          = 0D-12     ! ft6
+FT7          = 0D-12     ! ft7     
+FT8          = 0D-12     ! ft8     T8, T9 have only neutral couplings!
+FT9          = 0D-12     ! ft9   
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! A formfactor can be included.  parameters for general formfactor:
+
+FORMFAC           = .false.  ! calculating form factors
+KMATRIX           = .true.   ! K-Matrix- unitarisation
+FFMASSSCALE       = 2000D0   ! mass scale for formfactor
+FFEXP             = 2        ! exponent of formfactor
+
+! Individual formfactors can be included for WWZ and WWA.  If chosen, these values override the mass scale
+! and exponent above for the selected parameters.  
+FORMFAC_IND       = .false.  ! calculating individual formfactors for WWZ, WWA
+
+! As above, there are two parametrisations that can be used, chosen by TRIANOM
+
+! Parametrisation 1: coefficients of dim-6-operators (already divided by Lambda^2):
+MASS_SCALE_FWWW   = 2000D0   ! mass scale for new physics for FWWW
+FFEXP_FWWW        = 2        ! exponent for FWWW
+MASS_SCALE_FW     = 2000D0   ! mass scale for new physics for FW
+FFEXP_FW          = 2        ! exponent for FW
+MASS_SCALE_FB     = 2000D0   ! mass scale for new physics for FB
+FFEXP_FB          = 2        ! exponent for FB
+
+! Parametrisation 2: modifications around SM Lagrangian
+MASS_SCALE_AKAPPA = 2000D0   ! mass scale for new physics for kappa_photon
+FFEXP_AKAPPA      = 2        !
+MASS_SCALE_ZKAPPA = 2000D0   ! mass scale for new physics for kappa_Z
+FFEXP_ZKAPPA      = 2        !
+MASS_SCALE_LAMBDA = 2000D0   ! mass scale for new physics for lambda
+FFEXP_LAMBDA      = 2        !
+MASS_SCALE_G      = 2000D0   ! mass scale for new physics for g
+FFEXP_G           = 2
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+

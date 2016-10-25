@@ -15,7 +15,9 @@ if WITH_FERMIONLOOPS
 libTIC_la_SOURCES += \
 tensor_redux_CijLUde_1Mas_Div.F\
 tensor_redux_CijLUde_Rank3_G.F\
-tensor_redux_CijLUde_Rank3_G_Div.F
+tensor_redux_CijLUde_Rank3_G_Div.F\
+tensor_redux_CijLUdeRank4_G.F\
+tensor_redux_CijLUdeRank4_G_Div.F
 endif
 
 libTIC_la_FFLAGS = $(AM_FFLAGS)

@@ -8,7 +8,9 @@ tensor_redux_BijLUde_Div.F
 if WITH_FERMIONLOOPS
 libTIB_la_SOURCES += \
 tensor_redux_BijLUde_G.F\
-tensor_redux_BijLUde_G_Div.F
+tensor_redux_BijLUde_G_Div.F\
+tensor_redux_BijLUde_R3_G.F\
+tensor_redux_BijLUde_R3_G_Div.F
 endif
 
 

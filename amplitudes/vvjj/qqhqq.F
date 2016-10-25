@@ -14,6 +14,7 @@ C
       integer bosdec               !  0  means the driver does a *|M_dec|^2
 
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       double precision xmmu
 c
@@ -79,6 +80,8 @@ c alfas, scales etc
 
       real*8 c2,c2o2pi
       parameter (c2=4d0/3d0, c2o2pi=c2/2d0/pi)
+      double precision lnmusqp1p2, lnmusqp3p4
+
 c other local variables for QQBQQI
 c
       integer  i,k,mu,v2,v3, isig,isig1,isig3
@@ -220,7 +223,7 @@ c
 c define the internal momenta
 c
       do mu = 0,3
-         do i = 1,4+n_v
+         do i = 1,4+max(n_v,2)
             p(mu,i) = pbar(mu,i)*sign(i)
          enddo
          p21(mu) = p(mu,2) - p(mu,1)
@@ -229,7 +232,7 @@ c
          if (n_v.eq.4) then
             p87(mu) = p(mu,8) - p(mu,7)
             ph(mu) = p65(mu) + p87(mu)
-         elseif (n_v.eq.2) then
+         elseif ((n_v.eq.2).or.(n_v.eq.1)) then
             ph(mu) = p65(mu)
          endif
       enddo
@@ -282,13 +285,14 @@ c
          enddo
       enddo
       
+      if (n_v.gt.1) then
 c
 c now get the coupling*propagator factors for subprocess k, helicity
 c combination isig and sum the contributions from the 4 helicity 
 c combinations for all subprocesses. Multiply by the factor corresponding to
 c    SUM_pol |D_H(p_6-p_5) * psi-bar(6) psi(5)|^2 * color factor for H->bb
 c
-      fac = 1.d0 / ( (ph(4)-xm2(6))**2 + xmg(6)**2 ) !propagator^2 only
+        fac = 1.d0 / ( (ph(4)-xm2(6))**2 + xmg(6)**2 ) !propagator^2 only
 c
 c multiply by 16 pi*M Gamma to compensate for the phase space integral in
 c LIPSN
@@ -298,7 +302,11 @@ c
 c   = 1/(16 pi MGamma)
 c
 c (where the propagator factor is fac above)
-      fac = fac *16*pi*xmg(6)
+        fac = fac *16*pi*xmg(6)
+      else 
+c Higgs is final-state - no decays (real or simulated for technical reasons)
+        fac = 1d0
+      endif
 *sophy: took out 'colour factor' and turned into QCDfac
       if (doVirtuals .and. nlo .eq. 1) then
          QCDfac = ( 1d0+(als(1,1)+als(2,1))*c2o2pi*cvirt )
@@ -483,6 +491,59 @@ c
       ddss = res(4)
       udsc = res(5)
       ducs = res(6)
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      res(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.1) then ! loop
+          lnmusqp1p2 = log(blha_scale**2/(-p21(4)))
+          lnmusqp3p4 = log(blha_scale**2/(-p43(4)))
+
+          blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       (als(1,1)+als(2,1))*(-1d0)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       ( als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)
+     &        +als(2,1)*(-blha_gammaQuark-blha_CF*lnmusqp3p4) )*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+          blha_amp(3)= blha_amp(3)+
+     &      (res(blha_idsubproc(blha_cursubproc,blha_curproc))     ! tree + loop + I
+     &       -tree(blha_idsubproc(blha_cursubproc,blha_curproc)))  ! -tree
+     &       * blha_CF/c2                                          ! correct for Nc ?= inf
+     &      + (-(als(1,1)+als(2,1))/2d0/pi*                        ! -I
+     &          (blha_CF*cvirt+
+     &            2d0*(blha_KQuark+blha_gammaQuark+
+     &                 blha_tgammaQuark+(pi**2/6d0-1)*blha_CF) )
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &         +als(2,1)/pi*                                       ! +(mu^2/2p3.p4)^epsilon
+     &         (-blha_gammaQuark*lnmusqp3p4-blha_CF/2d0*lnmusqp3p4**2)
+     &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(4)= blha_amp(4)+
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+          ! 3-4
+          call BLHA_cctree(3,4,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
 
 ** sophy: used for debugging
       if (nlo .eq. 99) then

@@ -592,12 +592,27 @@ c
 
       wwzz = gwwz**2 * (dotcc(wm,z1)*dotcc(wp,z2) + dotcc(wm,z2)*dotcc(wp,z1) - 2.0d0*dotcc(wm,wp)*dotcc(z1,z2))
 
+
+
+      if (kmatrix) then
+           ! This is the fs0/fs1-amplitude separated in s/t/u-channels and unitarized
+           ! following the kmatrix prescription (see subroutine anomal_formfactor)
+        if (fs0 .ne. 0 .or. fs1 .ne. 0 ) then
+         wwzz = wwzz 
+     &         + 2. * wmass**4 / cos2w * fswmwp * dotcc(wm,wp)*dotcc(z1,z2)
+     &         +      wmass**4 / cos2w * fswmz1 * dotcc(wm,z1)*dotcc(wp,z2)
+     &         +      wmass**4 / cos2w * fswmz2 * dotcc(wm,z2)*dotcc(wp,z1)
+        
+        endif
+      else ! This is the amplitude without k-matrix unitarisation separated in fs1
+           ! and fs0 part
       if (fs0 .ne. 0) then
         wwzz = wwzz + fs0 * wmass**4 / cos2w * (dotcc(wm,z1)*dotcc(wp,z2) + dotcc(wm,z2)*dotcc(wp,z1))
       endif
 
       if (fs1 .ne. 0) then
         wwzz = wwzz + fs1 * wmass**4 / cos2w * 2.0d0 * dotcc(wm,wp)*dotcc(z1,z2)
+      endif
       endif
 
       if (ft0 .ne. 0) then
@@ -908,15 +923,27 @@ c
      &                        - 2.0d0*dotcc(wm1,wm2)*dotcc(wp1,wp2))
 
 
-      if (fs0 .ne. 0) then
-        wwww = wwww + 4. * fs0 * wmass**4 *
-     &      dotcc(wp1,wp2) * dotcc(wm1,wm2)
-      endif
-
-      if (fs1 .ne. 0) then
-        wwww = wwww + 2. * fs1 * wmass**4 *
-     &      (dotcc(wp1,wm2) * dotcc(wp2,wm1)
-     &      + dotcc(wp1,wm1) * dotcc(wp2,wm2))
+      if (kmatrix) then
+           ! This is the fs0/fs1-amplitude separated in s/t/u-channels and unitarized
+           ! following the kmatrix prescription (see subroutine anomal_formfactor)
+        if (fs0 .ne. 0 .or. fs1 .ne. 0 ) then
+         wwww = wwww 
+     &         + 4. * wmass**4 * fswp1wp2 * dotcc(wp1,wp2) * dotcc(wm1,wm2) 
+     &         + 2. * wmass**4 * fswp1wm2 * dotcc(wp1,wm2) * dotcc(wp2,wm1)
+     &         + 2. * wmass**4 * fswp1wm1 * dotcc(wp1,wm1) * dotcc(wp2,wm2)
+        endif
+      else ! This is the amplitude without k-matrix unitarisation separated in fs1
+           ! and fs0 part
+       if (fs0 .ne. 0) then
+         wwww = wwww + 4. * fs0 * wmass**4 
+     &         * dotcc(wp1,wp2) * dotcc(wm1,wm2)
+       endif
+ 
+       if (fs1 .ne. 0) then
+         wwww = wwww + 2. * fs1 * wmass**4 
+     &      * (dotcc(wp1,wm2) * dotcc(wp2,wm1)
+     &      +  dotcc(wp1,wm1) * dotcc(wp2,wm2))
+       endif
       endif
 
       if (ft0 .ne. 0) then
@@ -1153,14 +1180,25 @@ c
 
       zzzz = dcmplx(0.,0.)
 
-      if (fs0 .ne. 0) then
+
+      if (kmatrix) then        
+       if (fs0 .ne. 0 .or. fs1 .ne. 0) then
+        zzzz = zzzz 
+     &         + 2. * wmass**4 / cos2w**2 * fsz1z4 * dotcc(z1,z4)*dotcc(z2,z3)
+     &         + 2. * wmass**4 / cos2w**2 * fsz1z3 * dotcc(z1,z3)*dotcc(z2,z4)
+     &         + 2. * wmass**4 / cos2w**2 * fsz1z2 * dotcc(z1,z2)*dotcc(z3,z4)   
+       endif
+
+      else
+       if (fs0 .ne. 0) then
         zzzz = zzzz + 2. * fs0 * wmass**4 / cos2w**2 * 
      &      ( dotcc(z1,z4)*dotcc(z2,z3) + dotcc(z1,z3)*dotcc(z2,z4) + dotcc(z1,z2)*dotcc(z3,z4) )
-      endif
+       endif
 
-      if (fs1 .ne. 0) then
-        zzzz = zzzz + 2. * fs1 * wmass**4 / cos2w**2 
+       if (fs1 .ne. 0) then     
+         zzzz = zzzz + 2. * fs1 * wmass**4 / cos2w**2 
      &      * ( dotcc(z1,z4)*dotcc(z2,z3) + dotcc(z1,z3)*dotcc(z2,z4) + dotcc(z1,z2)*dotcc(z3,z4) )
+       endif
       endif
 
       if (fm0 .ne. 0) then
@@ -2569,13 +2607,17 @@ c
 #include "VBFNLO/utilities/process.inc"
 
 ** Input variables: p1,p2,p3,p4 are the boson momenta
-      real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),s
+      real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
 
       double precision ffvalue_fwww, ffvalue_fw, ffvalue_fb, ffvalue, ffvalue_KZ, ffvalue_KA
 
+** K-Matrix variables
+      double complex DA00,DA11,DA02,DA20,DA22
 
-      if (formfact) then
-
+      if (formfact .OR. kmatrix) then  
+                            ! In this part the center of mass energy
+                            !ss of the electroweak systems gets calculated. This is needed both for
+                            !formfactors and k-matrix unitarisation.
 ** energy scale: 
         SELECT CASE(procID) ! different cases for VVjj via VBF, diboson and triboson processes
                             ! here also different form factors depending on the vector boson momenta could be implemented
@@ -2586,13 +2628,13 @@ c
      &       WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj, WPhadWPjj, WMhadWMjj,
      &       ZAjj,ZAjj_n)
 
-           s=(p3(0)+p4(0))**2-(p3(1)+p4(1))**2-(p3(2)+p4(2))**2-(p3(3)+p4(3))**2 ! two outgoing boson momenta
+           ss=(p3(0)+p4(0))**2-(p3(1)+p4(1))**2-(p3(2)+p4(2))**2-(p3(3)+p4(3))**2 ! two outgoing boson momenta
 
         ! Vjj in VBF:
         ! p1, p2 are momenta of incoming bosons, p3, p4 dummy variables
         CASE(Zjj_l,Zjj_nu,WPjj,WMjj)
 
-           s=(p1(0)+p2(0))**2-(p1(1)+p2(1))**2-(p1(2)+p2(2))**2-(p1(3)+p2(3))**2 ! two incoming boson momenta
+           ss=(p1(0)+p2(0))**2-(p1(1)+p2(1))**2-(p1(2)+p2(2))**2-(p1(3)+p2(3))**2 ! two incoming boson momenta
 
         ! Triboson
         ! p1 is momentum of incoming boson, p2, p3, p4 are momenta of outgoing bosons
@@ -2602,7 +2644,7 @@ c
      &       WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
      &       WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
 
-           s=(p1(0))**2-(p1(1))**2-(p1(2))**2-(p1(3))**2 ! one incoming boson momentum
+           ss=(p1(0))**2-(p1(1))**2-(p1(2))**2-(p1(3))**2 ! one incoming boson momentum
 
         ! Diboson
         ! p1 is momentum of incoming boson, p2, p3 are momenta of outgoing bosons, p4 is dummy variable
@@ -2610,105 +2652,180 @@ c
      &       WPhadWMlep,WPlepWMhad,WPhadZ,WPZhad,WMhadZ,WMZhad,GFWPhadWMlep,GFWPlepWMhad,
      &       WPH,WMH,WPHJ,WMHJ)
 
-           s=(p1(0))**2-(p1(1))**2-(p1(2))**2-(p1(3))**2 ! one incoming boson momentum
+           ss=(p1(0))**2-(p1(1))**2-(p1(2))**2-(p1(3))**2 ! one incoming boson momentum
 
         CASE DEFAULT
            print *, "form factor not available for this process!"
         END SELECT
 
+        if (kmatrix) then !K- Matrix unitarisation for L_S0 and L_S1
+        SELECT CASE(procID)
 
+!       ** W+.W- **
+        CASE(WPWMjj, WPhadWMjj, WPWMhadjj) !these processes can have z-bosons in
+            !the initial state. Therefore both wwzz and wwww need unitarisation.
+
+         DA00 = -((3.*fS0 + 11.*fS1)**2*ss**4)/(6.*((0,192)*Pi + (3.*fS0 + 11.*fS1)*ss**2))
+         DA11 = -((-2.*fS0 + fS1)**2*ss**4)/(6.*((0,192)*Pi + (2.*fS0 - fS1)*ss**2))
+         DA02 = -((3.*fS0 + fS1)**2*ss**4)/(30.*((0,960)*Pi + (3.*fS0 + fS1)*ss**2))
+         DA20 = -((3.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (3.*fS0 + fS1)*ss**2))
+         DA22 = -(fS1**2*ss**4)/(30.*((0,960)*Pi + fS1*ss**2))
+
+         fswp1wm1 = fs1 +  1./(3. * ss**2) * (2. * DA00 + DA20)
+     &                  - 10./(3. * ss**2) * (2. * DA02 + DA22)
+         fswp1wp2 = fs1 +  1./(     ss**2) * (10. * DA02 - 3. * DA11 + 5. * DA22)
+         fswp1wm2 = fs0 +  1./(2. * ss**2) * (10. * DA02 + 3. * DA11 + 5. * DA22)
+         fswp1wm1 = (0d0,0d0)             
+
+         !unitarized partial waves DAIJ need to be calculated again for the
+         !wwzz-vertex, because the relation between alpha4/alpha5 and fs0/fs1
+         !is a different one. one needs to modify LS0 or add another opeartor
+         !LS2 in order to get the same one-to-one correspondence between the
+         !couplings for all processes
+         DA00 = -((7.*fS0 + 11.*fS1)**2*ss**4)/(6.*((0,192)*Pi + (7.*fS0+ 11.*fS1)*ss**2)) 
+         DA02 = -((2.*fS0 + fS1)**2*ss**4)/(30.*((0,960)*Pi + (2.*fS0 + fS1)*ss**2))
+         DA20 = -((2.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (2.*fS0 + fS1)*ss**2))
+         DA22 = -((fS0 + 2.*fS1)**2*ss**4)/(60.*((0,1920)*Pi + (fS0 + 2.*fS1)*ss**2))
+         
+         fswmwp = fs1 + 2./(3.*ss**2) * (DA00 - DA20) - 20./(3.*ss**2) * (DA02 - DA22)
+         fswmz1 = fS0 + 20./(ss**2) * (DA02 - DA22)
+         fswmz2 = fswmz1        
+
+!       ** W+.W+ **
+        CASE(WPWPjj, WMWMjj, WPhadWPjj, WMhadWMjj)
+         DA20 = -((3.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (3.*fS0 + fS1)*ss**2))
+         DA22 = -(fS1**2*ss**4)/(30.*((0,960)*Pi + fS1*ss**2))
+         
+         fswp1wp2 = fs0 + 1./ss**2 * (DA20 - 10. * DA22) 
+         fswp1wm2 = fs1 + 30./ss**2 * DA22
+         fswp1wm1 = fswp1wm2
+
+!        ** W.Z **         
+        CASE(WPZjj, WMZjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj)
+         DA11 = -((fS0 - 2.*fS1)**2*ss**4)/(12.*((0,384)*Pi + (fS0 - 2.*fS1)*ss**2))
+         DA20 = -((2.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (2.*fS0 + fS1)*ss**2))
+         DA22 = -((fS0 + 2.*fS1)**2*ss**4)/(60.*((0,1920)*Pi + (fS0 + 2.*fS1)*ss**2))
+
+         fswmwp = fs1 - 3./ss**2 * DA11 + 15./ss**2 * DA22
+         fswmz1 = fs0 + 2./ss**2 * DA20 - 20./ss**2 * DA22
+         fswmz2 = fs0 + 6./ss**2 * DA11 + 30./ss**2 * DA22
+
+!       ** Z.Z **  
+        CASE(ZZjj_ll, ZZjj_lnu, ZZhadjj) !these processes can have w-bosons in
+            !the initial state. Therefore both wwzz and zzzz need
+            !unitarisation, just like in the W+.W- case.
+         
+         DA00 = -((7.*fS0 + 11.*fS1)**2*ss**4)/(6.*((0,192)*Pi + (7.*fS0 + 11.*fS1)*ss**2)) 
+         DA02 = -((2.*fS0 + fS1)**2*ss**4)/(30.*((0,960)*Pi + (2.*fS0 + fS1)*ss**2))
+         DA20 = -((2.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (2.*fS0 + fS1)*ss**2))
+         DA22 = -((fS0 + 2.*fS1)**2*ss**4)/(60.*((0,1920)*Pi + (fS0 + 2.*fS1)*ss**2))
+ 
+         fswmwp = fs1 + 2./(3.*ss**2) * (DA00 - DA20) - 20./(3.*ss**2) * (DA02 - DA22)
+         fswmz1 = fS0 + 20./(ss**2) * (DA02 - DA22)
+         fswmz2 = fswmz1
+
+         fsz1z2 = fS0 + fS1 + 2./(3.*ss**2) * (DA00 + 2.*DA20) - 20./(3.*ss**2) * (DA02 + 2.*DA22)
+         fsz1z3 = fS0 + fS1 + 10./ss**2 * (DA02 + 2. * DA22) 
+         fsz1z4 = fsz1z3
+     
+        CASE DEFAULT
+           print *, "K- matrix unitarisation not available for this process!"
+        END SELECT
+        endif  !if (kmatrix)
+
+        if (formfact) then 
 ** 'universal' formfactors:
-        ffvalue=(1./(1.+s/ffmassscale2))**DBLE(ffexponent)
+         ffvalue=(1./(1.+ss/ffmassscale2))**DBLE(ffexponent)
 
 ** individual formfactors for fw,fb and fwww
-        if (formfac_ind) then
-           ffvalue_fwww = (1./(1. + s/massscale2FWWW))**DBLE(ffexpFWWW)
-           ffvalue_fw = (1./(1. + s/massscale2FW))**DBLE(ffexpFW)
+         if (formfac_ind) then
+           ffvalue_fwww = (1./(1. + ss/massscale2FWWW))**DBLE(ffexpFWWW)
+           ffvalue_fw = (1./(1. + ss/massscale2FW))**DBLE(ffexpFW)
            if (trianom .eq. 1) then
-              ffvalue_fb = (1./(1. + s/massscale2FB))**DBLE(ffexpFB)
+              ffvalue_fb = (1./(1. + ss/massscale2FB))**DBLE(ffexpFB)
            else if (fb_0 .ne. 0d0) then
-              ffvalue_fb = 2d0*aDkappa0_0/(1d0 + s/
+              ffvalue_fb = 2d0*aDkappa0_0/(1d0 + ss/
      &             massscale2KA)**dble(ffexpKA) - MW2*fw_0*ffvalue_fw
               ffvalue_fb = ffvalue_fb/(2d0*aDkappa0_0 - MW2*fw_0)
            else
               ffvalue_fb = 1d0
            end if
-        else
+         else
            ffvalue_fb = ffvalue
            ffvalue_fw = ffvalue
            ffvalue_fwww = ffvalue
-        end if
-
-
-
-** dim-8 operators:
-        fs0=fs0_0*ffvalue
-        fs1=fs1_0*ffvalue
-        ft0=ft0_0*ffvalue
-        ft1=ft1_0*ffvalue
-        ft2=ft2_0*ffvalue
-        ft5=ft5_0*ffvalue
-        ft6=ft6_0*ffvalue
-        ft7=ft7_0*ffvalue
-        ft8=ft8_0*ffvalue
-        ft9=ft9_0*ffvalue
-        fm0=fm0_0*ffvalue
-        fm1=fm1_0*ffvalue
-        fm2=fm2_0*ffvalue
-        fm3=fm3_0*ffvalue
-        fm4=fm4_0*ffvalue
-        fm5=fm5_0*ffvalue
-        fm6=fm6_0*ffvalue
-        fm7=fm7_0*ffvalue
-
-** dim-6 operators:
-
-        fwww = fwww_0*ffvalue_fwww
-
-        fw = fw_0*ffvalue_fw
-
-        fb = fb_0*ffvalue_fb
-
-        fbw=fbw_0*ffvalue
-        fdw=fdw_0*ffvalue
-        fww=fww_0*ffvalue
-        fbb=fbb_0*ffvalue
-        fwwtilde=fwwtilde_0*ffvalue
-        fbwtilde=fbwtilde_0*ffvalue
-        fbbtilde=fbbtilde_0*ffvalue
-        fwtilde=fwtilde_0*ffvalue
-        fbtilde=fbtilde_0*ffvalue
-        fwwwtilde=fwwwtilde_0*ffvalue
-        fdwtilde=fdwtilde_0*ffvalue
-        fphi1=fphi1_0*ffvalue
-
-
-
-** Now moving to the trianom=2 parametrisation (needed for Vjj in VBF)
-         if (trianom .eq. 2) then
-            ffvalue_KA = (1./(1.+s/massscale2KA))**DBLE(ffexpKA)
-            ffvalue_KZ = (1./(1.+s/massscale2KZ))**DBLE(ffexpKZ)
-         else
-            ! numerator is multiplied by appropriate formfactors
-            ffvalue_KA = (fw + fb)/(fw_0 + fb_0)
-            ffvalue_KZ = (CW2*fw - SW2*fb)/(fw_0*CW2 - SW2*fb_0)  
-         end if
-         if (lambda0 .ne. 0D0) then
-            lambda0 = lambda0_0
-            lambda0 = lambda0*ffvalue_fwww
-         end if
-         if (zDg0 .ne. 0D0) then
-            zDg0 = zDg0_0
-            zDg0 = zDg0*ffvalue_fw
-         end if
-         if ((aDkappa0 .ne. 0d0) .or. (zDkappa0 .ne. 0d0)) then
-            aDkappa0 = aDkappa0_0
-            aDkappa0 = aDkappa0*ffvalue_KA
-            zDkappa0 = zDkappa0_0
-            zDkappa0 = zDkappa0*ffvalue_KZ
          end if
 
 
+
+**  dim-8 operators:
+         fs0=fs0_0*ffvalue
+         fs1=fs1_0*ffvalue
+         ft0=ft0_0*ffvalue
+         ft1=ft1_0*ffvalue
+         ft2=ft2_0*ffvalue
+         ft5=ft5_0*ffvalue
+         ft6=ft6_0*ffvalue
+         ft7=ft7_0*ffvalue
+         ft8=ft8_0*ffvalue
+         ft9=ft9_0*ffvalue
+         fm0=fm0_0*ffvalue
+         fm1=fm1_0*ffvalue
+         fm2=fm2_0*ffvalue
+         fm3=fm3_0*ffvalue
+         fm4=fm4_0*ffvalue
+         fm5=fm5_0*ffvalue
+         fm6=fm6_0*ffvalue
+         fm7=fm7_0*ffvalue
+ 
+**  dim-6 operators:
+ 
+         fwww = fwww_0*ffvalue_fwww
+ 
+         fw = fw_0*ffvalue_fw
+ 
+         fb = fb_0*ffvalue_fb
+ 
+         fbw=fbw_0*ffvalue
+         fdw=fdw_0*ffvalue
+         fww=fww_0*ffvalue
+         fbb=fbb_0*ffvalue
+         fwwtilde=fwwtilde_0*ffvalue
+         fbwtilde=fbwtilde_0*ffvalue
+         fbbtilde=fbbtilde_0*ffvalue
+         fwtilde=fwtilde_0*ffvalue
+         fbtilde=fbtilde_0*ffvalue
+         fwwwtilde=fwwwtilde_0*ffvalue
+         fdwtilde=fdwtilde_0*ffvalue
+         fphi1=fphi1_0*ffvalue
+ 
+ 
+ 
+**  Now moving to the trianom=2 parametrisation (needed for Vjj in VBF)
+          if (trianom .eq. 2) then
+             ffvalue_KA = (1./(1.+ss/massscale2KA))**DBLE(ffexpKA)
+             ffvalue_KZ = (1./(1.+ss/massscale2KZ))**DBLE(ffexpKZ)
+          else
+             ! numerator is multiplied by appropriate formfactors
+             ffvalue_KA = (fw + fb)/(fw_0 + fb_0)
+             ffvalue_KZ = (CW2*fw - SW2*fb)/(fw_0*CW2 - SW2*fb_0)  
+          end if
+          if (lambda0 .ne. 0D0) then
+             lambda0 = lambda0_0
+             lambda0 = lambda0*ffvalue_fwww
+          end if
+          if (zDg0 .ne. 0D0) then
+             zDg0 = zDg0_0
+             zDg0 = zDg0*ffvalue_fw
+          end if
+          if ((aDkappa0 .ne. 0d0) .or. (zDkappa0 .ne. 0d0)) then
+             aDkappa0 = aDkappa0_0
+             aDkappa0 = aDkappa0*ffvalue_KA
+             zDkappa0 = zDkappa0_0
+             zDkappa0 = zDkappa0*ffvalue_KZ
+          end if
+
+       endif 
       endif
 
 

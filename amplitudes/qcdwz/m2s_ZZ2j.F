@@ -146,7 +146,6 @@ c       AZ=3,4 : V coupling to u/d quark with qhel inclouding couplings
           GaugeAccuracyPenLnA=GaugeAccuracy
           GaugeAccuracyHexL=GaugeAccuracy
           GaugeAccuracyHexLnA=GaugeAccuracy
-          gaugelimit=GaugeAccuracy
 !       endif
 
       if ( ldebug ) then

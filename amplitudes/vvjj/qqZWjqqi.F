@@ -13,6 +13,7 @@ C********************  qqVqqj ***********************************
      3       uusc_c(3),ddsc_c(3),ducc_c(3),duss_c(3)
       integer fsign(6), gsign
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
 C     QQVQQj calculates of matrix elements for electroweak single weak 
 c     boson production by quark quark scattering
@@ -1087,6 +1088,24 @@ c     1      .or. abs(p21g(4)).lt.qsqAmin
             res(3,1,0) = 0
             res(4,1,0) = 0
          endif
+      endif
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1,0)
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2,0)
+          endif
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
       endif
 
 C  Assign the final results for the subprocesses

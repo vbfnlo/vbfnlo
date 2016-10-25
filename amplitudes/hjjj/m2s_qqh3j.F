@@ -31,6 +31,7 @@ c
 c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 c
 c declare local variables
 c
@@ -67,6 +68,27 @@ c
       parameter(ldebug1=.true.,linfo=.false.)
 
       real*8 weight,rnumb,RandomNumber
+
+c just a little setup for BLHA mode
+      if (ldoblha) then
+        physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+        physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+        physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+        physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+        physToDiag(5)=blha_physdiagmap(5,blha_cursubproc,blha_curproc)
+        fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+        fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+        fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+        fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+        gsign    = blha_fsign(5,blha_cursubproc,blha_curproc)
+
+        call wbf_h3j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,
+     1    pdf,res,nmin,nmax) 
+
+        return
+      endif
+
+c else not BLHA mode:
 c
 c if first iteration,
 c
@@ -429,6 +451,7 @@ c*****************************************************************
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
       real*8 p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), xi(nx), 
      $     xuz(2,2:max_kin)
       real*8 pdf(-6:6,2,5), res(maxnumsubproc)
@@ -540,6 +563,10 @@ c get the born + virt amplitude squared,
 c     get born + virt_finite  
       call qqHqqj_c_virt(nlo,pbar,fsign,qbar,gsign,0,
      1     uuccv,uussv,ddccv,ddssv,udscv,ducsv)  
+
+      if (ldoblha) then
+        return
+      endif
 
 c     set default values
       do i=1,3

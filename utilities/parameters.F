@@ -448,7 +448,7 @@ c$$$      end
 
 ** Standard Model info messages
 ** Higgs mass message
-         write(*,*)'  '
+         if (lglobalprint) write(*,*)'  '
          if (FeynH_switch .or. slha_switch) then
             if (HiggsType .eq. 1) then
                write(*,*)'MH = mass of the light cp-even higgs'
@@ -458,11 +458,11 @@ c$$$      end
                write(*,*)'MH = mass of the cp-odd higgs'
             end if
          else
-            write(*,*)'Higgs mass =', XMH
+            if (lglobalprint) write(*,*)'Higgs mass =', XMH
          end if
 
 ** Which electroweak corrections are included
-         write(*,*)'  '
+         if (lglobalprint) write(*,*)'  '
          if (sector .eq. 1) then
             write(*,*)'Electroweak corrections from the third' 
             write(*,*)'generation quarks are included'
@@ -551,10 +551,17 @@ c$$$      end
       end if
 
 ** b,t,c and tau masses - input (either slha or vbfnlo.dat)
+      if (ldoblha) then
+      MC = Mf(3,2)
+      MB = Mf(4,2)
+      MT = Mf(3,3)
+      ML = Mf(2,3)
+      else
       MC = DBLE(xmc)
       MB = DBLE(xmb)
       MT = DBLE(xmt)
       ML = DBLE(xmtau)
+      endif
 
 ** Quark masses - PDG
 *      MC = 1.27D0 
@@ -2037,6 +2044,7 @@ c$$$      end
 
 #include "global.inc"
 #include "mssm.inc"
+#include "BLHAhelper.inc"
 #include "VBFNLO/amplitudes/ggf/ggf_process.inc"
 
       
@@ -2045,7 +2053,7 @@ c$$$      end
 
       if (calc .eq. 0) then
 
-         if (slha_switch) then
+         if (slha_switch .or. ldoblha) then
             if (para .eq. -999D0) replace = .true.
          else
             replace = .true.

@@ -38,6 +38,8 @@ if WITH_FERMIONLOOPS
 libTID_la_SOURCES += \
 tensor_redux_DijLUdeRank4_G.F\
 tensor_redux_DijLUdeRank4_G_Div.F\
+tensor_redux_DijLUdeRank5_G.F\
+tensor_redux_DijLUdeRank5_G_Div.F\
 tensor_redux_DijLUdeRank4123_G.F\
 tensor_redux_DijLUdeRank4132_G.F\
 tensor_redux_DijLUdeRank4213_G.F\

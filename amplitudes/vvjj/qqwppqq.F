@@ -18,6 +18,7 @@ c  t-channel exchange of elctroweak bosons is considered. s-channel
 c  production of 3 weak bosons is NOT implemented.
 
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "tensor.inc"
 #include "tensorz.inc"
 c
@@ -91,6 +92,7 @@ c
         
       double complex mm,mv12,mv34
       double precision res,resv
+      double precision tree
           
       logical linit
       data linit /.true./
@@ -102,6 +104,7 @@ c variables for virtual corrections
 c   
       double precision c2,c2o4pi   
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi)
+      double precision lnmusqp1p2, lnmusqp3p4
 
       logical bad_gauge,bad_gauge_sin,bad_gauge_isig
       common /gauge / bad_gauge,bad_gauge_sin,bad_gauge_isig
@@ -912,6 +915,7 @@ c i = 7,8	P
 		      
       res = 0d0
       resv = 0d0
+      tree = 0d0
       isig1 = -1
       isig3 = -1
       mm = 0d0
@@ -962,7 +966,7 @@ c  and the counter term for the renormalization of the pdfs
       endif                     !lnlo
 #endif
 
-     	    
+      tree = res * 9D0 
       if (nlo.ge.0) then
          res = (res+resv)*9d0   ! 9 is the color sum factor
       else
@@ -991,6 +995,58 @@ c
 c      ans = 0d0	!ucds 
       ans = res                 !ucds 
       
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+res
+
+        else if (blha_amptype(blha_curproc).eq.1) then ! loop
+          lnmusqp1p2 = log(blha_scale**2/(-p21(4)))
+          lnmusqp3p4 = log(blha_scale**2/(-p43(4)))
+
+          blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       (als(1,1)+als(2,1))*(-1d0)*
+     &       tree                                              
+          blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       ( als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)
+     &        +als(2,1)*(-blha_gammaQuark-blha_CF*lnmusqp3p4) )*
+     &       tree                                              
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+          blha_amp(3)= blha_amp(3)+
+     &      (res                                                   ! tree + loop + I
+     &       -tree                                              )  ! -tree
+     &       * blha_CF/c2                                          ! correct for Nc ?= inf
+     &      + (-(als(1,1)+als(2,1))/2d0/pi*                        ! -I
+     &          (blha_CF*cvirt+
+     &            2d0*(blha_KQuark+blha_gammaQuark+
+     &                 blha_tgammaQuark+(pi**2/6d0-1)*blha_CF) )
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &         +als(2,1)/pi*                                       ! +(mu^2/2p3.p4)^epsilon
+     &         (-blha_gammaQuark*lnmusqp3p4-blha_CF/2d0*lnmusqp3p4**2)
+     &        )*tree                                              
+          blha_amp(4)= blha_amp(4)+
+     &       tree                                              
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &        -blha_CF*
+     &         tree                                              
+     &    )
+          ! 3-4
+          call BLHA_cctree(3,4,
+     &        -blha_CF*
+     &         tree                                              
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
       
       return
       end

@@ -23,6 +23,7 @@ c
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "tensor.inc"
 #include "tensorz.inc"
 #include "VBFNLO/utilities/lha.inc"
@@ -86,7 +87,7 @@ c
 
 c -----------------------------------------------------------------------
 
-      if ( init .eq. 0 ) then
+      if ( (init .eq. 0) .and. (.not. ldoblha) ) then
 
          if (bos .eq. 33) then
             write(6,*) ' '
@@ -105,6 +106,9 @@ c -----------------------------------------------------------------------
          do i = 1,maxnumsubproc
             res(i) = 0
          enddo
+      else if ( (init .eq. 0) .and. ldoblha ) then
+        h = 1
+        init = 1
       else ! init .ne. 0
          do i = 1,nmax
             res(i) = 0
@@ -169,6 +173,11 @@ c reset lfs to .true. to force recalculation of virtual contributions in qqwwqq
                wut(mu+1) = wu(mu+1) - xxuw*qu(mu)
             enddo
             do mu = 5,6
+               wet(mu) = we(mu)
+               wut(mu) = wu(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
                wet(mu) = we(mu)
                wut(mu) = wu(mu)
             enddo
@@ -286,6 +295,35 @@ c
          write(6,*) "mu_f =",sqrt(mufsq(1,1)),sqrt(mufsq(2,1))
        end if   ! end ldebug
     
+       if (ldoblha) then
+
+         if (procid .eq. WmWmjj) then
+           physToDiag(1)=blha_physdiagmap(3,blha_cursubproc,blha_curproc) 
+           physToDiag(2)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+           physToDiag(3)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+           physToDiag(4)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+c first argument of blha_fsign is diagtophys(i)!
+           fsign(1) = -blha_fsign(2,blha_cursubproc,blha_curproc)
+           fsign(2) = -blha_fsign(1,blha_cursubproc,blha_curproc)
+           fsign(3) = -blha_fsign(4,blha_cursubproc,blha_curproc)
+           fsign(4) = -blha_fsign(3,blha_cursubproc,blha_curproc)
+         else
+           physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+           physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+           physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+           physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+           fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+           fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+           fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+           fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+         endif
+
+         call wbf_wpp(xi,p,v,physToDiag,fsign,bos,nlo,
+     1            pdf,res,nmin,nmax)
+
+         return
+       endif
+
 c
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
@@ -448,6 +486,7 @@ c*****************************************************************
 
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       real*8 p(0:3,max_p), v(0:3,max_v), xi(nx)
       real*8 pdf(-6:6,2), res(maxnumsubproc)
@@ -554,6 +593,11 @@ c           call qqwpmqq_mg(pbar,fsign,bos,ucds)
          print*," Invalid entry BOS = ",bos
          print*," in call of wbf_wpp. Must be 33"
          stop
+      endif
+
+
+      if (ldoblha) then
+        return
       endif
 
       

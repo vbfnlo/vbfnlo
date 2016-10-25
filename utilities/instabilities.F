@@ -128,7 +128,6 @@ c include global variables via include-files, e.g. "procID"
 
       integer i,ps_number
       
-
       Select Case(procID)
       CASE(WPZA,WMZA,WPAA,WMAA,ZAA,AAA,WPAAj,WMAAj,WPAJJ,WMAJJ,ZAJJ,ZAjj_n,
      &     WPhadZA, WPZhadA, WMhadZA, WMZhadA)
@@ -180,6 +179,43 @@ c include global variables via include-files, e.g. "procID"
             print *,"          instabilities [%]", 0d0
          endif
 
+      CASE(GFWWj,GFZZj)
+
+         print *," "
+         print *," Vertex instabilites", box2countm
+         print *,"          total calls", 
+     &        box2countm+box2count2m
+         if (Dble(box2countm+box2count2m).ne.0d0) then
+            print *,"          instabilities [%]", 
+     &           100d0*box2countm
+     &           /Dble(box2countm+box2count2m)
+         else
+            print *,"          instabilities [%]", 0d0
+         endif
+         
+         
+         print *," Box instabilites", boxcountm
+         print *,"          total calls", 
+     &        boxcountm+boxcount2m
+         if (Dble(boxcountm+boxcount2m).ne.0d0) then
+            print *,"          instabilities [%]", 
+     &           100d0*boxcountm
+     &           /Dble(boxcountm+boxcount2m)
+         else
+            print *,"          instabilities [%]", 0d0
+         endif
+         
+
+         print *," Pentagon instabilites", pentcountm
+         print *,"          total calls", 
+     &        pentcountm+pentcount2m
+         if (Dble(pentcountm+pentcount2m).ne.0d0) then
+            print *,"          instabilities [%]", 
+     &           100d0*pentcountm/Dble(pentcountm+pentcount2m)
+         else
+            print *,"          instabilities [%]", 0d0
+         endif
+         
       CASE(QCDWPZjj, QCDWMZjj,QCDWPWPjj,QCDWMWMjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZjj_l, QCDZjj_nu, QCDWPjj, QCDWMjj
      &    ,QCDWPAjj, QCDWMAjj,QCDZAjj_l,QCDZAjj_n,QCDAAjj)
 

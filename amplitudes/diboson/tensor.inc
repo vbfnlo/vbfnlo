@@ -25,16 +25,16 @@ c  lepton spinors and W+- polarization vectors
 c  leptonic tensors
       double complex aww, zww, wtowz, wtowa, z1ww, w4l, z2ww
       integer ie,iu
-      common /tensww/ aww(0:5,max_kin), zww(0:5,max_kin), 
-     1       wtowz(0:5,max_kin), wtowa(0:5,max_kin), ie, iu,
-     2       z1ww(0:5,max_kin),z2ww(0:5,max_kin),  w4l(0:5,max_kin)
+      common /tensww/ aww(0:5,max_kin), zww(0:5,max_kin), wtowz(0:5,max_kin),
+     1                wtowa(0:5,max_kin), z1ww(0:5,max_kin),z2ww(0:5,max_kin),  
+     2                w4l(0:9,max_kin), ie, iu
 
 c for testing purposes
       double complex tamp, tampr, tamprr
       integer ip, ipr, iprr
-      common /wwtest/ tamp(10,-1:1,2), ip
-      common /wwrtest/ tampr(20,-1:1,-1:1,2), ipr
-      common /WWWrrtest/ tamprr(10,-1:1,-1:1,-1:1,2), iprr
+      common /wwtest/ tamp(10,-1:1,4), ip
+      common /wwrtest/ tampr(20,-1:1,-1:1,4), ipr
+      common /WWWrrtest/ tamprr(36,-1:1,-1:1,-1:1,4), iprr
 
 
       

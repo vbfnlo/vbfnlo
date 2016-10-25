@@ -5,6 +5,7 @@ C
 c >0  includes matrix elements and coupl
       implicit none             !        for H -> xx (based on bbar)
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "VBFNLO/utilities/mssm.inc"
       double precision  fpi
       parameter ( fpi=4d0*pi)
@@ -198,7 +199,7 @@ c      print*,'new event'
 c
 C  Define the internal momenta
       do mu = 0,3
-         do i = 1,4+n_v
+         do i = 1,4+max(n_v,2)
             p(mu,i) = pbar(mu,i)*sign(i)
          enddo
          q(mu) = gsign*qbar(mu)
@@ -211,7 +212,7 @@ C  Define the internal momenta
          if (n_v.eq.4) then
             p87(mu) = p(mu,8) - p(mu,7)
             ph(mu) = p65(mu) + p87(mu)
-         elseif (n_v.eq.2) then
+         elseif ((n_v.eq.2).or.(n_v.eq.1)) then
             ph(mu) = p65(mu)
          endif
    
@@ -531,6 +532,8 @@ c     triangles
             endif
          enddo
       enddo
+      
+      if (n_v.gt.1) then
 C
 C  Now sum the contributions from the 4 helicity combinations for all 
 C  subprocesses and multiply by the factor corresponding to
@@ -546,6 +549,10 @@ c   = 1/(16 pi MGamma)
 c
 c (where the propagator factor is fac above)
       fac = fac *16*pi*xmg(6)
+      else 
+c Higgs is final-state - no decays (real or simulated for technical reasons)
+        fac = 1d0
+      endif
 
 c     needed for spin correlation
       if(lspcor) then
@@ -639,6 +646,23 @@ c     2Re[mborn mvirt*]
 
       enddo
       
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+            blha_amp(1)=blha_amp(1)+
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+            blha_amp(1)=blha_amp(1)+
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+          endif
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
 c     
 c    
 C     Assign the final results for the subprocesses

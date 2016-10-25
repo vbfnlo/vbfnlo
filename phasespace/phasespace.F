@@ -115,6 +115,8 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
 #endif
 
 #ifdef WITH_DIBOSONJET
+      CASE(WWJ,GFWWj)
+         call def_ps_qqVVj(3,4)
       CASE(WMAJ,WPAJ)
          call def_ps_vnj(3)
       CASE(WMZJ, WMhadZJ, WMZhadJ)
@@ -122,6 +124,8 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
       CASE(WPZJ, WPhadZJ, WPZhadJ)
          call def_ps_vvnj(0,3,2,1,1,1)
 !           call def_ps_qqVVj(3,2)         
+      CASE(ZZJ,GFZZj)
+         call def_ps_qqVVj(2,2)
 
          ! could also use def_ps_vnj here
       CASE(WPJ)
@@ -307,6 +311,9 @@ c*************************************************************************
       integer WWJJ_interf
       common /cWWJJ_interf/ WWJJ_interf
 
+      DOUBLE PRECISION CLR,XM2,XMG,CB,CV,CA
+      COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),CB(6,6,6),CV(4,5),CA(4,5)
+
 c fill momentum arrays with zero
       do L=1,max_kin
          do i = 1,max_p
@@ -334,6 +341,13 @@ c switch between different processes
      1              p(0,1,1), p(0,2,1), 
      2              Q, v(0,1,1), v(0,2,1),
      3              p(0,3,1), X(1), X(2), dps, 1)
+        if (ldoblha .and. (procID.eq.Hjj)) then
+          do i=0,3
+            v(i,1,1) = v(i,1,1)+v(i,2,1)
+            v(i,2,1) = 0d0
+          enddo
+          dps = dps / (xmg(6)/8.0d0/TPI)
+        endif
       CASE(AAjj) ! pp-> spin-2 jj(j) -> AAjj(j)
          call LIPSN(n_p-nx, rand, rn,
      1              p(0,1,1), p(0,2,1), 
@@ -372,6 +386,14 @@ c switch between different processes
          p(1,n_p+1,1)=0d0
          p(2,n_p+1,1)=0d0
          p(3,n_p+1,1)=0d0
+         if (ldoblha .and. (procID.eq.HAjj)) then
+           do i=0,3
+             v(i,1,1) = v(i,1,1)+v(i,2,1)
+             v(i,2,1) = v(i,3,1)
+             v(i,3,1) = 0d0
+           enddo
+           dps = dps / (xmg(6)/8.0d0/TPI)
+         endif
       CASE(HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu)
          call LIPSNVV(n_p+1-nx,rand,rn,
      1                p(0,1,1),p(0,2,1),
@@ -429,6 +451,13 @@ c switch between different processes
      1              p(0,1,1), p(0,2,1), 
      2              Q, v(0,1,1), v(0,2,1),
      3              p(0,3,1), X(1), X(2), dps, 1)
+         if (ldoblha .and. (procID.eq.Hjjj)) then
+           do i=0,3
+             v(i,1,1) = v(i,1,1)+v(i,2,1)
+             v(i,2,1) = 0d0
+           enddo
+           dps = dps / (xmg(6)/8.0d0/TPI)
+         endif
       CASE(Hjjj_WW, Hjjj_ZZ_ll, Hjjj_ZZ_lnu) ! pp -> Hjjj(j) -> VVjjj(j)
          call LIPSNVV(n_p-nx,rand,rn,
      1                p(0,1,1),p(0,2,1),
@@ -608,7 +637,13 @@ c flipped because for GFZA only PS1 relevant
 #endif
 
 #ifdef WITH_DIBOSONJET
+      CASE(WWJ,GFWWj)
+         call LIPSVVJ(n_p-nx,rand,rn,
+     1                p(0,1,1), p(0,2,1),
+     2                v(0,1,1),p(0,3,1),
+     3                X(1),X(2),dps,narrowwidth)
       CASE(WMZJ, WMhadZJ, WMZhadJ, WPZJ, WPhadZJ, WPZhadJ)
+
          call LIPSNVV(n_p-nx,rand,rn,
      1                p(0,1,1),p(0,2,1),
      2                v(0,1,1),p(0,3,1),
@@ -650,6 +685,13 @@ c flipped because for GFZA only PS1 relevant
      1                   p(0,1,1), p(0,2,1),
      2                   v(0,1,1), p(0,3,1),
      3                   X(1),X(2),dps,narrowwidth,0) !last param: narrowwidthhiggs
+
+      CASE(ZZJ,GFZZj)
+         call LIPSVVJ(n_p-nx,rand,rn,
+     1                p(0,1,1), p(0,2,1),
+     2                v(0,1,1),p(0,3,1),
+     3                X(1),X(2),dps,narrowwidth)
+
 #endif
 
 #ifdef WITH_TRIBOSON
@@ -926,12 +968,16 @@ c flipped because for GFZA only PS1 relevant
 
 
 c get additional random number not driven by VEGAS    
-      rn = RandomNumber()
+      if (.not.ldoblha) then
+        rn = RandomNumber()
+      else
+        rn = rand(PS_dimension+1)
+      endif
 c globally rotate by angle(rn)
       phirn = TPI*rn
       cosrn = cos(phirn)
       sinrn = sin(phirn)
-      do i=nx,n_p
+      do i=nx+1,n_p
         tmpx =  cosrn*p(1,i,1)+sinrn*p(2,i,1)
         tmpy = -sinrn*p(1,i,1)+cosrn*p(2,i,1)
         p(1,i,1) = tmpx
@@ -959,8 +1005,10 @@ c      if (dps.gt.0.d0) print*, sqrt(mjj2(v(0,1,1),v(0,2,1)))
 c      if ( sqrt((v(1,1,1)+v(1,2,1))**2 + (v(2,1,1)+v(2,2,1))**2) .lt. 20.0) dps=0.d0 
 
 
+      if (.not.ldoblha) then
 c Multiply with symmetry factor for identical leptons in the final state
-      dps = dps*symmetryfactor
+        dps = dps*symmetryfactor
+      endif
 
       RETURN
       END

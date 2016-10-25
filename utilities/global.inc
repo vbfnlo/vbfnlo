@@ -32,6 +32,9 @@
 ! the center of mass energy of the collider
       double precision ecm	
 
+! center of mass energy^2 in electroweak processes used for form factors and kmatrix unitarisation
+      double precision ss
+
 ! phasespace dimensionality - this is process dependend!!
 
       integer*4 PS_dimension
@@ -159,6 +162,7 @@
 	
       common /cglobal2/ n_kin, n_qed
 
+      common /kmatrix/ ss
 
 ! distribute finite terms for Born*virtual+real emission = c*|Born|**2 + ....
 ! with c = -9/2 - pi^2/3 = creal + cvirt
@@ -311,7 +315,12 @@
       common /nlo_switch / born_off, virtuals_off, emissions_off,reduceSubStat
       
 ! VBFNLO version
-      character*50 vbfnloversionstring
       integer vbfnloversionnumber
-      common/vbfnloversion/vbfnloversionnumber, vbfnloversionstring
+      character*50 vbfnloversionstring
+      character*255 vbfnloreference(3)
+      common/vbfnloversion/ vbfnloversionnumber
+      common/vbfnloversion/ vbfnloreference, vbfnloversionstring
 
+! VBFNLO library
+      logical ldoscales, lglobalprint, ldoblha
+      common/vbfnlolib/ ldoscales, lglobalprint, ldoblha

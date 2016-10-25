@@ -57,6 +57,7 @@
          write(6,*) ' '
 
          call printnfl(.true.)
+         lbquark = 0
         if (fincolcalc) then
          write(6,*) ' I include the calcuation of the finite' 
          write(6,*) '    collinear terms'
@@ -75,6 +76,7 @@
          write(6,*) ' '
 
          call printnfl(.true.)
+         lbquark = 0
         if (fincolcalc) then
          write(6,*) ' I include the calcluation of the finite'
          write(6,*) '    collinear terms' 

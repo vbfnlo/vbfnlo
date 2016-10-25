@@ -114,6 +114,12 @@ c select helicity: h = random number for photon helicity (h=1:2)
          helicity(2)= iu
       end if
       
+c...Les Houches interface
+        if ((lha.or.hepmc).and..not.doNLO) then
+           helicity(1)= ie
+           helicity(2)= iu
+        endif
+
       CALL VXXXXX(qa1(0,1),ZERO,ie,1,atau1(1,1)) !A1
       CALL VXXXXX(qa2(0,1),ZERO,iu,1,atau2(1,1)) !A2
       

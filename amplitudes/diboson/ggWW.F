@@ -273,7 +273,6 @@ ccc         write(*,*) "MARKER3: gauge test ok"
          do l1=1,2
          do l2=1,2
            m1 = 0d0
-           m2 = 0d0
            do i=1,6
            do j=1,1
              m1 = m1 + 2*rfbox(i,j,1,l1,l2) ! u,c

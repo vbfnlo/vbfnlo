@@ -25,6 +25,7 @@ c
 #include "tensorw.inc"
 #include "VBFNLO/utilities/coupl_haddecay.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       integer N_gen_W
       real*8 fac_W
@@ -111,6 +112,9 @@ c
                res(i,j) = 0
             enddo
          enddo
+      else if (ldoblha) then
+        h = 1
+        init = 1
       else
       
 	if (bos.eq.3.or.bos.eq.4) then    	  
@@ -183,6 +187,9 @@ c     reset lws to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
 c     fix hel. for checks:
 c     h = 2
@@ -407,6 +414,9 @@ c     reset lws to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
 
          ie = 1
@@ -633,6 +643,9 @@ c     reset lws to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
          ie = 1
 
@@ -733,6 +746,9 @@ c     reset lws to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
          ie = 1
 
@@ -938,6 +954,26 @@ c
 c	endif !bos>10 
 	
 c  ---------------------------------------------------------------------
+
+       if (ldoblha) then
+
+         physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+         physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+         physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+         physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+         physToDiag(5)=blha_physdiagmap(5,blha_cursubproc,blha_curproc)
+         fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+         fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+         fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+         fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+         gsign    = blha_fsign(5,blha_cursubproc,blha_curproc)
+
+         call wbf_w3j(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
+     1            pdf,res,nmin,nmax)
+
+         return
+       endif
+
 c
 c
 c call PDF subroutine in order to determine parton
@@ -1858,6 +1894,10 @@ c
          print*," undefined variable bos in wbf_w3j "
          stop
       endif !bos
+
+      if (ldoblha) then
+        return
+      endif
       
       if (bos.eq.3.or.bos.eq.32.or.bos.eq.31) then
          do j = 2,3

@@ -28,6 +28,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/coupl.inc"          
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/process.inc"
 C  
 C LOCAL VARIABLES 
 C  
@@ -94,9 +95,14 @@ c
          AMP(10)=0d0
          AMP(11)=0d0
       
-      myazz(   mu) = -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   5)
+c no AZZ vertex in SM
+      myazz(   mu) = -AMP(11)
+      if (narrowwidth.eq.0) then
+      myazz(   mu) = myazz(   mu) 
+     &             -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   5)
      &             -AMP(   6)-AMP(   7)-AMP(   8)
-     &             -AMP( 9)-AMP( 10)-AMP( 11)
+     &             -AMP( 9)-AMP( 10)
+      endif
       enddo
       myazz(4) = dcmplx(q(0),q(3))
       myazz(5) = dcmplx(q(1),q(2))
@@ -136,6 +142,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/global.inc"          
+#include "VBFNLO/utilities/process.inc"
 C  
 C LOCAL VARIABLES 
 C  
@@ -199,9 +206,14 @@ c
          AMP(12)=0d0
 
 
-      myazz(   mu) = -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   5)
+c no ZZZ vertex in SM
+      myazz(   mu) = -AMP(  12)
+      if (narrowwidth.eq.0) then
+      myazz(   mu) = myazz(   mu)
+     &             -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   5)
      &             -AMP(   6)-AMP(   7)-AMP(   8)
-     &             -AMP(   9)-AMP(   10)-AMP( 11)-AMP(  12)
+     &             -AMP(   9)-AMP(   10)-AMP( 11)
+      endif
       enddo
       myazz(4) = dcmplx(q(0),q(3))
       myazz(5) = dcmplx(q(1),q(2))
@@ -238,6 +250,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/global.inc"          
 #include "VBFNLO/utilities/coupl.inc"          
+#include "VBFNLO/utilities/process.inc"
 C  
 C LOCAL VARIABLES 
 C  
@@ -285,7 +298,10 @@ c
       CALL VVHAXX(W(1,6   ),W(1,9   ),W(1,1   ),2,1,AMP(3   ))            
       CALL VVHAXX(W(1,7   ),W(1,9   ),W(1,1   ),1,1,AMP(4   ))            
 
-      myhzz = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)
+      myhzz = +AMP(   1)
+      if (narrowwidth.eq.0) then
+      myhzz = myhzz     +AMP(   2)+AMP(   3)+AMP(   4)
+      endif
 
       END
 

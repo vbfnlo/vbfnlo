@@ -496,8 +496,8 @@ c     &  Real(resultgauge_cp),Abs(CMPLX(result_cp)/CMPLX(result)-1),CMPLX(result
            endif
            endif
            else
-           print*,"BE:QUAD to rescued failed",Real(m),resultgauge,
-     &  resultgauge_Q,Abs(CMPLX(result_Q)/CMPLX(result)-1),CMPLX(result)
+c           print*,"BE:QUAD to rescued failed",Real(m),resultgauge,
+c     &  resultgauge_Q,Abs(CMPLX(result_Q)/CMPLX(result)-1),CMPLX(result)
 c           print*, "result", result
 c           print*, "result_Q", result_Q
 c           print*, temp1,temp2,temp3,temp4
@@ -818,8 +818,8 @@ c     &        ,CMPLX(result_Q)
            endif
         else
 c           print*
-           print*,"BO:QUAD to rescued failed",Real(m),Real(resultgauge_cp),
-     &  Real(resultgauge_Q),Abs(CMPLX(result_cp)/CMPLX(result_Q)-1),CMPLX(result_cp)
+c           print*,"BO:QUAD to rescued failed",Real(m),Real(resultgauge_cp),
+c     &  Real(resultgauge_Q),Abs(CMPLX(result_cp)/CMPLX(result_Q)-1),CMPLX(result_cp)
            endif
            endif
 #endif

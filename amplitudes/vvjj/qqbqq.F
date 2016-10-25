@@ -4,6 +4,7 @@ C********************  qqbqqi ***********************************
       implicit none
       integer bos, lflavr(5:6)
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
 C     QQBQQi initializes the calculation of matrix elements for 
 c     electroweak single weak boson production by quark quark scattering
@@ -354,25 +355,26 @@ c     vertex/graph 7.
          write (12,*) fcpl
          close(12)
       endif
-      print*," "
-      print*," Setup of couplings in qqbqqi successfully",
-     &       " completed "
-      print*," W/Z production with finite width implemented via"
-      print*," "
-      print*,"            igauge = ",igauge
-      print*," "
-      if (igauge.eq.1) then
-         print*," i.e. the overall factor scheme is used "
-      elseif (igauge.eq.2) then
-         print*," i.e. the complex mass scheme is used "
-      elseif (igauge.eq.3 .and. bos.eq.2) then
-         print*," i.e. the naive Z Breit-Wigner scheme is used "
-      elseif (igauge.eq.-1) then
-         print*," i.e. the W/Z width is set to 0 for testing purposes "
-      else
-         print*," which is illegal. Reset it in global.inc "
-         stop
-      endif
+      if (.not.ldoblha) then
+        print*," "
+        print*," Setup of couplings in qqbqqi successfully",
+     &         " completed "
+        print*," W/Z production with finite width implemented via"
+        print*," "
+        print*,"            igauge = ",igauge
+        print*," "
+        if (igauge.eq.1) then
+           print*," i.e. the overall factor scheme is used "
+        elseif (igauge.eq.2) then
+           print*," i.e. the complex mass scheme is used "
+        elseif (igauge.eq.3 .and. bos.eq.2) then
+           print*," i.e. the naive Z Breit-Wigner scheme is used "
+        elseif (igauge.eq.-1) then
+           print*," i.e. the W/Z width is set to 0 for testing purposes "
+        else
+           print*," which is illegal. Reset it in global.inc "
+           stop
+        endif
 ! moved to cuts.F
 !      if (qsqAmin.gt.0d0) then
 !         print*," "
@@ -381,8 +383,9 @@ c     vertex/graph 7.
 !         print*," Recover by calculating  q gamma ---> q g V   etc."
 !      endif
 ! 171  format(a,f10.1,a)
-      print*," "
-      print*,"---------------------------------------------------------"
+        print*," "
+        print*,"---------------------------------------------------------"
+      endif
       end
 
 
@@ -398,6 +401,7 @@ C
      3       uusc,ddsc,ducc,duss
       integer sign(6), NLO
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 C  This code is modified to allow for virtual corrections, more precisely
 C  the interference of Born with the finite part of virtual diagrams
 C  for 
@@ -465,11 +469,14 @@ C  local variables
      1        isig,isig1,isig3,isig5, jsigmin, jsigmax
       double precision res(6,-1:1),resv(6,-1:1), p(0:3,6),
      1       p21(0:4),p43(0:4),p65(0:4), dummy(0:4)
+      double precision tree(6)
       integer id(4)
       double precision pi2o3,c2,c2o4pi
       parameter (pi2o3=pi**2/3d0)
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi)
       logical lnlo
+      double precision lnmusqp1p2, lnmusqp3p4
+
 #include "VBFNLO/utilities/koppln.inc"
 
       double complex psi(2,-1:1,6), j21(0:3,-1:1), j43(0:3,-1:1),
@@ -906,7 +913,7 @@ C  combination isig, Feynman graph j
 
                if (ibos.ne.1) then
                   if (j.le.4) then
-                     if (.not.lflagv) then
+                     if (.not.lflagv .and. (mvirt.eq.mvirt)) then
                         fac_virt(k,isig,j) = fac(k,isig,j)*mvirt
                      else
                         fac_virt(k,isig,j) = 0
@@ -914,7 +921,7 @@ C  combination isig, Feynman graph j
                   endif
                else
                   if (j.le.4) then
-                     if (.not.lflagv) then
+                     if (.not.lflagv .and. (mvirt.eq.mvirt)) then
                         fac_virt(k,isig,j) = fac(k,isig,j)*(mvirt+cte*matr)
                      else
                         fac_virt(k,isig,j) = 0
@@ -1036,6 +1043,7 @@ c      if (ldebug) print*," sigmax = ",sigmax
          do isig5 = -1,1
             res(k,isig5) = 0
             resv(k,isig5) = 0
+            tree(k) = 0
          enddo
          do isig = jsigmin,jsigmax
             isig5 = sig5(isig,3)
@@ -1079,6 +1087,11 @@ c  and the counter term for the renormalization of the pdfs
          endif
          res(k,0) = res(k,-1)+res(k,1)
          resv(k,0) = resv(k,-1)+resv(k,1)
+         if (lnlo) then
+           tree(k) = res(k,0) - resv(k,0)
+         else
+           tree(k) = res(k,0) 
+         endif
       enddo
 
 C  Assign the final results for the subprocesses, include color factor 9
@@ -1090,6 +1103,7 @@ c eliminate processes with photon virtuality below cutoff
      1        abs(p43(4)).lt.qsqAmin ) then
             do i = 1,4
                res(i,0) = 0
+               tree(i) = 0
             enddo
          endif
          uucc = res(1,0)*9
@@ -1103,9 +1117,13 @@ c eliminate processes with photon virtuality below cutoff
          if ( abs(p21(4)).lt.qsqAmin ) then
             res(1,0) = 0
             res(2,0) = 0
+            tree(1) = 0
+            tree(2) = 0
          elseif ( abs(p43(4)).lt.qsqAmin ) then
             res(3,0) = 0
             res(4,0) = 0
+            tree(3) = 0
+            tree(4) = 0
          endif
          uucs = res(1,0)*9
          ddcs = res(2,0)*9
@@ -1116,9 +1134,13 @@ c eliminate processes with photon virtuality below cutoff
          if ( abs(p21(4)).lt.qsqAmin ) then
             res(1,0) = 0
             res(2,0) = 0
+            tree(1) = 0
+            tree(2) = 0
          elseif ( abs(p43(4)).lt.qsqAmin ) then
             res(3,0) = 0
             res(4,0) = 0
+            tree(3) = 0
+            tree(4) = 0
          endif
          uusc = res(1,0)*9
          ddsc = res(2,0)*9
@@ -1130,6 +1152,7 @@ c eliminate processes with photon virtuality below cutoff
      $        abs(p43(4)).lt.qsqAmin ) then
             do i = 1,4
                res(i,0) = 0
+               tree(i) = 0
             enddo
          endif
          uucc = res(1,0)*9
@@ -1138,6 +1161,65 @@ c eliminate processes with photon virtuality below cutoff
          ddss = res(4,0)*9
          udsc = res(5,0)*9
          ducs = res(6,0)*9
+      endif
+
+      if (ldoblha) then
+c add colour factor 
+        do i = 1,6
+          res(i,0) = res(i,0)*9
+          tree(i)  = tree(i) *9
+        enddo
+
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      res(blha_idsubproc(blha_cursubproc,blha_curproc),0)
+
+        else if (blha_amptype(blha_curproc).eq.1) then ! loop
+          lnmusqp1p2 = log(blha_scale**2/(-p21(4)))
+          lnmusqp3p4 = log(blha_scale**2/(-p43(4)))
+
+          blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       (als(1,1)+als(2,1))*(-1d0)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       ( als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)
+     &        +als(2,1)*(-blha_gammaQuark-blha_CF*lnmusqp3p4) )*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+          blha_amp(3)= blha_amp(3)+
+     &      (res(blha_idsubproc(blha_cursubproc,blha_curproc),0)   ! tree + loop + I
+     &       -tree(blha_idsubproc(blha_cursubproc,blha_curproc)))  ! -tree
+     &       * blha_CF/c2                                          ! correct for Nc ?= inf
+     &      + (-(als(1,1)+als(2,1))/2d0/pi*                        ! -I
+     &          (blha_CF*cvirt+
+     &            2d0*(blha_KQuark+blha_gammaQuark+
+     &                 blha_tgammaQuark+(pi**2/6d0-1)*blha_CF) )
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &         +als(2,1)/pi*                                       ! +(mu^2/2p3.p4)^epsilon
+     &         (-blha_gammaQuark*lnmusqp3p4-blha_CF/2d0*lnmusqp3p4**2)
+     &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(4)= blha_amp(4)+
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+          ! 3-4
+          call BLHA_cctree(3,4,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
       endif
       
       return

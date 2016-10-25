@@ -113,7 +113,7 @@
 	    xalogm = abs(s)
     5	continue
     6	continue
-	if ( xalogm.eq.0 ) xalogm = 1d-308
+	if ( xalogm.eq.0 ) xalogm = 1d-307
 	if ( lwrite ) print *,'vbfffini: xalogm = ',xalogm
 	s = 1
 	xclogm = abs(DCMPLX(s))
@@ -123,7 +123,7 @@
 	    xclogm = abs(DCMPLX(s))
     7	continue
     8	continue
-	if ( xclogm.eq.0 ) xclogm = 1d-308
+	if ( xclogm.eq.0 ) xclogm = 1d-307
 	if ( lwrite ) print *,'vbfffini: xclogm = ',xclogm
 *
 *	These values are for Absoft, Apollo fortran (68000):
@@ -337,7 +337,7 @@
 *
 *	the cutoff has to be initialized because of the memory mechansim
 *
-	delta = 0
+	delta = 1d0
 *
 *	the scheme used for the complex scalar functions:
 *

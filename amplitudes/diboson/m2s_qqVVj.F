@@ -20,7 +20,7 @@ c	Last modified:
 c
 c***************************************************************************
 
-      subroutine m2s_qqVVj(bos,nlo,lok,xi,p,v,rn,xuz,m2s)
+      subroutine m2s_qqVVj(bos,nlo,lok,xi,p,v,rn,xuz,m2s,ps_number)
 
       implicit none
 
@@ -34,7 +34,7 @@ c declare input/output variables
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/process.inc"
 
-      integer bos
+      integer bos, ps_number
       real*8 xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), 
      1       rn(1), xuz, m2s(0:3)
       logical lok(3)
@@ -201,6 +201,10 @@ c for the NLO contributions x1 = x*y in my notes with x=xuz, y=xi(i)
             pdf(i,1,3) = pdf(i,1,1)
          enddo
       endif
+      else
+         do i = -6,6
+            pdf(i,1,3) = pdf(i,1,1)
+         enddo
       endif
 
       x2 = xi(2)*xuz
@@ -219,6 +223,10 @@ c for the NLO contributions x1 = x*y in my notes with x=xuz, y=xi(i)
             pdf(i,2,2) = pdf(i,2,1)
          enddo
       endif
+      else
+         do i = -6,6
+            pdf(i,2,2) = pdf(i,2,1)
+         enddo
       endif
       
 
@@ -292,7 +300,7 @@ c   physToDiag(ext.momentum label) = Feynman diagram label
       gsign    = 1          !outgoing gluon
 
       call qq_VVj(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
-     &              pdf,res,nmin,nmax)
+     &              pdf,res,nmin,nmax,ps_number)
 
 C*******************  qbar1 q2 ---> V V g   **********************
 
@@ -304,7 +312,7 @@ C*******************  qbar1 q2 ---> V V g   **********************
       fsign(2) = -1
 
       call qq_VVj(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
-     &              pdf,res,nmin,nmax)
+     &              pdf,res,nmin,nmax,ps_number)
 
 C*******************  g q1 ---> V V q2  ***********************************
 
@@ -317,7 +325,7 @@ C*******************  g q1 ---> V V q2  ***********************************
       gsign    = -1
 
       call qq_VVj(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
-     1              pdf,res,nmin,nmax)
+     1              pdf,res,nmin,nmax,ps_number)
 
 C*******************  qbar2 g ---> V V qbar1   **********************
 
@@ -330,7 +338,7 @@ C*******************  qbar2 g ---> V V qbar1   **********************
       gsign = -1
 
       call qq_VVj(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
-     1              pdf,res,nmin,nmax)
+     1              pdf,res,nmin,nmax,ps_number)
 
 C*******************  g q2bar ---> V V q1bar  **********************
 
@@ -343,7 +351,7 @@ C*******************  g q2bar ---> V V q1bar  **********************
       gsign = -1
 
       call qq_VVj(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
-     1              pdf,res,nmin,nmax)
+     1              pdf,res,nmin,nmax,ps_number)
 
 C*******************  q1 g ---> V V q2   **********************
 
@@ -355,7 +363,7 @@ C*******************  q1 g ---> V V q2   **********************
       fsign(2) = 1
 
       call qq_VVj(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
-     1              pdf,res,nmin,nmax)
+     1              pdf,res,nmin,nmax,ps_number)
 
 c*****************  end of process evaluation  *********************
 
@@ -429,7 +437,7 @@ c*****************************************************************
 
       subroutine qq_VVj(xi,p,v,physToDiag,fsign,gsign,bos, 
      1                    nlo,lok,xuz,
-     1                    pdf,res,nmin,nmax)
+     1                    pdf,res,nmin,nmax,ps_number)
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
@@ -439,7 +447,7 @@ c*****************************************************************
       real*8 xi(nx), xuz
       real*8 pdf(-6:6,2,3), res(maxnumsubproc,0:3)
       integer physToDiag(3), fsign(3+n_v), 
-     1        gsign, bos, nlo, nmin, nmax
+     1        gsign, bos, nlo, nmin, nmax, ps_number
       logical lok(3)
 c
 c qq_VVj calls the amplitude square routines 
@@ -568,7 +576,7 @@ c calculate the matrix elements pa + pb -> ve e+ mu- vm~ p1
          endif
 #endif
 
-            call qqVVj(pbar,fsign,qbar,gsign,uuww,ddww)
+            call qqVVj(pbar,fsign,qbar,gsign,0,1,uuww,ddww,ps_number)
 
 #ifdef WITH_MADGRAPH
          if (ldebug) then

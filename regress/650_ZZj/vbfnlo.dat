@@ -1,0 +1,116 @@
+!   Main input file for vbfnlo
+
+!   General parameters of the calculation 
+!-------------------------------------------
+PROCESS              = 650                  ! Identifier for process
+LOPROCESS_PLUS_JET   = false                ! switch: LO process with 1 additional jet
+LEPTONS              = 11 -11 13 -13        ! final state leptons
+
+! lepton numbering according to MC particle numbering scheme
+! particles are given positive numbers, antiparticles negative numbers
+! e-   ve   mu-  vm   ta-  vt
+! 11   12   13   14   15   16
+
+LO_ITERATIONS        = 6         ! number of iterations for LO calculation
+NLO_ITERATIONS       = 6         ! number of iterations for real-emissions calc. 
+LO_POINTS            = 26        ! number of points for LO calculation (= 2^..)
+NLO_POINTS           = 26        ! number of points for real-emissions calc. (= 2^..)
+LO_GRID              = "grid2_1" "grid2_2" "grid2_3" ! names of gridfiles for LO calculation
+NLO_GRID             = "grid3_1" "grid3_2" "grid3_3" ! names of gridfiles for real emissions calculation
+PHTN_GRID            = "grid4_1" "grid4_2" "grid4_3" ! names of gridfiles for photon emission calculation
+
+NLO_SWITCH           = true	 ! switch: nlo/lo calculation
+EWCOR_SWITCH         = false     ! Whether electoweak corrections are included
+FERMIONLOOP          = 3         ! Contribution of gluon-induced fermionic loops for diboson processes
+                                 ! 0: none
+                                 ! 1: only box diagrams
+                                 ! 2: only Higgs resonance
+                                 ! 3: both contributions (default)
+
+ECM	             = 14000d0	 ! collider center-of-mass energy
+BEAM1                = 1         ! type of beam 1 (1=proton, -1 = antiproton)
+BEAM2  	             = 1         ! type of beam 2 (1=proton, -1 = antiproton)
+ 
+ID_MUF	             = 0         ! ID for factorization scale
+ID_MUR	             = 0         ! ID for renormalization scale
+MUF_USER             = 100d0	 ! user defined factorization scale, if MUF is set to 0
+MUR_USER             = 100d0	 ! user defined renormalization scale, if MUR is set to 0
+XIF	             = 1d0       ! scale factor xi for mu_F (not mu^2!!)	
+XIR	             = 1d0	 ! scale factor xi for mu_R
+
+
+!   Physics parameters
+!------------------------ 
+HMASS       = 125.0d0         ! Higgs mass
+HWIDTH      = -999d0
+HTYPE       = 0               ! Type of Higgs produced:
+                              !      0     SM Higgs with mass HMASS
+                              !      1     light cp-even type higgs h0
+                              !      2     heavy cp-even type higgs HH
+                              !      3     lightest cp-odd type higgs A0
+                              !   SUSY parameters for 1-3 are set in susy.dat.
+			      !   For these options, if input 'MODEL' is set 
+                              !   to 1 (SM), calculation will run in the SM 
+                              !   for a Higgs with equivalent mass to that 
+                              !   chosen in the MSSM.
+MODEL       = 1               ! model: 1 for SM, 2 for MSSM
+TOPMASS     = 172.4d0         ! Top mass
+BOTTOMMASS  = 4.855d0         ! Bottom Pole mass
+CHARMMASS   = 1.65d0          ! Charm Pole mass
+TAU_MASS    = 1.77684D0       ! Tau mass
+ALFA_S      = 0.1176d0        ! Strong coupling constant 
+EWSCHEME    = 3               ! Choose scheme for electroweak parameters (1,2,3,4)
+EW_APPROX   = 0               ! Approximation used when calculating electroweak 
+FERMI_CONST = 1.16637d-5      ! Fermi Constant
+ALFA        = 7.2973525376d-3 ! Fine-structure constant
+SIN2W       = 0.23119d0       ! Weak mixing angle
+WMASS       = 80.398d0        ! W mass
+ZMASS       = 91.1876d0       ! Z mass
+ANOM_CPL    = false           ! Anomalous couplings 
+KK_MOD      = false           ! Warped Higgsless Model
+EW_APPROX   = 0               ! Approximation used when calculating electroweak 
+                              !      0     no approximations used: full ew corrections included
+                              !      1     only t/b (and stop/sbottom in the MSSM) corns are included 
+                              !      2     only fermion (and sfermion in the MSSM) corns are included
+                              !      3     MSSM option: all SM-type and sfermion corns are included
+                              !      4     MSSM option: all MSSM corns to hVV vertex, and all SM-type
+                              !              and sfermion corrections elsewhere
+                              !      5     MSSM option: all MSSM corns to hVV and qqV vertices and 
+                              !              VV self energy, and all SM-type boxes and pentagons    
+
+
+!   Parameters for the LHA event output
+!-----------------------------------------
+LHA_SWITCH            = false    ! Les Houches interface only for LO calculation
+LHA_FILE              = event.lhe  ! Name of Les Houches output file
+HEPMC_SWITCH          = false      ! HepMC interface only for LO calculation
+HEPMC_FILE            = event.hepmc ! Name of HepMC output file
+UNWEIGHTING_SWITCH    = true     ! unweighted/weighted (T/F) events for LHA
+PRENEVUNW             = 1000     ! number of events to calculate pre-maximal weight
+TAUMASS               = false    ! Include mass of the tau lepton(s) in the LHA file for VBF processes
+
+
+!   PDF set parameters
+!------------------------
+PDF_SWITCH    = 0	! which pdfs to use: 1 = lhapdf, 0 = hard-wired cteq (default)    
+! choose pdfset and pdfmember here. Look at the LHAPDF manual for details.
+LO_PDFNAME    = cteq6ll.LHpdf
+NLO_PDFNAME   = CT10.LHgrid
+LO_PDFMEMBER  = 0
+NLO_PDFMEMBER = 0		
+
+
+!   Parameters for histogram creation
+!---------------------------------------
+XSECFILE        = xsection        ! name of output-file (+ .out)
+ROOT     = false           ! create root-file?
+TOP      = false           ! create top-drawer file?
+GNU	 = false           ! create gnu-plot script file?
+DATA	 = false           ! create data file?
+REPLACE  = true            ! replace output files?
+ROOTFILE = histograms      ! name of root-file ( + '.root')
+TOPFILE  = histograms      ! name of top-drawer file ( + '.top')
+GNUFILE  = histograms	   ! name of gnuplot file ( + '.gp')
+DATAFILE = histograms	   ! name of data directory ( + '.dir')
+        
+

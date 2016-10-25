@@ -1,18 +1,33 @@
    
- -----------------------------------------------------
- VBFNLO, version 2.7.99 svn 6131
- Comput. Phys. Commun. 180 (2009) 1661 [arXiv:0811.4559 [hep-ph]]
- arXiV: 1107.4038, arXiV: 1207.4975
- http://www.itp.kit.edu/~vbfnloweb/
- -----------------------------------------------------
-   
-   
+ -----------------------------------------------------------------
+ VBFNLO, version 3.0.0 beta0 svn 7628
+ Comput. Phys. Commun. 180 (2009) 1661[arXiv:0811.4559 [hep-ph]]
+ arXiV:1107.4038, arXiV:1207.4975, arXiv:1404.3940
+ http://www.itp.kit.edu/vbfnlo
+ -----------------------------------------------------------------
+ Process-specific references (please cite as well if appropriate):
+ F. Campanario, M. Kerner, Le Duc Ninh, D. Zeppenfeld
+ Eur.Phys.J. C74 (2014) 2882, e-Print: arXiv:1402.0505
  
- TIME=        2014           2          24          60          18           8           5         509
+ -----------------------------------------------------------------
+   
+   
+   
+ Initialising LoopTools ..
+   
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
   
         Information on global parameters
  -----------------------------------------------
-   PROCESS               =     6270
+   PROCESS               =     3270
    LOPROCESS_PLUS_JET    =        F
    KK_MOD                =        F
    ANOM_CPL              =        F
@@ -52,7 +67,7 @@
  QCD induced W+ A + 2 jets production with fully leptonic decay of the W.
  Process is implemented at LO and NLO QCD.
  References: F. Campanario, M. Kerner, Le Duc Ninh, D. Zeppenfeld
- e-Print: arXiv:1402.0505
+ Eur.Phys.J. C74 (2014) 2882, e-Print: arXiv:1402.0505
  
  Initializing PDF set CT10
   
@@ -193,8 +208,6 @@
  integration range for boson   3 =      0.032  to     9899.495 GeV
  boson has mass     0.00 GeV and width     0.0000 GeV
  integration range for boson   1 =      0.032  to     9899.495 GeV
- boson has mass     0.00 GeV and width     0.0000 GeV
- integration range for boson   0 =      0.000  to        0.000 GeV
 
  machine energy =    14000.0  GeV
 
@@ -202,32 +215,30 @@
 
  ---------------------------------------------------
 
-  Open error on file random.dat
-  Using default values.
   Random number generator initialized with seed =            0
  
           information on histogram config
  -----------------------------------------------
  
-  Open error on file histograms.dat
-  Using default values.
- SMEARING           =      F
+ SMEARING           =      T
+ SMEAR_VALUE        =       0.20000000000000001     
  CALC_ERROR_GNUPLOT =      F
+ CALC_ERROR_ROOT    =      F
  CALC_ERROR_1D      =      T
  CALC_ERROR_2D      =      F
  
 HIST_ID1      =      0.00    250.00  # dS/dpT_j (fb/GeV)
 HIST_ID2      =      0.00    500.00  # dS/dpTmax_j (fb/GeV)
 HIST_ID3      =      0.00    200.00  # dS/dpTmin_j (fb/GeV)
-HIST_ID4      =     -5.00      5.00  # dS/deta_j (fb)
-HIST_ID5      =     -5.00      5.00  # dS/deta_j1 (fb)
-HIST_ID6      =     -5.00      5.00  # dS/deta_j2 (fb)
+HIST_ID4      =     -5.00      5.00  # dS/dy_j (fb)
+HIST_ID5      =     -5.00      5.00  # dS/dy_j1 (fb)
+HIST_ID6      =     -5.00      5.00  # dS/dy_j2 (fb)
 HIST_ID7      =      0.00    500.00  # dS/dpTmax_l (fb/GeV)
 HIST_ID8      =      0.00    200.00  # dS/dpTmin_l (fb/GeV)
 HIST_ID9      =      0.00      5.00  # dS/d|eta|max_l (fb)
 HIST_ID10     =      0.00      5.00  # dS/d|eta|min_l (fb)
 HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
-2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/deta_jj dm_jj (fb/GeV)
+2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/dy_jj dm_jj (fb/GeV)
  
  -----------------------------------------------
  
@@ -1658,6 +1669,15 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
  Oldenborgh and J.A.M. Vermaseren, published in 
  Zeitschrift fuer Physik C46(1990)425.
  ====================================================
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
  Initializing PDF set CT10
   
  PHASE SPACE            1
@@ -2778,8 +2798,6 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
   sigma =    831.36240477064973       +-    3.0326778395797684       fb
   
  
- TIME=        2014           2          24          60          21           9           2         196
- 
   Total (multi-channel) result (NLO virtual):    945.06014832645690       +-    3.3383560987403169       fb    0.35324271208049413      %
  
    
@@ -2789,6 +2807,15 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
 total number of errors and warnings
 ===================================
 vbffferr: no errors
+the warning system has been disabled
+ 
+ vbfquadffopen: error: could not open /itp/scratch/rauch/vbfquadnlotest/binaryrelease30/share/VBFNLO/ff/fferr.dat                                                     
+         adjust path in vbfquadffopen (vbfquadffinit.f)
+vbfquadfferr:  warning cannot open fferr.dat with error texts
+ 
+total number of errors and warnings
+===================================
+vbfquadfferr: no errors
 the warning system has been disabled
  
   
@@ -2972,13 +2999,18 @@ the warning system has been disabled
  
   Total (multi-channel) result (NLO real):   -293.54509021870894       +-    4.5515347332022325       fb    -1.5505402355089852      %
  
+ 
+total number of errors and warnings
+===================================
+fferr: no errors
+ 
   
   final result at NLO 
   sigma =    651.51505810774802       +-    5.6445628590301826       fb  0.86637488862102097      %
 
   penbox/ fermionloops instabilites 
       total calls                1128828
-      instabilities dble            2325  0.20596583359023696      %
+      instabilities dble            2276  0.20162504828016314      %
       instabilities quad            1601  0.14182851594751369      %
   Box instabilites 
       total calls                 672918
@@ -3030,17 +3062,16 @@ the warning system has been disabled
   
   
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     VBFNLO 3.0.0 beta0 svn 7628
    
-  PROCESS:         6270   :   p p -->  W+ A jj -->  e+ ve A jj (QCD induced)
+  PROCESS:         3270   :   p p -->  W+ A jj -->  e+ ve A jj (QCD induced)
    
   TOTAL result (LO):          599.94104221722080       +-   0.74098809469018356       fb    0.12351015225624351      %
   NLO virtual result:         945.06014832645724       +-    3.3383560987403169       fb    0.35324271208049401      %
   QCD real emission:         -293.54509021870894       +-    4.5515347332022325       fb    -1.5505402355089852      %
   TOTAL result (NLO):         651.51505810774802       +-    5.6445628590301826       fb    0.86637488862102097      %
-  Approx. error due to instable points:    4.0953129965685391E-002  %
+  Approx. error due to instable points:    4.6240523176845245E-002  %
   K-Factor:                   1.0859651403409967     
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   
   
- 
- TIME=        2014           2          25          60           1           7          53         933

@@ -385,14 +385,20 @@ c----------------------------------------------
          call avh_error()
 #endif
       else if (UseFF) then
-         xpi(1) = m0**2
-         xpi(2) = m1**2
-         xpi(3) = m2**2
-         xpi(4) = s1
-         xpi(5) = s2
-         xpi(6) = s3
-         ier=0
-         call vbfffxc0(C0finG,xpi,ier)
+        if ( (abs(m0).lt.eps) .and.
+     &       (abs(m1).lt.eps) .and.
+     &       (abs(m2).lt.eps) ) then
+           C0finG=C0fin(s1,s2,s3,musq)
+        else
+          xpi(1) = m0**2
+          xpi(2) = m1**2
+          xpi(3) = m2**2
+          xpi(4) = s1
+          xpi(5) = s2
+          xpi(6) = s3
+          ier=0
+          call vbfffxc0(C0finG,xpi,ier)
+        endif
       else
        if(m0.ge.eps) then
          if (m1.ge.eps) then
@@ -545,7 +551,7 @@ c                   0, 0, 0
       parameter (eps=1d-6)
       logical UseAVH, UseFF
       real*8 xpi(13)
-      integer ier
+      integer i,ier
       parameter (UseAVH=.false.)
       parameter (UseFF=.true.)
 c MISSING THIS ONE!

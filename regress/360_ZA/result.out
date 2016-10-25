@@ -1,10 +1,10 @@
    
- -----------------------------------------------------
- VBFNLO, version 2.7.0 rc1 svn 6148
- Comput. Phys. Commun. 180 (2009) 1661 [arXiv:0811.4559 [hep-ph]]
- arXiV: 1107.4038, arXiV: 1207.4975
- http://www.itp.kit.edu/~vbfnloweb/
- -----------------------------------------------------
+ -----------------------------------------------------------------
+ VBFNLO, version 3.0.0 beta0 svn 7626
+ Comput. Phys. Commun. 180 (2009) 1661[arXiv:0811.4559 [hep-ph]]
+ arXiV:1107.4038, arXiV:1207.4975, arXiv:1404.3940
+ http://www.itp.kit.edu/vbfnlo
+ -----------------------------------------------------------------
    
    
    
@@ -205,8 +205,6 @@
  integration range for boson   2 =      0.032  to     9899.495 GeV
  boson has mass     0.00 GeV and width     0.0000 GeV
  integration range for boson   1 =      0.032  to     9899.495 GeV
- boson has mass     0.00 GeV and width     0.0000 GeV
- integration range for boson   3 =      0.000  to        0.000 GeV
 
  machine energy =    14000.0  GeV
 
@@ -222,21 +220,22 @@
  SMEARING           =      T
  SMEAR_VALUE        =       0.20000000000000001     
  CALC_ERROR_GNUPLOT =      F
+ CALC_ERROR_ROOT    =      F
  CALC_ERROR_1D      =      T
  CALC_ERROR_2D      =      F
  
 HIST_ID1      =      0.00    250.00  # dS/dpT_j (fb/GeV)
 HIST_ID2      =      0.00    500.00  # dS/dpTmax_j (fb/GeV)
 HIST_ID3      =      0.00    200.00  # dS/dpTmin_j (fb/GeV)
-HIST_ID4      =     -5.00      5.00  # dS/deta_j (fb)
-HIST_ID5      =     -5.00      5.00  # dS/deta_j1 (fb)
-HIST_ID6      =     -5.00      5.00  # dS/deta_j2 (fb)
+HIST_ID4      =     -5.00      5.00  # dS/dy_j (fb)
+HIST_ID5      =     -5.00      5.00  # dS/dy_j1 (fb)
+HIST_ID6      =     -5.00      5.00  # dS/dy_j2 (fb)
 HIST_ID7      =      0.00    500.00  # dS/dpTmax_l (fb/GeV)
 HIST_ID8      =      0.00    200.00  # dS/dpTmin_l (fb/GeV)
 HIST_ID9      =      0.00      5.00  # dS/d|eta|max_l (fb)
 HIST_ID10     =      0.00      5.00  # dS/d|eta|min_l (fb)
 HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
-2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/deta_jj dm_jj (fb/GeV)
+2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/dy_jj dm_jj (fb/GeV)
  
  -----------------------------------------------
  
@@ -436,6 +435,15 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
  Oldenborgh and J.A.M. Vermaseren, published in 
  Zeitschrift fuer Physik C46(1990)425.
  ====================================================
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
 
  --------------------PHASE SPACE--------------------
 
@@ -443,8 +451,6 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
  integration range for boson   2 =      0.032  to     9899.495 GeV
  boson has mass     0.00 GeV and width     0.0000 GeV
  integration range for boson   1 =      0.032  to     9899.495 GeV
- boson has mass     0.00 GeV and width     0.0000 GeV
- integration range for boson   3 =      0.000  to        0.000 GeV
 
  machine energy =    14000.0  GeV
 
@@ -636,8 +642,6 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
  integration range for boson   2 =      0.032  to     9899.495 GeV
  boson has mass     0.00 GeV and width     0.0000 GeV
  integration range for boson   1 =      0.032  to     9899.495 GeV
- boson has mass     0.00 GeV and width     0.0000 GeV
- integration range for boson   3 =      0.000  to        0.000 GeV
 
  machine energy =    14000.0  GeV
 
@@ -752,6 +756,15 @@ total number of errors and warnings
 vbffferr: no errors
 the warning system has been disabled
  
+ vbfquadffopen: error: could not open /itp/scratch/rauch/vbfquadnlotest/binaryrelease30/share/VBFNLO/ff/fferr.dat                                                     
+         adjust path in vbfquadffopen (vbfquadffinit.f)
+vbfquadfferr:  warning cannot open fferr.dat with error texts
+ 
+total number of errors and warnings
+===================================
+vbfquadfferr: no errors
+the warning system has been disabled
+ 
   
  PHASE SPACE            1
   
@@ -845,7 +858,7 @@ the warning system has been disabled
  MONACO:  grid written to file grid3_1.out.6
  
   result for real emissions 
-  sigma =    223.06652720737404       +-    2.7008541703825943       fb
+  sigma =    223.06652720403960       +-    2.7008541704162905       fb
   
   
  PHASE SPACE            2
@@ -932,10 +945,10 @@ the warning system has been disabled
  MONACO:  grid written to file grid3_2.out.6
  
   result for real emissions 
-  sigma =    92.269750173075877       +-   0.36700124603023609       fb
+  sigma =    92.269750207631247       +-   0.36700124504324794       fb
   
  
-  Total (multi-channel) result (NLO real):    315.33627738044993       +-    2.7256748089713119       fb    0.86437083345244603      %
+  Total (multi-channel) result (NLO real):    315.33627741167084       +-    2.7256748088718075       fb    0.86437083333531106      %
  
  
 total number of errors and warnings
@@ -944,7 +957,7 @@ fferr: no errors
  
   
   final result at NLO 
-  sigma =    3972.4225794111758       +-    2.9128783721985827       fb   7.3327505167648924E-002 %
+  sigma =    3972.4225794423969       +-    2.9128783721054727       fb   7.3327505164728704E-002 %
  
  
  LO for different PHASESPACE:
@@ -968,22 +981,22 @@ fferr: no errors
   
   
   REAL EMISSION for different PHASESPACE:
-   223.06652720737404        2.7008541703825943        1.2107841567245732       %
-   92.269750173075877       0.36700124603023609       0.39774817352580882       %
+   223.06652720403960        2.7008541704162905        1.2107841567577782       %
+   92.269750207631247       0.36700124504324794       0.39774817230717369       %
   
   
   
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     VBFNLO 2.7.0 rc1 svn 6148
+     VBFNLO 3.0.0 beta0 svn 7626
    
   PROCESS:          360   :   p p -->  Z A -->  e- e+ A
    
   TOTAL result (LO):          2759.8610208515242       +-   0.56728380318361304       fb     2.0554796016814789E-002 %
   NLO virtual result:         3591.2182866024718       +-    1.0048890739632557       fb     2.7981843312397104E-002 %
   NLO fermion loop result:    65.868015428254438       +-   0.21390464228421052       fb    0.32474736166478607      %
-  QCD real emission:          315.33627738044993       +-    2.7256748089713119       fb    0.86437083345244603      %
-  TOTAL result (NLO):         3972.4225794111758       +-    2.9128783721985827       fb     7.3327505167648924E-002 %
-  K-Factor:                   1.4393560216976176     
+  QCD real emission:          315.33627741167084       +-    2.7256748088718075       fb    0.86437083333531106      %
+  TOTAL result (NLO):         3972.4225794423969       +-    2.9128783721054727       fb     7.3327505164728704E-002 %
+  K-Factor:                   1.4393560217089303     
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   
   

@@ -520,8 +520,8 @@ c------------------------------------------------------------------------------
       double precision v(0:3,max_v,max_kin)
       double precision vv(4),pp1(4),pp2(4),ncms1(3),ncms2(3)
       double precision lpp1, lpp2, s, mtau, pp, rn
-      double precision  alfas, xmt, alfa, xmz, xmw, sin2w, xmh, alfas_lo
-      common /bkopin/ alfas, xmt, alfa, xmz, xmw, sin2w, xmh, alfas_lo
+      double precision  alfas, xmt, alfa, xmz, xmw, sin2w, xmh, gf, alfas_lo
+      common /bkopin/ alfas, xmt, alfa, xmz, xmw, sin2w, xmh, gf, alfas_lo
 
 
       mtau = ML
@@ -860,8 +860,9 @@ c------------------------------------------------------------------------------
       case(Hjj_WW, Hjjj_WW,WPWMjj, Hjj_ZZ_ll, Hjjj_ZZ_ll,ZZjj_ll, 
      1     Hjj_ZZ_lnu,Hjjj_ZZ_lnu, 
      2     ZZjj_lnu,Zjj_l, Zjj_nu, WPjj, WMjj, 
-     3     WWZ, ZZWP, ZZWM, ZZZ, WW, GFWW, WpZ, WmZ, ZZ, GFZZ, WWWP, 
-     3     WWWM, WPZjj, WMZjj,
+     3     WWZ, ZZWP, ZZWM, ZZZ, WW, GFWW, WpZ, WmZ, ZZ, GFZZ, 
+     &     WWj, GFWWj, ZZj, GFZZj,
+     &     WWWP, WWWM, WPZjj, WMZjj,
      4     HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu,
      5     GFHjj_WW, GFHjj_ZZ_ll, GFHjj_ZZ_lnu,
      6     WPWPjj, WMWMjj,
@@ -1159,6 +1160,14 @@ c...particle identity code
          n_b = 1
          lidup(n_p+1,listposition)=-24
          lidup(n_p+2,listposition)= 22
+      case(ZA,GFZA) !ZA
+         n_b = 1
+         lidup(n_p+1,listposition)= 23
+         lidup(n_p+2,listposition)= 22
+      case(AA,GFAA) !AA
+         n_b = 0
+         lidup(n_p+1,listposition)= 22
+         lidup(n_p+2,listposition)= 22
       case(WPH, WPHj) !W+H
          n_b = 2
          lidup(n_p+1,listposition)= 24
@@ -1175,14 +1184,6 @@ c...particle identity code
       case(WM_only, WMj) !W-
          n_b = 1
          lidup(n_p+1,listposition)=-24
-      case(ZA,GFZA) !ZA
-         n_b = 1
-         lidup(n_p+1,listposition)= 23
-         lidup(n_p+2,listposition)= 22
-      case(AA,GFAA) !AA
-         n_b = 0
-         lidup(n_p+1,listposition)= 22
-         lidup(n_p+2,listposition)= 22
       case(WPZjj, WPhadZjj, WPZhadjj,QCDWPZjj) !W+Zjj
          lidup(n_p+1,listposition)= 24
          lidup(n_p+2,listposition)= 23

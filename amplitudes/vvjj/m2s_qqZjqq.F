@@ -42,6 +42,8 @@ c
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/coupl_haddecay.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
       integer bos
       real*8 xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v), 
      1       rn(1), xuz(2,2:3), m2s(0:3)
@@ -153,6 +155,10 @@ c
                res(i,j) = 0
             enddo
          enddo
+      else if (ldoblha) then
+        photon_hel=0
+        h = 1
+        init = 1
       else
         photon_hel=0
          if (bos.eq.2) then
@@ -503,6 +509,9 @@ c
 c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4) .. needed only for ZZ
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,4) + 1
 	
          ie = sign(1,2-h)
@@ -842,6 +851,9 @@ c
 c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4) .. needed only for ZZ
 
+      if (ldoblha) then
+        h = blha_ranhelcomb
+      endif
       h = mod(h,4) + 1
 
       lsign(3) = sign(1,2-h)
@@ -938,6 +950,9 @@ c
 c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4) .. needed only for ZZ
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,4) + 1
 	
          ie = sign(1,2-h)
@@ -1032,6 +1047,9 @@ c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4), but only h=1 or 3 
 c	   	         contribute for ZZ -> 2l 2v (no righthanded neutrinos)
 c
+         if (ldoblha) then
+           h = 2*blha_ranhelcomb-1
+         endif
          h = mod(h+2,4)
 	
          ie = sign(1,2-h)
@@ -1121,6 +1139,9 @@ c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4), but only h=1 or 3 
 c	   	         contribute for ZZ -> 2l 2v (no righthanded neutrinos)
 c
+         if (ldoblha) then
+           h = 2*blha_ranhelcomb-1
+         endif
          h = mod(h+2,4)
 	
          ie = sign(1,2-h)
@@ -1392,6 +1413,9 @@ c     reset lzs to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
       
+        if (ldoblha) then
+          h = blha_ranhelcomb
+        endif
 	if(photon_hel.eq.0) then
 	  h = mod(h,4) + 1
 	  ie = sign(1,2-h)
@@ -1509,6 +1533,9 @@ c     reset lzs to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+        if (ldoblha) then
+          h = blha_ranhelcomb
+        endif
 	if(photon_hel.eq.0) then
          h = mod(h,2) + 1
          ie = 1
@@ -1724,6 +1751,27 @@ c
 c
 c  end debugging
 c
+
+       if (ldoblha) then
+
+         physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+         physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+         physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+         physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+         physToDiag(5)=blha_physdiagmap(5,blha_cursubproc,blha_curproc)
+         fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+         fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+         fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+         fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+         gsign    = blha_fsign(5,blha_cursubproc,blha_curproc)
+
+         call wbf_zh3j(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
+     1            pdf,res,nmin,nmax)
+
+         return
+       endif
+
+
 c  ---------------------------------------------------------------------
 c
 c call PDF subroutine in order to determine parton
@@ -2811,6 +2859,10 @@ c     &           uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1))
          print*," Must be 2, 6, 34 / 43, 22, 11 or 21 "
          stop
       endif   ! end of if bos = ..
+
+      if (ldoblha) then
+        return
+      endif
 
 
       do j=2,3

@@ -62,6 +62,7 @@
          write(6,*) '-----------------------------------------------'
 
          call printnfl(.true.)
+         lbquark = 0
       endif
       endif
       init=1
@@ -3077,7 +3078,7 @@ c
       double precision pis,CF,CA
       parameter (pis=3.141592653589793238d0,CF=4d0/3d0,CA=3d0)
       logical ldebug
-      parameter (ldebug=.true.)
+      parameter (ldebug=.false.)
 
 c OUTPUT
 c
@@ -3112,20 +3113,20 @@ c
       if (ldebug) then
       if (abs(xika-(pkpa+pipa-pipk)/(pkpa+pipa)).ge.1e-10) then
       PRINT*, "error related to xika in dipole 67"
-      STOP
+c      STOP
       endif
       if (abs(ui-pipa/(pipa+pkpa)).ge.1e-10) then
       PRINT*, "error related to ui in dipole 67"
-      STOP
+c      STOP
       endif
       do mu=0,3
       if (abs(p(mu,1)-xika*pa(mu)).ge.1e-10) then
       print*, "wrong ptilde_a(",mu," ) in 67"
-      STOP
+c      STOP
       endif
       if (abs(p(mu,3)-(pk(mu)+pi(mu)-(1d0-xika)*pa(mu))).ge.1e-10) then
       print*, "wrong ptilde_k(",mu," ) in 67"
-      STOP
+c      STOP
       endif
       enddo
       endif
@@ -3162,7 +3163,7 @@ c
       do mu=0,3
       print*, borncurr(mu,1)
       enddo
-      STOP
+c      STOP
       endif
       endif
 
@@ -3177,7 +3178,7 @@ c
       borntest2=-1d0*((contract_Trjcj(metric,borncurr(0,-1))+contract_Trjcj(metric,borncurr(0,1)))*4./96.)
       if (abs(borntest1-borntest2).ge.1e-10) then
       Print*, "error in matrixelement calculation 67:", (BORNTEST1-BORNTEST2)/BORNTEST1*100d0, "%"
-      STOP
+c      STOP
       endif
       endif
 
@@ -3243,7 +3244,7 @@ c
       double precision pis,CF,CA
       parameter (pis=3.141592653589793238d0,CF=4d0/3d0,CA=3d0)
       logical ldebug
-      parameter (ldebug=.true.)
+      parameter (ldebug=.false.)
 c OUTPUT
 c
       double precision ptildeai(0:3),ptildeb(0:3),dipole(0:3,0:3),xuz(2),pges(0:3),
@@ -3281,16 +3282,16 @@ c
       if (ldebug) then
       if (abs(xiab-(papb-pipa-pipb)/papb).ge.1e-10) then
       PRINT*, "error related to xika in dipole 147"
-      STOP
+c      STOP
       endif
       do mu=0,3
       if (abs(p(mu,1)-xiab*pa(mu)).ge.1e-10) then
       print*, "wrong ptilde_a(",mu," ) in 147"
-      STOP
+c      STOP
       endif
       if (abs(p(mu,2)-pb(mu)).ge.1e-10) then
       print*, "wrong pb(",mu," ) in 147"
-      STOP
+c      STOP
       endif
       enddo
       endif
@@ -3321,7 +3322,7 @@ c
       borntest2=-((contract_Trjcj(metric,borncurr(0,-1))+contract_Trjcj(metric,borncurr(0,1)))*4./96.)
       if (abs(borntest1-borntest2).ge.1e-10) then
       Print*, "error in matrixelement calculation 147:", BORNTEST1, BORNTEST2
-      STOP
+c      STOP
       endif
       do mu=0,3
       pges(mu)=bornmom(mu,1)+bornmom(mu,2)
@@ -3341,7 +3342,7 @@ c
       borntest2=-((contract_Trjcj(metric,borncurr(0,-1))+contract_Trjcj(metric,borncurr(0,1)))*4./96.)
       if (abs(borntest1-borntest2).ge.1e-10) then
       Print*, "error in matrixelement calculation 147:", BORNTEST1, BORNTEST2
-      STOP
+c      STOP
       endif
       endif
 
@@ -3410,7 +3411,7 @@ c INPUT
       double precision pis,CF,CA,Tr
       parameter (pis=3.141592653589793238d0,CF=4d0/3d0,CA=3d0,Tr=1d0/2d0)
       logical ldebug
-      parameter (ldebug=.true.)
+      parameter (ldebug=.false.)
 
 c OUTPUT
 c
@@ -3434,20 +3435,20 @@ c
       if (ldebug) then
       if (abs(xika-(pkpa+pipa-pipk)/(pkpa+pipa)).ge.1e-10) then
       PRINT*, "error related to xika in dipole 65",xika,(pkpa+pipa-pipk)/(pkpa+pipa)
-      STOP
+c      STOP
       endif
       if (abs(ui-pipa/(pipa+pkpa)).ge.1e-10) then
       PRINT*, "error related to ui in dipole 65"
-      STOP
+c      STOP
       endif
       do mu=0,3
       if (abs(p(mu,1)-xika*pa(mu)).ge.1e-10) then
       print*, "wrong ptilde_a(",mu," ) in 65"
-      STOP
+c      STOP
       endif
       if (abs(p(mu,3)-(pk(mu)+pi(mu)-(1d0-xika)*pa(mu))).ge.1e-10) then
       print*, "wrong ptilde_k(",mu," ) in 65"
-      STOP
+c      STOP
       endif
       enddo
       endif
@@ -3509,7 +3510,7 @@ c
       double precision pis,CF,CA,TR
       parameter (pis=3.141592653589793238d0,CF=4d0/3d0,CA=3d0,TR=1d0/2d0)!
       logical ldebug
-      parameter (ldebug=.true.)
+      parameter (ldebug=.false.)
 c OUTPUT
 c
       double precision ptildeai(0:3),ptildeb(0:3),dipole,xuz(2),
@@ -3536,16 +3537,16 @@ c
       if (ldebug) then
       if (abs(xiab-(papb-pipa-pipb)/papb).ge.1e-10) then
       PRINT*, "error related to xika in dipole 145"
-      STOP
+c      STOP
       endif
       do mu=0,3
       if (abs(p(mu,1)-xiab*pa(mu)).ge.1e-10) then
       print*, "wrong ptilde_a(",mu," ) in 145"
-      STOP
+c      STOP
       endif
       if (abs(p(mu,2)-pb(mu)).ge.1e-10) then
       print*, "wrong pb(",mu," ) in 145"
-      STOP
+c      STOP
       endif
       enddo
       endif
@@ -3608,7 +3609,7 @@ c
       double precision pis,CF,CA,TR
       parameter (pis=3.141592653589793238d0,CF=4d0/3d0,CA=3d0,TR=1d0/2d0)
       logical ldebug
-      parameter (ldebug=.true.)
+      parameter (ldebug=.false.)
 
 c OUTPUT
 c
@@ -3638,11 +3639,11 @@ c
       if (ldebug) then
       if (abs(xija-(pipa+pjpa-pipj)/(pipa+pjpa)).ge.1e-10) then
       PRINT*, "error related to xija in dipole 40", xija, (pipa+pjpa-pipj)/(pipa+pjpa)
-      STOP
+c      STOP
       endif
       if (abs(zi-pipa/(pipa+pjpa)).ge.1e-10) then
       PRINT*, "error related to zi in dipole 40"
-      STOP
+c      STOP
       endif
       do mu=0,3
 !       if (sel.eq.2) then
@@ -3658,7 +3659,7 @@ c
 !       endif
       if (abs(p(mu,3)-(pj(mu)+pi(mu)-(1d0-xija)*pa(mu))).ge.1e-10) then
       print*, "wrong ptilde_ij(",mu," ) in 40"
-      STOP
+c      STOP
       endif
       enddo
 

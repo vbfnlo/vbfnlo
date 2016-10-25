@@ -381,10 +381,12 @@
       PARAMETER( HAjjjLO_ZZ_lnu= 92107)
       
 ! diboson plus jet
-      INTEGER WMZJ, WPZJ, WMAJ, WPAJ
-      INTEGER WMZJLO, WPZJLO, WMAJLO, WPAJLO
+      INTEGER WWJ, WMZJ, WPZJ, WMAJ, WPAJ, ZZJ
+      INTEGER WWJJLO, WMZJLO, WPZJLO, WMAJLO, WPAJLO
+      INTEGER ZZJJLO
       INTEGER WPhadZJ, WPZhadJ, WMhadZJ, WMZhadJ
       INTEGER WPhadZJjLO, WPZhadJjLO, WMhadZJjLO, WMZhadJjLO
+      PARAMETER ( WWJ        = 600 )
       PARAMETER ( WMAJ       = 610 )
       PARAMETER ( WPAJ       = 620 )
       PARAMETER ( WMZJ       = 630 )
@@ -393,6 +395,8 @@
       PARAMETER ( WPZJ       = 640 )
       PARAMETER ( WPhadZJ    = 641 )
       PARAMETER ( WPZhadJ    = 642 )
+      PARAMETER ( ZZJ        = 650 )
+      PARAMETER ( WWJJLO     = 9600 )
       PARAMETER ( WMAJLO     = 9610 )
       PARAMETER ( WPAJLO     = 9620 )
       PARAMETER ( WMZJLO     = 9630 )
@@ -401,7 +405,12 @@
       PARAMETER ( WPZJLO     = 9640 )
       PARAMETER ( WPhadZJjLO = 9641 )
       PARAMETER ( WPZhadJjLO = 9642 )
+      PARAMETER ( ZZJJLO     = 9650 )
 
+! gluon fusion
+      INTEGER GFWWj, GFZZj
+      PARAMETER( GFWWj         = 4600 )
+      PARAMETER( GFZZj         = 4650 )
 
 ! W+- plus jet
       INTEGER WPJ, WMJ, WPJJLO, WMJJLO

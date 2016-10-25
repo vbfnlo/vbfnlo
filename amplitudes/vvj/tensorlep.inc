@@ -20,3 +20,8 @@ c  lepton spinors and W+- polarization vectors
 
       double precision wemnumom(0:4),wemnugamom(0:4),photfourvec(0:4)
       common /vgajmomenta/ wemnumom, wemnugamom,photfourvec
+
+c b-quarks
+      integer lbquark
+      common /bquarks/ lbquark
+

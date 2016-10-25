@@ -29,7 +29,11 @@ finitecoll.F \
 CataniSeymour.F\
 FCtools.F \
 version.F \
-ckm.F
+ckm.F \
+BLHAhelper.F90 \
+BLHAmommapping.F90 \
+BLHAinterface.cpp \
+BLHAclass.cpp
 
 libVBFspecific_la_SOURCES = \
 ggf_init.F \
@@ -73,6 +77,7 @@ endif
 
 if WITH_DIBOSONJET
 libVBFspecific_la_FFLAGS += -DWITH_DIBOSONJET
+libGGFspecific_la_FFLAGS += -DWITH_DIBOSONJET
 endif
 
 if WITH_QCDVV
@@ -204,7 +209,6 @@ endif
 ## hist_stor.mod is cleaned by make clean explicitly by adding it to 'clean-local'
 histograms.F: $(srcdir)/hist.inc $(srcdir)/hist_real.inc libVBFNLOUtilities_la-histogram_storage.lo
 	@touch $(srcdir)/histograms.F
-
 
 getPaths.F90: $(srcdir)/getPaths.F90.in
 	@sed -e s%@INPUTPATH@%"$(pkgdatadir)"% -e s%@PDFSETSPATH@%"$(pkgdatadir)/pdfsets"% < $(srcdir)/getPaths.F90.in > getPaths.F90

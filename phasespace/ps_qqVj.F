@@ -65,16 +65,18 @@ c      ptjmin = 0.0d0
  72   format ( " boson has mass ",f8.2," GeV and width ",
      1         f10.4," GeV" )
  80   format ( " configuration ", i3 )
-      write(6,*)
-      write(6,*) "--------------------PHASE SPACE Vj------------------"
-      write(6,*)
-         write(6,72) sqrt(rm2),rmg/sqrt(rm2)
-         write(6,70) bos,sqrt(rm2min),sqrt(rm2max)
-      write(6,*)
-      write(6,60) sqrt(s)
-      write(6,*)
-      write(6,*) "---------------------------------------------------"
-      write(6,*)
+      if (.not.ldoblha) then
+        write(6,*)
+        write(6,*) "--------------------PHASE SPACE Vj------------------"
+        write(6,*)
+           write(6,72) sqrt(rm2),rmg/sqrt(rm2)
+           write(6,70) bos,sqrt(rm2min),sqrt(rm2max)
+        write(6,*)
+        write(6,60) sqrt(s)
+        write(6,*)
+        write(6,*) "---------------------------------------------------"
+        write(6,*)
+      endif
 
       end
 

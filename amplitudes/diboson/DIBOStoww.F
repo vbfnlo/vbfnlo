@@ -27,6 +27,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/process.inc"
 C  
 C LOCAL VARIABLES 
 C  
@@ -81,7 +82,10 @@ c
       CALL FVIXXX(W(1,2   ),W(1,1   ),GZL ,ZERO    ,ZERO    ,W(1,12  ))    
       CALL JIOXXX(W(1,12  ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))    
       CALL IOVXXX(W(1,5   ),W(1,4   ),W(1,13  ),GWF ,AMP(5   ))            
-      Z(mu) = -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   5)
+      Z(mu) = -AMP(   2)
+      if (narrowwidth.eq.0) then
+        Z(mu) = Z(mu) -AMP(   1)-AMP(   3)-AMP(   4)-AMP(   5)
+      endif
       enddo
       z(4) = dcmplx(q(0),q(3))
       z(5) = dcmplx(q(1),q(2))
@@ -120,6 +124,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/global.inc"          
+#include "VBFNLO/utilities/process.inc"
 C                                                                          
 C  
 C LOCAL VARIABLES 
@@ -174,7 +179,10 @@ c         print*," wp ",( wp(i)/w(i,6),i=1,6)
       CALL FVIXXX(W(1,2   ),W(1,1   ),GAL ,ZERO    ,ZERO    ,W(1,9   ))    
       CALL JIOXXX(W(1,9   ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,10  ))    
       CALL IOVXXX(W(1,5   ),W(1,4   ),W(1,10  ),GWF ,AMP(3   ))            
-      a(mu) = -AMP(   1)-AMP(   2)-AMP(   3)
+      a(mu) = -AMP(   1)
+      if (narrowwidth.eq.0) then
+        a(mu) = a(mu) -AMP(   2)-AMP(   3)
+      endif
       enddo
       a(4) = dcmplx(q(0),q(3))
       a(5) = dcmplx(q(1),q(2))

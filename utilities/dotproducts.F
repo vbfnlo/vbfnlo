@@ -1570,3 +1570,25 @@ c***************************************************************************
       return
       end
 
+c***************************************************************************
+      double precision function contract_grjcj(j1)
+c***************************************************************************
+c     
+c     contract metric g^{mu,nu} with 
+c     two complex vectors j1 and j1*
+c
+c     input: double complex four vectors j1(0:3)
+c
+c***************************************************************************
+
+      implicit none
+      double complex j1(0:3), resv(0:3)
+      integer mu
+
+      contract_grjcj = j1(0)*dconjg(j1(0))
+      do mu = 1,3
+         contract_grjcj = contract_grjcj - j1(mu)*dconjg(j1(mu))
+      enddo
+      return
+      end
+

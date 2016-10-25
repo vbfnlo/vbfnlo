@@ -2,7 +2,7 @@ c*************************************************************************
 c	Parameters used by genps
 c*************************************************************************
       integer    nexternal
-      parameter (nexternal=7)
+      parameter (nexternal=8)
 c*************************************************************************
 c       Parameters used by genps and dsample, you must recompile
 c	dsample if you change anything below

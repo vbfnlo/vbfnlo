@@ -790,8 +790,8 @@ c
 		isgnal = ialsav
 		print '(a,i1,a,i2)','---#[ rotation ',irota,': isgnal ',
      +			isgnal
-		if (lcon) write(icon,'(a,i1,a,i2)')'rotation ',irota,',
-     +			isgnal ',isgnal
+		if (lcon) write(icon,'(a,i1,a,i2)')'rotation ',irota,
+     +			',isgnal ',isgnal
 		call vbfffxd0(cd0p,xqi,ier1)
 		ier1 = ier1 + ner
 		print '(a,i1,a,i2,a)','---#] rotation ',irota,

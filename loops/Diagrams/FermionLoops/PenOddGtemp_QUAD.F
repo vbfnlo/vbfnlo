@@ -11,6 +11,9 @@ c    Declaration of variables
 c************************************************************************************
 c************************************************************************************
        IMPLICIT NONE
+
+#include "VBFNLO/utilities/process.inc"
+
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16   mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
        Complex*16   p1mup1, p1mup2, p1mup3, p1mup4, p1mup5, p2mup1, 
@@ -173,9 +176,9 @@ ccccccccccccccccccccc For QUAD precission ccccccccccccccccccccccccc
      &                     tmass, bmass, lmass, cmass
       common /COUPL_MASS/  hmass, wmass, zmass, amass,
      &                     tmass, bmass, lmass, cmass
-      
-       integer numberz 
-      
+       integer numberZ, numberw
+       double precision vmass
+
        M1_QUAD=MM1
        M3_QUAD=MM3
        M4_QUAD=MM4
@@ -223,29 +226,36 @@ cfc             enddo
        psq(4)=abs(dotrr(p4,p4))
        psq(5)=abs(dotrr(p5,p5))
 
-cfc        do i=1,5
-cfc          print*,"pi",i, psq(i)
-cfc        enddo
-cfc        print*, "ZMAS*ZAMS", ZMASS*ZMASS
-       numberZ=0 
+       if (narrowwidth.eq.1) then
+c find on-shell bosons
+         numberZ=0
+         numberW=0
 cccccccc Identify the Z cccccccccccccccccccccccc
-       j1=0
-       do i=1,5
-       if(j1.eq.0) then
-       if(abs(psq(i)/(ZMASS*ZMASS)-1d0).lt.1d-5) then
-        j1=i
-        numberZ=numberZ+1     
+         j1=0
+         do i=1,5
+           if(j1.eq.0) then
+             if(abs(psq(i)/(ZMASS*ZMASS)-1d0).lt.1d-6) then
+               j1=i
+               numberZ=numberZ+1
+             else if(abs(psq(i)/(WMASS*WMASS)-1d0).lt.1d-6) then
+               j1=i
+               numberW=numberW+1
+             endif
+           else
+             if(abs(psq(i)/(ZMASS*ZMASS)-1d0).lt.1d-6) then
+               j2=i
+               numberZ=numberZ+1
+             else if(abs(psq(i)/(WMASS*WMASS)-1d0).lt.1d-6) then
+               j2=i
+               numberW=numberW+1
+             endif
+           endif
+         enddo
+         if (numberz.eq.2) vmass=zmass
+         if (numberw.eq.2) vmass=wmass
        endif
-       else
-       if(abs(psq(i)/(ZMASS*ZMASS)-1d0).lt.1d-5) then
-        j2=i
-        numberZ=numberZ+1     
-       endif
-       endif
-       enddo
-
-
-       if(NUMBERZ.eq.2) then    
+       
+       if ((narrowwidth.eq.1) .and. ((numberw.eq.2) .or. (NUMBERZ.EQ.2))) THEN
 ccccccccccccccccccccccccccccccccccc
 c first Z
 
@@ -255,12 +265,12 @@ c            enddo
 
        jtemp=j1
        if (ptemp(0,jtemp).ge.0d0) then
-       ptemp(0,jtemp)=SQRT(ZMASS*ZMASS
+       ptemp(0,jtemp)=SQRT(VMASS*VMASS
      &                 +ptemp(1,jtemp)*ptemp(1,jtemp)+
      -                  ptemp(2,jtemp)*ptemp(2,jtemp)+
      -                  ptemp(3,jtemp)*ptemp(3,jtemp))
        else
-       ptemp(0,jtemp)=-SQRT(ZMASS*ZMASS
+       ptemp(0,jtemp)=-SQRT(VMASS*VMASS
      &                 +ptemp(1,jtemp)*ptemp(1,jtemp)+
      -                  ptemp(2,jtemp)*ptemp(2,jtemp)+
      -                  ptemp(3,jtemp)*ptemp(3,jtemp))
@@ -276,12 +286,12 @@ c          do i=0,3
 c            write(*,'(A3,I1,A2,E25.16,E25.16)') "p1(",i,")=",ptemp(i,j2)
 c            enddo
        if (ptemp(0,jtemp).ge.0d0) then
-       ptemp(0,jtemp)=SQRT(ZMASS*ZMASS
+       ptemp(0,jtemp)=SQRT(VMASS*VMASS
      &                 +ptemp(1,jtemp)*ptemp(1,jtemp)+
      -                  ptemp(2,jtemp)*ptemp(2,jtemp)+
      -                  ptemp(3,jtemp)*ptemp(3,jtemp))
        else
-       ptemp(0,jtemp)=-SQRT(ZMASS*ZMASS
+       ptemp(0,jtemp)=-SQRT(VMASS*VMASS
      &                 +ptemp(1,jtemp)*ptemp(1,jtemp)+
      -                  ptemp(2,jtemp)*ptemp(2,jtemp)+
      -                  ptemp(3,jtemp)*ptemp(3,jtemp))
@@ -521,65 +531,69 @@ c j4
         endif
        endif 
 
-       elseif(NUMBERZ.eq.0.or.NUMBERZ.eq.1) then
-          j4=0
-c      print*, "here",j4
-        do jtemp=1,5
-       if(psq(jtemp).le.10d-7) THEN 
-             J3=JTEMP
-           if (ptemp(0,jtemp).ge.0d0) then
-           ptemp(0,jtemp)=SQRT(
-     &                     +ptemp(1,jtemp)*ptemp(1,jtemp)+
-     -                      ptemp(2,jtemp)*ptemp(2,jtemp)+
-     -                      ptemp(3,jtemp)*ptemp(3,jtemp))
-           else
-           ptemp(0,jtemp)=-SQRT(
-     &                     +ptemp(1,jtemp)*ptemp(1,jtemp)+
-     -                      ptemp(2,jtemp)*ptemp(2,jtemp)+
-     -                      ptemp(3,jtemp)*ptemp(3,jtemp))
+
+       else ! off-shell or no two W/Z found
+
+c find particle with largest |q^2|
+c put everything below m=10^-3 massless
+         j1=0
+         j2=0
+         j3=0
+         j4=0
+         j5=0
+         do jtemp=1,5
+           if(psq(jtemp).le.1d-6) THEN 
+             if (ptemp(0,jtemp).ge.0d0) then
+               ptemp(0,jtemp)=SQRT(
+     &                         +ptemp(1,jtemp)*ptemp(1,jtemp)+
+     -                          ptemp(2,jtemp)*ptemp(2,jtemp)+
+     -                          ptemp(3,jtemp)*ptemp(3,jtemp))
+             else
+               ptemp(0,jtemp)=-SQRT(
+     &                         +ptemp(1,jtemp)*ptemp(1,jtemp)+
+     -                          ptemp(2,jtemp)*ptemp(2,jtemp)+
+     -                          ptemp(3,jtemp)*ptemp(3,jtemp))
+             endif
            endif
-   
-      else
-         j4=jtemp
-      ENDIF
-    
-c      print*, "j4",j4
-      ENDDO
+           if (j1.eq.0) then
+             j1=jtemp
+           else if (j2.eq.0) then
+             if (abs(psq(j1)) .gt. abs(psq(jtemp))) then
+               j2 = j1
+               j1 = jtemp
+             else
+               j2 = jtemp
+             endif
+           else if (j3.eq.0) then
+             if (abs(psq(j2)) .gt. abs(psq(jtemp))) then
+               j3 = j2
+               j2 = jtemp
+             else
+               j3 = jtemp
+             endif
+           else if (j4.eq.0) then
+             if (abs(psq(j3)) .gt. abs(psq(jtemp))) then
+               j4 = j3
+               j3 = jtemp
+             else
+               j4 = jtemp
+             endif
+           else
+             if (abs(psq(j4)) .gt. abs(psq(jtemp))) then
+               j5 = j4
+               j4 = jtemp
+             else
+               j5 = jtemp
+             endif
+           endif
+         enddo
+
 cc off-shell 
-       do i=0,3
-       ptemp(i,j4)=0q0
-       do jtemp=1,5
-       if (jtemp.ne.j4) then
-       ptemp(i,j4)=-ptemp(i,jtemp)+ptemp(i,j4)
-       endif
-       enddo
-       enddo
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-       else
-          print*,"D:Wrong momenta recusntraciont"
-          print*, "number of Z", NUMBERZ
-          do i=1,4
-          print*, "psq particle ", i,"is",  psq(i)
-          enddo
-c          stop
-
-      do i=0,3
-      print*, "conv",ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)
-            write(*,'(A3,I1,A2,E25.16,E25.16)') "p1(",i,")=",p1(i)-ptemp(i,1)
-            write(*,'(A3,I1,A2,E25.16,E25.16)') "p2(",i,")=",p2(i)-ptemp(i,2)
-            write(*,'(A3,I1,A2,E25.16,E25.16)') "p3(",i,")=",p3(i)-ptemp(i,3)
-            write(*,'(A3,I1,A2,E25.16,E25.16)') "p4(",i,")=",p4(i)-ptemp(i,4)
-             enddo
-
+         do i=0,3
+           ptemp(i,j5)=-ptemp(i,j1)-ptemp(i,j2)-ptemp(i,j3)-ptemp(i,j4)
+         enddo
        endif
 
-
-      do i=0,3
-      if(abs(ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)+ptemp(i,5)).gt.1d-14) then
-      print*, "conv",ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)+ptemp(i,5)
-!       stop
-      endif
-      enddo
 
 
           do i=0,3
@@ -612,7 +626,6 @@ c          stop
 !             stop
             endif
            enddo
- 
 
 c       pause
 cfC

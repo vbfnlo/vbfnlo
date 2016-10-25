@@ -3,15 +3,17 @@
       IMPLICIT NONE
 
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/coupl.inc"
 
-      integer sign(4+n_v),nlo,iisig(3,4),i,iflavF1,iflavF3,isigA,
+      integer sign(4+n_v),nlo,iisig(3,4),i,k,iflavF1,iflavF3,isigA,
      $     isigF,iinsA,iflav,isigF1,isigF3,iflavF2,iflavF4,mu,ibos
       double precision uucc,uuss,ddcc,ddss,udsc,ducs, res(6),
      $     ph(0:4),den,fac,p57,p68,p87,pbar(0:3,4+n_v-1),pAbar(0:3),
      $     p(0:3,4+n_v-1),pA(0:4),scale(2),pIntBosu(0:4),pIntBosl(0:4),
      $     resvirt(6),fac1,fac2,alsUpperc2o4pi,alsLowerc2o4pi,alsULcvirtc2o4pi
+      double precision tree(6)
       
       double complex GBF(2,3,3:4),SpinorI(6,4,-1:1),SpinorO(6,4,-1:1),
      $     Photon(6,-1:1),Higgs(6),Curr12(6,3:4,-1:1,2:3),
@@ -49,6 +51,8 @@
 
       double precision c2,c2o2pi,c2o4pi
       parameter (c2=4d0/3d0, c2o2pi=c2/2d0/pi, c2o4pi=c2/4d0/pi, cte=-pi**2/3d0+7d0)
+      double precision p21(0:4), p43(0:4), lnmusqp1p2, lnmusqp3p4
+
       double precision dotrr
       EXTERNAL dotrr
       data iisig /-1,0,-1,  -1,0,1,   1,0,-1,   1,0,1/
@@ -72,12 +76,10 @@ c     reset amplitudes
             enddo
          enddo
       enddo
-      res(1)=0d0
-      res(2)=0d0
-      res(3)=0d0
-      res(4)=0d0
-      res(5)=0d0
-      res(6)=0d0
+      do k=1,6
+         res(k)= 0d0
+         tree(k) = 0d0
+      enddo
 
 *****************************************************************************
 ***************************************************************************** 
@@ -307,6 +309,10 @@ c     sum over helicities
             enddo
             i=i+1
          enddo
+      enddo
+
+      do i=1,6
+        tree(i) = res(i)*fac
       enddo
 
 #ifdef WITH_NLO
@@ -1740,6 +1746,65 @@ c         resvirt(i)=resvirt(i)*fac
       ddss = res(4)
       udsc = res(5)
       ducs = res(6)
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      res(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.1) then ! loop
+          do mu=0,3
+            p21(mu) = pbar(mu,2)*sign(2) - pbar(mu,1)*sign(1)
+            p43(mu) = pbar(mu,4)*sign(4) - pbar(mu,3)*sign(3)
+          enddo
+          p21(4) = p21(0)**2 - p21(1)**2 - p21(2)**2 - p21(3)**2
+          p43(4) = p43(0)**2 - p43(1)**2 - p43(2)**2 - p43(3)**2
+          lnmusqp1p2 = log(blha_scale**2/(-p21(4)))
+          lnmusqp3p4 = log(blha_scale**2/(-p43(4)))
+
+          blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       (als(1,1)+als(2,1))*(-1d0)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       ( als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)
+     &        +als(2,1)*(-blha_gammaQuark-blha_CF*lnmusqp3p4) )*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+          blha_amp(3)= blha_amp(3)+
+     &      (res(blha_idsubproc(blha_cursubproc,blha_curproc))     ! tree + loop + I
+     &       -tree(blha_idsubproc(blha_cursubproc,blha_curproc)))  ! -tree
+     &       * blha_CF/c2                                          ! correct for Nc ?= inf
+     &      + (-(als(1,1)+als(2,1))/2d0/pi*                        ! -I
+     &          (blha_CF*cvirt+
+     &            2d0*(blha_KQuark+blha_gammaQuark+
+     &                 blha_tgammaQuark+(pi**2/6d0-1)*blha_CF) )
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &         +als(2,1)/pi*                                       ! +(mu^2/2p3.p4)^epsilon
+     &         (-blha_gammaQuark*lnmusqp3p4-blha_CF/2d0*lnmusqp3p4**2)
+     &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(4)= blha_amp(4)+
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+          ! 3-4
+          call BLHA_cctree(3,4,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
 
       return
       end

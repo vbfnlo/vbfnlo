@@ -38,6 +38,24 @@ vbfnlo_LDADD += $(FEYNHIGGS_LDFLAGS) $(FEYNHIGGS_LIBS)
 vbfnlo_FFLAGS += -DWITH_FH
 endif
 
+bin_PROGRAMS += vbfnlo_olpread 
+vbfnlo_olpread_SOURCES = vbfnlo_olpread.cxx
+vbfnlo_olpread_LDADD = $(top_builddir)/utilities/libVBFNLOUtilities.la \
+                       $(top_builddir)/utilities/libVBFspecific.la \
+                       $(top_builddir)/amplitudes/libVBFNLOAmplitudes.la \
+                       $(top_builddir)/loops/libVBFNLOLoops.la \
+                       $(top_builddir)/helas/libHELAS.la \
+                       $(top_builddir)/phasespace/libVBFNLOPhasespace.la \
+                       $(top_builddir)/lib/libVBFNLO.la \
+                       $(FCLIBS)
+vbfnlo_olpread_FFLAGS = $(AM_FFLAGS)
+if WITH_LOOPS
+vbfnlo_olpread_SOURCES += FFini-dummy.F
+endif
+if WITH_LOOPTOOLS
+vbfnlo_olpread_SOURCES += LTools-dummy.F
+endif
+
 if WITH_GGFLO
 bin_PROGRAMS += ggflo
 ggflo_SOURCES = ggflo_main.F

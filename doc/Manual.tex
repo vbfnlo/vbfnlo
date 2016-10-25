@@ -98,7 +98,7 @@
  {\Large \bf  for processes with electroweak bosons --}
 \end{center}
 \begin{center}
- {\Large \bf  Manual for Version 2.7.1}
+ {\Large \bf  Manual for Version 3.0.0 $\beta$ 1}
 \end{center}
 \vspace{0.6cm}
 \begin{center}
@@ -107,7 +107,8 @@ J.~Baglio$^{1}$, J.~Bellm$^{2}$, G.~Bozzi$^{3}$,
 M.~Brieg$^{4}$, F.~Campanario$^{2}$, C.~Englert$^{5}$, B.~Feigl$^{2}$,
 J.~Frank$^{2}$, T.~Figy$^{6}$, F.~Geyer$^{2}$, C.~Hackstein$^{2}$,
 V.~Hankele$^{2}$, B.~J\"ager$^{1}$, M.~Kerner$^{7}$,
-M.~Kubocz$^{8}$, L.D.~Ninh$^{9}$, C.~Oleari$^{10}$, S.~Palmer$^{2}$,
+M.~Kubocz$^{8}$, M.~L\"oschner$^{2}$,
+L.D.~Ninh$^{9}$, C.~Oleari$^{10}$, S.~Palmer$^{2}$,
 S.~Pl\"atzer$^{11}$, M.~Rauch$^{2}$, R.~Roth$^{2}$, H.~Rzehak$^{12}$,
 F.~Schissler$^{2}$, O.~Schlimpert$^{2}$, M.~Spannowsky$^{11}$,
 M.~Worek$^{8}$, D.~Zeppenfeld$^{2}$
@@ -142,17 +143,14 @@ vector boson production plus two jets, and double and triple vector
 boson production (plus jet) in hadronic collisions at next-to-leading
 order~(NLO) in the strong coupling constant, as well as Higgs boson plus
 two jet production via gluon fusion at the one-loop level.  For the new
-version -- \textsc{Version 2.7.1} -- several major enhancements have
+version -- \textsc{Version 3.0.0 $\beta$} -- several major enhancements have
 been included into {\sc Vbfnlo}.  The following new production processes have been
-added: $W\gamma jj$, $Z\gamma jj$ and $HHjj$ in VBF, $W$, $Wj$, $WH$, $WHj$,
-$pp\to \text{Spin-2}jj$ in VBF (with $\text{Spin-2}\to WW/ZZ\to
-\text{leptons}$) and the QCD-induced processes $WZjj$, $W\gamma jj$, $W^\pm
-W^\pm jj$, $ZZjj$, $Z\gamma jj$ and $Wjj$ production. 
-The implementation of anomalous gauge boson couplings 
-has been extended to all triboson and VBF $VVjj$ processes, with an
-enlarged set of operators yielding anomalous couplings.  Finally,
-semileptonic decay modes of the vector bosons are now available for many
-processes, including $VVjj$ in VBF, $VVV$ and $VV\gamma$ production.
+added: $WWj$ and $ZZj$ production including the loop-induced gluon-fusion
+contributions.
+An interface according to the Binoth Les Houches Accord (BLHA) has been added
+for all VBF processes including fully leptonic decays.
+The K-matrix unitarisation procedure has been implemented for the two dimension
+8 operators $\mathcal{O}_{S,0}$ and $\mathcal{O}_{S,1}$. 
 \end{abstract}
 \vspace{2 cm}
 \today
@@ -216,38 +214,24 @@ HepMC format.  When working in the MSSM, the SUSY parameters can be input via a
 standard SLHA file.
 
 This manual supersedes the previous versions~\cite{Arnold:2008rz,Arnold:2011wj,Arnold:2011wjv2} released with
-\textsc{Vbfnlo Version~2.0}, \textsc{Version~2.5.0} and \textsc{Version~2.6.0}. 
+\textsc{Vbfnlo Version~2.0}, \textsc{Version~2.5.0}, \textsc{Version~2.6.0} and \textsc{Version~2.7.0}.
 
-\noindent The new release, \textsc{Vbfnlo~2.7.1}, extends the following parts of \textsc{Vbfnlo Version~2.6.3}:
+\noindent The $\beta$ version of \textsc{Vbfnlo~3.0} extends the following parts of \textsc{Vbfnlo Version~2.7}:
 \begin{itemize}
- \item The list of new processes includes the following EW processes: $W\gamma jj$, $Z\gamma jj$ and $HHjj$ in VBF, $W$, $Wj$, $WH$ and $WHj$ production
- \item The following QCD-induced processes have been included: $WZjj$, $W\gamma jj$, $W^\pm W^\pm jj$, $ZZjj$, $Z\gamma jj$, $Wjj$ and $Zjj$ production
- \item The VBF processes with two massive gauge bosons can now be
-       calculated in a model with two $\cal{CP}$-even Higgs resonances
-       with arbitrary couplings to the gauge bosons.
- \item The production of a spin-2 resonance in VBF processes is now available not only in the 
-       diphoton channel, but also for $WW \to 2l 2 \nu$, $ZZ \to 4l$ and $ZZ \to 2l 2 \nu$ production.
- \item For several processes, semileptonic decays of the vector bosons have been implemented.
-       This means that one vector boson decays hadronically, while the other(s) decay leptonically.
-       The complete list of processes which is available is $W^+W^-$ / $W^\pm Z$ / $ZZ$ production,
-       $W^+W^-$/$W^\pm W^\pm$/$W^\pm Z$/$ZZ$ production + two jets in vector boson fusion, Higgs boson production + two jets in VBF
-       with decays into $W^+W^-$ or $ZZ$ and all triple vector boson production processes with zero or one final state photon.
- \item Anomalous triple and quartic gauge boson couplings are now
-       included for all $VVjj$ production processes via VBF.
- \item Anomalous triple and quartic gauge boson couplings are now included for $ZZZ$ production and all triple vector boson production processes
-       containing a final state photon.
- \item The set of operators leading to anomalous triple gauge boson couplings has been extended for the processes
-       $WWZ$, $ZZW$ and $WWW$ production.
- \item \textsc{Vbfnlo} can now output results not only for a specific choice of final state leptons, but also results summed over
-       all possible combinations of two or three lepton generations.
- \item Higgs plus two jets production via gluon fusion, with the Higgs boson decaying into $WW$ or $ZZ$, 
-       can now be run with anomalous $HVV$ couplings in the decay as
-       well as for a mixed $\cal{CP}$-even -- $\cal{CP}$-odd Higgs being produced.
- \item It is now possible to specify a desired number of unweighted events for event output.
-       In case it is not possible to achieve the desired number of unweighted
-       events due to single events with very large weights one can
-       opt for ``partially unweighted events'', where most of the weights will have
-       weight 1, while a few will have larger weights.
+ \item The following new processes have been added: \\
+       $WWj$ and $ZZj$ production including the loop-induced gluon-fusion
+       contributions of $\mathcal{O}(\alpha_s^3)$.
+ \item An interface according to the Binoth Les Houches Accord
+       (BLHA) has been added for all VBF processes
+       including fully leptonic decays.
+ \item The K-matrix unitarisation procedure has been implemented 
+       for the two dimension 8 operators $\mathcal{O}_{S,0}$ and $\mathcal{O}_{S,1}$. 
+\end{itemize}
+Additionally it contains the following improvements also released as \textsc{Vbfnlo Version~2.7.1}:
+\begin{itemize}
+ \item The following new processes have been added: \\
+       QCD-induced $ZZjj$ and $Z\gamma jj$, $Z\gamma jj$ in VBF, $Z(\rightarrow \ell^+ \ell^-)Z(\rightarrow \nu \bar{\nu})\gamma$ production.
+ \item Higgs decays have been implemented for the VBF-HHjj process.
  \item Linking with LHAPDF v6 has been enabled.
 \end{itemize}
 Several bugfixes and smaller improvements have also been included. The
@@ -1181,13 +1165,13 @@ q \bar{q} $ \\
 
 %=================================================================== 
 %
-$W\gamma$ and $WZ$ production in association with a hard hadronic jet are
+Diboson production in association with a hard hadronic jet are
 available in {\sc{Vbfnlo}} at NLO QCD accuracy under the process IDs of
 Table~\ref{tab:prc7}. All off-shell and finite width effects
-are included. The processes can be run with anomalous $WWZ$ and $WW\gamma$ couplings, input via {\tt anomV.dat}.
+are included. The $WZ$ and $W\gamma$ processes can be run with anomalous $WWZ$ and $WW\gamma$ couplings, input via {\tt anomV.dat}.
 Details can be found in
 Refs.~\cite{Campanario:2010hv,Campanario:2010xn,Campanario:2010hp,
-Campanario:2009um}.  
+Campanario:2009um,Campanario:2012bh,Campanario:2013wta,Campanario:2015nha}.  
 %
 \begin{table}[t!]
 \begin{center}
@@ -1199,16 +1183,18 @@ Campanario:2009um}.
 &\\
 \hline
 &\\
+\bf 600 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} W^{-} j \to \ell_{1}^{+}\nu_{\ell_1} \ell_{2}^{-} \bar{\nu}_{\ell_2} j $ & \multirow{1}{*}{anomalous $HVV$ couplings} \\
 \bf 610 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{-} \gamma j \to \ell^{-} \bar \nu_{\ell} \gamma j $ & \ldelim \} {5}{0.8cm} \multirow{5}{*}{anomalous couplings}\\
 \bf 620 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} \gamma j  \to \ell^{+} \nu_{\ell} \gamma j $ &\\
 \bf 630 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{-} Z j \to \ell_{1}^{-} \bar \nu_{\ell_1} \ell_{2}^{-}
 \ell_{2}^{+} j$ & \\
 \bf 640 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} Z j \to  \ell_{1}^{+}\nu_{\ell_1} \ell_{2}^{-}
 \ell_{2}^{+}j $ & \\
+\bf 650 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to Z Z j \to \ell_{1}^{+} \ell_{1}^{-} \ell_{2}^{+} \ell_{2}^{-} j $ &  \multirow{1}{*}{anomalous $HVV$ couplings} \\
 & \\
 \hline
 \end{tabular}
-\caption{ \em  Process IDs for $W\gamma j$ and $WZ j$ production at
+\caption{ \em  Process IDs for diboson production in association with a hadronic jet at
 NLO QCD.}
 \vspace{0.2cm}
 \label{tab:prc7}
@@ -1579,6 +1565,45 @@ Anomalous $HVV$ couplings are available.
 \end{center}
 \end{table}
 
+%
+%===================================================================
+
+\subsection{Gluon-induced diboson production in association with a hadronic jet}
+
+%===================================================================
+%
+Gluon-induced diboson production in association with a hadronic jet can be studied separately in \textsc{Vbfnlo} at
+LO with the {\tt ggflo} executable, using the process IDs in
+Table~\ref{tab:gludibj}\footnote{These are also included by default as higher
+order corrections to diboson plus jet production.}.  Continuum production via box and pentagon
+diagrams as well as production via an $s$-channel Higgs boson resonance are included, with
+interference effects fully taken into account.  Anomalous $HVV$ couplings can be
+included, using {\tt anom\_HVV.dat}. In the loop diagrams, first and second generation quarks are taken to
+be massless and third generation quark masses\footnote{Again, $m_{b}(M_{H})$ in the $\overline{MS}$ scheme is used.} are included.
+Details of the calculation can be found in Ref.~\cite{Campanario:2012bh}.
+
+\begin{table}[t!]
+\newcommand{\lstrut}{{$\strut\atop\strut$}}
+\begin{center}
+\small
+\begin{tabular}{c|l|l}
+\hline
+&\\
+\textsc{ProcId} & \textsc{Process} & \textsc{BSM}  \\
+&\\
+\hline
+&\\
+\bf 4600 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to \ell_{1}^{+} \nu_{\ell_{1}} \ell_{2}^{-}\bar{\nu}_{\ell_{2}} j $ & \ldelim \} {2}{0.8cm} \multirow{2}{*}{anomalous $HVV$ couplings}\\
+\bf 4650 & $p \overset{\mbox{\tiny{(--)}}}{p} \to ZZ j \to \ell_{1}^{-} \ell_{1}^{+}  \ell_{2}^{-} \ell_{2}^{+} j $ & \\
+&\\
+\hline
+\end{tabular}
+\caption {\em  Process IDs for the gluon-induced diboson production in association with a hadronic jet at LO (one-loop) QCD.  Note that these processes are accessed via the {\tt ggflo} executable.}
+\vspace{0.2cm}
+\label{tab:gludibj}
+\end{center}
+\end{table}
+
 
 \newpage
 %--------------------------------------------------------------------------------
@@ -1620,8 +1645,8 @@ The following subsections give a detailed description of all available parameter
 
 \item {\tt LOPROCESS\_PLUS\_JET:} If set to {\tt true}, the leading order
   process with one additional jet is generated, i.e.\ only the real radiation
-  contribution is generated.  This option is available for all but gluon-induced processes.  
-  Default is {\tt false}.
+	contribution is generated.  This option is available for all but gluon-induced processes.
+	Default is {\tt false}.
 \item{\tt LEPTONS:} Choice of the final state leptons (decay products of $W$ and
 $Z$ bosons) according to the MC particle numbering scheme~\cite{Amsler:2008zz}:
 \begin{eqnarray}
@@ -2615,9 +2640,8 @@ By default, lower generation parameters are set to the corresponding higher gene
 
 \textsc{Vbfnlo} supports anomalous $HVV$ couplings, where $V=W,Z,\gamma$, in
 both the production and the decay of a Higgs boson in VBF-type reactions,  i.e.
-for process IDs 100-107. Anomalous $HVV$ couplings are also included in gluon
-induced diboson production (processes 430x, 433x, 4360, 4370, and processes 30x,
-33x, 360 and 370), as well as in gluon fusion processes $Hjj \rightarrow VVjj$
+for process IDs 100-107. Anomalous $HVV$ couplings are also included in gluon-induced diboson (plus jet) production (processes 430x, 433x, 4360, 4370, 4600, 4650 and processes 30x,
+33x, 360, 370, 600 and 650), as well as in gluon fusion processes $Hjj \rightarrow VVjj$
 (IDs 4105-7). The anomalous $HVV$ couplings can be specified in the {\tt
 anom\_HVV.dat} input file.
 
@@ -2920,12 +2944,17 @@ In addition, a form factor can be applied, which takes the form
 \end{equation}
 for all processes except $\gamma jj$ production in VBF (process ID 150),
 where $\Lambda$ is the characteristic scale where the form factor effect becomes relevant.  $s$ is a universal scale (the
-invariant mass squared of the produced bosons) for each phase-space point.
+invariant mass squared of the produced bosons) for each phase-space point.\\
+Moreover, for the two operators $\mathcal{O}_{S,0}$ and $\mathcal{O}_{S,1}$ the
+so called K-matrix unitarisation procedure is available. For this unitarisation
+method no additional input parameters need to be set. 
 \begin{itemize}
  \item {\tt FORMFAC: }  Switch determining whether the above form factor $F$ is
 included.  Default is set to {\tt false}.
  \item {\tt FFMASSSCALE: } Mass scale $\Lambda$.  Default is set to 2000~GeV.
  \item {\tt FFEXP:} The exponent $p$.  Default is set to 2.
+\item {\tt KMATRIX: }  Switch determining whether to use K-matrix unitarisation
+	for $\mathcal{O}_{S,0}$ and $\mathcal{O}_{S,1}$ as described in section~\ref{sec:kmatrix}. Default is set to {\tt false}.
 \end{itemize}
 Individual form factor mass scales and exponents can be set for the trilinear
 $WWZ$ and $WW\gamma$ couplings, using either of the parametrizations above.  If
@@ -2980,8 +3009,18 @@ $q_1^2$, $q_2^2$ and $q_3^2$ are the invariant masses squared of the three vecto
 $VVV$ vertex.
 For this process only the universal form factor can be applied.
 
+\subsection{K-Matrix unitarisation}
+\label{sec:kmatrix}
 
-%===================================================================
+The K-matrix unitarisation procedure has been implemented 
+for the two dimension 8 operators $\mathcal{O}_{S,0}$ and $\mathcal{O}_{S,1}$. 
+This method guarantees the preservation of unitarity when either of these operators is used 
+in the study of anomalous quartic gauge couplings. In contrast to using form factors,
+no additional input parameters need to be set. The anomalous contributions are automatically suppressed
+at the energy scale where unitarity would be violated without unitarisation. After this energy scale is reached,
+the anomalous contributions are kept at a finite value, representing the maximally possible anomalous contribution.
+See Refs.~\cite{Kmatrix,Kilian:2014zja} for details of the K-matrix unitarisation procedure and its implementation.
+
 
 \subsubsection{Using {\tt anom\_HVV.dat} and {\tt anomV.dat} simultaneously}
 \label{sec:HVVandVVV}
@@ -3364,6 +3403,31 @@ between $s$- and $t$-channel contributions are still neglected. Additionally,
 the NLO QCD corrections of the hadronic vector boson decay can be included only
 in an approximation (see Section~\ref{sec:vbfnlodat}).
 
+\subsection{Binoth Les Houches Accord (BLHA) Interface}
+\label{sec:blha}
+An interface according to the Binoth Les Houches Accord
+(BLHA)~\cite{Binoth:2010xt,Alioli:2013nda} has been added for all VBF processes
+including leptonic decays, but not the semileptonic production modes. If processing of the BLHA order file is not done
+automatically by the calling Monte Carlo program, the program {\tt
+vbfnlo\_olpread}, installed in the same location as the {\tt vbfnlo} binary,
+can be used to generate the contract file. It takes one mandatory argument, the order file.
+The name of the contract file can be given as a second, optional argument, the
+default value is ``OLE\_contract.lh''.
+Note that all the VBF processes are computed in the VBF approximation only,
+i.e.\ $s$-channel contributions and interference between $t$- and $u$-channel
+diagrams, which both are tiny in the VBF region, are neglected. BLHAv1~\cite{Binoth:2010xt} stipulates that all Born matrix elements are
+calculated by the Monte Carlo program. Therefore, to prevent inconsistencies, care must be taken that the VBF approximation is also present in the Born matrix elements. In version 2 of the
+interface~\cite{Alioli:2013nda} all matrix elements are provided by
+\textsc{Vbfnlo}, so in that case this is ensured automatically.
+
+Explicit tests of the interface have been performed with a preliminary
+version of the next release of \textsc{Herwig++}\footnote{\tt
+\href{http://herwig.hepforge.org/}{http://herwig.hepforge.org/}}~\cite{Bahr:2008pv}.
+Example input files are provided in the directory {\tt regress/BLHA} of the source code.
+
+Using the BLHA interface and a corresponding Monte Carlo program also allows
+one to write out VBFNLO events at NLO. The corresponding setup for Herwig++ is
+also shown in the example input files mentioned above.
 
 
 %--------------------------------------------------------------------------------
@@ -3374,10 +3438,17 @@ in an approximation (see Section~\ref{sec:vbfnlodat}).
 
 \section{\textsc{Changes}}
 
+%\subsection{Bug in svn version}
+
+% Currently no bugs are known.
+
+
+\subsection{Previous changes -- version 2.7.1}
+
 The release \textsc{Version 2.7.1} includes some changes that alter previous results:
 
 
-\subsection{NLO calculations of $W^-jj$, $W^-Zjj$, $W^-\gamma jj$ production}
+\subsubsection{NLO calculations of $W^-jj$, $W^-Zjj$, $W^-\gamma jj$ production}
 
 A bug in the PDF convolution of the QCD-induced production processes $W^-jj$,
 $W^-Zjj$ and $W^-\gamma jj$ has been fixed. The size of the effect,
@@ -3386,7 +3457,7 @@ calculation and the corresponding LO+jet processes, can reach several
 percent, depending on the parameter settings.
 
 
-\subsection{VBF cuts for $HHjj$}
+\subsubsection{VBF cuts for $HHjj$}
 
 VBF cuts now also apply to VBF production of a Higgs pair.
 
@@ -4005,10 +4076,12 @@ Firstly, the processes that are accessed via the {\tt vbfnlo} executable are giv
 &\\*
 \hline
 &\\*
+\bf 600 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} W^{-} j \to \ell_{1}^{+}\nu_{\ell_1} \ell_{2}^{-} \bar{\nu}_{\ell_2} j $ & \bsmoptions{H}\\*
 \bf 610 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{-} \gamma j \to \ell^{-} \bar \nu_{\ell} \gamma j $ &\bsmoptions{V}\\*
 \bf 620 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} \gamma j  \to \ell^{+} \nu_{\ell} \gamma j $ &\bsmoptions{V}\\*
 \bf 630 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{-} Z j \to \ell_{1}^{-} \bar \nu_{\ell_1} \ell_{2}^{-} \ell_{2}^{+} j$ &\bsmoptions{V}\\*
 \bf 640 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} Z j \to  \ell_{1}^{+}\nu_{\ell_1} \ell_{2}^{-} \ell_{2}^{+}j $ &\bsmoptions{V}\\*
+\bf 650 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to Z Z j \to \ell_{1}^{+} \ell_{1}^{-} \ell_{2}^{+} \ell_{2}^{-} j $ & \bsmoptions{H}\\*
 &\\*
 \hline
 &\\*
@@ -4113,6 +4186,11 @@ The gluon-fusion processes accessed via the executable {\tt ggflo} are given bel
 \bf 4331 & $p \overset{\mbox{\tiny{(--)}}}{p} \to ZZ \to q \bar{q} \, \ell^{-} \ell^{+} $ &\bsmgfoptions{GHL}\\*
 \bf 4360 & $p \overset{\mbox{\tiny{(--)}}}{p} \to Z\gamma \to \ell_{1}^{-} \ell_{1}^{+}  \gamma $ &\bsmgfoptions{GH}\\*
 \bf 4370 & $p \overset{\mbox{\tiny{(--)}}}{p} \to \gamma\gamma $ &\bsmgfoptions{GH}\\*
+&\\*
+\hline
+&\\*
+\bf 4600 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to \ell_{1}^{+} \nu_{\ell_{1}} \ell_{2}^{-}\bar{\nu}_{\ell_{2}} j $ & \bsmgfoptions{GH}\\*
+\bf 4650 & $p \overset{\mbox{\tiny{(--)}}}{p} \to ZZ j \to \ell_{1}^{-} \ell_{1}^{+}  \ell_{2}^{-} \ell_{2}^{+} j $ & \bsmgfoptions{GH}\\*
 &\\* 
 \hline
 \end{longtable}
@@ -4480,9 +4558,26 @@ V.~Hankele and D.~Zeppenfeld, ``{QCD corrections to hadronic $WWZ$ production
   {\em Europhys.\ Lett.}  {\bf 88} (2009) 11001,
 \href{http://www.arXiv.org/abs/0908.1638}{{\tt arXiv:0908.1638}}.
 
+\bibitem{Campanario:2012bh} 
+  F.~Campanario, Q.~Li, M.~Rauch and M.~Spira,
+  ``ZZ+jet production via gluon fusion at the LHC'',
+  {\em JHEP} {\bf 1306}, 069 (2013),
+\href{http://www.arXiv.org/abs/1211.5429}{{\tt arXiv:1211.5429}}.
+
+\bibitem{Campanario:2013wta} 
+  F.~Campanario, M.~Rauch and S.~Sapeta,
+  ``$W^+W^-$ production at high transverse momenta beyond NLO'',
+  {\em Nucl.\ Phys.\ B} {\bf 879}, 65 (2014),
+\href{http://www.arXiv.org/abs/1309.7293}{{\tt arXiv:1309.7293}}.
+
+\bibitem{Campanario:2015nha} 
+  F.~Campanario, M.~Rauch and S.~Sapeta,
+  ``ZZ production at high transverse momenta beyond NLO QCD'',
+\href{http://www.arXiv.org/abs/1504.05588}{{\tt arXiv:1504.05588}}.
+
 \bibitem{Campanario:2011ud}
   F.~Campanario, C.~Englert, M.~Rauch and D.~Zeppenfeld,
-  ``Precise predictions for $W \gamma \gamma$+jet production at hadron colliders'',
+  ``Precise predictions for $W \gamma \gamma$+jet production at hadron colliders,''
   {\em Phys.\ Lett.} {\bf B704} (2011) 515,
   \href{http://www.arXiv.org/abs/1106.4009}{{\tt arXiv:1106.4009}}.
 
@@ -4491,7 +4586,7 @@ V.~Hankele and D.~Zeppenfeld, ``{QCD corrections to hadronic $WWZ$ production
   ``QCD radiation in $WH$ and $WZ$ production and anomalous coupling measurements'',
   {\em Phys.\ Rev.\ D} {\bf 91} (2015) 5,  054039
   \href{http://www.arXiv.org/abs/1410.4840}{{\tt arXiv:1410.4840}}.
-
+  
 \bibitem{Campanario:2013qba} 
   F.~Campanario, M.~Kerner, L.~D.~Ninh and D.~Zeppenfeld,
   ``WZ production in association with two jets at NLO in QCD,''
@@ -4690,6 +4785,16 @@ O.~J.~P.~Eboli, M.~C.~Gonzalez-Garcia and J.~K.~Mizukoshi,
   ``Electroweak Measurements in Electron-Positron Collisions at W-Boson-Pair Energies at LEP,''
   \href{http://arxiv.org/abs/1302.3415}{{\tt arXiv:1302.3415}}.
 
+\bibitem{Kmatrix}
+M.~L\"oschner, ``Unitarisation of Anomalous Couplings 
+in Vector Boson Scattering'', {Diploma Thesis, ITP Karlsruhe 2014}, 
+\href{http://www.itp.kit.edu/diplomatheses.en.shtml}{{\tt http://www.itp.kit.edu/diplomatheses.en.shtml}}.
+
+\bibitem{Kilian:2014zja}
+W.~Kilian, T.~Ohl, J.~Reuter and M.~Sekulla,
+``{High-Energy Vector Boson Scattering after the Higgs Discovery}'',
+ \href{http://arxiv.org/abs/1408.6207}{{\tt arXiv:1408.6207}}.
+
 \bibitem{Csaki:2003zu}
 C.~Csaki, C.~Grojean, L.~Pilo and J.~Terning, ``{Towards a realistic model of
   Higgsless electroweak symmetry breaking}'', {\em Phys.\ Rev.\ Lett.} {\bf 92}
@@ -4725,6 +4830,23 @@ C.~Csaki, C.~Grojean, H.~Murayama {\it et al.}, ``{Gauge theories
   (2004) 055006,
 \href{http://www.arXiv.org/abs/hep-ph/0305237}{{\tt hep-ph/0305237}}.
 
+\bibitem{Binoth:2010xt}
+  T.~Binoth, F.~Boudjema, G.~Dissertori {\it et al.},
+  ``{A Proposal for a standard interface between Monte Carlo tools and one-loop programs}'',
+  {\em Comput.\ Phys.\ Commun.}  {\bf 181} (2010) 1612,
+  \href{http://arxiv.org/abs/1001.1307}{{\tt arXiv:1001.1307}}.
+
+\bibitem{Alioli:2013nda}
+  S.~Alioli, S.~Badger, J.~Bellm {\it et al.},
+  ``{Update of the Binoth Les Houches Accord for a standard interface between Monte Carlo tools and one-loop programs}'',
+  {\em Comput.\ Phys.\ Commun.}  {\bf 185} (2014) 560,
+  \href{http://arxiv.org/abs/1308.3462}{{\tt arXiv:1308.3462}}.
+
+\bibitem{Bahr:2008pv}
+M.~Bahr, S. Gieseke, M. A. Gigg {\it et al.}, ``{Herwig++ Physics and Manual}'', {\em Eur.\ Phys.\ J.} 
+{\bf C58} (2008) 639, 
+\href{http://www.arXiv.org/abs/0803.0883}{{\tt arXiv:0803.0883}}.
+
 \bibitem{Nhung:2013jta}
   D.~T.~Nhung, L.~D.~Ninh and M.~M.~Weber,
   ``NLO corrections to WWZ production at the LHC,''
@@ -4758,11 +4880,6 @@ C.~G. Papadopoulos and M.~Worek, ``{Multi-parton cross sections at hadron
   ``{Helac-Phegas: A Generator for all parton level processes}'',
   {\em Comput.\ Phys.\ Commun.}  {\bf 180} (2009)  1941-1955,
  \href{http://arxiv.org/abs/0710.2427} {{\tt arXiv:0710.2427}}.
-
-\bibitem{Bahr:2008pv}
-M.~Bahr, S. Gieseke, M. A. Gigg {\it et al.}, ``{Herwig++ Physics and Manual}'', {\em Eur.\ Phys.\ J.} 
-{\bf C58} (2008) 639, 
-\href{http://www.arXiv.org/abs/0803.0883}{{\tt arXiv:0803.0883}}.
 
 \bibitem{:2008uu}
 N.~E. Adam, T.~Aziz, J.R.~Andersen {\em et al.}, ``{Higgs Working Group Summary Report}'',

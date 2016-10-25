@@ -228,7 +228,12 @@ c
 c   = 1/(16 pi MGamma)
 c
 c 
-      fac = stpi*xmg(6) / ( (ph(4)-xm2(6))**2 + xmg(6)**2 )
+      if (n_v.eq.1+1) then ! only H+A
+        fac = 1d0
+      else
+        fac = stpi*xmg(6) / ( (ph(4)-xm2(6))**2 + xmg(6)**2 )
+      endif
+
       fac=fac*9d0
 
       return
@@ -410,7 +415,11 @@ c
 c   = 1/(16 pi MGamma)
 c
 c 
-      fac = stpi*xmg(6) / ( (ph(4)-xm2(6))**2 + xmg(6)**2 )
+      if (n_v.eq.1+1) then ! only H+A
+        fac = 1d0
+      else
+        fac = stpi*xmg(6) / ( (ph(4)-xm2(6))**2 + xmg(6)**2 )
+      endif
       
       fac=fac*9d0
       
@@ -986,8 +995,11 @@ c
 c   = 1/(16 pi MGamma)
 c
 c 
-      fac = stpi*xmg(6) / ( (ph(4)-xm2(6))**2 + xmg(6)**2 )
-
+      if (n_v.eq.1+1) then ! only H+A
+        fac = 1d0
+      else
+        fac = stpi*xmg(6) / ( (ph(4)-xm2(6))**2 + xmg(6)**2 )
+      endif
       
       fac=12d0*fac
 

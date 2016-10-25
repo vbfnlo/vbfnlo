@@ -6,10 +6,10 @@
 ** formfactor
       integer trianom, ffexponent
       double precision ffmassscale2
-      logical formfact, formfac_ind
+      logical formfact, formfac_ind, kmatrix
 
       common /anomFF/ ffmassscale2, trianom, ffexponent
-      common /anomFF/ formfact, formfac_ind
+      common /anomFF/ formfact, formfac_ind, kmatrix
 
 
 ** Trianom = 1 parameterisation (_0 = initial values, before formfactors)
@@ -50,6 +50,11 @@
       common /anomDim8/ fm0, fm1, fm2, fm3, fm4, fm5
       common /anomDim8/ fm6, fm7, fs0, fs1
 
+** Dimension-8 couplings for K-Matrix unitarisation of LS0 and LS1
+      double complex fswp1wp2, fswp1wm2, fswp1wm1, fswmwp, fswmz1, fswmz2
+      double complex fsz1z2, fsz1z3, fsz1z4
+      common /anomDim8/ fswp1wp2, fswp1wm2, fswp1wm1, fswmwp, fswmz1, fswmz2
+      common /anomDim8/ fsz1z2, fsz1z3, fsz1z4
 
 ** Dimension-6 operators 
       double precision fbw_0, fdw_0, fww_0, fbb_0, fphi1_0

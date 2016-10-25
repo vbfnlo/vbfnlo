@@ -3,13 +3,14 @@
 #include "GaugeTest.inc"
       real*8 Accuracy
       Accuracy =1d-2
+c      print*, "Accuracy",Accuracy
       GaugeAccuracyBoxL=Accuracy
       GaugeAccuracyBoxLnA=Accuracy
       GaugeAccuracyPenL=Accuracy
       GaugeAccuracyPenLnA=Accuracy
       GaugeAccuracyHexL=Accuracy
       GaugeAccuracyHexLnA=Accuracy
-      
+c      print*, "GaugeAccuracyBoxL",GaugeAccuracyBoxL      
       end
       
 
@@ -1264,9 +1265,11 @@ c     is larger that 1d-2. In the same subroutines the boxlines called are check
       Logical Ward
       real*8 ratiocheckCan
       integer Div
+#include "GaugeTest.inc"
       Real*8 gaugetestacc
-      parameter(gaugetestacc=1d-2)
-      
+c      parameter(gaugetestacc=GaugeAccuracyPenL)
+
+      gaugetestacc=GaugeAccuracyPenL
       Ward=.False.
 
 c      print*,"gaugetest accuracy",gaugetestacc
@@ -1436,6 +1439,19 @@ c Checking for NAN
         test(3)=1d8
       endif
 
+c Checking for NAN
+      If(test(1).ne.test(1))then
+        test(1)=1d8
+      endif
+c Checking for NAN
+      If(test(2).ne.test(2))then
+        test(2)=1d8
+      endif
+c Checking for NAN
+      If(test(3).ne.test(3))then
+        test(3)=1d8
+      endif
+
       
       t=Max(test(1),test(2),test(3))
       If(t.lt.gaugetestacc) then
@@ -1478,10 +1494,13 @@ c is smaller than 1d-2.
       EXTERNAL dotrr
       PARAMETER (pi =3.14159265358979323846264338327950288d0)
       PARAMETER (pi2 =9.86960440108935861883449099987615114d0)
-      DOUBLE PRECISION s14,lm,ls,ths,theta
+      DOUBLE PRECISION s14,lm,ls,ths,theta,gaugetestacc
       LOGICAL ward
       Integer Div
-      
+#include "GaugeTest.inc"
+
+      gaugetestacc=GaugeAccuracyBoxL
+
       ward=.False.
 
       if(Div.eq.0) then
@@ -1533,17 +1552,29 @@ c Checking for NAN
         testb(2)=1d8
       endif
       
-      if ( (testb(1).lt.1d-1) .and. (testb(2).lt.1d-1) ) then
+c Checking for NAN
+      If(testb(1).ne.testb(1))then
+        testb(1)=1d8
+      endif
+c Checking for NAN
+      If(testb(2).ne.testb(2))then
+        testb(2)=1d8
+      endif
+
+
+      if ( (testb(1).lt.gaugetestacc) .and. (testb(2).lt.gaugetestacc)) then
       ward = .true.
       else
-c      print*,'MAXtestb(1)', MAX(testb(1),testb(2))
-c      print*,'testb(1)', testb(1)
-c      print*,'testb(2)', testb(2)
-c      print*, "cte",cte
-c      print*, 'resultb(1)',resultb(1)
-c      print*, 'resultb(2)',resultb(2)  
-c      print*, 'result(1)',result(1)      
-c      print*, 'result(2)',result(2)      
+cfc      print*, "GaugeAccuracyBoxL",GaugeAccuracyBoxL
+cfc      print*, "gaugetestacc",gaugetestacc
+cfc      print*,'MAXtestb(1)', MAX(testb(1),testb(2))
+cfc      print*,'testb(1)', testb(1)
+cfc      print*,'testb(2)', testb(2)
+cfc      print*, "cte",cte
+cfc      print*, 'resultb(1)',resultb(1)
+cfc      print*, 'resultb(2)',resultb(2)  
+cfc      print*, 'result(1)',result(1)      
+cfc      print*, 'result(2)',result(2)      
 c      pause
       endif
 

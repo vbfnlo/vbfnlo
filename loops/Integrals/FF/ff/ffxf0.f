@@ -467,8 +467,8 @@
    10		continue
 		print '(a,i2,a,i2)','---#[ rotation ',irota,': isgnal ',
      +			isgnal
-		if (lcon) write(icon,'(a,i2,a,i2)')'rotation ',irota,',
-     +			isgnal ',isgnal
+		if (lcon) write(icon,'(a,i2,a,i2)')'rotation ',irota,
+     +			',isgnal ',isgnal
 		ier1 = 0
 		ner = 0
 		id = id + 1

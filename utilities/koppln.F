@@ -31,11 +31,6 @@ c*************************************************************************
       logical replace
       external replace
 
-** Dummy flag to enable the output of a warning if anomalous couplings are 
-** requested for a process that does not support them
-      logical anom_called
-
-
 ** 1/Alfa_QED: this is the default read-in value, but is immediately converted
 ** to alfa
       double precision invalfa
@@ -69,7 +64,6 @@ c temporary variables
 
       double precision srt
       external srt
-
 
 
       call clearwidths
@@ -139,6 +133,7 @@ c set ckm values, this could be an input at some point
 
 
       call loadfile("vbfnlo.dat",.true.)
+
 *sophy: reading higgs mass if it hasn't been set by slha
       if (HiggsType .eq. 0) then
          call read_Real("HMASS",xmh,126d0)
@@ -293,6 +288,7 @@ c read in additional parameters for two-Higgs model
       STOP
       endif
 
+
       if ((procID .eq. 191) .and. (.not. spin2switch)) then
          Print*, "***************************************"//
      &        "***************************************" 
@@ -393,124 +389,13 @@ c read in additional parameters for two-Higgs model
       call closefile
 
       with_kk=.false.
-      with_anomHiggs = .false.
-      with_anom = .false.
-      anom_called = .false.
       with_spin2 = .false.
 
 
 ** Setting the electroweak parameters
       call setEWpara(e,g2,s,c,z,w,q,g)
 
-
-#ifdef WITH_VBF
-      if (anom) then
-         Select Case (procID)
-         Case(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar,  
-     -           Hjj_WW, Hjj_ZZ_ll, Hjj_ZZ_lnu,
-     -           Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad)
-            with_anomHiggs=anom
-            call read_anomHVV
-            anom_called = .true.
-         END SELECT
-      endif
-#endif
-
-
-#ifdef WITH_GGF
-      if (anom) then
-         Select Case (procID)
-         Case(GFHjj_WW, GFHjj_ZZ_ll, GFHjj_ZZ_lnu)
-            with_anomHiggs=anom
-            call read_anomHVV
-            anom_called = .true.
-         END SELECT
-      endif
-#endif
-
-
-#ifdef WITH_VBF
-      if (anom) then
-         Select Case (procID)
-         Case(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,ZAjj,ZAjj_n,
-     &        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj, WPhadWPjj, WMhadWMjj,
-     &        Ajj, Zjj_l, Zjj_nu, WPjj, WMjj,WPAjjjLO,WMAjjjLO,ZAjjjLO)
-            call read_anomVcouplings
-            anom_called = .true.
-            with_anom = anom
-            with_anomHiggs = anom
-         END SELECT
-      endif
-#endif
-
-
-#ifdef WITH_TRIBOSON
-      if (anom) then
-         Select Case (procID)
-         Case(WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,ZZnA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
-     &        WPAAj,WMAAj,
-     &        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, ZZWMhad, 
-     &        WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
-     &        WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
-            call read_anomVcouplings
-            anom_called = .true.
-            with_anomHiggs = anom
-            with_anom = anom
-         END SELECT
-      endif
-#endif
-
-#ifdef WITH_DIBOSON
-      if (anom) then
-c anomalous vector couplings
-         Select Case (procID)
-         Case(WW,WPZ,WMZ,WPA,WMA,
-     &        WPhadWMlep,WPlepWMhad,
-     &        WPhadZ,WPZhad,WMhadZ,WMZhad)
-            with_anom = anom
-            call read_anomVcouplings
-            anom_called = .true.
-         END SELECT
-c anomalous Higgs couplings
-         Select Case (procID)
-         Case(WW,ZZ,ZA,AA,GFWW,GFZZ,GFZA,GFAA,
-     &        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
-     &        ZZhad,GFZZhad)
-            with_anomHiggs=anom
-            call read_anomHVV
-            anom_called = .true.
-         END SELECT
-      endif
-#endif
-
-#ifdef WITH_DIBOSONJET
-      if (anom) then
-         Select Case (procID)
-         Case(WMAJ,WPAJ,WMZJ,WPZJ,
-     &        WPhadZJ, WPZhadJ, WMhadZJ, WMZhadJ)
-            with_anom=anom
-            call read_anomVcouplings
-            anom_called = .true.
-         END SELECT
-      endif
-#endif
-
-
-      if (anom) then
-         Select Case (procID)
-         Case(
-     1     WPH, WPH_AA, WPH_mu, WPH_tau, WPH_bbar, WPH_WW, WPH_ZZ_ll, WPH_ZZ_lnu,
-     1     WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar, WMH_WW, WMH_ZZ_ll, WMH_ZZ_lnu,
-     1     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll, WPHJ_ZZ_lnu,
-     1     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll, WMHJ_ZZ_lnu
-     1       )
-            call read_anomVcouplings
-            anom_called = .true.
-            with_anomHiggs = anom
-            with_anom = anom
-         END SELECT
-      endif
-
+      call InitAnomCouplings(anom)
 
       if (model.eq.3) then
 c save Higgs1 parameters to temporary and overwrite with Higgs2 parameters
@@ -575,19 +460,6 @@ c move result into Higgs2 parameters and copy back
       CALL KOPPLN(2,e,g2,s,c,z,w,q,g)
       call ctrans(xmb)
 
-
-      if (anom .and. (.not. anom_called)) then
-         write(*,*)'  '
-         write(*,*)'WARNING!'
-         write(*,*)'Anomalous couplings have been selected'
-         write(*,*)'with a process that does not accept them.'
-         write(*,*)'Standard couplings will be used.'
-         write(*,*)'   '
-      end if
-
-      if (.not.with_anom) call set_anomVcouplings_zero     ! set the anomalous vector boson couplings to zero
-
-
       if (kkswitch) then
 #ifdef WITH_KK
          Select Case (procID)
@@ -640,6 +512,157 @@ c move result into Higgs2 parameters and copy back
       END 
 
 
+c*************************************************************************
+      SUBROUTINE InitAnomCouplings(anom)
+c*************************************************************************
+c     This routine reads in anomalous couplings if requested 
+c*************************************************************************
+
+      implicit none
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/koppln.inc"
+#include "VBFNLO/utilities/process.inc"
+
+      logical anom
+
+** Dummy flag to enable the output of a warning if anomalous couplings are 
+** requested for a process that does not support them
+      logical anom_called
+
+
+      anom_called = .false.
+
+      with_anomHiggs = .false.
+      with_anom = .false.
+
+#ifdef WITH_VBF
+      if (anom) then
+         Select Case (procID)
+         Case(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar,  
+     -           Hjj_WW, Hjj_ZZ_ll, Hjj_ZZ_lnu,
+     -           Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad)
+            with_anomHiggs=anom
+            call read_anomHVV
+            anom_called = .true.
+         END SELECT
+      endif
+#endif
+
+
+#ifdef WITH_GGF
+      if (anom) then
+         Select Case (procID)
+         Case(GFHjj_WW, GFHjj_ZZ_ll, GFHjj_ZZ_lnu)
+            with_anomHiggs=anom
+            call read_anomHVV
+            anom_called = .true.
+         END SELECT
+      endif
+#endif
+
+
+#ifdef WITH_VBF
+      if (anom) then
+         Select Case (procID)
+         Case(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,ZAjj,ZAjj_n,
+     &        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj, WPhadWPjj, WMhadWMjj,
+     &        Ajj, Zjj_l, Zjj_nu, WPjj, WMjj,WPAjjjLO,WMAjjjLO,ZAjjjLO)
+            call read_anomVcouplings
+            anom_called = .true.
+            with_anom = anom
+            with_anomHiggs = anom
+         END SELECT
+      endif
+#endif
+
+
+#ifdef WITH_TRIBOSON
+      if (anom) then
+         Select Case (procID)
+         Case(WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,ZZnA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
+     &        WPAAj,WMAAj,
+     &        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, ZZWMhad, 
+     &        WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
+     &        WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
+            call read_anomVcouplings
+            anom_called = .true.
+            with_anomHiggs = anom
+            with_anom = anom
+         END SELECT
+      endif
+#endif
+
+#ifdef WITH_DIBOSON
+      if (anom) then
+c anomalous vector couplings
+         Select Case (procID)
+         Case(WW,WWjLO,WPZ,WMZ,WPA,WMA,WPZjLOb,
+     &        WPhadWMlep,WPlepWMhad,
+     &        WPhadZ,WPZhad,WMhadZ,WMZhad,
+     &       WMZjLOb,WPAjLOb,WMAjLOb,
+     &       ZA,ZZ,ZAjLO,ZZjLO)
+            with_anom = anom
+            call read_anomVcouplings
+            anom_called = .true.
+         END SELECT
+c anomalous Higgs couplings
+         Select Case (procID)
+         Case(WW,ZZ,ZA,AA,GFWW,GFZZ,GFZA,GFAA,
+     &        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
+     &        ZZhad,GFZZhad,
+     &        WWj,ZZj,GFWWj,GFZZj)
+            with_anomHiggs=anom
+            call read_anomHVV
+            anom_called = .true.
+         END SELECT
+      endif
+#endif
+
+#ifdef WITH_DIBOSONJET
+      if (anom) then
+         Select Case (procID)
+         Case(WMAJ,WPAJ,WMZJ,WPZJ,
+     &        WPhadZJ, WPZhadJ, WMhadZJ, WMZhadJ)
+            with_anom=anom
+            call read_anomVcouplings
+            anom_called = .true.
+         END SELECT
+      endif
+#endif
+
+
+      if (anom) then
+         Select Case (procID)
+         Case(
+     1     WPH, WPH_AA, WPH_mu, WPH_tau, WPH_bbar, WPH_WW, WPH_ZZ_ll, WPH_ZZ_lnu,
+     1     WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar, WMH_WW, WMH_ZZ_ll, WMH_ZZ_lnu,
+     1     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll, WPHJ_ZZ_lnu,
+     1     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll, WMHJ_ZZ_lnu
+     1       )
+            call read_anomVcouplings
+            anom_called = .true.
+            with_anomHiggs = anom
+            with_anom = anom
+         END SELECT
+      endif
+
+
+      if (anom .and. (.not. anom_called)) then
+         write(*,*)'  '
+         write(*,*)'WARNING!'
+         write(*,*)'Anomalous couplings have been selected'
+         write(*,*)'with a process that does not accept them.'
+         write(*,*)'Standard couplings will be used.'
+         write(*,*)'   '
+      end if
+
+      if (.not.with_anom) call set_anomVcouplings_zero     ! set the anomalous vector boson couplings to zero
+
+      return
+      end
+
+c*************************************************************************
 
 
 C========= subroutine KOPPLN  ==============================================
@@ -1191,7 +1214,11 @@ c*********** Next h -> W*W* *************************
 
 
 ** Calculating running bottom mass
-      BMASS_POLE = xmb
+      if (xmb .gt. 0d0) then
+        BMASS_POLE = xmb
+      else ! sensible default
+        BMASS_POLE = 4.855d0
+      endif
 
 c the coefficient fuction c is evaluated within the five flavour 
 c approximation for the whole mass range. For m_Higgs > m_top,
@@ -1241,7 +1268,11 @@ c Now calculate the H -> bbar width
 
 c*********** Next h -> c cbar ************************
       if (replace(bhcc,3) .or. replace(xgh,3)) then
-         CMASS_POLE = xmc
+         if (xmc .gt. 0d0) then
+           CMASS_POLE = xmc
+         else ! sensible default
+           CMASS_POLE = 1.65d0
+         endif
 c determine number of flavors with mass smaller than the Higgs mass
 c and the running alphas according to that number
          if (xmh.gt.xmt) then
@@ -1345,7 +1376,7 @@ c*********** Next h -> t tbar ************************
       endif
       A_12_t = 2*(tau_t+(tau_t-1)*A_12_t)/tau_t**2
 
-      tau_b = xmh**2/(4d0*xmb**2)
+      tau_b = xmh**2/(4d0*BMASS_POLE**2)
       if (tau_b .le. 1d0) then
         A_12_b = asin(tau_b)**2
       else
@@ -1384,7 +1415,7 @@ c      GHGAM = (alfa*G2/xmw)**2 * (xmh/pi)**3 / 1024.d0
          end if
          F_t = -2.d0*tau_t* (1.d0 + (1.d0 - tau_t)*f_tau_t)
 
-         tau_b = 4.d0*(xmb/xmh)**2
+         tau_b = 4.d0*(BMASS_POLE/xmh)**2
          if ( tau_b.lt.1.d0 ) then
             eta_p = 1.d0 + sqrt(1.d0 - tau_b)
             eta_m = 1.d0 - sqrt(1.d0 - tau_b)
@@ -1434,8 +1465,8 @@ c     compute At,Ab,Aw
          cotw = sqrt(1.0d0/tan2w)
 c     
 c     b quark loop
-         tau_b = 4.d0*(xmb/xmh)**2
-         lamb_b = 4.0d0*(xmb/xmz)**2
+         tau_b = 4.d0*(BMASS_POLE/xmh)**2
+         lamb_b = 4.0d0*(BMASS_POLE/xmz)**2
          call compints(tau_b,lamb_b,II_1,II_2)
 c   
          A_b = -3.0d0 *2.0d0*V(4,1)*V(4,2)*(2.0d0*c/(g2*E))*(II_1 -II_2)
@@ -1474,7 +1505,6 @@ c
       else 
          ghgamz = bhgamz*xgh
       end if  ! end of Higgs decay to gamma Z
-
 
 c H total decay width and branching ratios
  50   if (replace(xgh,3)) then
@@ -1518,7 +1548,7 @@ c
 *** Initialising scales
       call InitScales
 
-
+      if (lglobalprint) then
 
       print *," "
       print *,"  Information on couplings, masses and widths"
@@ -1672,6 +1702,8 @@ c output, which is not so relevant to the user
      &       BH2GAMZ*100.d0," %"
         print *," "
       endif
+
+      endif ! lprint
 
       if (ldebug) stop
 
@@ -2173,9 +2205,10 @@ c***********************************************************************
 c common blocks which need to be filled for HELAS (masses, widths, couplings):	
 #include "coupl.inc"
 #include "scales.inc"
+#include "global.inc"
+#include "BLHAhelper.inc"
 			
-      double precision g2,ee2,sw,cw,vv,sc2,pi		
-      parameter ( pi = 3.141592653589793d0 )
+      double precision g2,ee2,sw,cw,vv,sc2
       logical loutput
       parameter (loutput = .false.)
 	
@@ -2204,7 +2237,7 @@ c FFB, BBB, and Higgs couplings (but not in form needed by HELAS):
      &                 sinba, cosba, ch2ww, ch2zz
       
 
-      if (linit.eq.0) then
+      if ((linit.eq.0).or.ldoblha) then
 c fill basic parameters:
 	G      =  B(5,5,5)
 	GG(1)  = -G
@@ -2354,7 +2387,7 @@ c	info on couplings returned by ctrans:
 	write(6,*) 
       endif
 	
-c---------------------------------------------------------------------------
+c--------------------------------------------------------------------------	
 
 	return
 	end
@@ -2460,5 +2493,4 @@ c
 
 
 ********************************************************************************
-
 

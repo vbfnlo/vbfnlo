@@ -20,6 +20,9 @@
       write(*,*)'  '
 
       call vbfffini
+#ifdef WITH_QUAD
+      call vbfquadffini
+#endif
 
       end
 
@@ -39,6 +42,9 @@
       write(*,*)'  '
 
       call vbfffexi
+#ifdef WITH_QUAD
+      call vbfquadffexi
+#endif
 
       end
 

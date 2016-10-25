@@ -178,6 +178,8 @@ c==========================
 
 *         call InitPDFs(0)
 
+         call Init_Instabilities(1)
+
          gnlo = 0
 
          file_name_in  = path(1:len_trim(path))//"/"//
@@ -344,6 +346,9 @@ c     pass weight to monaco
 
 ** closing FF
          call closeFF
+
+C printing stabilities
+         call final_instabilities
 
          call monaco_result(xsection, sdev, chi2)
      

@@ -23,6 +23,7 @@ c
 #include "tensorw.inc"
 #include "VBFNLO/utilities/coupl_haddecay.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
 c variables for hadronic decays
       integer N_gen_W
@@ -93,6 +94,9 @@ c -----------------------------------------------------------------------
          do i = 1,nmax
             res(i) = 0
          enddo
+      else if (ldoblha) then
+        h = 1
+        init = 2
       else
       
 	if (bos.eq.3.or.bos.eq.4) then    
@@ -164,6 +168,9 @@ c     reset lfs to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
          
          ie = 1
@@ -222,6 +229,12 @@ c wet(mu) = we(mu) - xxew*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                aut(mu+1) = au(mu+1) - xxua*qu(mu)
             enddo
             do mu = 5,6
+               wet(mu) = we(mu)
+               zut(mu) = zu(mu)
+               aut(mu) = au(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
                wet(mu) = we(mu)
                zut(mu) = zu(mu)
                aut(mu) = au(mu)
@@ -399,6 +412,9 @@ c     reset lws to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
          
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
 	
          ie = 1
@@ -458,6 +474,12 @@ c     wet(mu) = we(mu) - xxew*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                aut(mu+1) = au(mu+1) - xxua*qu(mu)
             enddo
             do mu = 5,6
+               wet(mu) = we(mu)
+               zut(mu) = zu(mu)
+               aut(mu) = au(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
                wet(mu) = we(mu)
                zut(mu) = zu(mu)
                aut(mu) = au(mu)
@@ -639,6 +661,9 @@ c     reset lws to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
          ie = 1
          iu = sign(1,1-h)
@@ -734,6 +759,9 @@ c     reset lws to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
          ie = 1
          iu = sign(1,1-h)
@@ -853,6 +881,23 @@ c
          write(6,*) "xi(1), xi(2) =", xi
          write(6,*) "mu_f =",sqrt(mufsq(1,1)),sqrt(mufsq(2,1))
       end if
+
+       if (ldoblha) then
+
+         physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+         physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+         physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+         physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+         fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+         fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+         fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+         fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+
+         call wbf_w2j(xi,p,v,physToDiag,fsign,bos, nlo,
+     1             pdf,res,nmin,nmax,ps_number)
+
+         return
+       endif
 c
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
@@ -1009,6 +1054,12 @@ c wet(mu) = we(mu) - xxew*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                zut(mu) = zu(mu)
                aut(mu) = au(mu)
            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
+               wet(mu) = we(mu)
+               zut(mu) = zu(mu)
+               aut(mu) = au(mu)
+            enddo
          endif
 
 c for ZW+,AW+ -> e+ ve mu+ mu-:
@@ -1062,6 +1113,12 @@ c wet(mu) = we(mu) - xxew*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                zut(mu) = zu(mu)
                aut(mu) = au(mu)
            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
+               wet(mu) = we(mu)
+               zut(mu) = zu(mu)
+               aut(mu) = au(mu)
+            enddo
          endif
 
 c for ZW-,AW- -> e- ve~ mu+ mu-:
@@ -1464,7 +1521,11 @@ c
          stop
 	
       endif !bos	
-	
+
+      if (ldoblha) then
+        return
+      endif
+
 c matrsq(i1,i2,lw):  index i1 = flavor of beam 1
 c                          i2 = flavor of beam 2
 c                    index lw = line to which W is attached (1=12, 2=34 line)

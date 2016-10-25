@@ -1,4 +1,4 @@
-noinst_LTLIBRARIES = libFF.la 
+noinst_LTLIBRARIES = libFF.la
 
 if WITH_QUAD
 noinst_LTLIBRARIES += libFFquad.la
@@ -71,7 +71,7 @@ dist_FF_DATA = \
 		ff/fferr.dat \
 		ff/ffwarn.dat 
 
-BUILT_SOURCES = ff/ffinit.f
+BUILT_SOURCES = ff/ffinit.f 
 
 if WITH_QUAD
 # same as above with generated files

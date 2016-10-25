@@ -45,6 +45,7 @@ c  integer L (=1,2) is used for the subtraction code to select leptonic
 c  tensors for gluon emission off the upper Line (L=1) or lower quark 
 c  line (L=2)
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "tensorw.inc"
 c#include "tensorw_gaugev.inc"
 c
@@ -61,6 +62,7 @@ c
       double precision  pbar(0:3,4+max_v), musq
       double precision ans1, ans2, ans3, ans4,res(4),resv(4),
      1		       uucs, ddcs, udcc, udss
+      double precision tree(6)
       double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), pew(0:4),
      1                  puz(0:4), pwz(0:4)
       integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk, id,
@@ -185,6 +187,8 @@ c
       double precision c2,c2o4pi     !,pi2o3, cvirtc
 c      parameter (pi2o3=pi**2/3d0, cvirtc=pi2o3-7d0)
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi)
+      double precision lnmusqp1p2, lnmusqp3p4
+
       logical lnlo, lbox, lpent, lpt, lpq
 c      parameter (lnlo=.true.)
       lnlo = NLO.ne.0    ! include some virtual stuff if T
@@ -1909,7 +1913,7 @@ c		  print*, "criterion chosen: mv5/mvc.gt.0.1d0"
                call J_virtual_tri_box_pent45(psi,p,1,2,sign, musq,
      1              au, we, zero, zero, k, -5, j5aw(0,k,is1,1))               
             enddo
-c            icount1= icount1+1
+            icount1= icount1+1
 	 elseif (nlo.eq.-5) then
             do k = 1,3
                call J_virtual_tri_box_pent45(psi,p,1,2,sign, musq,
@@ -2485,6 +2489,7 @@ c i = 7,8	P
       do k = 1,4
          res(k) = 0
          resv(k) = 0
+         tree(k) = 0
          do isig1 = -1,1,2
             do isig3 = -1,1,2
                mm(k,isig1,isig3) = 0
@@ -2541,6 +2546,7 @@ c  and the counter term for the renormalization of the pdfs
            enddo
          enddo  
 	       
+         tree(k) = res(k) * 9D0 
          if (nlo.ge.0) then
             res(k) = (res(k)+resv(k))*9d0      ! 9 is the color sum factor
          else
@@ -2591,6 +2597,59 @@ c eliminate processes with photon virtuality below cutoff
       ans2 = res(2)	!ddcs 
       ans3 = res(3)	!udcc 
       ans4 = res(4)	!udss 
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      res(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.1) then ! loop
+          lnmusqp1p2 = log(blha_scale**2/(-p21(4)))
+          lnmusqp3p4 = log(blha_scale**2/(-p43(4)))
+
+          blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       (als(1,1)+als(2,1))*(-1d0)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       ( als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)
+     &        +als(2,1)*(-blha_gammaQuark-blha_CF*lnmusqp3p4) )*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+          blha_amp(3)= blha_amp(3)+
+     &      (res(blha_idsubproc(blha_cursubproc,blha_curproc))     ! tree + loop + I
+     &       -tree(blha_idsubproc(blha_cursubproc,blha_curproc)))  ! -tree
+     &       * blha_CF/c2                                          ! correct for Nc ?= inf
+     &      + (-(als(1,1)+als(2,1))/2d0/pi*                        ! -I
+     &          (blha_CF*cvirt+
+     &            2d0*(blha_KQuark+blha_gammaQuark+
+     &                 blha_tgammaQuark+(pi**2/6d0-1)*blha_CF) )
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &         +als(2,1)/pi*                                       ! +(mu^2/2p3.p4)^epsilon
+     &         (-blha_gammaQuark*lnmusqp3p4-blha_CF/2d0*lnmusqp3p4**2)
+     &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(4)= blha_amp(4)+
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+          ! 3-4
+          call BLHA_cctree(3,4,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
       
       Lold = L
       return

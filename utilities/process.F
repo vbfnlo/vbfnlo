@@ -44,7 +44,11 @@ c first set phase space dimension & NLO parameters
 ***********************
       CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar)
          n_p = 4
-         n_v = 2
+         if (ldoblha .and. (process.eq.Hjj)) then
+           n_v = 1
+         else
+           n_v = 2
+         endif
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.true.  ! process at nlo
          NLO_Loops = 1  ! number of different virtual contributions
@@ -83,7 +87,11 @@ c first set phase space dimension & NLO parameters
          if (with_anomHiggs) photoncut_vbf = .true.
       CASE(HjjjLO, HjjjLO_AA, HjjjLO_mu, HjjjLO_tau, HjjjLO_bbar)
          n_p = 5
-         n_v = 2
+         if (ldoblha .and. (process.eq.HjjjLO)) then
+           n_v = 1
+         else
+           n_v = 2
+         endif
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.false.  ! process at lo
          NLO_Loops = 0  
@@ -431,7 +439,11 @@ c first set phase space dimension & NLO parameters
 ********************************
       CASE(HAjj, HAjj_AA, HAjj_mu, HAjj_tau, HAjj_bbar)
          n_p = 4
-         n_v = 3
+         if (ldoblha .and. (process.eq.HAjj)) then
+           n_v = 2
+         else
+           n_v = 3
+         endif
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.true.  ! process at nlo
          NLO_Loops = 1  ! number of different virtual contributions
@@ -447,7 +459,11 @@ c first set phase space dimension & NLO parameters
          call Get_HAjj_couplings()    
       CASE(HAjjjLO, HAjjjLO_AA, HAjjjLO_mu, HAjjjLO_tau, HAjjjLO_bbar)
          n_p = 5
-         n_v = 3
+         if (ldoblha .and. (process.eq.HAjjjLO)) then
+           n_v = 2
+         else
+           n_v = 3
+         endif
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.false.  ! process at nlo
          NLO_Loops = 0  ! number of different virtual contributions
@@ -468,7 +484,11 @@ c first set phase space dimension & NLO parameters
 ***********************
       CASE(Hjjj,Hjjj_AA, Hjjj_mu, Hjjj_tau, Hjjj_bbar)
          n_p = 5
-         n_v = 2
+         if (ldoblha .and. (process.eq.Hjjj)) then
+           n_v = 1
+         else
+           n_v = 2
+         endif
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.true.  ! process at nlo
          NLO_Loops = 1  ! number of different virtual contributions
@@ -484,7 +504,11 @@ c first set phase space dimension & NLO parameters
          call init_qqhqqg_virt
       CASE(HjjjjLO,HjjjjLO_AA, HjjjjLO_mu, HjjjjLO_tau, HjjjjLO_bbar)
          n_p = 6
-         n_v = 2
+         if (ldoblha .and. (process.eq.HjjjjLO)) then
+           n_v = 1
+         else
+           n_v = 2
+         endif
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.false.  ! process at lo
          NLO_Loops = 0  
@@ -891,6 +915,28 @@ c first set phase space dimension & NLO parameters
 
 
 #ifdef WITH_DIBOSONJET
+      CASE(WWJ)
+         n_p = 3
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.true.  ! process at nlo
+         NLO_Loops = 4
+         N_points(1) = N_points(0)
+         N_points(2) = N_points(0)-4
+         N_points(3) = N_points(0)-6
+         N_points(4) = N_points(0)-6
+      CASE(WWJJLO)
+         n_p = 4
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.false.  ! process at LO
+         NLO_Loops = 0
+      CASE(GFWWj)
+         n_p = 3
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.false.  ! process at LO
+         NLO_Loops = 0
       CASE(WMAJ,WPAJ)
          n_p = 3
          n_v = 3
@@ -917,6 +963,28 @@ c first set phase space dimension & NLO parameters
          n_v = 4
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.false.  ! process at LO
+      CASE(ZZJ)
+         n_p = 3
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.true.  ! process at nlo
+         NLO_Loops = 4
+         N_points(1) = N_points(0)
+         N_points(2) = N_points(0)-4
+         N_points(3) = N_points(0)-6
+         N_points(4) = N_points(0)-12
+      CASE(ZZJJLO)
+         n_p = 4
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.false.  ! process at LO
+         NLO_Loops = 0
+      CASE(GFZZj)
+         n_p = 3
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.false.  ! process at LO
+         NLO_Loops = 0
 
 *********************
 * W+- H j processes *
@@ -1497,15 +1565,15 @@ c now set particle ids
 *********************
 * VVj processes     *
 *********************
+      CASE(WWJ, GFWWj, WMZJ, WPZJ, ZZJ, GFZZj)
+         do i=1, N_lepton
+            Particle_IDs(i) = finallep(i)
+         enddo
       CASE(WMAJ, WPAJ) 
          do i=1, N_lepton
             Particle_IDs(i) = finallep(i)
          enddo
          Particle_IDs(3) = 22
-      CASE(WMZJ, WPZJ)
-         do i=1, N_lepton
-            Particle_IDs(i) = finallep(i)
-         enddo
       ! diboson + jet processes where 1st boson decays hadronically
       CASE(WMhadZJ, WPhadZJ)
          Particle_IDs(1) = finalquarks(1)
@@ -1730,8 +1798,8 @@ c*************************************************************************
          n_p = 3
          n_kin = 3 ! needed randomness for real emission
          PS_dimension = 3*(n_p+n_v-nx)-2
-      CASE(WMAJ,WPAJ,WMZJ,
-     &     WMhadZJ,WMZhadJ,WPZJ,WPhadZJ,WPZhadJ,
+      CASE(WWJ,WMAJ,WPAJ,WMZJ,WPZJ,ZZJ,
+     &     WMhadZJ,WMZhadJ,WPhadZJ,WPZhadJ,
      &     WPJ, WMJ,
      1     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll, WPHJ_ZZ_lnu,
      1     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll, WMHJ_ZZ_lnu
@@ -1850,8 +1918,13 @@ c*************************************************************************
 
 
       
-      call read_logical("KK_MOD",kkswitch,.false.)
-      call read_logical("ANOM_CPL",anomswitch,.false.) 
+      if (ldoblha) then
+        kkswitch = .false.
+        anomswitch = .false.
+      else
+        call read_logical("KK_MOD",kkswitch,.false.)
+        call read_logical("ANOM_CPL",anomswitch,.false.) 
+      endif
 
       Loops_sub_LO=1
       Loops_sub_NLO=1
@@ -2742,6 +2815,21 @@ c   default values for the final state leptons
       CASE(GFAA)
          process = GFAA
          N_lepton = 0
+      CASE(WWJ)
+         if (LOplusjet) process = WWJJLO
+         if (.not.LOplusjet) process = WWJ
+         N_lepton = 4
+         finallep_default(1)=  12
+         finallep_default(2)= -11
+         finallep_default(3)=  11
+         finallep_default(4)= -12
+      CASE(GFWWJ)
+         process = GFWWJ
+         N_lepton = 4
+         finallep_default(1)=  12
+         finallep_default(2)= -11
+         finallep_default(3)=  11
+         finallep_default(4)= -12
       CASE(WMAJ)
          if (LOplusjet) process = WMAJLO
          if (.not.LOplusjet) process = WMAJ
@@ -2786,6 +2874,21 @@ c   default values for the final state leptons
          finallep_default(2) =  12
          finallep_default(3) = -11
          finallep_default(4) =  11
+      CASE(ZZJ)
+         if (LOplusjet) process = ZZJJLO
+         if (.not.LOplusjet) process = ZZJ
+         N_lepton = 4
+         finallep_default(1)=  11
+         finallep_default(2)= -11
+         finallep_default(3)=  11
+         finallep_default(4)= -11
+      CASE(GFZZJ)
+         process = GFZZj
+         N_lepton = 4
+         finallep_default(1)=  11
+         finallep_default(2)= -11
+         finallep_default(3)=  11
+         finallep_default(4)= -11
       CASE(WPhadZJ)
          if (LOplusjet) process = WPhadZJjLO
          if (.not.LOplusjet) process = WPhadZJ
@@ -3339,6 +3442,13 @@ c minimal number of jets in the final state for the different processes
             LOplusjet = .false.
          endif
          njet_min = 0
+      CASE(GFWWj, GFZZj)
+         if (LOplusjet) then
+            print*,"No LO process with additional Jet implemented"
+            print*,"Process without additional jet is calculated"
+            LOplusjet = .false.
+         endif
+         njet_min = 1
       CASE(GFWPhadWMlep,GFWPlepWMhad,GFZZhad)
          if (LOplusjet) then
             print*,"No LO process with additional Jet implemented"
@@ -3346,7 +3456,7 @@ c minimal number of jets in the final state for the different processes
             LOplusjet = .false.
          endif
          njet_min = 2
-      CASE(WPZJ, WMZJ, WMAJ, WPAJ, 
+      CASE(WWJ, WPZJ, WMZJ, WMAJ, WPAJ, ZZJ,
      &     WPJ, WMJ,
      3     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_WW, WPHJ_ZZ_ll, WPHJ_ZZ_lnu,
      3     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_WW, WMHJ_ZZ_ll, WMHJ_ZZ_lnu,
@@ -3385,6 +3495,7 @@ c*************************************************************************
 
 c local variables
       integer nl, ordered(7), i, j, k, m, lep(7)
+      integer i2
 
       nl = N_lepton
       do i = 1, N_lepton
@@ -3405,41 +3516,45 @@ c leptons number 1, 3, ...
      1         ((abs(lep(i)).eq.abs(finallep_default(k)))   .or.
      2          (abs(lep(i)).eq.abs(finallep_default(k))+2) .or.
      3          (abs(lep(i)).eq.abs(finallep_default(k))+4)) ) then
-               ordered(k) = lep(i)
-               do j = 1, i-1
-                  lep(j) = lep(j)
+c now check if we can find its partner
+               i2 = 1
+               do while (i2 < nl+1)
+                  if ( (i.ne.i2) .and.
+     &                 ((-1*lep(i2)*finallep_default(k+1)).le.0) .and.
+     1                 (abs(abs(lep(i2))-abs(lep(i))).le.1)       .and.
+     2                (mod(max(abs(lep(i2)),abs(lep(i))),2).eq.0 .or.
+     3                 abs(lep(i2)).eq.abs(lep(i)))   .and.
+     4               ((abs(lep(i2)).eq.abs(finallep_default(k+1)))   .or.
+     5                (abs(lep(i2)).eq.abs(finallep_default(k+1))+2) .or.
+     6                (abs(lep(i2)).eq.abs(finallep_default(k+1))+4)) ) then
+c got it ...
+                     ordered(k) = lep(i)
+                     ordered(k+1) = lep(i2)
+c remove first lepton from list
+                     do j = 1, i-1
+                        lep(j) = lep(j)
+                     enddo
+                     do j = i, nl
+                        lep(j) = lep(j+1)
+                        if (j .eq. i2) i2 = i2-1
+                     enddo
+                     nl = nl - 1
+                     i = nl+1
+c remove second lepton from list
+                     do j = 1, i2-1
+                        lep(j) = lep(j)
+                     enddo
+                     do j = i2, nl
+                        lep(j) = lep(j+1)
+                     enddo
+                     nl = nl - 1
+                     i2 = nl+1
+                  else
+                     i2 = i2+1
+                  endif
                enddo
-               do j = i, nl
-                  lep(j) = lep(j+1)
-               enddo
-               nl = nl - 1
-               i = nl+1
-            else
                i = i+1
-            endif
-         enddo
-      enddo
 
-c leptons number 2, 4, ...
-      do k = 2, N_lepton,2
-         i = 1
-         do while (i < nl+1)
-            if ( ((-1*lep(i)*finallep_default(k)).le.0) .and.
-     1           (abs(abs(lep(i))-abs(ordered(k-1))).le.1)       .and.
-     2          (mod(max(abs(lep(i)),abs(ordered(k-1))),2).eq.0 .or.
-     3           abs(lep(i)).eq.abs(ordered(k-1)))   .and.
-     4         ((abs(lep(i)).eq.abs(finallep_default(k)))   .or.
-     5          (abs(lep(i)).eq.abs(finallep_default(k))+2) .or.
-     6          (abs(lep(i)).eq.abs(finallep_default(k))+4)) ) then
-               ordered(k) = lep(i)
-               do j = 1, i-1
-                  lep(j) = lep(j)
-               enddo
-               do j = i, nl
-                  lep(j) = lep(j+1)
-               enddo
-               nl = nl - 1
-               i = nl+1
             else
                i = i+1
             endif
@@ -3656,8 +3771,8 @@ c*************************************************************************
             if (lepgens .eq. 2) symmetryfactor = 4d0  
          end if
       CASE(Hjj_ZZ_ll,Hjjj_ZZ_ll,HAjj_ZZ_ll,GFHjj_ZZ_ll,
-     &     ZZjj_ll,WPWPjj,WMWMjj,ZZ,GFZZ,ZZA, Sp2jj_ZZ_ll
-     &     ,QCDWPWPjj,QCDWMWMjj,QCDZZjj_ll)
+     &     ZZjj_ll,WPWPjj,WMWMjj,ZZ,GFZZ,ZZA, Sp2jj_ZZ_ll, ZZJ, GFZZJ,
+     &     QCDWPWPjj,QCDWMWMjj,QCDZZjj_ll)
          if( (finallep(1).eq.finallep(3)) .and.    !ZZ(W) -> 4 e + ..and 
      1        (finallep(2).eq.finallep(4)) ) then  !ZZ(W) -> 4 mu + ..cases
             symmetryfactor = 0.5d0
@@ -4382,6 +4497,14 @@ c DIBOSON PLUS JET
          pout = " W- A j --> "//lepout(1:len_trim(lepout))//" A j"
          if (LOplusjet) pout = " W- A jj --> "//
      &        lepout(1:len_trim(lepout))//" A jj"
+      CASE(WWj,GFWWj)
+         pout = " W+ W- j --> "//lepout(1:len_trim(lepout))//" j"
+         if (LOplusjet) pout = " W+ W- jj --> "//
+     &        lepout(1:len_trim(lepout))//" jj"
+      CASE(ZZj,GFZZj)
+         pout = " Z Z j --> "//lepout(1:len_trim(lepout))//" j"
+         if (LOplusjet) pout = " Z Z jj --> "//
+     &        lepout(1:len_trim(lepout))//" jj"
 
       CASE(
      &   WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar,

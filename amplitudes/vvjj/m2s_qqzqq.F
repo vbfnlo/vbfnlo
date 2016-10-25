@@ -38,6 +38,8 @@ c
 #include "VBFNLO/utilities/tau_hel.inc"
 #include "VBFNLO/utilities/coupl_haddecay.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
       integer bos, nlo, ps_number
 
       real*8 xi(nx), p(0:3,max_p), v(0:3,max_v), rn, m2s
@@ -128,9 +130,9 @@ c
 *** end sophy qed
 
 c -----------------------------------------------------------------------
-         photon_hel=0
-      if ( init .eq. 0 ) then
 
+      if ( (init .eq. 0) .and. (.not. ldoblha) ) then
+         photon_hel=0
          if (bos.eq.2) then
             write(6,*) " "
             write(6,*) "Zjj amplitude square information:"
@@ -241,6 +243,10 @@ c -----------------------------------------------------------------------
          do i = 1,maxnumsubproc
             res(i) = 0
          enddo
+      else if ( (init .eq. 0) .and. ldoblha ) then
+        photon_hel=0
+        h = 1
+        init = 1
       else ! init .ne. 0
          do i = 1,nmax
             res(i) = 0
@@ -298,6 +304,11 @@ c wpp(mu) = wp(mu) - xp*qp(mu) and wmp(mu) = wm(mu) - xm*qm(mu)
                wmp(mu+1) = wm(mu+1) - xm*qm(mu)
             enddo
             do mu = 5,6
+               wpp(mu) = wp(mu)
+               wmp(mu) = wm(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
                wpp(mu) = wp(mu)
                wmp(mu) = wm(mu)
             enddo
@@ -450,6 +461,9 @@ c
 c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4) .. needed only for ZZ
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,4) + 1
          
          ie = sign(1,2-h)
@@ -514,6 +528,14 @@ c zet(mu) = ze(mu) - xxez*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                aut(mu+1) = au(mu+1) - xxua*qu(mu)
             enddo
             do mu = 5,6
+               zet(mu) = ze(mu)
+               zut(mu) = zu(mu)
+
+               aet(mu) = ae(mu)
+               aut(mu) = au(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
                zet(mu) = ze(mu)
                zut(mu) = zu(mu)
 
@@ -761,7 +783,10 @@ c
 c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4) .. needed only for ZZ
 
-        h = mod(h,4) + 1
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
+         h = mod(h,4) + 1
 
 	lsign(3) = sign(1,2-h)
 	lsign(4) = (-1)**(h+1)
@@ -833,6 +858,11 @@ c wpp(mu) = wp(mu) - xp*qp(mu) and wmp(mu) = wm(mu) - xm*qm(mu)
                wpp(mu) = wp(mu)
                wmp(mu) = wm(mu)
             enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
+               wpp(mu) = wp(mu)
+               wmp(mu) = wm(mu)
+            enddo
          endif   ! end of nlo = -4 or +-5
 
 c leptonic tensors
@@ -868,6 +898,9 @@ c
 c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4) .. needed only for ZZ
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,4) + 1
          
          ie = sign(1,2-h)
@@ -918,6 +951,14 @@ c zet(mu) = ze(mu) - xxez*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                aut(mu+1) = au(mu+1) - xxua*qu(mu)
             enddo
             do mu = 5,6
+               zet(mu) = ze(mu)
+               zut(mu) = zu(mu)
+
+               aet(mu) = ae(mu)
+               aut(mu) = au(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
                zet(mu) = ze(mu)
                zut(mu) = zu(mu)
 
@@ -982,6 +1023,9 @@ c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4), but only h=1 or 3 
 c	   	         contribute for ZZ -> 2l 2v (no righthanded neutrinos)
 
+         if (ldoblha) then
+           h = 2*blha_ranhelcomb-1
+         endif
          h = mod(h+2,4)
          
          ie = sign(1,2-h)
@@ -1045,6 +1089,14 @@ c zet(mu) = ze(mu) - xxez*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                aet(mu) = ae(mu)
                aut(mu) = au(mu)
             enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
+               zet(mu) = ze(mu)
+               zut(mu) = zu(mu)
+
+               aet(mu) = ae(mu)
+               aut(mu) = au(mu)
+            enddo
          endif  ! end if nlo = -4 or +-5 for bos=721
          
 c leptonic tensors
@@ -1096,6 +1148,9 @@ c select helicity: h ... random number for lepton helicity
 c			 combination (h=1:4), but only h=1 or 3 
 c	   	         contribute for ZZ -> 2l 2v (no righthanded neutrinos)
 
+         if (ldoblha) then
+           h = 2*blha_ranhelcomb-1
+         endif
          h = mod(h+2,4)
          
          ie = sign(1,2-h)
@@ -1156,6 +1211,14 @@ c zet(mu) = ze(mu) - xxez*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
                zet(mu) = ze(mu)
                zut(mu) = zu(mu)
                
+               aet(mu) = ae(mu)
+               aut(mu) = au(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
+               zet(mu) = ze(mu)
+               zut(mu) = zu(mu)
+
                aet(mu) = ae(mu)
                aut(mu) = au(mu)
             enddo
@@ -1365,6 +1428,9 @@ c     reset lzs to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
       
+      if (ldoblha) then
+        h = blha_ranhelcomb
+      endif
       if(photon_hel.eq.0) then
          h = mod(h,4) + 1
          ie = sign(1,2-h)
@@ -1540,6 +1606,9 @@ c     reset lzs to .true. to force recalculation of virtual contributions in qqw
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
 
+         if (ldoblha) then
+           h = blha_ranhelcomb
+         endif
          h = mod(h,2) + 1
          ie = 1
          iu = sign(1,1-h)
@@ -1762,6 +1831,25 @@ c
          write(6,*) "mu_f =",sqrt(mufsq(1,1)),sqrt(mufsq(2,1))
        end if   ! end ldebug
 
+ccccc no pdf-information required
+
+       if (ldoblha) then
+
+         physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+         physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+         physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+         physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+         fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+         fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+         fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+         fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+
+         call wbf_zh(xi,p,v,rn,physToDiag,fsign,bos,nlo,ps_number,
+     1            pdf,Qpdf,res,nmin,nmax)
+
+         return
+       endif
+
 c
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
@@ -1953,6 +2041,14 @@ c**************  end of process evaluation part one ******************
                aut(mu+1) = au(mu+1) - xxua*qu(mu)
             enddo
             do mu = 5,6
+               zet(mu) = ze(mu)
+               zut(mu) = zu(mu)
+
+               aet(mu) = ae(mu)
+               aut(mu) = au(mu)
+            enddo
+         elseif (nlo.eq.1) then
+            do mu = 1,6
                zet(mu) = ze(mu)
                zut(mu) = zu(mu)
 
@@ -2245,6 +2341,7 @@ c*****************************************************************
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       real*8 p(0:3,max_p), v(0:3,max_v), xi(nx)
       real*8 pdf(-6:6,2), res(maxnumsubproc)
@@ -2627,6 +2724,11 @@ c        pause
          print*," in call of wbf_zh. Must be 2,6, 34/43, 22 or 21"
          stop
       endif
+
+      if (ldoblha) then
+        return
+      endif
+
       NCmatrixelt(0,0)=uucc
       NCmatrixelt(0,1)=uuss
       NCmatrixelt(1,0)=ddcc

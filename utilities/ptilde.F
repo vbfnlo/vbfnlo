@@ -81,6 +81,10 @@ c qcdVVjj
 	  call qcdVVJJptildemake(p(0,1,1),xuz(1,2),v(0,1,1))
       
 
+c DIBOSON PLUS JET -- neutral ones
+      CASE(WWJ, ZZJ)
+          call VVJptildemake(p(0,1,1),xuz(1,2),v(0,1,1))
+
       CASE DEFAULT
          print *,"Error: ptilde routine for process "//
      &            "not implemented, ID = ",procID
@@ -979,6 +983,410 @@ c
         print*, "changed? ", (sqrt(v(1,ii,1)**2+v(2,ii,1)**2+v(3,ii,1)**2) ,ii=1,4)
 !       pause
       endif
+
+      end
+
+
+c********************** subroutine vvjptildemake *************************
+c
+c    this subroutine assigns ptilde momenta to the partons and the final
+c    state leptons in notation of Catani and Seymour.
+c
+c INPUT    p(mu,1:np,1)      np parton momenta for real emission graph
+c          v(mu,1:nv,1)      nv lepton momenta for real emission graph
+c
+c OUTPUT   np-1 parton momenta for Born amplitude
+c          p(mu,1:np-1,2...)    tilde momenta
+
+c          lepton momenta for born amplitude
+c          v(mu,1:nv,2.....)    tilde momenta
+
+c
+c          xuz               x_ija in the subtraction terms
+c
+c**************************************************************************
+c
+c based on wgajptildemake, but leaves position of momenta intact
+c
+c**************************************************************************
+      subroutine vvjptildemake(p,xuz,v)
+
+      implicit none
+
+#include "global.inc"
+
+      integer jj,ii,mu,nu,N,ic
+
+      double precision pin(0:3),pk(0:3),pa(0:3),pj(0:3),v(0:3,max_v,max_kin),
+     &    p(0:3,max_p,max_kin),pb(0:3),p4(0:3),p3(0:3),ptildea(0:3),ptildeij(0:3),
+     &    pipb,papb,k(0:3),Kt(0:3),bornmom(6,0:3),bornmomt(6,0:3),pipj,xija,zi,papj,papi,
+     &    vstore(0:3,max_v)
+c
+      logical ldebug
+      parameter (ldebug=.false.)
+
+      double precision ptildeai(0:3),ptildek(0:3),dipole(0:3,0:3)
+     &    ,pipk,pkpa,pipa
+      double precision xika,ui,xuz(2,2:max_kin),xiab,one
+      parameter (one=1d0)
+
+      double precision dotrr
+      external dotrr
+
+c  set the unused ptilde-momenta to zero
+         do ii = 2,max_kin
+            do jj=1,max_p
+            do mu = 0,3
+               p(mu,jj,ii) = 0d0
+             enddo
+            enddo
+         enddo
+         do ii = 2,max_kin
+            do jj=1,max_v
+            do mu = 0,3
+               v(mu,jj,ii) = 0d0
+             enddo
+            enddo
+         enddo
+
+c  store 3rd and 4th momenta
+         do mu=0,3
+         p3(mu)=p(mu,3,1)
+         p4(mu)=p(mu,4,1)
+         enddo
+
+c   get ptilde kinematics for p p -> j j + EW
+c   this involves kinematics of Catani Seymour 5.67,5.147
+
+c Dipoles 5.67
+
+      do mu=0,3
+      pa(mu) =p(mu,1,1)
+      pin(mu)=p(mu,4,1)
+      pk(mu) =p(mu,3,1)
+      enddo
+
+      pipk=dotrr(pin,pk)
+      pkpa=dotrr(pk,pa)
+      pipa=dotrr(pin,pa)
+
+      xika=one - pipk/(pkpa+pipa)! (pkpa+pipa-pipk)/(pkpa+pipa)
+
+      do mu=0,3
+      ptildeai(mu)=xika*pa(mu)
+      ptildek(mu) =pk(mu)+pin(mu)-(one-xika)*pa(mu)
+      enddo
+      ui=pipa/(pipa+pkpa)
+
+
+c   generate 1. output
+c
+      do mu=0,3
+      p(mu,1,2)=ptildeai(mu)       
+      p(mu,2,2)=p(mu,2,1)
+      p(mu,3,2)=ptildek(mu)
+      do jj=1,n_v
+         v(mu,jj,2)=v(mu,jj,1)
+      enddo
+      enddo
+
+      xuz(1,2)=xika
+      xuz(2,2)=ui
+
+c
+c start new dipole
+c
+      do mu=0,3
+      pa(mu)=p(mu,2,1)
+      pin(mu)=p(mu,4,1)
+      pk(mu)=p(mu,3,1)
+      enddo
+
+      pipk=dotrr(pin,pk)
+      pkpa=dotrr(pk,pa)
+      pipa=dotrr(pin,pa)
+
+      xika=one - pipk/(pkpa+pipa)!(pkpa+pipa-pipk)/(pkpa+pipa)
+
+      do mu=0,3
+      ptildeai(mu)=xika*pa(mu)
+      ptildek(mu) =pk(mu)+pin(mu)-(one-xika)*pa(mu)
+      enddo
+      ui=pipa/(pipa+pkpa)
+
+c   generate 2. output
+      do mu=0,3
+      p(mu,1,3)=p(mu,1,1)
+      p(mu,2,3)=ptildeai(mu)       
+      p(mu,3,3)=ptildek(mu)
+      do jj=1,n_v
+         v(mu,jj,3)=v(mu,jj,1)
+      enddo
+      enddo
+      xuz(1,3)=xika
+      xuz(2,3)=ui
+
+
+c
+c   start new dipole
+c
+      do mu=0,3
+      pa(mu)=p(mu,1,1)
+      pin(mu)=p(mu,4,1)
+      pb(mu)=p(mu,2,1)
+      enddo
+
+      pipb=dotrr(pin,pb)
+      papb=dotrr(pa,pb)
+      pipa=dotrr(pin,pa)
+      xiab=one- (pipa+pipb)/papb !(papb-pipa-pipb)/papb
+
+      do mu=0,3
+      ptildeai(mu)=xiab*pa(mu)
+      K(mu)=pa(mu)+pb(mu)-pin(mu)
+      Kt(mu)=ptildeai(mu)+pb(mu)
+      enddo
+
+      Call boostkinematics(k,kt,p(0,1,1),v(0,1,1),p(0,1,4),v(0,1,4))
+
+c   generate 3. output
+      do mu=0,3
+      p(mu,1,4)=ptildeai(mu)  
+      p(mu,2,4)=p(mu,2,1)
+      enddo
+      xuz(1,4)=xiab
+      xuz(2,4)=0d0 ! unused
+
+c   start new dipole
+c
+      do mu=0,3
+      pa(mu)=p(mu,2,1)
+      pin(mu)=p(mu,4,1)
+      pb(mu)=p(mu,1,1)
+      enddo
+
+      pipb=dotrr(pin,pb)
+      papb=dotrr(pa,pb)
+      pipa=dotrr(pin,pa)
+      xiab= one- (pipa+pipb)/papb!(papb-pipa-pipb)/(papb)
+
+      do mu=0,3
+      ptildeai(mu)=xiab*pa(mu)
+      K(mu)=pa(mu)+pb(mu)-pin(mu)
+      Kt(mu)=ptildeai(mu)+pb(mu)
+      enddo
+
+      Call boostkinematics(k,kt,p(0,1,1),v(0,1,1),p(0,1,5),v(0,1,5))
+
+c   generate 4. output
+      do mu=0,3
+      p(mu,1,5)=p(mu,1,1)
+      p(mu,2,5)=ptildeai(mu)  
+      enddo
+      xuz(1,5)=xiab
+      xuz(2,5)=0d0 ! unused
+
+
+c Dipoles 5.67
+
+      do mu=0,3
+      pa(mu) =p(mu,1,1)
+      pin(mu)=p(mu,3,1)
+      pk(mu) =p(mu,4,1)
+      enddo
+
+      pipk=dotrr(pin,pk)
+      pkpa=dotrr(pk,pa)
+      pipa=dotrr(pin,pa)
+
+      xika=one - pipk/(pkpa+pipa)! (pkpa+pipa-pipk)/(pkpa+pipa)
+
+      do mu=0,3
+      ptildeai(mu)=xika*pa(mu)
+      ptildek(mu) =pk(mu)+pin(mu)-(one-xika)*pa(mu)
+      enddo
+      ui=pipa/(pipa+pkpa)
+
+c   generate 5. output
+c
+      do mu=0,3
+      p(mu,1,6)=ptildeai(mu)       
+      p(mu,2,6)=p(mu,2,1)
+      p(mu,3,6)=ptildek(mu)
+      do jj=1,n_v
+         v(mu,jj,6)=v(mu,jj,1)
+      enddo
+      enddo
+      xuz(1,6)=xika
+      xuz(2,6)=ui
+
+c
+c start new dipole
+c
+      do mu=0,3
+      pa(mu)=p(mu,2,1)
+      pin(mu)=p(mu,3,1)
+      pk(mu)=p(mu,4,1)
+      enddo
+
+      pipk=dotrr(pin,pk)
+      pkpa=dotrr(pk,pa)
+      pipa=dotrr(pin,pa)
+
+      xika=one - pipk/(pkpa+pipa)! (pkpa+pipa-pipk)/(pkpa+pipa)
+
+      do mu=0,3
+      ptildeai(mu)=xika*pa(mu)
+      ptildek(mu) =pk(mu)+pin(mu)-(one-xika)*pa(mu)
+      enddo
+      ui=pipa/(pipa+pkpa)
+
+c   generate 6. output
+      do mu=0,3
+      p(mu,1,7)=p(mu,1,1)
+      p(mu,2,7)=ptildeai(mu)       
+      p(mu,3,7)=ptildek(mu)
+      do jj=1,n_v
+         v(mu,jj,7)=v(mu,jj,1)
+      enddo
+      enddo
+      xuz(1,7)=xika
+      xuz(2,7)=ui
+
+c
+c   start new dipole
+c
+      do mu=0,3
+      pa(mu)=p(mu,1,1)
+      pin(mu)=p(mu,3,1)
+      pb(mu)=p(mu,2,1)
+      p(mu,3,1)=p4(mu)
+      enddo
+
+      pipb=dotrr(pin,pb)
+      papb=dotrr(pa,pb)
+      pipa=dotrr(pin,pa)
+      xiab= one- (pipa+pipb)/papb!(papb-pipa-pipb)/papb
+
+      do mu=0,3
+      ptildeai(mu)=xiab*pa(mu)
+      K(mu)=pa(mu)+pb(mu)-pin(mu)
+      Kt(mu)=ptildeai(mu)+pb(mu)
+      enddo
+
+      Call boostkinematics(k,kt,p(0,1,1),v(0,1,1),p(0,1,8),v(0,1,8))
+
+      do mu=0,3
+      p(mu,3,1)=p3(mu)
+      enddo
+
+c   generate 7. output
+      do mu=0,3
+      p(mu,1,8)=ptildeai(mu)       
+      p(mu,2,8)=p(mu,2,1)
+      enddo
+      xuz(1,8)=xiab
+      xuz(2,8)=0d0 ! unused
+
+c   start new dipole
+c
+      do mu=0,3
+      pa(mu)=p(mu,2,1)
+      pin(mu)=p(mu,3,1)
+      pb(mu)=p(mu,1,1)
+      p(mu,3,1)=p4(mu)
+      enddo
+
+      pipb=dotrr(pin,pb)
+      papb=dotrr(pa,pb)
+      pipa=dotrr(pin,pa)
+      xiab= one- (pipa+pipb)/papb!(papb-pipa-pipb)/(papb)
+
+      do mu=0,3
+      ptildeai(mu)=xiab*pa(mu)
+      K(mu)=pa(mu)+pb(mu)-pin(mu)
+      Kt(mu)=ptildeai(mu)+pb(mu)
+      enddo
+
+      Call boostkinematics(k,kt,p(0,1,1),v(0,1,1),p(0,1,9),v(0,1,9))
+
+      do mu=0,3
+      p(mu,3,1)=p3(mu)
+      enddo
+
+c   generate 8. output
+      do mu=0,3
+      p(mu,1,9)=p(mu,1,1)
+      p(mu,2,9)=ptildeai(mu)       
+      enddo
+      xuz(1,9)=xiab
+      xuz(2,9)=0d0 ! unused
+
+
+c Dipoles 5.40
+
+      do mu=0,3
+      pa(mu) =p(mu,1,1)
+      pin(mu)=p(mu,3,1)
+      pj(mu) =p(mu,4,1)
+      enddo
+
+      papj=dotrr(pa,pj)
+      papi=dotrr(pa,pin)
+      pipj=dotrr(pin,pj)
+
+      xija=one - pipj/(papi+papj)! (papi+papj-pipj)/(papi+papj)
+
+      do mu=0,3
+      ptildea(mu)=xija*pa(mu)
+      ptildeij(mu) =pin(mu)+pj(mu)-(one-xija)*pa(mu)
+      enddo
+      zi=papi/(papi+papj)
+
+c   generate 9. output
+c
+      do mu=0,3
+      p(mu,1,10)=ptildea(mu)       !this is the intermediate gluon, dipole (13,4)
+      p(mu,2,10)=p(mu,2,1)
+      p(mu,3,10)=ptildeij(mu)
+      do jj=1,n_v
+         v(mu,jj,10)=v(mu,jj,1)
+      enddo
+      enddo
+      xuz(1,10)=xija
+      xuz(2,10)=zi
+
+
+      do mu=0,3
+      pa(mu) =p(mu,2,1)
+      pin(mu)=p(mu,3,1)
+      pj(mu) =p(mu,4,1)
+      enddo
+
+      papj=dotrr(pa,pj)
+      papi=dotrr(pa,pin)
+      pipj=dotrr(pin,pj)
+
+      xija=one - pipj/(papi+papj)! (papi+papj-pipj)/(papi+papj)
+
+      do mu=0,3
+      ptildea(mu)=xija*pa(mu)
+      ptildeij(mu) =pin(mu)+pj(mu)-(one-xija)*pa(mu)
+      enddo
+      zi=papi/(papi+papj)
+
+c   generate 10. output
+c
+      do mu=0,3
+      p(mu,1,11)=p(mu,1,1)       !this is the intermediate gluon, dipole (13,4)
+      p(mu,2,11)=ptildea(mu)
+      p(mu,3,11)=ptildeij(mu)
+      do jj=1,n_v
+         v(mu,jj,11)=v(mu,jj,1)
+      enddo
+      enddo
+      xuz(1,11)=xija
+      xuz(2,11)=zi
 
       end
 

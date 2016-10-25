@@ -289,7 +289,7 @@ c 1/q^2 behaviour
       LOGICAL FUNCTION NonResonance_kk(xm2, xmg, expo, rm2min, rm2max,
      &                                                R, weight, qsq)
 ****************************************************************************
-*    Calculates q² for atan((q²-xm2)/xmg)**expo / ((q²-xm2)²+xmg²) distribution
+*    Calculates q^2 for atan((q^2-xm2)/xmg)**expo / ((q^2-xm2)^2+xmg^2) distribution
 *    !!!!!!!!!!!   xm2 needs to be lower than rm2min  !!!!!!!!!!!!!!!!!!!!!
 *    INPUT
 *       rm2min       : lowerBound**2 of the distribution

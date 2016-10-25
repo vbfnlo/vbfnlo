@@ -58,6 +58,7 @@
          write(6,*) '------------------------------------------------'
 
          call printnfl(.true.)
+         lbquark = 0
       endif
 
       elseif (pdfchange) then
@@ -71,6 +72,7 @@
          write(6,*) '-----------------------------------------------'
 
          call printnfl(.true.)
+         lbquark = 0
       endif
 
       endif
@@ -1396,9 +1398,11 @@
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
+#include "tensor.inc"
 
       integer quark,i
       integer pdfchange
+      integer maxflav
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
      &   xxa,pdfqxa,pdfgxa,pdfqxxa,pdfgxxa,logomx, logomxxa,logx,omx,omxxa,
@@ -1406,6 +1410,12 @@
       parameter (nf=5d0,one=1d0,inv2=1d0/2d0,zero=0d0)
 
       external dotrr
+
+      if (lbquark .eq. 0) then
+        maxflav = 4
+      else
+        maxflav = 5
+      endif
 
       mufacsq=mufac**2
       xxa=x*xa
@@ -1430,19 +1440,19 @@
       call pdfproton( xa, mufac, pdftmp(-6) )
       pdfgxa=pdftmp(0)/xa
 
-      do quark=1,4  ! sum over quark gluon splittings
+      do quark=1,maxflav  ! sum over quark gluon splittings
       pdfqxa=pdfqxa+pdftmp(pdfchange*quark)/xa
       enddo
-      do quark=-4,-1
+      do quark=-maxflav,-1
       pdfqxa=pdfqxa+pdftmp(pdfchange*quark)/xa
       enddo
 
       call pdfproton( xxa, mufac, pdftmp(-6) )    
       pdfgxxa=pdftmp(0)/xxa
-      do quark=1,4  ! sum over quark gluon splittings
+      do quark=1,maxflav  ! sum over quark gluon splittings
       pdfqxxa=pdfqxxa+pdftmp(pdfchange*quark)/xxa
       enddo
-      do quark=-4,-1
+      do quark=-maxflav,-1
       pdfqxxa=pdfqxxa+pdftmp(pdfchange*quark)/xxa
       enddo
 

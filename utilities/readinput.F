@@ -32,6 +32,8 @@ c*************************************************************************
       character*(*) filename
      
 #include "readinput.inc"
+#include "global.inc"
+#include "BLHAhelper.inc"
       
       integer i,le,k,j
       character*250 line
@@ -94,7 +96,9 @@ cc     if (showinput) write(*,"(A,A,A)"), " reading input from file ",filename,"
       return
  77   CONTINUE
       print *," Open error on file ",filename
-      print *," Using default values."
+      if (.not.ldoblha) then
+        print *," Using default values."
+      endif
       usedefaults=.true.
 
       return

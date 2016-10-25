@@ -1,11 +1,18 @@
    
- -----------------------------------------------------
- VBFNLO, version 2.7.0 rc1 svn 6148
+ -----------------------------------------------------------------
+ VBFNLO, version 3.0.0 beta0 svn 7626
   (sub-program GGFLO)
- Comput. Phys. Commun. 180 (2009) 1661 [arXiv:0811.4559 [hep-ph]]
- arXiV: 1107.4038, arXiV: 1207.4975
- http://www.itp.kit.edu/~vbfnloweb/
- -----------------------------------------------------
+ Comput. Phys. Commun. 180 (2009) 1661[arXiv:0811.4559 [hep-ph]]
+ arXiV:1107.4038, arXiV:1207.4975, arXiv:1404.3940
+ http://www.itp.kit.edu/vbfnlo
+ -----------------------------------------------------------------
+ Process-specific references (please cite as well if appropriate):
+ V. Del Duca, W. Kilgore, C. Oleari et al.
+ Nucl. Phys. B616 (2001) 367, e-Print: hep-ph/0108030
+ F. Campanario, M. Kubocz, D. Zeppenfeld
+ Phys.Rev. D84 (2011) 095025, e-Print: arXiv:1011.3819 [hep-ph]
+ 
+ -----------------------------------------------------------------
    
    
    
@@ -247,21 +254,22 @@
  SMEARING           =      T
  SMEAR_VALUE        =       0.20000000000000001     
  CALC_ERROR_GNUPLOT =      F
+ CALC_ERROR_ROOT    =      F
  CALC_ERROR_1D      =      T
  CALC_ERROR_2D      =      F
  
 HIST_ID1      =      0.00    250.00  # dS/dpT_j (fb/GeV)
 HIST_ID2      =      0.00    500.00  # dS/dpTmax_j (fb/GeV)
 HIST_ID3      =      0.00    200.00  # dS/dpTmin_j (fb/GeV)
-HIST_ID4      =     -5.00      5.00  # dS/deta_j (fb)
-HIST_ID5      =     -5.00      5.00  # dS/deta_j1 (fb)
-HIST_ID6      =     -5.00      5.00  # dS/deta_j2 (fb)
+HIST_ID4      =     -5.00      5.00  # dS/dy_j (fb)
+HIST_ID5      =     -5.00      5.00  # dS/dy_j1 (fb)
+HIST_ID6      =     -5.00      5.00  # dS/dy_j2 (fb)
 HIST_ID7      =      0.00    500.00  # dS/dpTmax_l (fb/GeV)
 HIST_ID8      =      0.00    200.00  # dS/dpTmin_l (fb/GeV)
 HIST_ID9      =      0.00      5.00  # dS/d|eta|max_l (fb)
 HIST_ID10     =      0.00      5.00  # dS/d|eta|min_l (fb)
 HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
-2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/deta_jj dm_jj (fb/GeV)
+2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/dy_jj dm_jj (fb/GeV)
  
  -----------------------------------------------
  
@@ -270,6 +278,15 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
    
  Initialising FF ..
    
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
  ====================================================
    FF 2.0, a package to evaluate one-loop integrals
  written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
@@ -369,6 +386,15 @@ total number of errors and warnings
 vbffferr: no errors
 the warning system has been disabled
  
+ vbfquadffopen: error: could not open /itp/scratch/rauch/vbfquadnlotest/binaryrelease30/share/VBFNLO/ff/fferr.dat                                                     
+         adjust path in vbfquadffopen (vbfquadffinit.f)
+vbfquadfferr:  warning cannot open fferr.dat with error texts
+ 
+total number of errors and warnings
+===================================
+vbfquadfferr: no errors
+the warning system has been disabled
+ 
  
   result (LO):    3.4057749798341003E-002  +-    1.5454504653719246E-005  fb     4.5377350956028378E-002 %
  
@@ -389,7 +415,7 @@ fferr: no errors
   
   
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     VBFNLO 2.7.0 rc1 svn 6148
+     VBFNLO 3.0.0 beta0 svn 7626
    
   GLUON FUSION (1-loop):
   PROCESS:         4107   :   p p --> H jj --> Z Z jj -->  e- e+ ve ve~ jj

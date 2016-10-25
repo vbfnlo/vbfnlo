@@ -191,25 +191,27 @@ c       bos0 = 39   ==>  sharp Spin-2 resonance for Spin-2-->V1 V2 decay
      1         f10.4," GeV" )
  80   format ( " Minimal mom.transfer or mass for parton pair: ",f8.2,
      1         " MeV" )
-      write(6,*)
-      write(6,*) "       phase space generator information  "
-      write(6,*) "-----------------------------------------------"
-      write(6,*)
-      do i = 0,2
-         write(6,72) bos(i),sqrt(rm2(i)),rmg(i)/sqrt(rm2(i))
-         write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
-      enddo
-      write(6,*)
-c      write(6,10) ptjmin
-c      write(6,20) ejmin
-c      write(6,30) yjmin
-c      write(6,40) yjmax
-c      write(6,50) infoj
-      write(6,60) sqrt(s)
-      write(6,80) sqrt(m2min)*1000.d0
-      write(6,*)
-      write(6,*) "-----------------------------------------------"
-      write(6,*)
+      if (.not.ldoblha) then
+        write(6,*)
+        write(6,*) "       phase space generator information  "
+        write(6,*) "-----------------------------------------------"
+        write(6,*)
+        do i = 0,2
+           write(6,72) bos(i),sqrt(rm2(i)),rmg(i)/sqrt(rm2(i))
+           write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
+        enddo
+        write(6,*)
+c        write(6,10) ptjmin
+c        write(6,20) ejmin
+c        write(6,30) yjmin
+c        write(6,40) yjmax
+c        write(6,50) infoj
+        write(6,60) sqrt(s)
+        write(6,80) sqrt(m2min)*1000.d0
+        write(6,*)
+        write(6,*) "-----------------------------------------------"
+        write(6,*)
+      endif
       
       end
 C

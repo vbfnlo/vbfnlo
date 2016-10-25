@@ -7,6 +7,7 @@
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/coupl.inc"
 *#include "VBFNLO/utilities/mssm.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       integer Isign(4+n_v),gsign,iflavF1,iflavF3,isigF,isigA,isigG,iorder,
      $     iinsA,iinsG,k,i,mu,iisig(3,4)
@@ -1384,6 +1385,24 @@ c     sum over helicities
          udsc(mu) = res(5,mu-1)
          ducs(mu) = res(6,mu-1)
       enddo
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+          endif
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
 
 
       return

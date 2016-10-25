@@ -1,5 +1,5 @@
 dnl name / version / bugreports / tarball name
-AC_INIT([VBFNLO],[2.7.1beta1],[vbfnlo@itp.kit.edu],[VBFNLO])
+AC_INIT([VBFNLO],[3.0.0beta0],[vbfnlo@itp.kit.edu],[VBFNLO])
 
 dnl sanity check
 AC_CONFIG_SRCDIR([src/vbfnlo_main.F])
@@ -117,6 +117,9 @@ dnl set compiler flags, depending on requested options
 
 VBFNLO_SET_FLAGS
 
+dnl set naming conventions for Fortran-C linking
+
+VBFNLO_CFORTRANLINK
 
 
 dnl Makefiles to be generated
@@ -156,6 +159,8 @@ AC_CONFIG_FILES([include/Makefile
 		 lib/Makefile
 		 src/Makefile
 		 Makefile])
+
+AC_CONFIG_HEADERS([utilities/VBFNLOConfig.h])
 
 VBFNLO_SUMMARY
 

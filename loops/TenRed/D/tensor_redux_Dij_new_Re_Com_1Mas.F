@@ -1228,7 +1228,7 @@ c                       iorder(3)=1
          		z33=z33-z31*z13-z32*z23
          		iz33=1d0/z33
            det=-z11*z22*z33
-c§§§               print*, "det4",det         
+c               print*, "det4",det         
 
 
        PRr(1) = (C0r_134 - C0r_234 - D0r*r1   )

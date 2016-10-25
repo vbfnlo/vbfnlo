@@ -98,23 +98,25 @@ c cutoff for numerical purposes
      1         "  to ",f12.3," GeV" )
  72   format ( " boson has mass ",f8.2," GeV and width ",
      1         f10.4," GeV" )
-      write(6,*)
-      write(6,*) "--------------------PHASE SPACE--------------------"
-      write(6,*)
-      do i = 1,3
-         if (rmg(i).eq.0d0) then
-            write(6,72) sqrt(rm2(i)),rmg(i)
-            write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
-         else
-            write(6,72) sqrt(rm2(i)),rmg(i)/sqrt(rm2(i))
-            write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
-         endif
-      enddo
-      write(6,*)
-      write(6,60) sqrt(s)
-      write(6,*)
-      write(6,*) "---------------------------------------------------"
-      write(6,*)
+      if (.not.ldoblha) then
+        write(6,*)
+        write(6,*) "--------------------PHASE SPACE--------------------"
+        write(6,*)
+        do i = 1,3
+           if (rmg(i).eq.0d0) then
+              write(6,72) sqrt(rm2(i)),rmg(i)
+              write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
+           else
+              write(6,72) sqrt(rm2(i)),rmg(i)/sqrt(rm2(i))
+              write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
+           endif
+        enddo
+        write(6,*)
+        write(6,60) sqrt(s)
+        write(6,*)
+        write(6,*) "---------------------------------------------------"
+        write(6,*)
+      endif
 
       end
 

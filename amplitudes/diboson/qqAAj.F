@@ -2,6 +2,8 @@ c****************subroutine QQAAJ *************************************
 c
 c	Michael Rauch, <rauch@particle.physik.uni-karlsruhe.de>
 c	Last modified: February 2011
+C     Francisco Campanario, francam@particle.uni-physik.uni-karlsruhe.de
+c      Last modified:  April 2012
 C
 C  QQAA calculates the matrix elements**2 for 
 C        q1 q1bar    ---->   A A g,   
@@ -25,7 +27,8 @@ c       isig is the helicity of partons 1 and 2
 c
 c*********************************************************************
 
-      subroutine qqAAj(pbar,sign, qbar, gsign, uuaaj, ddaaj)
+      subroutine qqAAj(pbar,sign, qbar, gsign, nlo, N, uuaaj, ddaaj,
+     &                 ps_number)
 
       implicit none
 
@@ -48,7 +51,7 @@ c variables for the main part of the program
       double precision  p(0:3,2+n_v)
 
       integer  sign(2+n_v), gsign, mu, i, j, k, isig
-      integer  ifl(2), lh, l
+      integer  ifl(2), lh, l, nlo, N, ps_number
 
       double precision fqa1(0:4,2),fqa2(0:4,2),fqa3(0:4,2)
       double precision pq(0:4,2)
@@ -94,8 +97,8 @@ c---------------------------- BEGIN CODE -----------------------
 c initialize & precompute stuff needed below:
 
 c fix strong coupling gs**2 for the two quarks:
-      fpials(2) = fpi*als(1,1)
-      fpials(3) = fpi*als(2,1)
+      fpials(2) = fpi*als(1,N)
+      fpials(3) = fpi*als(2,N)
 c      fpials(2) = fpi*alfas
 
 c define flavors of external quarks for the 2 NC subprocesses

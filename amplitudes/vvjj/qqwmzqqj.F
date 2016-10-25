@@ -45,6 +45,7 @@ c
 c---------------------------------------------------------------------
 c
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "tensorw.inc"
 c
 c electroweak couplings are taken from KOPPLN
@@ -2820,6 +2821,24 @@ c      print*,"warning: p43  = ",p43(4,2) ," < qsqAmin for real emission"
          do k = 1,4
             res(k,2) = 0      ! no graphs with gluon on upper line
          enddo
+      endif
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),3)
+          endif
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
       endif
 
       do j = 2,3

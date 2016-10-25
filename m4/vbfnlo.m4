@@ -54,7 +54,8 @@ dnl now let's check if quad precision works
   if (test "x$enable_quad" = "xyes"); then
 dnl check whether we know how to compile in quad precision
     if (test "x$VBFFC" = "xgfortran"); then
-      QUADFCFLAGS="-fdefault-real-8 "
+      AM_FCFLAGS="$AM_FCFLAGS -DQREAL=REALPART -DQIMAG=IMAGPART -DQCMPLX=COMPLEX"
+      QUADFCFLAGS="-fdefault-real-8 -DQUAD=1 -DKIND=2"
     elif (test "x$VBFFC" = "xifort"); then
       QUADFCFLAGS="-DDBLE=QEXT -DDIMAG=QIMAG -DDCONJG=QCONJG -DDCMPLX=QCMPLX -r16 -DQUAD=1 -DKIND=2"
     else 
@@ -68,7 +69,7 @@ dnl check whether we know how to compile in quad precision
       AC_LINK_IFELSE(
         AC_LANG_SOURCE([[       double precision x
                                 x=1e-20
-                                x=1+x; 
+                                x=1+x 
                                 if (x.eq.1d0) then
                                   print*, "ERROR"
                                 else
@@ -673,6 +674,8 @@ dnl so they are compiled with -O1 (which at least improves the time by a factor 
 
   AC_MSG_RESULT([$VBFFC])
 
+  AC_FC_LIBRARY_LDFLAGS
+
 ])
 
 dnl check for MadGraph comparison mode and set flags
@@ -736,6 +739,22 @@ fi
   AM_CONDITIONAL(WITH_LOOPS,[test "x$enable_NLO" == "xyes" -o "$ggf" -o "$diboson" -o "$all" -o "$all_except_hexagons"])
 
 ])
+
+
+dnl set naming conventions for Fortran-C linking
+
+AC_DEFUN([BEFORE_CFORTRANLINK],
+[
+  oldfcflags="$FCFLAGS"
+  FCFLAGS="$AM_FCFLAGS"
+])
+AC_DEFUN([VBFNLO_CFORTRANLINK],
+[
+  AC_REQUIRE([BEFORE_CFORTRANLINK])
+  AC_FC_WRAPPERS
+  FCFLAGS=$oldfcflags
+])
+
 
 AC_DEFUN([VBFNLO_SUMMARY],
 [

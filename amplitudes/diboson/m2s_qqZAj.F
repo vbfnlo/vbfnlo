@@ -19,7 +19,7 @@ c       Last modified: June 2011 (rauch)
 c
 c***************************************************************************
 
-      SUBROUTINE m2s_qqZAj(bos,nlo,lok,xi,p,v,rn,xuz,m2s)
+      SUBROUTINE m2s_qqZAj(bos,nlo,lok,xi,p,v,rn,xuz,m2s,ps_number)
 
       IMPLICIT NONE
 
@@ -30,7 +30,7 @@ c declare input/output variables
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/lha.inc"
 
-      INTEGER bos
+      INTEGER bos, ps_number
       DOUBLE PRECISION xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), 
      1       rn(1), xuz, m2s(0:3)
       logical lok(3)
@@ -100,6 +100,7 @@ c---------------------------- BEGIN CODE --------------------------------
          write(6,*) " "
 
          call printnfl(.false.)
+         h=1
          print*," "
          print*," creal = ",crealVV," cvirtual = ",cvirtVV
          print*," "
@@ -155,6 +156,7 @@ c for the NLO contributions x1 = x*y in my notes with x=xuz, y=xi(i)
       q_sf = sqrt(mufsq(1,1))
       call pdfproton( xi(1), q_sf, pdf(-6,1,1) )     ! f_a(y)=f_a(x1/z)
 
+      if (nlo.gt.0) then
       q_sf = sqrt(mufsq(1,2))                        ! f_a(x1) for upper line 
       call pdfproton( x1, q_sf, pdf(-6,1,2) )        !   NLO correction
 
@@ -166,11 +168,13 @@ c for the NLO contributions x1 = x*y in my notes with x=xuz, y=xi(i)
             pdf(i,1,3) = pdf(i,1,1)
          enddo
       endif
+      endif
 
       x2 = xi(2)*xuz
       q_sf = sqrt(mufsq(2,1))
       call pdfproton( xi(2), q_sf, pdf(-6,2,1) )     ! f_b(y)=f_a(x2/z)
 
+      if (nlo.gt.0) then
       q_sf = sqrt(mufsq(2,3))                        ! f_b(x2) for lower line 
       call pdfproton( x2, q_sf, pdf(-6,2,3) )        !   NLO correction
 
@@ -182,8 +186,10 @@ c for the NLO contributions x1 = x*y in my notes with x=xuz, y=xi(i)
             pdf(i,2,2) = pdf(i,2,1)
          enddo
       endif
+      endif
       
 
+      if (nlo.gt.0) then
 c and fill the coefficient functions for the finite subtraction terms
 C Note that the color factors TR and C2 are NOT!!! included here
 
@@ -226,6 +232,7 @@ C error of Int_x1^1 dz log(1-z) is less than 1E-4/(1-x1). see notes p 28.4
             pdf(0,j-1,j)=pdf(0,j-1,1)*Ax(j)*tgs2oqsq(j)*1d0/(1d0-z)
          endif
       enddo
+      endif
 
 C********************************************************************
 
@@ -249,7 +256,7 @@ c   physToDiag(ext.momentum label) = Feynman diagram label
       gsign    = 1          !outgoing gluon
 
       call qq_ZAj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     &             pdf,res,nmin,nmax)
+     &             pdf,res,nmin,nmax,ps_number)
 
 C*******************  qbar1 q1 ---> Z A g   **********************
 
@@ -262,7 +269,7 @@ C*******************  qbar1 q1 ---> Z A g   **********************
       gsign    = 1
 
       call qq_ZAj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     &             pdf,res,nmin,nmax)
+     &             pdf,res,nmin,nmax,ps_number)
 
 C*******************  g q1 ---> Z A q1  **********************************
 
@@ -275,7 +282,7 @@ C*******************  g q1 ---> Z A q1  **********************************
       gsign    = -1
 
       call qq_ZAj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 C*******************  qbar1 g ---> Z A qbar1   **********************
 
@@ -288,7 +295,7 @@ C*******************  qbar1 g ---> Z A qbar1   **********************
       gsign    = -1
 
       call qq_ZAj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 C*******************  g q1bar ---> Z A q1bar  **********************
 
@@ -301,7 +308,7 @@ C*******************  g q1bar ---> Z A q1bar  **********************
       gsign    = -1
 
       call qq_ZAj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 C*******************  q1 g ---> Z A q1   **********************
 
@@ -314,7 +321,7 @@ C*******************  q1 g ---> Z A q1   **********************
       gsign    = -1
 
       call qq_ZAj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 c*****************  end of process evaluation  *********************
 
@@ -361,7 +368,7 @@ c******************************************************************
 
       subroutine qq_ZAj(xi,p,v,physToDiag,fsign,gsign,bos, 
      1                    nlo,lok,xuz,
-     1                    pdf,res,nmin,nmax)
+     1                    pdf,res,nmin,nmax,ps_number)
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
@@ -370,7 +377,7 @@ c******************************************************************
       double precision p(0:3,max_p,max_kin),v(0:3,max_v,max_kin),xi(nx),xuz
       double precision pdf(-6:6,2,3), res(maxnumsubproc,0:3)
       integer physToDiag(3), fsign(3+n_v), 
-     1        gsign, bos, nlo, nmin, nmax
+     1        gsign, bos, nlo, nmin, nmax, ps_number
       logical lok(3)
 c
 c qq_ZAj calls the amplitude square routines 
@@ -491,7 +498,7 @@ c calculate the matrix elements pa + pb -> 2l 2a p1
          endif
 #endif
          
-         call qqZAj(pbar,fsign,qbar,gsign,uuza,ddza,0)
+         call qqZAj(pbar,fsign,qbar,gsign,0,1,uuza,ddza,ps_number)
 
 #ifdef WITH_MADGRAPH
          if (ldebug) then
@@ -706,8 +713,8 @@ c************************************************************
             iflav(3)  =if1*fsign(physToDiag(3))
             k=Fl_VVg(iflav,j)
             if (lok(1)) then
-               res(k,1)=pdf(sign1*iflav(1),1,2*j-3)  !1 for j=2;3 for j=3
-     &              *pdf(sign2*iflav(2),2,4-j)      !2 for j=2;1 for j=3
+               res(k,1)=pdf(sign1*iflav(1),1,1)  !1 for j=2;3 for j=3
+     &              *pdf(sign2*iflav(2),2,1)      !2 for j=2;1 for j=3
      &              *NCmatrixelt(mod(if1,2),2,1)*polcolg
             else
                res(k,1) = 0

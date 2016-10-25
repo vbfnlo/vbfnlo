@@ -56,16 +56,29 @@ c set up variables in common block BLIPSIqqVVj for call of LIPSVVJ
       enddo
 
       rm2minx = 1d-3
-      rm2maxx = s/2d0                 ! for intermediate particle X -> V1 V2
+      rm2maxx = s                 ! for intermediate particle X -> V1 V2
 
       if ((floops .eq. 2).and.inFLoops) then 
         if (narrowwidth.eq.1) then
           ihiggs = 2   ! exclusively Higgs peak
+c need at least both masses
+          rm2minx = (sqrt(rm2(1))+sqrt(rm2(2)))**2
         else
           ihiggs = 1   ! need continuum for gg->H*->VV
         endif
       elseif ((floops .eq. 3).and.inFLoops) then
-        ihiggs = 1   ! everything
+        if (narrowwidth.eq.1) then
+c need at least both masses
+          rm2minx = (sqrt(rm2(1))+sqrt(rm2(2)))**2
+ccc if Higgs peak on threshold, this is not well-mapped at the moment
+          if (xm2(6) .lt. rm2minx) then ! Higgs peak kinematically inaccessible
+            ihiggs = 0   ! only continuum
+          else
+            ihiggs = 1   ! everything
+          endif
+        else
+          ihiggs = 1   ! everything
+        endif
       else
         ihiggs = 0   ! only continuum
       endif
@@ -110,7 +123,7 @@ c cutoff for numerical purposes
       m2min = 0.01d0**2
 
 c      ptjmin = 0.0d0
-      ptjmin = ptmin_def(1)
+      ptjmin = max(ptmin_def(1),10d0)
 
  60   format ( " machine energy = ", f10.1, "  GeV" )
  70   format ( " integration range for boson ",i3," = ",f10.3,
@@ -118,20 +131,22 @@ c      ptjmin = 0.0d0
  72   format ( " boson has mass ",f8.2," GeV and width ",
      1         f10.4," GeV" )
  80   format ( " configuration ", i3 )
-      write(6,*)
-      write(6,*) "--------------------PHASE SPACE--------------------"
-      write(6,*)
-      do i = 1,2
-         write(6,72) sqrt(rm2(i)),rmg(i)/sqrt(rm2(i))
-         write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
-      enddo
-      write(6,*)
-      write(6,60) sqrt(s)
-      write(6,*)
-      write(6,80) ihiggs
-      write(6,*)
-      write(6,*) "---------------------------------------------------"
-      write(6,*)
+      if (.not.ldoblha) then
+        write(6,*)
+        write(6,*) "--------------------PHASE SPACE--------------------"
+        write(6,*)
+        do i = 1,2
+           write(6,72) sqrt(rm2(i)),rmg(i)/sqrt(rm2(i))
+           write(6,70) bos(i),sqrt(rm2min(i)),sqrt(rm2max(i))
+        enddo
+        write(6,*)
+        write(6,60) sqrt(s)
+        write(6,*)
+        write(6,80) ihiggs
+        write(6,*)
+        write(6,*) "---------------------------------------------------"
+        write(6,*)
+      endif
 
       end
 
@@ -244,8 +259,6 @@ c this part for full calculation done afterwards
         W = W * rmg(1)/2.0d0
         q(4,2) = rm2(2)
         W = W * rmg(2)/2.0d0
-c need at least both masses
-        rm2minx = (sqrt(q(4,1))+sqrt(q(4,2)))**2
       endif
 
 

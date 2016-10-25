@@ -41,8 +41,8 @@ c     and printout for scales.
 
       real*8 qsq
       integer mu
-      real*8 alphas5
-      external alphas5
+      real*8 alphas5, alphas5_hardwired
+      external alphas5, alphas5_hardwired
 
 
 ** clrCT is the counterterm for qqV
@@ -52,6 +52,7 @@ c     and printout for scales.
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),Bk(6,6,6),
      -     Vk(4,5),Ak(4,5)
 
+      if (ldoscales) then
 
       print*," "
       print*,"Information on scale setting in InitScales "
@@ -118,15 +119,15 @@ c dynamic scale = invariant primary boson mass
      5     WPH, WPH_AA, WPH_mu, WPH_tau, WPH_bbar, WPH_WW, WPH_ZZ_ll,  WPH_ZZ_lnu,
      5     WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar, WMH_WW, WMH_ZZ_ll,  WMH_ZZ_lnu,
      5     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll,  WPHJ_ZZ_lnu,
-     5     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll,  WMHJ_ZZ_lnu
-     6     )       
+     5     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll,  WMHJ_ZZ_lnu)
             print*,"Dynamical factorization scale chosen:"
             print*,"      invariant VH mass "
          CASE (WW, GFWW, WPZ, WMZ, WPA, WMA, ZZ, GFZZ, ZA, GFZA, AA, GFAA,
      1        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
      2        ZZhad,GFZZhad,
      3        WPhadZ,WPZhad,WMhadZ,WMZhad,
-     4        WPAJ, WMAJ, WPZJ, WMZJ
+     4        WPAJ, WMAJ, WPZJ, WMZJ,
+     5        WWJ, GFWWj, ZZJ, GFZZj
      6     )       
             print*,"Dynamical factorization scale chosen:"
             print*,"      invariant VV mass "
@@ -175,6 +176,7 @@ c dynamic scale = minimal ET
      &        ZZWMhad, WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
      &        WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA,
      &        WPAJ, WMAJ, WPZJ, WMZJ,
+     &        WWJ, GFWWj, ZZJ, GFZZj,
      &        WPJ,WMJ
      &       )
             print*,"Dynamical factorization scale chosen:"
@@ -198,7 +200,13 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
          SELECT CASE(procID)
          CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,
-     &        QCDZAjj_l,QCDZAjj_n, ZAjj, ZAjj_n)
+     &        QCDZAjj_l,QCDZAjj_n, ZAjj, ZAjj_n,
+     &        WPZ,WMZ, WPZJ, WMZJ,
+     1        WPA,WPAJ,WMA,WMAJ,
+     2        WW,WWJ,GFWW,GFWWj,
+     2        ZZ,ZZJ,GFZZ,GFZZj,
+     2        ZA,GFZA,
+     2        AA,GFAA )
             print*,"Dynamical factorization scale chosen:"
             print*,"      mu_F = ( sum(pT partons) + sum( ET V ) )/2 "
        CASE DEFAULT
@@ -316,7 +324,8 @@ c dynamic scale = invariant VV mass
      &        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
      &        ZZhad,GFZZhad,
      &        WPhadZ,WPZhad,WMhadZ,WMZhad,
-     &        WPAJ, WMAJ, WPZJ, WMZJ)
+     &        WPAJ, WMAJ, WPZJ, WMZJ,
+     &        WWJ, GFWWj, ZZJ, GFZZj)
             print*,"Dynamical value for alphas chosen:"
             print*,"alphas = alpha(invariant VV mass)"
          CASE(ZZWP, ZZWM, WWZ, WWWP, WWWM, ZZZ, WWA, ZZA, ZZnA, WPZA, WMZA,
@@ -366,8 +375,8 @@ c dynamic scale = minimal ET
      &        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, 
      &        ZZWMhad, WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
      &        WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA,
-     &        WPAJ, WMAJ, WPZJ, WMZJ,
-     &        WPJ,WMJ)
+     &        WPAJ, WMAJ, WPZJ, WMZJ, WPJ, WMJ,
+     &        WWJ, GFWWj, ZZJ, GFZZj)
             print*,"Dynamical value for alphas chosen:"
             print*,"alphas = alpha(min(ET_V))"   
          CASE(
@@ -388,7 +397,13 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
          SELECT CASE(procID)
          CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,
-     &        QCDZAjj_l,QCDZAjj_n, ZAjj, ZAjj_n)
+     &        QCDZAjj_l,QCDZAjj_n,ZAjj,ZAjj_n,
+     &        WPZ,WMZ, WPZJ, WMZJ,
+     1        WPA,WPAJ,WMA,WMAJ,
+     2        WW,WWJ,GFWW,GFWWj,
+     2        ZZ,ZZJ,GFZZ,GFZZj,
+     2        ZA,GFZA,
+     2        AA,GFAA )
             print*,"Dynamical renormalization scale chosen:"
             print*,"      mu_R = ( sum(pT partons) + sum( ET V ) )/2 "
          CASE DEFAULT
@@ -448,6 +463,10 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
 ** Setting LO alfas(MZ)
       alfas_lo = alphas5(xmz**2D0,0)
 
+      else !ldoscales
+c just some useful defaults
+        alfas_lo = alphas5_hardwired(91.1876d0**2D0,0)
+      endif !ldoscales
 
       RETURN
       END
@@ -516,8 +535,9 @@ c VBF: Hjjj
 
 c DIBOSON and DIBOSON PLUS JET
 c including WH, WHj and W, Wj          
-      CASE(WW, GFWW, WPA, WMA, WPZ, WMZ, WMAJ,WPAJ,WMZJ,WPZJ,
+      CASE(WW, GFWW, WPA, WMA, WPZ, WMZ, 
      &     ZZ, GFZZ, ZA, GFZA, AA, GFAA,
+     &     WMAJ,WPAJ,WMZJ,WPZJ,WWJ,GFWWj,ZZJ,GFZZj,
      &     WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
      &     ZZhad,GFZZhad,
      &     WPhadZ,WPZhad,WMhadZ,WMZhad,

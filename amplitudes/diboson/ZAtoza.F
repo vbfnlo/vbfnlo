@@ -30,6 +30,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/process.inc"
 C  
 C LOCAL VARIABLES 
 C  
@@ -74,8 +75,12 @@ C ----------
 
          AMP(3)=0d0
 
-      atoza(mu) = -AMP(1)-AMP(2)-AMP(3)
+c no AZA vertex in SM
+      atoza(mu) = -AMP(3)
+      if (narrowwidth.eq.0) then
+      atoza(mu) = atoza(mu)  -AMP(1)-AMP(2)
 c      print*, amp(3)
+      endif
       enddo
       atoza(4) = dcmplx(q(0),q(3))
       atoza(5) = dcmplx(q(1),q(2))
@@ -114,6 +119,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/coupl.inc"          
 #include "VBFNLO/utilities/global.inc"          
+#include "VBFNLO/utilities/process.inc"
 C  
 C LOCAL VARIABLES 
 C  
@@ -158,7 +164,11 @@ C ----------
 
          AMP(3)=0d0
          AMP(4)=0d0
-      ztoza(mu) = -AMP(1)-AMP(2)-AMP(4)-AMP(3)
+c no ZZA vertex in SM
+      ztoza(mu) = -AMP(3)
+      if (narrowwidth.eq.0) then
+      ztoza(mu) = ztoza(mu) -AMP(1)-AMP(2)-AMP(4)
+      endif
 
 c      print*, abs(amp(4)/ztoza(mu))
       enddo
@@ -197,6 +207,7 @@ C GLOBAL VARIABLES
 C  
 #include "VBFNLO/utilities/coupl.inc"          
 #include "VBFNLO/utilities/global.inc"          
+#include "VBFNLO/utilities/process.inc"
 C  
 C LOCAL VARIABLES 
 C  
@@ -238,7 +249,10 @@ c
       CALL VVHAXX(W(1,6   ),W(1,4   ),W(1,1   ),2,1,AMP(1   ))            
       CALL VVHAXX(W(1,7   ),W(1,4   ),W(1,1   ),1,1,AMP(2   ))            
 
-      myhza = +AMP(   1)+AMP(   2)
+      myhza = +AMP(   1)
+      if (narrowwidth.eq.0) then
+      myhza = myhza     +AMP(   2)
+      endif
 
       END
 

@@ -39,6 +39,7 @@ c*************************************************************************
 
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       double precision x(nx) 
       double precision rand(max_PS_dim)
@@ -57,12 +58,6 @@ c     to convert "NLO" to box- and pentagon call conventions
 c     masses and widths
       double precision XM2s(6),XMGs(6)
       COMMON /BKOPOUshort/ XM2s,XMGs
-      double precision BWNE,BWUD,BWTB,BZNN,BZEE,BZUU,BZDD,BZTT,
-     &                BHWW,BHZZ,BHGG,BHTT,BHBB,BHCC,BHTAU,BHMU,
-     &                BHGAM, BHGAMZ, XGW, XGZ, XGH, GAMT
-      COMMON /BRANCH/ BWNE,BWUD,BWTB,BZNN,BZEE,BZUU,BZDD,BZTT,
-     &                BHWW,BHZZ,BHGG,BHTT,BHBB,BHCC,BHTAU,BHMU,
-     &                BHGAM, BHGAMZ, XGW, XGZ, XGH, GAMT
 
 
 c     external matrixelement functions
@@ -82,6 +77,8 @@ c     external matrixelement functions
       double precision m2s_qqZZ
       double precision m2s_qqZA
       double precision m2s_qqAA
+      double precision m2s_qqVVj2
+      double precision m2s_qqZZj2
       double precision m2s_qqWWZ
       double precision m2s_qqZZZ
       double precision m2s_qqZZW
@@ -119,6 +116,8 @@ c     external matrixelement functions
       external m2s_qqZZ
       external m2s_qqZA
       external m2s_qqAA
+      external m2s_qqVVj2
+      external m2s_qqZZj2
       external m2s_qqWWZ
       external m2s_qqZZZ
       external m2s_qqZZW
@@ -151,6 +150,7 @@ c initialize
           xuz(mu,i) = 0d0
         enddo
       enddo
+      if (ldoblha) VBFNLOswitch(1) = 1
 
       SELECT CASE(process)
 
@@ -1121,7 +1121,7 @@ c pp -> W+ W- j -> ve e+ e- ve~ j
          lokt(1) = .true.
          lokt(2) = .false.
          lokt(3) = .false.
-         call m2s_qqVVj( 34, 0, lokt,x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqVVj( 34, 0, lokt,x, p, v, rn, xuz(1,2), m2s, ps_number)
          Amplitude = m2s(0)
        CASE(WPZjLOb,WPhadZjLO,WPZhadjLO)
          rn = RandomNumber()
@@ -1144,7 +1144,7 @@ c pp -> Z Z j -> e- e+ mu- mu+ j
          lokt(1) = .true.
          lokt(2) = .false.
          lokt(3) = .false.
-         call m2s_qqZZj( 22, 0, lokt,x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqZZj( 22, 0, lokt,x, p, v, rn, xuz(1,2), m2s, ps_number)
          Amplitude = m2s(0)
 
       CASE(WPAjLOb)
@@ -1343,7 +1343,7 @@ c pp -> Z A j -> e- e+ A j
          lokt(1) = .true.
          lokt(2) = .false.
          lokt(3) = .false.
-         call m2s_qqZAj( 21, 0, lokt,x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqZAj( 21, 0, lokt,x, p, v, rn, xuz(1,2), m2s, ps_number)
          Amplitude = m2s(0)
 
 c pp -> A A j 
@@ -1353,12 +1353,23 @@ c pp -> A A j
          do i=2,n_kin
            lokt(i) = .false.
          enddo
-         call m2s_qqAAj( 11, 0, lokt,x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqAAj( 11, 0, lokt,x, p, v, rn, xuz(1,2), m2s, ps_number)
          Amplitude = m2s(0)
 
 #endif          
 
 #ifdef WITH_DIBOSONJET
+**********************
+*
+*     DIBOSON PLUS JET : WWj, WZj, ZZj, WAj
+*
+**********************
+      CASE(WWJ)
+         rn = RandomNumber()
+         Amplitude = m2s_qqvvj2( 34, VBFNLOswitch(nlo), x, p, v, rn, ps_number)
+      CASE(GFWWJ)
+         rn = RandomNumber()
+         Amplitude = m2s_qqvvj2( 34, -8, x, p, v, rn, ps_number)
       CASE(WMAJ)
          if (nlo.eq.0) then
             Amplitude = m2s_qqwgaglu_hel(x,p(0,1,1),v(0,1,1),nlo,.false.)
@@ -1395,6 +1406,20 @@ c pp -> A A j
             Amplitude=m2s(0)
 #endif
          endif
+      CASE(ZZJ)
+         rn = RandomNumber()
+         Amplitude = m2s_qqzzj2( 22, VBFNLOswitch(nlo), x, p, v, rn, ps_number)
+      CASE(GFZZJ)
+         rn = RandomNumber()
+         Amplitude = m2s_qqzzj2( 22, -8, x, p, v, rn, ps_number)
+
+      CASE(WWjjLO)
+         lokt(1) = .true.
+         do i=2,max_kin
+         lokt(i) = .false.
+         enddo
+         call m2s_qqVVjj( 34, 0, lokt,x, p, v, rn, xuz, m2s)
+         Amplitude = m2s(0)
       CASE(WMAJLO)
          lokt(1) = .true.
          do i=2,max_kin
@@ -1422,6 +1447,13 @@ c pp -> A A j
          lokt(i) = .false.
          enddo
          CALL m2s_qqwpzgluj(xuz,0,.true.,lokt,x,p,v,m2s)
+         Amplitude = m2s(0)
+      CASE(ZZjjLO)
+         lokt(1) = .true.
+         do i=2,max_kin
+         lokt(i) = .false.
+         enddo
+         call m2s_qqZZjj( 22, 0, lokt,x, p, v, rn, xuz, m2s)
          Amplitude = m2s(0)
 #endif
 
@@ -2813,7 +2845,7 @@ c     pp -> HAjjj -> A Z Z jjj
 c pp -> W+ W- (j) -> ve e+ e- ve~ (j)
       CASE(WW,WPhadWMlep,WPlepWMhad)
          rn = RandomNumber()
-         call m2s_qqVVj( 34, 1, lokt, x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqVVj( 34, 1, lokt, x, p, v, rn, xuz(1,2), m2s, ps_number)
       CASE(WPZ,WPhadZ,WPZhad)
          rn = RandomNumber()
          call m2s_qqWZj( 32, 1, lokt, x, p, v, rn, xuz(1,2), m2s)
@@ -2823,7 +2855,7 @@ c pp -> W+ W- (j) -> ve e+ e- ve~ (j)
 c pp -> Z Z (j) -> e- e+ mu- mu+ (j)
       CASE(ZZ,ZZhad)
          rn = RandomNumber()
-         call m2s_qqZZj( 22, 1, lokt, x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqZZj( 22, 1, lokt, x, p, v, rn, xuz(1,2), m2s, ps_number)
       CASE(WPA)
          rn = RandomNumber()
          call m2s_qqWAj( 31, 1, lokt, x, p, v, rn, xuz(1,2), m2s)
@@ -2833,11 +2865,11 @@ c pp -> Z Z (j) -> e- e+ mu- mu+ (j)
 c pp -> Z A (j) -> e- e+ A (j)
       CASE(ZA)
          rn = RandomNumber()
-         call m2s_qqZAj( 21, 1, lokt, x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqZAj( 21, 1, lokt, x, p, v, rn, xuz(1,2), m2s, ps_number)
 c pp -> A A (j) 
       CASE(AA)
          rn = RandomNumber()
-         call m2s_qqAAj( 11, 1, lokt, x, p, v, rn, xuz(1,2), m2s)
+         call m2s_qqAAj( 11, 1, lokt, x, p, v, rn, xuz(1,2), m2s, ps_number)
 
 
 c     pp -> WPHj
@@ -2973,9 +3005,11 @@ c pp -> ve e
 #ifdef WITH_DIBOSONJET
 **************************************
 *
-*     DIBOSON PLUS JET : WZjj
+*     DIBOSON PLUS JET : WWjj,WZjj,ZZjj,WAjj
 *
 **************************************	 
+      CASE(WWJ)
+         call m2s_qqVVjj( 34, 1, lokt, x, p, v, rn, xuz, m2s)
 c pp -> W+-A (jj) -> ve e+- a (jj)
       CASE(WMAJ)
          call m2s_qqwgagluj(xuz,1,.false.,lokt,x,p,v,m2s)
@@ -2986,7 +3020,9 @@ c pp -> W+-Z (jj) -> ve e+- mu+ mu- (jj)
          call m2s_qqwzgluj(xuz,1,.false.,lokt,x,p,v,m2s)
       CASE(WPZJ, WPhadZJ, WPZhadJ)
          call m2s_qqwpzgluj(xuz,1,.true.,lokt,x,p,v,m2s)       
-
+c pp -> ZZ (jj) -> e+ e- mu+ mu- (jj)
+      CASE(ZZJ)
+         call m2s_qqZZjj( 22, 1, lokt, x, p, v, rn, xuz, m2s)
 c     pp -> W HJ
       CASE(WPHj)
          rn = RandomNumber()

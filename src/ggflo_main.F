@@ -9,8 +9,12 @@
 
       PROGRAM ggflo
       implicit none
+#include "VBFNLO/utilities/global.inc"
 
       call ParseOptions
+      ldoscales = .true.
+      lglobalprint = .true.
+      ldoblha = .false.
       call doggflo
 
       end

@@ -64,10 +64,14 @@ c     initialize couplings to zero
       switch3 = .false.
 
 
-      print *," "
-      print *,"  Information on anomalous Higgs coupling parameters  "
-      print *,"------------------------------------------------------"
-      call loadfile("anom_HVV.dat",.true.)
+      if (lglobalprint) then
+        print *," "
+        print *,"  Information on anomalous Higgs coupling parameters  "
+        print *,"------------------------------------------------------"
+        call loadfile("anom_HVV.dat",.true.)
+      else 
+        call loadfile("anom_HVV.dat",.false.)
+      endif
 
 
 * Choice of parameterisation.
@@ -243,7 +247,7 @@ c     Loopfactor and Treefactor
          write(6,*) " multiplied by ",loopfac 
       endif
       call closefile
-      print *," "
+      if (lglobalprint) print *," "
 
 
  800  format(a)

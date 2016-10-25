@@ -37,6 +37,7 @@ c
 c---------------------------------------------------------------------
 c
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "tensor.inc"
 #include "tensorz.inc"
 c
@@ -1094,6 +1095,24 @@ c$$$         write(*,*)'j, res =', j, res(j)
            print*,' res-ratio',':',(res(2)+res(3))/ucds(1)-1
         endif
       endif ! ldebug
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(2)
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+            blha_amp(1)=blha_amp(1)+blha_CF/(4d0/3d0)*
+     &       res(3)
+          endif
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
 
       do j = 2,3
          ucds(j) = res(j) 
