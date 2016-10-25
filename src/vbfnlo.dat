@@ -66,6 +66,10 @@ HTYPE       = 0               ! Type of Higgs produced:
                               !   to 1 (SM), calculation will run in the SM 
                               !   for a Higgs with equivalent mass to that 
                               !   chosen in the MSSM.
+HSCHEME     = 0               ! Distribution of VBF-H:
+                              !      0     on-shell
+                              !      1     Breit-Wigner
+                              !      2     Passarino CPS scheme
 MODEL       = 1               ! model: 1 for SM, 2 for MSSM, 3 for TwoHiggs
 EWSCHEME    = 3               ! Choose scheme for electroweak parameters (1,2,3,4,5,6)
 DEL_ALFA    = 0.059047686d0   ! Delta alfa
@@ -87,7 +91,7 @@ H2WIDTH     = -999d0          ! width of second Higgs boson
 SIN2BA      = 1d0             ! squared strength modifier for H1-V-V coupling
 COS2BA      = -999d0          ! squared strength modifier for H2-V-V coupling
 ! NOTE: the following will be overwritten if a SLHA file is used
-HWIDTH      = -999d0          ! Higgs width (set to -999d0 for internal calculation)
+HWIDTH      = -999d0          ! Higgs width (set to -999d0 for internal calculation, -998d0 for HXSWG value)
 TOPMASS     = 172.4d0         ! Top mass
 BOTTOMMASS  = 4.855d0         ! Bottom Pole mass
 CHARMMASS   = 1.65d0          ! Charm Pole mass 

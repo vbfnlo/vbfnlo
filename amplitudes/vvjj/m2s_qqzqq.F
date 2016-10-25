@@ -129,6 +129,13 @@ c
 #include "VBFNLO/utilities/Apdf.inc"
 *** end sophy qed
 
+c CPS scheme
+      DOUBLE PRECISION CLR,XM2,XMG,Bcoupl,Vcoupl,Acoupl
+      COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),Bcoupl(6,6,6),Vcoupl(4,5),Acoupl(4,5)
+      double precision qinv
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
+
 c -----------------------------------------------------------------------
 
       if ( (init .eq. 0) .and. (.not. ldoblha) ) then
@@ -1805,6 +1812,21 @@ c -----------------------------------------------------------------------
 c
       endif
 
+      if(higgsscheme.eq.2) then    ! higgsscheme=2=CPS
+        SELECT CASE(procid)
+        CASE(Hjj)
+          do mu=0,3
+            qvv(mu) = v(mu,1)+v(mu,2)+v(mu,3)+v(mu,4)
+          enddo
+          qinv = sqrt(qvv(0)**2-qvv(1)**2-qvv(2)**2-qvv(3)**2)
+          call VBFNLO_HIGGSTO_gridHt(qinv,qgammaq)
+          qgammaq = qinv*qgammaq
+        CASE DEFAULT
+          qgammaq = xmg(6)
+        END SELECT
+      else
+        qgammaq = xmg(6)
+      endif
 c
 c
 c ------------------------------------------------------------------------

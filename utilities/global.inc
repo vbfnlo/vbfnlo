@@ -145,10 +145,14 @@
       integer PS_Loops, Loops_sub_LO,Loops_sub_NLO,sub_number
 !      commom /subprocnu/sub_number
 
+! For VBF Higgs, flag determining manner in which the Higgs is distributed
+!   0 = on-shell; 1 = Breit-Wigner; 2 = Passarino
+      integer higgsscheme
+
 ! put everything in global common blocks: split into integer, logical etc.
       common /cglobalD/ ecm
       common /cglobalI/ ewapprox, model, HiggsType, ewscheme, floops
-      common /cglobalI/ sector, MHloops, procID
+      common /cglobalI/ sector, MHloops, procID, higgsscheme
       common /cglobalI/ N_iterations1, N_iterations2, N_points, n_p, n_v
       common /cglobalI/ sign1, sign2, NLO_Loops, PS_dimension, particle_IDs
       common /cglobalI/ PS_Loops, sub_number,Loops_sub_LO,Loops_sub_NLO

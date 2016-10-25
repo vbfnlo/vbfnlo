@@ -299,6 +299,7 @@ c$$$      end
 #include "mssm.inc"
 #include "global.inc"
 #include "koppln.inc"
+#include "process.inc"
 
       ! set debug
       debug = 0
@@ -779,6 +780,17 @@ c$$$      end
       else  !  if we're not using FeynHiggs
          MH = XMH
          MH2 = MH**2D0
+      end if
+
+      if (lglobalprint) then
+         write(*,*)'  '
+         if (higgsscheme .eq. 0) then
+            write(*,*) 'Higgs is produced on-shell'
+         else if (higgsscheme .eq. 1) then
+            write(*,*) 'Higgs is produced with a Breit-Wigner distribution'
+         else if (higgsscheme .eq. 2) then
+            write(*,*) 'Higgs is produced with a distribution a la Passarino'
+         end if
       end if
 
     

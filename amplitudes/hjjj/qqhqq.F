@@ -31,6 +31,9 @@ C  and which are calculated from output of KOPPLN
       real*8 clr,xm2,xmg,b,v,a
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
 #include "VBFNLO/utilities/koppln.inc"  
+c CPS scheme
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
 C
 C  Here fcpl(sig,i) contains the coupling constant factors. 
 C     sig = 1,..,4    identifies the 4 different helicity combinations of the
@@ -548,7 +551,7 @@ c
 c   = 1/(16 pi MGamma)
 c
 c (where the propagator factor is fac above)
-      fac = fac *16*pi*xmg(6)
+      fac = fac *16*pi*qgammaq
       else 
 c Higgs is final-state - no decays (real or simulated for technical reasons)
         fac = 1d0

@@ -190,6 +190,27 @@ c read in some hidden options
       endif
 #endif
 
+      Select case(procID)
+      CASE (Hjj,Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, 
+     &      Hjjj, Hjjj_AA, Hjjj_mu, Hjjj_tau, Hjjj_bbar,
+     &      Hjj_WW,Hjjj_WW, Hjj_WPhadWM, Hjj_WPWMhad,
+     &      Hjj_ZZ_ll, Hjj_ZZ_lnu,Hjjj_ZZ_ll,Hjjj_ZZ_lnu,
+     &      Hjj_ZZhad)
+         call read_int("HSCHEME",higgsscheme,0)
+         if (higgsscheme .lt. 0 .or. higgsscheme .gt. 2) then
+           print *,"Warning: invalid value for HSCHEME: ",higgsscheme
+           print *,"         setting to 0"
+           higgsscheme = 0
+         endif
+         if (ewcor_switch .and. (higgsscheme.ne.0)) then
+           print *,"Error: HSCHEME must be 0 when"
+           print *,"       including electroweak corrections"
+           stop
+         endif
+      CASE default
+         higgsscheme = -1   ! flag not used
+      END SELECT
+
       call closefile
 
       if (nlo_semilep.gt.0 .and. .not.doNLO) then

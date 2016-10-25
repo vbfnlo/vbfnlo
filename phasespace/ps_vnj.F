@@ -57,6 +57,20 @@ C collinear cutoff: for numerical purposes only
           CASE(AAjj)     !pp-> higgs instead of spin-2 jj -> aa jj
            rm2min = 1d-3
            rm2max = s/2d0
+          CASE(Hjj,Hjjj)
+            if (higgsscheme .eq. 0) then
+              rm2min = sqrt(rm2)*( 1.d0 - 15.d1*rmg/rm2 )
+              if ( rm2min.lt.0.d0 ) then
+                 rm2min = 1d-3
+              else
+                 rm2min = rm2min**2
+              end if
+              rm2max = rm2*( 1.d0 + 15.d1*rmg/rm2 )**2
+              rm2max = min(rm2max,(sqrt(rm2) + 200)**2)
+            else
+              rm2min = 1d-3
+              rm2max = s/2d0
+            endif
           CASE DEFAULT
            rm2min = sqrt(rm2)*( 1.d0 - 15.d1*rmg/rm2 )
            if ( rm2min.lt.0.d0 ) then
@@ -432,6 +446,8 @@ C           D1,D2     4-vectors for the 2 decay leptons of V, assumed massless
 C           P(*,N)    4-vectors for the N jets, assumed massless
 C           W         the weight of the phase space point
 C           NW        Q^2 (Higgs) is generated in narrow width approx.
+C                       = 0 = OS
+C                       = 1 = BW
 C
 C  For a final state photon the ENTRY LIPSV has to be used, which generates a
 C  massless four-vector Q
@@ -467,6 +483,12 @@ C  local variables
      2       STH,CTH,PHID, XMJ,QV,YBAR,PJT2,SHA,ACM
       external dotrr
       INTEGER I,J,II,JJ,BOS
+
+** rescaling momentum for BW distribution when calculating EW cor'ns
+      double precision sh, sinc, shin, disc, scafac
+      integer mu
+
+
       DO 1 I = 1,(N+1)*3
          R(I) = RD(I)
  1    CONTINUE
@@ -749,6 +771,62 @@ C  boost D1 to its lab frame value and get D2 from momentum conservation
 C  phase space factor for the decay
          W = W /(8*PI)                        ! *2*TPI /(32*PI**2)
       ENDIF
+
+
+c$$$      write(*,*)'INITIAL!'
+c$$$      do mu = 0, 3
+c$$$         write(*,*)'mu, Higgs =', mu, q(mu)
+c$$$         write(*,*)'mu, inc 1 =', mu, k1(mu)
+c$$$         write(*,*)'mu, inc 2 =', mu, k2(mu)
+c$$$         write(*,*)'mu, out 1 =', mu, p(mu,1)
+c$$$         write(*,*)'mu, out 2 =', mu, p(mu,2)
+c$$$         write(*,*)'mu, out 3 =', mu, p(mu,3)
+c$$$         write(*,*)'mu, sum =', mu, k1(mu) + k2(mu) - q(mu) - p(mu,1) -
+c$$$     -        p(mu,2) - p(mu,3)
+c$$$      end do         
+c$$$      write(*,*)'ini sh =', q(0)*q(0) - q(1)*q(1) - q(2)*q(2) - q(3)*q(3)   
+
+** For ew corns, need to rescale Higgs momentum OS if Higgs is BW distributed
+      if (nw .eq. 7) then
+         sh = q(0)*q(0) 
+         sinc = (k1(0)+k2(0))*(k1(0)+k2(0))
+         shin = (k1(0) + k2(0))*q(0)
+         do mu = 1, 3
+            sh = sh - q(mu)*q(mu)
+            sinc = sinc - (k1(mu)+k2(mu))*(k1(mu)+k2(mu))
+            shin = shin - (k1(mu) + k2(mu))*q(mu)
+         end do
+         disc = shin**2 - sinc*sh + rm2*(sinc - 2d0*shin + sh)
+         scafac = (sinc-rm2)/(sinc-shin+sqrt(disc))
+         do mu = 0, 3
+            p(mu,1) = p(mu,1)*scafac
+            p(mu,2) = p(mu,2)*scafac
+            p(mu,3) = p(mu,3)*scafac
+            q(mu) = k1(mu) + k2(mu) - p(mu,1) - p(mu,2) - p(mu,3) 
+         end do
+         if (scafac .lt. 0d0) then
+            w = 0d0
+            return
+         end if
+      end if
+** end of rescaling
+
+c$$$      if (scafac .lt. 0d0) then
+c$$$         write(*,*)'FINAL - OS!'
+c$$$         do mu = 0, 3
+c$$$            write(*,*)'mu, Higgs =', mu, q(mu)
+c$$$            write(*,*)'mu, inc 1 =', mu, k1(mu)
+c$$$            write(*,*)'mu, inc 2 =', mu, k2(mu)
+c$$$            write(*,*)'mu, out 1 =', mu, p(mu,1)
+c$$$            write(*,*)'mu, out 2 =', mu, p(mu,2)
+c$$$            write(*,*)'mu, out 3 =', mu, p(mu,3)
+c$$$            write(*,*)'mu, sum =', mu, k1(mu) + k2(mu) - q(mu) - p(mu,1) -
+c$$$     -           p(mu,2) - p(mu,3)
+c$$$         end do        
+c$$$         
+c$$$         write(*,*)'ofshell sh =', sh
+c$$$         write(*,*)'os sh =', q(0)*q(0) - q(1)*q(1) - q(2)*q(2) - q(3)*q(3)
+c$$$      end if
 
 C
 C  finally put in flux factor for the parton collisions and conversion to fb

@@ -33,7 +33,8 @@ ckm.F \
 BLHAhelper.F90 \
 BLHAmommapping.F90 \
 BLHAinterface.cpp \
-BLHAclass.cpp
+BLHAclass.cpp \
+CPS_HIGGSTO.F
 
 libVBFspecific_la_SOURCES = \
 ggf_init.F \

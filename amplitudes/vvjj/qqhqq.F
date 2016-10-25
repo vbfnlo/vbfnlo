@@ -110,6 +110,9 @@ c
 ** Flag determining whether ew corns should be included
       logical run_ew
 
+c CPS scheme
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
 
 #include "VBFNLO/utilities/mssm.inc"
 
@@ -302,7 +305,7 @@ c
 c   = 1/(16 pi MGamma)
 c
 c (where the propagator factor is fac above)
-        fac = fac *16*pi*xmg(6)
+        fac = fac *16*pi*qgammaq
       else 
 c Higgs is final-state - no decays (real or simulated for technical reasons)
         fac = 1d0
@@ -698,6 +701,10 @@ C  Variables for the main part of the program
       real*8 betah, lamb, fac
       logical lcol
 
+c CPS scheme
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
+
 C  Reset the coupling factors
       do i = 1,6
          do isig = 1,4
@@ -941,7 +948,7 @@ c
 c   = 1/(16 pi MGamma)
 c
 c (where the propagator factor is fac above)
-      fac = fac *16*pi*xmg(6)
+      fac = fac *16*pi*qgammaq
       fac = fac * 12                     ! 12 = C_2*9 is the color factor
 c
 c for initial gluon, i.e. gsign=-1, eliminate diagrams with V-->q qbar decay

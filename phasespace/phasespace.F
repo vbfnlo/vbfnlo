@@ -37,10 +37,18 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
          call def_ps_vvnj(6,2,2,1,1,1)  !Higgs instead of spin-2
         endif
       CASE(Hjj_WW,Hjjj_WW, HAjj_WW, Hjj_WPhadWM, Hjj_WPWMhad)
+        if (higgsscheme .eq. 0 .or. higgsscheme .eq. -1) then
          call def_ps_vvnj(6,3,4,0,1,1)
+        else
+         call def_ps_vvnj(6,3,4,1,1,1)
+        endif
       CASE(Hjj_ZZ_ll, Hjj_ZZ_lnu,Hjjj_ZZ_ll,Hjjj_ZZ_lnu,
      $        HAjj_ZZ_ll, HAjj_ZZ_lnu, Hjj_ZZhad)
+        if (higgsscheme .eq. 0 .or. higgsscheme .eq. -1) then
          call def_ps_vvnj(6,2,2,0,1,1)
+        else
+         call def_ps_vvnj(6,2,2,1,1,1)
+        endif
       CASE(Ajj)
          call def_ps_vnj(1)
       CASE(Zjj_l, Zjj_nu, QCDZjj_l, QCDZjj_nu)
@@ -337,10 +345,17 @@ c switch between different processes
 
       SELECT CASE(procID)
       CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar) ! pp-> Hjj(j) -> xxjj(j)
+        if (higgsscheme .eq. 0 .or. higgsscheme .eq. -1) then
          call LIPSN(n_p-nx, rand, rn,
      1              p(0,1,1), p(0,2,1), 
      2              Q, v(0,1,1), v(0,2,1),
      3              p(0,3,1), X(1), X(2), dps, 1)
+        else
+         call LIPSN(n_p-nx, rand, rn,
+     1              p(0,1,1), p(0,2,1), 
+     2              Q, v(0,1,1), v(0,2,1),
+     3              p(0,3,1), X(1), X(2), dps, 0)
+        endif
         if (ldoblha .and. (procID.eq.Hjj)) then
           do i=0,3
             v(i,1,1) = v(i,1,1)+v(i,2,1)
@@ -447,10 +462,17 @@ c switch between different processes
      2           v(0,1,1),p(0,3,1),
      3           X(1),X(2),dps,narrowwidth)
       CASE(HJJJ,Hjjj_AA, Hjjj_mu, Hjjj_tau, Hjjj_bbar) ! pp -> H + 3 jets
+        if (higgsscheme .eq. 0 .or. higgsscheme .eq. -1) then
          call LIPSN(n_p-nx, rand, rn,
      1              p(0,1,1), p(0,2,1), 
      2              Q, v(0,1,1), v(0,2,1),
      3              p(0,3,1), X(1), X(2), dps, 1)
+        else
+         call LIPSN(n_p-nx, rand, rn,
+     1              p(0,1,1), p(0,2,1), 
+     2              Q, v(0,1,1), v(0,2,1),
+     3              p(0,3,1), X(1), X(2), dps, 0)
+        endif
          if (ldoblha .and. (procID.eq.Hjjj)) then
            do i=0,3
              v(i,1,1) = v(i,1,1)+v(i,2,1)

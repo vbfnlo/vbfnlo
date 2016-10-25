@@ -109,6 +109,10 @@ c     PS slicing parameters
       double precision angle
       external angle
      
+c CPS scheme
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
+
       if(lPSslice) then
 c     PS slicing parameters
       deltaE = 1.0d0            ! 1 GeV
@@ -535,7 +539,8 @@ c
 c   = 1/(16 Pi MGamma)
 c
 c (where the propagator factor is fac above)
-      fac = fac *16.0D0*Pi*xmg(6)
+      fac = fac *16*pi*qgammaq
+
       fac = fac * EL**2 * 9.0D0    ! 9 is the color factor * positron charge
 
 *      write(*,*)'fac =', fac

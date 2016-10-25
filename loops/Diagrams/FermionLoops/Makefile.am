@@ -6,22 +6,7 @@ libDiagramsFLoops_la_FFLAGS = $(AM_FFLAGS)
 libDiagramsFLoops_la_FFLAGS +=$(GFORTRAN_48_FIX_LOOPS)
 
 libDiagramsFLoops_la_SOURCES = \
-BijForGram_G_Num.f\
-DijGramNewM1.f\
-tensor_redux_CijLUdeRank5_M.f\
-MyCget_M.f\
-MyCgetGram_M.f\
-tensor_redux_CijLUdeRank5.f\
-determinants.f\
-DijGram1.f\
-MyCget.f\
-MyCgetGram.f\
-BijForGram.f\
-BijForGram_M.f\
-CijGramNewM2.f\
-CijGramR11.f\
 PenEvenGSimtemp.F\
-XEgetM1M3Sim.F\
 PenEvenGSimtempFa1.F\
 PenEvenGSimtempFa2.F\
 PenEvenGSimtempFa3.F\
@@ -58,7 +43,6 @@ PenEvenGSimtempFF18.F\
 PenEvenGSimtempFF19.F\
 PenEvenGSimtempFF20.F\
 PenOddGSimtemp.F\
-XEgetOddSimM1M3.F\
 PenOddGSimtempFa1.F\
 PenOddGSimtempFa2.F\
 PenOddGSimtempFa3.F\
@@ -211,32 +195,14 @@ PenOddGtempFF19.F\
 PenOddGtempFF20.F\
 HiggsEventempver1.F\
 HiggsEventempver_Div.F\
-HiggsEventempbox.F\
-E0FunctionsG.F\
-tensor_redux_DijLUde_Rank5123_G.F\
-tensor_redux_DijLUde_Rank5132_G.F\
-tensor_redux_DijLUde_Rank5213_G.F\
-tensor_redux_DijLUde_Rank5231_G.F\
-tensor_redux_DijLUde_Rank5312_G.F\
-tensor_redux_DijLUde_Rank5321_G.F\
-XEgetM1M3.F\
-XEgetM1M3_Div.F\
-XEgetOddM1M3.F\
-XEgetOddM1M3_Div.F\
-tensor_redux_Eij_new_Re_Com_R5_G.F\
-tensor_redux_Eij_new_Re_Com_R5_G_Div.F
+HiggsEventempbox.F
 
 if WITH_QUAD
 
 libDiagramsFLoops_la_FFLAGS += -DWITH_QUAD
 libDiagramsFLoops_la_SOURCES += \
 PenEvenGSimtemp_QUAD.F\
-XEgetM1M3_QUAD.F\
-tensor_redux_Eij_new_Re_Com_R5_G_QUAD.F\
-E0FunctionsG_QUAD.F\
 PenOddGSimtemp_QUAD.F\
-XEgetOddSimM1M3_QUAD.F\
-XBoxGetM1M3_QUAD.F\
 FermionBoxEventempCoupling_QUAD.F\
 FermionBoxOddtempCoupling_QUAD.F
 

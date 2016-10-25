@@ -11,7 +11,10 @@ ten2cc.F
 
 libUtilities_la_FFLAGS = $(AM_FFLAGS)
 
-
+if WITH_FERMIONLOOPS
+libUtilities_la_SOURCES += \
+determinants.f
+endif
 
 if WITH_QUAD
 libUtilities_la_FFLAGS += -DWITH_QUAD

@@ -31,6 +31,9 @@ c
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),
      1                  V(4,5),A(4,5)
 #include "VBFNLO/utilities/koppln.inc"
+c CPS scheme
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
 c     
 c     Local variables
       real*8 ph(0:4),lpbar(0:3,6),res(0:2,8),msq21,msq43
@@ -130,7 +133,7 @@ c
 c   = 1/(16 pi MGamma)
 c
 c (where the propagator factor is fac above)
-      fac = fac *16*pi*xmg(6)
+      fac = fac *16*pi*qgammaq
 c
       do i=0,2                  !loop over color flow
          do k=1,8               !loop over subprocesses
@@ -194,6 +197,9 @@ c
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),
      1                  V(4,5),A(4,5)
 #include "VBFNLO/utilities/koppln.inc"
+c CPS scheme
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
 c     
 c     Local variables
       real*8 ph(0:4),lpbar(0:3,6),res(0:2,2)
@@ -268,7 +274,7 @@ c
 c   = 1/(16 pi MGamma)
 c
 c (where the propagator factor is fac above)
-      fac = fac *16*pi*xmg(6)
+      fac = fac *16*pi*qgammaq
 c
       do i=0,2
          do k=1,2               !loop over subprocesses

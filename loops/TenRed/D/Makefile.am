@@ -51,7 +51,15 @@ tensor_redux_DijLUdeRank4132_G_Div.F\
 tensor_redux_DijLUdeRank4213_G_Div.F\
 tensor_redux_DijLUdeRank4231_G_Div.F\
 tensor_redux_DijLUdeRank4312_G_Div.F\
-tensor_redux_DijLUdeRank4321_G_Div.F
+tensor_redux_DijLUdeRank4321_G_Div.F\
+tensor_redux_DijLUde_Rank5123_G.F\
+tensor_redux_DijLUde_Rank5132_G.F\
+tensor_redux_DijLUde_Rank5213_G.F\
+tensor_redux_DijLUde_Rank5231_G.F\
+tensor_redux_DijLUde_Rank5312_G.F\
+tensor_redux_DijLUde_Rank5321_G.F\
+DijGram1.f\
+DijGramNewM1.f
 endif
 
 
@@ -67,6 +75,7 @@ tensor_redux_DijLUde_Rank5132_G_QUAD.F \
 tensor_redux_DijLUde_Rank5213_G_QUAD.F \
 tensor_redux_DijLUde_Rank5231_G_QUAD.F \
 tensor_redux_DijLUde_Rank5312_G_QUAD.F \
-tensor_redux_DijLUde_Rank5321_G_QUAD.F 
+tensor_redux_DijLUde_Rank5321_G_QUAD.F \
+XBoxGetM1M3_QUAD.F
 endif
 

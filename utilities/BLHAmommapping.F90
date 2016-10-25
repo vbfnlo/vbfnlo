@@ -49,7 +49,7 @@
 
 ! exactly one gluon allowed
       if (nother.ne.1) then
-        blha_numsubproc(blha_numproc) = 0
+        blha_numsubproc(blha_numproc) = -1
         return
       endif
 
@@ -220,7 +220,7 @@
 
 ! only all-quarks allowed
       if (nother.ne.0) then
-        blha_numsubproc(blha_numproc) = 0
+        blha_numsubproc(blha_numproc) = -1
         return
       endif
 
@@ -345,6 +345,7 @@
       logical lVBFlepdec, lVBFhaddec, lQCDlepdec
 
       nsp = blha_numsubproc(blha_numproc)
+      if (blha_numsubproc(blha_numproc) .le. 0) return
 
       call makefermionpairs(nelweak,pdgelweak,.false., &
                             npairs,listpairs,nother)
@@ -412,7 +413,7 @@
             blha_procsubproc((i-1)*nsp+1,blha_numproc) = Hjjj
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(100000) ! W+
@@ -424,7 +425,7 @@
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(10000) ! W-
@@ -436,7 +437,7 @@
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(1000) ! Z_l
@@ -448,7 +449,7 @@
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             blha_multsubproc((i-1)*nsp+1,blha_numproc) = 1      ! helicity summation handled internally in this process
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(100) ! Z_nu
@@ -458,7 +459,7 @@
           else if ((nparton.eq.5).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(1) ! gamma
@@ -470,7 +471,7 @@
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             blha_multsubproc((i-1)*nsp+1,blha_numproc) = 1      ! helicity summation handled internally in this process
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(20) ! HH
@@ -480,7 +481,7 @@
           else if ((nparton.eq.5).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(11) ! H gamma
@@ -492,7 +493,7 @@
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             blha_multsubproc((i-1)*nsp+1,blha_numproc) = 1      ! helicity summation handled internally in this process
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(110000) ! W+ W-
@@ -502,7 +503,7 @@
           else if ((nparton.eq.5).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(101000) ! W+ Z_l
@@ -514,7 +515,7 @@
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(11000) ! W- Z_l
@@ -526,7 +527,7 @@
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(2000) ! Z_l Z_l
@@ -536,7 +537,7 @@
           else if ((nparton.eq.5).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(1100) ! Z_l Z_nu
@@ -546,7 +547,7 @@
           else if ((nparton.eq.5).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(100001) ! W+ A
@@ -558,7 +559,7 @@
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(10001) ! W- A
@@ -570,7 +571,7 @@
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(1001) ! Z_l A
@@ -582,7 +583,7 @@
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(101) ! Z_nu A
@@ -594,7 +595,7 @@
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(200000) ! W+ W+
@@ -604,7 +605,7 @@
           else if ((nparton.eq.5).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE(20000) ! W- W-
@@ -614,12 +615,12 @@
           else if ((nparton.eq.5).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
           else 
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+            blha_numsubproc(blha_numproc) = -1
             return
           endif
         CASE DEFAULT
 ! not yet supported
-          blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+          blha_numsubproc(blha_numproc) = -1
           return
         END SELECT
 

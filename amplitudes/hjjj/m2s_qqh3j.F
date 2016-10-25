@@ -32,6 +32,7 @@ c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/BLHAhelper.inc"
+#include "VBFNLO/utilities/process.inc"
 c
 c declare local variables
 c
@@ -68,6 +69,13 @@ c
       parameter(ldebug1=.true.,linfo=.false.)
 
       real*8 weight,rnumb,RandomNumber
+
+c CPS scheme
+      DOUBLE PRECISION CLR,XM2,XMG,Bcoupl,Vcoupl,Acoupl
+      COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),Bcoupl(6,6,6),Vcoupl(4,5),Acoupl(4,5)
+      double precision qinv, qvv(0:3)
+      double precision qgammaq
+      common /VBFNLO_HIGGS_CPS/ qgammaq
 
 c just a little setup for BLHA mode
       if (ldoblha) then
@@ -112,6 +120,22 @@ c
          enddo
       endif
       
+      if(higgsscheme.eq.2) then    ! higgsscheme=2=CPS
+        SELECT CASE(procid)
+        CASE(Hjjj)
+          do mu=0,3
+            qvv(mu) = v(mu,1,1)+v(mu,2,1)+v(mu,3,1)+v(mu,4,1)
+          enddo
+          qinv = sqrt(qvv(0)**2-qvv(1)**2-qvv(2)**2-qvv(3)**2)
+          call VBFNLO_HIGGSTO_gridHt(qinv,qgammaq)
+          qgammaq = qinv*qgammaq
+        CASE DEFAULT
+          qgammaq = xmg(6)
+        END SELECT
+      else
+        qgammaq = xmg(6)
+      endif
+
 c
 c define scales 
 c    

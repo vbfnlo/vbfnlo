@@ -2673,9 +2673,8 @@ c
 
          fswp1wm1 = fs1 +  1./(3. * ss**2) * (2. * DA00 + DA20)
      &                  - 10./(3. * ss**2) * (2. * DA02 + DA22)
-         fswp1wp2 = fs1 +  1./(     ss**2) * (10. * DA02 - 3. * DA11 + 5. * DA22)
-         fswp1wm2 = fs0 +  1./(2. * ss**2) * (10. * DA02 + 3. * DA11 + 5. * DA22)
-         fswp1wm1 = (0d0,0d0)             
+         fswp1wp2 = fs0 +  1./(2. * ss**2) * (10. * DA02 + 3. * DA11 + 5. * DA22)
+         fswp1wm2 = fs1 +  1./(     ss**2) * (10. * DA02 - 3. * DA11 + 5. * DA22)
 
          !unitarized partial waves DAIJ need to be calculated again for the
          !wwzz-vertex, because the relation between alpha4/alpha5 and fs0/fs1

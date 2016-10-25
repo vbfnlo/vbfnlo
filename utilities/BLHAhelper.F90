@@ -84,6 +84,7 @@
         model = 0
         ewcor_switch = .false.
         higgsmix = 0
+        higgsscheme = 0
         pdflib = 0
         inputpath=""
         pdfpath=""
@@ -834,7 +835,11 @@
       blha_numelweak(blha_numproc) = nelweak
       blha_amptype(blha_numproc)   = abs(amptype)
 
-      procok = blha_numproc
+      if (blha_numsubproc(blha_numproc) .lt. 0) then
+        procok = 0
+      else
+        procok = blha_numproc
+      endif
       return
       end
 

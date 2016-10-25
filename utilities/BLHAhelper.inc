@@ -41,7 +41,7 @@
 
 
        integer max_blhaproc, max_subproc
-       parameter (max_blhaproc = 1000) ! TODO, use allocate to reduce size
+       parameter (max_blhaproc = 10000) ! TODO, use allocate to reduce size
        parameter (max_subproc = 6)
 
        integer blha_numproc                                           ! number of processes

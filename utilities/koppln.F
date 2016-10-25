@@ -146,7 +146,11 @@ c set ckm values, this could be an input at some point
 
 * reading higgs width
       if (replace(xgh,3) .or. (HiggsType .eq. 0)) then
-         call read_Real("HWIDTH",xgh,-999d0)
+         if (higgsscheme .ne. 2) then   ! higgsscheme=2=CPS
+           call read_Real("HWIDTH",xgh,-999d0)
+c get width from HXSWG Table
+           if (xgh .eq. -998d0) call VBFNLO_HIGGSTO_gridHt(XMH,XGH)
+         endif
       end if
 
 c read in additional parameters for two-Higgs model
@@ -154,7 +158,11 @@ c read in additional parameters for two-Higgs model
         with_secondhiggs = .true.
         use_secondhiggs = .false.
         call read_Real("H2MASS",xmh2,126d0)
-        call read_Real("H2WIDTH",xgh2,-999d0)
+        if (higgsscheme .ne. 2) then   ! higgsscheme=2=CPS
+          call read_Real("H2WIDTH",xgh2,-999d0)
+c get width from HXSWG Table
+          if (xgh2 .eq. -998d0) call VBFNLO_HIGGSTO_gridHt(XMH2,XGH2)
+        endif
         call read_Real("SIN2BA",sinba,1d0)
         call read_Real("COS2BA",cosba,-999d0)
         if (replace(cosba,3)) then
@@ -1170,6 +1178,16 @@ c Next the Higgs decays to WW, ZZ, bb, cc, tau tau and gamma gamma.
 c These are either taken from the slha file, from FH, or are 
 c calculated below
 c******************************************************************
+
+** can now set the CPS Higgs width
+      if (higgsscheme .eq. 2) then   ! higgsscheme=2=CPS
+        if (replace(xgh,3) .or. (HiggsType .eq. 0)) then
+           call VBFNLO_HIGGSTO_pole(xmh,xgh)
+        endif
+        if (model .eq. 3) then
+          call VBFNLO_HIGGSTO_pole(xmh2,xgh2)
+        endif
+      endif
 
 ** Kill the code if we have a very low higgs mass and are not working in the
 ** complex MSSM
