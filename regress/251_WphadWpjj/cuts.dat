@@ -1,0 +1,83 @@
+! input file for the cut parameters
+
+!   Jet cuts
+!-------------
+RJJ_MIN    = 0.3d0      ! min jet-jet R separation
+Y_P_MAX    = 4.5d0      ! max pseudorapidity for partons 
+PGENKTJET  = 1.0d0      ! exponent of generalised k_T algorithm
+PT_JET_MIN = 20.0d0     ! min jet pT
+Y_JET_MAX  = 4.5d0      ! max jet rapidity
+
+!   Lepton cuts (only applied to charged leptons)
+!--------------------------------------------------
+Y_L_MAX    = 2.5d0      ! max lepton rapidity
+PT_L_MIN   = 10.0d0     ! min lepton pT
+MLL_MIN    = 0.0d0     ! min. m_l+l- for any comb. of opposite charged leptons
+MLL_MAX    = 1d20       ! max. m_l+l- for any comb. of opposite charged leptons
+RLL_MIN    = 0.3d0      ! min lepton-lepton R separation
+RLL_MAX    = 50.0d0     ! max lepton-lepton R separation
+
+!   Photon cuts
+!----------------
+Y_G_MAX    = 1.5d0      ! max pseudorapidity for photons
+PT_G_MIN   = 20d0       ! min transverse momentum for photons
+RGG_MIN    = 0.6d0      ! min photon-photon R separation
+RGG_MAX    = 50.0d0     ! max photon-photon R separation
+PHISOLCUT  = 0.7d0      ! photon isolation cut
+EFISOLCUT  = 1d0        ! efficiency of photon isolation cut
+
+!   Additional cuts
+!---------------------------------
+RJL_MIN    = 0.3d0      ! min jet-lepton R separation
+RJG_MIN    = 0.0d0      ! min jet-photon R separation
+RLG_MIN    = 0.0d0      ! min lepton-photon R separation
+
+MLG_MIN    = 0.0d0      ! min. m_lg for any comb. of charged leptons and photons
+MLG_MAX    = 1.d20      ! max. m_lg for any comb. of charged leptons and photons
+
+PTMISS_MIN = 0.0d0      ! minimal missing transverse momentum 
+                        ! (pt of neg. sum of 4-momenta of all visible jets, leptons, photons)
+
+!   Vector boson fusion cuts (only applied to tagging jets in VBF processes)
+!----------------------------------------------------------------------------
+ETAJJ_MIN  = 4d0        ! jet-jet rapidity separation
+YSIGN      = true      ! jets #1 and #2 must have opposite sign rapidity
+LRAPIDGAP  = false      ! leptons fall inside rapidity gap
+DELY_JL    = 0.0d0      ! min y-dist of leptons from tagging jets
+GRAPIDGAP  = false      ! photons fall inside rapidity gap
+DELY_JG    = 0.0d0      ! min y-dist of photons from tagging jets
+
+MDIJ_MIN   = 600.0d0    ! dijet min mass cut on tag jet  
+MDIJ_MAX   = 1d20       ! dijet max mass cut on tag jet  
+
+!   Jet Veto
+!---------------------------------
+JVETO      = false      ! veto jet cuts, not available for semileptonic decay processes
+DELY_JVETO = 0.0d0      ! min veto-tag y-dist
+YMAX_VETO  = 4.5d0      ! max |y| for veto jet
+PTMIN_VETO = 50.0d0     ! min pT for veto jet
+
+!   Additional cuts for semileptonic decays (ony applied for semileptonic decay processes)
+!-------------------------------------------------------------------------------------------
+DEF_TAGJET    = 2       ! definition of two tagging jets in VBF: 
+                        ! * 1 : largest pT
+                        ! * 2 : largest pT outside central region with opposite sign rapidity (sets also YSIGN = .true.)
+                        ! * 3 : largest separation in rapidity
+ETA_CENTRAL   = 2.0d0   ! max rapidity value for "central region" if DEF_TAGJET = 2. Otherwise "central" stands for
+                        ! "between tagging jets".
+PTMIN_TAG_1   = 20d0    ! pt_min for harder tagging jet
+PTMIN_TAG_2   = 20d0    ! pt_min for softer tagging jet
+HARD_CENTRAL  = .false. ! require hard jet in central region which is not a tagging jet
+PTMIN_CENTRAL = 20d0    ! minimal pt for extra hard jet in central region
+
+SINGLE_DECAYJET = 0     ! allow phase space points with one jet less in final state
+QSQAMIN_ZDEC  = 0d0     ! minimal photon virtuality of hadronically decaying photon / Z
+                        ! regularizes divergency of real emission part for processes with hadronically decaying Z bosons
+
+RECONST_HAD_V = 0       ! Apply mass reconstruction cut for the hadronically decaying vector boson (no tagging jets allowed):
+                        ! * 0 : none
+                        ! * 1 : using two-jet invariant mass
+                        ! * 2 : using invariant mass of one jet (subjet-analysis, only needed when SINGLE_DECAYJET = true)
+                        ! * 3 : using one- or two-jet invariant mass
+V_MASS_RANGE = 20d0     ! Mass range for RECONST_HAD_V: |m_V - m_reconst| < V_MASS_RANGE
+

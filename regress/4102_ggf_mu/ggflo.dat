@@ -1,0 +1,34 @@
+!**********************************************************************
+!  This is the main input file for GGFLO
+!----------------------------------------------------------------------
+!  author   : Michael Kubocz
+!  modified : 03.03.2011
+!**********************************************************************
+
+!------------------------- loop particle(s) ---------------------------
+Q_LOOP       = 3       ! 0 : effective theory
+                       ! 1 : top-loop
+                       ! 2 : bottom-loop (varies with Higgs mass)
+                       ! 3 : top loop + bottom loop
+
+!------------------------- subprocess choice --------------------------
+SUBPRQQ      = true    ! quark-quark scattering
+SUBPRQG      = true    ! quark-gluon scattering
+SUBPRGG      = true    ! gluon-gluon scattering
+
+!---------------- Mixing between different Higgs bosons ----------------
+HIGGS_MIX    = 0       ! whether higgs mixing is taken into account
+CP_EVEN_MOD  = 1d0     ! changes the strength of the cp-even coupling
+CP_ODD_MOD   = 1d0     ! changes the strength of the cp-odd coupling
+
+!Further important parameters are present in the file vbfnlo.dat and
+!have to be changed there:
+
+!PROCESS        41xx Identifier for gluon fusion (see /src/procinfo.dat or manual)
+!MODEL, HTYPE
+!TOPMASS
+!BOTTOMMASS
+!    .
+!    .
+!    .
+!...see vbfnlo.dat !

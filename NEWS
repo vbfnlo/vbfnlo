@@ -1,0 +1,106 @@
+VBFNLO 2.7.0
+15 April 2014
+
+Alterations and updates since the last release version VBFNLO 2.6.3:
+
+  *** Major enhancements (for details see manual): ***
+
+        * Several new processes are available: 
+          Wgammajj in VBF, HHjj in VBF, W, Wj, WH, WHj, pp->Spin2jj in VBF (with 
+          Spin2->WW/ZZ->leptons), several QCD induced processes (WZjj, Wgammajj, same sign 
+          WWjj, Wjj)
+          Anomalous gauge boson couplings are supported in VBF Wgammajj, WH, WHj.
+        * Semileptonic decay modes are available in the following diboson, triboson and 
+          VBF diboson plus two jets processes: VV, VVV, VVgamma, VVjj with V=W,Z.
+          Additionally, the Higgs production processes pp -> H -> WW/ZZ in VBF
+          with semileptonic decays are available as well.
+          The processes with semileptonic decays support anomalous gauge boson couplings.
+        * The VBF VVjj processes can be run taking a second Higgs resonance into account
+          (simplified 2HDM).
+        * Anomalous gauge boson couplings are now available in all triboson (plus jet)
+          processes and all VVjj production processes via VBF.
+        * A larger set of operators leading to anomalous gauge boson couplings 
+          is included in VBFNLO.
+        * Added ability to use anomalous HVV couplings in Higgs production via
+          gluon fusion, where the Higgs decays into WW or ZZ (prodIDs 4105-7)
+
+  ***  Further updates and new features: ***
+
+        * It is now possible to specify a desired number of unweighted events for event
+          output in vbfnlo.dat
+          In case VBFNLO is not able to achieve the desired number of unweighted
+          events due to single events with very large weights it's also possible to
+          opt for "partially unweighted events", where most of the weights will have
+          weight 1, and a few will have larger weights.
+        * Added 'any leptons' switch (LEPTONS = 98/99), allowing for all possible lepton
+          final state combinations of 2 or 3 generations.  See manual for details.
+        * m_ll cut can be switched between cutting only opposite-sign lepton combinations
+          or all combinations
+        * H->bb decay mode for Higgs boson production processes:
+          jet cuts are applied to final state b-quarks
+        * All default values of anomalous couplings are set to zero
+          to avoid confusion
+        * implemented staggered pT cuts for leptons and photons
+
+  *** Other additions and bug fixes: ***
+
+        * Phase space improvements to increase unweighting efficiency for event output in
+          several VBF, di- and triboson processes
+        * Phase space optimizations for Z decays in VV and VVjj
+
+        * Path to procinfo.dat is no longer hardcoded, now it's also searched in the input
+          directory
+        * Increased allowed file name length for slha file
+        * Print out values of g, g' used in calculation
+        * in raw histogram data output: include gnuplot command files
+        * New command line option --version : provides version information of VBFNLO
+        * add workaround for enormous memory consumption during compilation with gfortran 4.8
+
+        * event output for W-W-jj in VBF: color information fixed
+        * Fixed bug in WWZ virtuals implementation -- new results are about a percent lower
+        * Several dynamical renormalization and factorization scale choices corrected which 
+          gave wrong results for the real emission part of NLO calculations:
+          min(pT_jet) (ID 2), min(ET_bosons) (ID 7)
+        * fix particle-antiparticle-assignment in W+jj, Zjj
+        * event output for W-W+W-: fixed momenta assignment
+        * Fixed line length for ifort
+        * default value for cut MDIJ_MIN is changed to 0 GeV
+        * works with LHAPDF version 6
+        * output of per-bin error in histograms now available in the ROOT output
+          of histograms defined in histograms.F
+
+
+
+
+
+
+Alterations and updates since the last beta version VBFNLO 2.7.0 BETA 4:
+
+        * New processes: Wgammajj and HHjj in VBF; QCD induced WZjj, Wgammajj, same sign WWjj, Wjj;
+          W, Wj, WH, WHj
+        * Simplified 2HDM available in VBF VVjj processes
+        * Semileptonic decays available for ZZW, WWW, ZZZ, WWgamma, ZZgamma, WZgamma
+
+        * implemented staggered pT cuts for leptons and photons
+        * in raw histogram data output: include gnuplot command files
+        * for gfortran 4.8: add workaround for enormous memory consumption during compilation
+        * new tagging jet choice for semileptonic decay processes
+
+        * Increased allowed file name length for slha file
+        * event output for W-W-jj in VBF: color information fixed
+        * Fixed bug in WWZ virtuals implementation -- new results
+          are about a percent lower
+        * fixed running scales in subtraction of NLO calculations,
+          running scales for Hjjj
+        * fix particle-antiparticle-assignment in W+jj, Zjj
+        * fix WZ/WWZ real emission calculation with hadronic Z decay in case
+          all 4/5 final state quark flavors have been requested
+        * semileptonic VV(V) production: use tilde kinematics for V decay products in jet
+          algorithm
+        * event output for W-W+W-: fixed momenta assignment
+        * removed Herwig++ interface code introduced in VBFNLO 2.7.0 beta3. 
+          This interface will be superseded by a new one using the BLHA2 in the future.
+          Currently, a VBFNLO version including the interface is available on request.
+
+
+

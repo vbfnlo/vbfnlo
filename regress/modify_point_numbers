@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Modify calculated points from 2^26 to 2^$1
+
+ALLDIRS=`make printalldirs`
+
+if [[ "$1" == "" ]]; then
+  echo "Error: specify how many points you would like"
+  exit
+fi
+
+if [[ "$1" == "revert" ]]; then
+  echo "resetting to defaults"
+  for process in $ALLDIRS
+  do
+    echo "process ${process}"
+    if test -f ${process}/vbfnlo_default.dat; then
+        mv ${process}/vbfnlo_default.dat ${process}/vbfnlo.dat
+    fi
+  done;
+  exit
+fi
+
+for process in $ALLDIRS
+do
+
+  echo "process ${process}"
+  if ! test -f ${process}/vbfnlo_default.dat; then
+    cp ${process}/vbfnlo.dat ${process}/vbfnlo_default.dat
+  fi
+  sed "s/LO_POINTS/LO_POINTS = $1 !/g" ${process}/vbfnlo_default.dat > ${process}/vbfnlo.dat
+
+done;
+

@@ -1,0 +1,52 @@
+! input file for the cut parameters
+
+!   Jet cuts
+!-------------
+RJJ_MIN	   = 0.8d0      ! min jet-jet R separation
+Y_P_MAX    = 5.0d0      ! max pseudorapidity for partons 
+PGENKTJET  = 1.0d0      ! exponent of generalised k_T algorithm
+PT_JET_MIN = 20.0d0     ! min jet pT
+Y_JET_MAX  = 4.5d0      ! max jet rapidity
+
+!   Lepton cuts (only applied to charged leptons)
+!--------------------------------------------------
+Y_L_MAX    = 2.5d0      ! max lepton rapidity
+PT_L_MIN   = 20.0d0     ! min lepton pT
+MLL_MIN    = 15.0d0     ! min. m_l+l- for any comb. of opposite charged leptons
+MLL_MAX    = 14000d0    ! max. m_l+l- for any comb. of opposite charged leptons
+RLL_MIN    = 0.3d0      ! min lepton-lepton R separation
+RLL_MAX    = 50.0d0	! max lepton-lepton R separation
+
+!   Photon cuts
+!----------------
+Y_G_MAX    = 1.5d0
+PT_G_MIN   = 20d0
+RGG_MIN    = 0.0d0      ! min photon-photon R separation
+RGG_MAX    = 50.0d0	! max photon-photon R separation
+PHISOLCUT  = 0.7d0	! photon isolation cut
+EFISOLCUT  = 1d0	! efficiency of photon isolation cut
+
+!   Additional R-separation cuts
+!---------------------------------
+RJL_MIN	   = 0.0d0      ! min jet-lepton R separation
+RJG_MIN	   = 0.0d0      ! min jet-photon R separation
+RLG_MIN	   = 0.0d0      ! min lepton-photon R separation
+MLG_MIN    = 0.0d0      ! min. m_lg for any comb. of charged leptons and photons
+MLG_MAX    = 1.d20      ! max. m_lg for any comb. of charged leptons and photons
+
+!   Vector boson fusion cuts (only applied to tagging jets in VBF processes)
+!----------------------------------------------------------------------------
+ETAJJ_MIN  = 0d0        ! jet-jet rapidity separation
+YSIGN      = false      ! jets #1 and #2 must have opposite sign rapidity
+LRAPIDGAP  = false      ! leptons fall inside rapidity gap
+DELY_JL    = 0.0d0      ! min y-dist of leptons from tagging jets
+GRAPIDGAP  = true       ! photons fall inside rapidity gap
+DELY_JG    = 0.0d0      ! min y-dist of photons from tagging jets
+
+MDIJ_MIN   = 600.0d0    ! dijet min mass cut on tag jet  
+MDIJ_MAX   = 14000.0d0  ! dijet max mass cut on tag jet  
+
+JVETO      = false      ! veto jet cuts
+DELY_JVETO = 0.0d0      ! min veto-tag y-dist
+YMAX_VETO  = 5.0d0      ! max |y| for veto jet
+PTMIN_VETO = 10.0d0     ! min pT for veto jet

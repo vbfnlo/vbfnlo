@@ -1,0 +1,21 @@
+noinst_LTLIBRARIES = libTIB.la
+libTIB_la_SOURCES = \
+tensor_redux_BijLUde1M.F\
+tensor_redux_BijLUde.F\
+tensor_redux_BijLUde1M_Div.F\
+tensor_redux_BijLUde_Div.F
+
+if WITH_FERMIONLOOPS
+libTIB_la_SOURCES += \
+tensor_redux_BijLUde_G.F\
+tensor_redux_BijLUde_G_Div.F
+endif
+
+
+libTIB_la_FFLAGS = $(AM_FFLAGS)
+
+if WITH_QUAD
+libTIB_la_FFLAGS += -DWITH_QUAD
+libTIB_la_SOURCES += \
+tensor_redux_BijLUde_R3_G_QUAD.F
+endif

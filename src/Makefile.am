@@ -1,0 +1,108 @@
+bin_PROGRAMS = vbfnlo 
+vbfnlo_SOURCES = vbfnlo_main.F
+vbfnlo_LDADD = $(top_builddir)/lib/libVBFNLO.la \
+               $(top_builddir)/loops/libVBFNLOLoops.la \
+               $(top_builddir)/utilities/libVBFNLOUtilities.la
+vbfnlo_FFLAGS = $(AM_FFLAGS)
+
+if WITH_LOOPS
+vbfnlo_SOURCES += FFini.F
+if WITH_QUAD
+vbfnlo_FFLAGS += -DWITH_QUAD
+endif
+endif
+
+if WITH_NLO
+vbfnlo_FFLAGS += -DWITH_NLO
+endif
+
+if WITH_ROOT
+vbfnlo_FFLAGS += -DWITH_ROOT
+endif
+
+if WITH_LOOPTOOLS
+vbfnlo_SOURCES += LTools.F
+vbfnlo_LDADD += $(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS) 
+vbfnlo_FFLAGS += -DWITH_LT 
+
+if NEW_LT
+vbfnlo_FFLAGS += -DLT_NEW
+endif
+if OLD_LT
+vbfnlo_FFLAGS += -DLT_OLD
+endif
+endif
+
+if WITH_FEYNHIGGS 
+vbfnlo_LDADD += $(FEYNHIGGS_LDFLAGS) $(FEYNHIGGS_LIBS) 
+vbfnlo_FFLAGS += -DWITH_FH
+endif
+
+if WITH_GGFLO
+bin_PROGRAMS += ggflo
+ggflo_SOURCES = ggflo_main.F
+ggflo_LDADD = $(top_builddir)/lib/libGGFLO.la \
+              $(top_builddir)/loops/libVBFNLOLoops.la \
+              $(top_builddir)/utilities/libVBFNLOUtilities.la
+ggflo_FFLAGS = $(AM_FFLAGS)
+
+ggflo_SOURCES += FFini.F
+
+if WITH_ROOT
+ggflo_FFLAGS += -DWITH_ROOT
+endif
+
+if WITH_LOOPTOOLS
+ggflo_SOURCES += LTools.F
+ggflo_LDADD +=$(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS) 
+ggflo_FFLAGS += -DWITH_LT 
+
+if NEW_LT
+ggflo_FFLAGS += -DLT_NEW
+endif
+if OLD_LT
+ggflo_FFLAGS += -DLT_OLD
+endif
+endif
+
+if WITH_FEYNHIGGS
+ggflo_LDADD += $(FEYNHIGGS_LDFLAGS) $(FEYNHIGGS_LIBS)
+ggflo_FFLAGS += -DWITH_FH 
+endif
+
+if WITH_QUAD
+ggflo_FFLAGS += -DWITH_QUAD
+endif
+endif
+
+
+
+EXTRA_DIST = LTools.F.in
+BUILT_SOURCES = LTools.F
+
+
+if WITH_LOOPTOOLS
+LTools.F: $(srcdir)/LTools.F.in
+	@sed s%@LOOPTOOLSPATH@%"$(LOOPTOOLS_DIR)"% < $(srcdir)/LTools.F.in > LTools.F
+	@touch LTools.F
+else
+LTools.F: $(srcdir)/LTools.F.in
+	@cp $(srcdir)/LTools.F.in LTools.F
+	@touch LTools.F
+endif
+
+clean-local:
+	rm -f $(BUILT_SOURCES)
+
+
+INPUTFILES = kk_coupl_inp.dat procinfo.dat \
+             vbfnlo.dat ggflo.dat anom_HVV.dat cuts.dat kk_input.dat \
+             random.dat histograms.dat \
+	     susy.dat anomV.dat sps1a.slha spin2coupl.dat
+
+dist_pkgdata_DATA = $(INPUTFILES)
+
+printinputfiles:
+	@echo $(INPUTFILES)
+
+

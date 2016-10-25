@@ -1,0 +1,48 @@
+!! This input file allows the user to alter the histogram ranges,
+!! enable smearing between adjacent bins and enable error calculation
+
+SMEARING    = true                ! enable or disable bin-smearing
+SMEAR_VALUE = 0.20d0              ! bin fraction where smearing to adjacent bin is used
+
+!! Error calculation for gnuplot histograms
+CALC_ERROR_GNUPLOT = false        ! calculate per bin error for 1-dim histograms in gnuplot file
+
+!! Error calculation for root histograms defined in histograms.F 
+!! (an error estimation for the histograms in rootuserhists.cc is not possible)
+CALC_ERROR_ROOT = false           ! calculate per bin error for 1-dim and 2-dim histograms in root file
+
+!!
+!! Error calculation for raw histogram data files
+!!
+!! Format for 1D data files:
+!! x   y   y-error
+!!
+!! Format for 2D data files:
+!! x   y   z   z-error
+!!
+CALC_ERROR_1D      = true         ! calculate per bin error for 1-dim histogram data files
+CALC_ERROR_2D      = false        ! calculate per bin error for 2-dim histogram data files
+
+!!
+!! Modify histogram ranges for x-axis
+!!
+
+!! 1D Histograms:
+!! FORMAT = <min> <max>
+! HIST_ID1        =   0D0 250D0     !  pT of tagging jets
+! HIST_ID2        =   0D0 500D0     !  pT of tagging jet with higher pT
+! HIST_ID3        =   0D0 200D0     !  pT of tagging jet with lower pT
+! HIST_ID4        =   -5D0 5D0      !  y of tagging jets
+! HIST_ID5        =   -5D0 5D0      !  y of tagging jet with higher pT
+! HIST_ID6        =   -5D0 5D0      !  y of tagging jet with lower pT
+! HIST_ID7        =   0D0 500D0     !  pT_max of all leptons
+! HIST_ID8        =   0D0 200D0     !  pT_min of all leptons
+! HIST_ID9        =   0D0 5D0       !  |eta|_max of all leptons
+! HIST_ID10       =   0D0 5D0       !  |eta|_min of all leptons
+! HIST_ID11       =   -180D0 180D0  !  azimuthal angle of tagging jets
+
+
+!! 2D Histograms:
+!! FORMAT = <xmin> <xmax> <ymin> <ymax>
+! 2DHIST_ID1      =   0D0 6D0 0D0 800D0   !  d2S/deta_jj dm_jj
+

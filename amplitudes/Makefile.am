@@ -1,0 +1,97 @@
+SUBDIRS = 
+
+pkglib_LTLIBRARIES = libVBFNLOAmplitudes.la 
+libVBFNLOAmplitudes_la_SOURCES = \
+amplitudes.F
+libVBFNLOAmplitudes_la_FFLAGS = $(AM_FFLAGS)
+libVBFNLOAmplitudes_la_LIBADD = 
+
+if WITH_GGFLO
+pkglib_LTLIBRARIES += libGGFLOAmplitudes.la
+libGGFLOAmplitudes_la_FFLAGS = $(AM_FFLAGS) 
+libGGFLOAmplitudes_la_SOURCES = \
+amplitudes.F
+libGGFLOAmplitudes_la_LIBADD = 
+endif
+
+if WITH_DIBOSON
+SUBDIRS += diboson
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_DIBOSON
+libVBFNLOAmplitudes_la_LIBADD += diboson/libdiboson.la
+if WITH_GGFLO
+libGGFLOAmplitudes_la_FFLAGS += -DWITH_DIBOSON
+libGGFLOAmplitudes_la_LIBADD += diboson/libdiboson.la
+endif
+endif
+
+if WITH_DIBOSONJET
+if !WITH_DIBOSON
+SUBDIRS += diboson
+libVBFNLOAmplitudes_la_LIBADD += diboson/libdiboson.la
+endif
+SUBDIRS += vvj
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_DIBOSONJET
+libVBFNLOAmplitudes_la_LIBADD += vvj/libvvj.la
+endif
+
+if WITH_QCDV
+SUBDIRS += qcdwz
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_QCDV
+libVBFNLOAmplitudes_la_LIBADD += qcdwz/libqcdwz.la
+if WITH_QCDVV
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_QCDVV
+endif
+endif
+
+if WITH_TRIBOSON
+SUBDIRS += triboson
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_TRIBOSON
+libVBFNLOAmplitudes_la_LIBADD += triboson/libtriboson.la
+endif
+
+if WITH_TRIBOSONJET
+if !WITH_TRIBOSON
+SUBDIRS += triboson
+libVBFNLOAmplitudes_la_LIBADD += triboson/libtriboson.la
+endif
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_TRIBOSONJET
+endif
+
+if WITH_VBF
+SUBDIRS += vvjj
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_VBF
+libVBFNLOAmplitudes_la_LIBADD += vvjj/libvbf.la
+endif
+
+if WITH_HJJJ
+SUBDIRS += hjjj
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_HJJJ
+libVBFNLOAmplitudes_la_LIBADD += hjjj/libhjjj.la
+endif
+
+if WITH_GGF 
+SUBDIRS += ggf
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_GGF
+libVBFNLOAmplitudes_la_LIBADD += ggf/libggf.la
+if WITH_GGFLO
+libGGFLOAmplitudes_la_FFLAGS += -DWITH_GGF
+libGGFLOAmplitudes_la_LIBADD += ggf/libggf.la
+endif
+endif
+
+if WITH_NLO
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_NLO
+endif
+
+if WITH_KK
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_KK
+endif
+
+if WITH_SPIN2
+SUBDIRS += Spin2
+libVBFNLOAmplitudes_la_FFLAGS += -DWITH_SPIN2
+libVBFNLOAmplitudes_la_LIBADD += Spin2/libSpin2.la
+if WITH_GGFLO
+libGGFLOAmplitudes_la_LIBADD += Spin2/libSpin2.la
+endif
+endif

@@ -1,0 +1,41 @@
+------------------------------set anomalous HVV couplings
+------------------------------set form factor
+FORMFACTOR = .true.   ! form factor on(=.true.) or off(=.false.)
+MASS_SCALE = 200.0d0   ! mass scale for new physics
+FFAC       = 2         ! ffac=1: m^2/(q1^2-m^2)*m^2/(q2^2-m^2), ffac=2: C0(m,q1^2,q2^2,mH^2)
+------------------------------Parametrisation: Phys. Lett. B591, 297
+PARAMETR1  = .true.    ! switch for this parametrisation; on(=.true.) or off(=.false.)
+LAMBDA5    = 480.0d0   !lambda5
+G5E_HWW    = -0.182d0  ! g5e_hww, CP-even
+G5E_HZZ    = -0.044d0  ! g5e_hzz 
+G5E_HGG    = 0.0d0     ! g5e_hgg
+G5E_HGZ    = -0.178d0  ! g5e_hgz
+G5O_HWW    = 0.0d0     ! g5o_hww, CP-odd
+G5O_HZZ    = 0.0d0     ! g5o_hzz 
+G5O_HGG    = 0.0d0     ! g5o_hgg
+G5O_HGZ    = 0.0d0     ! g5o_hgz
+------------------------------Parametrisation of the L3-Collaboration
+PARAMETR2  = .false.   ! switch for this parametrisation; on(=.true.) or off=(.false.)
+D_EVEN     = 0.0d0     ! d,     CP-even
+DB_EVEN    = 0.0d0     ! d_B
+DG1Z_EVEN  = -0.060D0  ! Delta_g1_Z
+DKGAM_EVEN = 0.077D0   ! Delta_kappa_gamma
+D_ODD      = 0.0d0     ! d,    CP-odd
+DB_ODD     = 0.0d0     ! d_B
+KGAM_ODD   = 0.0d0     ! kappa_gamma
+HVV1       = 4         ! choice for anomalous couplings used: hzg = 0, hgg = 1, hzz = 2, hww = 3, all = 4
+-----------------------------Parametrisation: Phys. Lett. B318, 155
+-----------------------------(f_BW=0) in (GeV^-2)
+PARAMETR3  = .false.   ! switch for this parametrisation; on(=.true.) or off(=.false.)
+FWW_EVEN   = 0.0d0     ! f_WW/Lambda^2, CP-even
+FBB_EVEN   = 0.0d0     ! f_BB/Lambda^2
+FW_EVEN    = -1.44d-5  ! f_W/Lambda^2
+FB_EVEN    = 3.82D-5   ! f_B/Lambda^2
+FWW_ODD    = 0.0d0     ! f_WW/Lambda^2, CP-odd
+FBB_ODD    = 0.0d0     ! f_BB/Lambda^2
+FB_ODD     = 0.0d0     ! f_B/Lambda^2
+HVV2       = 4         ! choice for anomalous couplings used: hzg = 0, hgg = 1, hzz = 2, hww = 3, all = 4
+-----------------------------for all Parametrisations 
+TREEFACW    = 1.0d0     ! factor for SM hWW tensor (sin(alpha-beta) in MSSM)
+TREEFACZ    = 1.0d0     ! factor for SM hZZ tensor (sin(alpha-beta) in MSSM)
+LOOPFAC    = 1.0d0     ! factor multiplying hZgamma and hgammagamma sm loops

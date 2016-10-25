@@ -1,0 +1,59 @@
+VBFNLO 2.7.0 beta 1:  INSTALLATION INSTRUCTIONS
+
+
+TO INSTALL VBFNLO:
+  ./configure --[OPTIONS: see below!]
+  make
+  make install
+
+
+TO RUN VBFNLO:
+  ./bin/vbfnlo --input=PATH/TO/INPUT
+  
+
+TO RUN GGFLO (note - the input 'PROCESS' in vbfnlo.dat must be set to 4100-4107)
+  ./bin/ggflo --input=PATH/TO/INPUT
+
+
+
+VBFNLO can be configured with several options, a complete list of which can be
+found by running ./configure --help.  The main options are:
+
+ --prefix=[path] : Install VBFNLO in the location given by [path].
+
+ --enable-processes=[list] : By default, the code for processes not involving
+                              hexagons is compiled.  Optionally, [list] gives 
+                              a comma-separated list of selected processes to 
+                              be compiled.
+
+ --disable-NLO : Disable the next-to-leading order QCD corrections.
+
+ --enable-kk : Enable simulation of Kaluza-Klein resonances.  NOTE -- this
+                requires the installation of the GNU scientific library, which
+                needs to be specified via --with-gsl.
+ 
+ --enable-spin2: Enable simulation of spin-2 models.   
+
+ --with-LHAPDF=[path] : Enable the use of LHAPDF.  [path] specifies the 
+                         location of LHAPDF.
+
+ --with-gsl=[path] : Enable the use of the GNU scientific library.  [path]
+                      specifies the location of GSL.
+
+ --with-LOOPTOOLS=[path] : Enable the use of LoopTools.  [path] specifies the
+                            location of LoopTools.  NOTE -- this is required
+                            for calculation of the electroweak corrections.
+                           
+ --with-FEYNHIGGS=[path] : Enable the use of FeynHiggs.  [path] specifies the
+                            location of FeynHiggs.  
+
+ --with-ROOT=[path] : Enable the use of ROOT for histograms.  
+
+ --with-HEPMC=[path] : Enable the production of HepMC format event files.
+
+NOTE ALSO -- by default, LoopTools and FeynHiggs are installed as static libraries.  
+              If this is the case, the additional flag --enable-shared="no" must be used.
+NOTE ALSO -- to link to external programs, the same compiler must be used for VBFNLO and
+              the external library.  LoopTools and FeynHiggs are by default compiled with
+              g77 rather than gfortran, whereas VBFNLO is compiled with gfortran by default.
+              To use g77 with VBFNLO, use: FC=F77 ./configure --[OPTIONS]

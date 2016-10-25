@@ -1,0 +1,95 @@
+c*************************************************************************
+      SUBROUTINE PrintVBFNLOVersion(progtype)
+c*************************************************************************
+c     Set VBFNLO version and print out version information
+c*************************************************************************
+
+      implicit none
+
+#include "global.inc"
+#include "process.inc"
+
+      integer progtype
+      integer major, minor, patch, subnum, svnnum
+      character*20 substr, strsubnum, strsvnnum
+      character*2 strmajor, strminor, strpatch
+      
+      major = 2               ! first digit
+      minor = 7               ! second digit
+      patch = 0              ! third digit
+      substr = ""             ! beta/rc
+      subnum = 0              ! number for beta/rc
+
+      ! allows both subversion revision number and git hash
+
+       strsvnnum = "@VBFNLOSVNVERSION@"
+       if(len_trim(strsvnnum) .ge. 1) then
+          strsvnnum = " svn @VBFNLOSVNVERSION@"
+       else
+          strsvnnum = ""
+       endif
+
+      vbfnloversionnumber=major*10000+minor*100+patch
+
+      if (major.lt.10) then
+        write(strmajor,'(I1)') major
+      else
+        write(strmajor,'(I2)') major
+      endif
+      if (minor.lt.10) then
+        write(strminor,'(I1)') minor
+      else
+        write(strminor,'(I2)') minor
+      endif
+      if (patch.lt.10) then
+        write(strpatch,'(I1)') patch
+      else
+        write(strpatch,'(I2)') patch
+      endif
+      if (substr(1:len_trim(substr)) .ne. "") then
+        if (subnum.lt.10) then
+          write(strsubnum,'(X,A,I1)') substr(1:len_trim(substr)), subnum
+        else
+          write(strsubnum,'(X,A,I2)') substr(1:len_trim(substr)), subnum
+        endif
+      else 
+        strsubnum = ""
+      endif
+
+      write(vbfnloversionstring,'(A)') 
+     &  strmajor(1:len_trim(strmajor))//"."//
+     &  strminor(1:len_trim(strminor))//"."//
+     &  strpatch(1:len_trim(strpatch))//
+     &  strsubnum(1:len_trim(strsubnum))//
+     &  strsvnnum(1:len_trim(strsvnnum))
+
+      if (progtype.ge.0) then
+      write(*,*)'  '
+      write(*,*)'-----------------------------------------------------------------'
+      write(*,*)'VBFNLO, version ', 
+     &            vbfnloversionstring(1:len_trim(vbfnloversionstring))
+      SELECT CASE (progtype)
+      CASE(2)
+        write(*,*)' (sub-program GGFLO)'
+      CASE(3)
+        write(*,*)' (sub-program REPOLO)'
+      END SELECT
+      write(*,*)'Comput. Phys. Commun. 180 (2009) 1661
+     & [arXiv:0811.4559 [hep-ph]]'
+      write(*,*)'arXiv:1107.4038, arXiv:1207.4975, arXiv:1404.3940'
+      write(*,*)'http://www.itp.kit.edu/vbfnlo'
+
+c get process ID from vbfnlo.dat and 
+      call loadfile("vbfnlo.dat",.false.)
+      call read_int_hidden("PROCESS",procID,100)
+      call read_logical_hidden("LOPROCESS_PLUS_JET",LOplusjet,.false.)
+      call PrintProcInfo(.true.)
+      call closefile
+
+      write(*,*)'-----------------------------------------------------------------'
+      write(*,*)'  '
+      write(*,*)'  '
+      endif
+
+      end
+

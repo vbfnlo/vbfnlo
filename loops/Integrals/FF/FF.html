@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>FF - a library for one-loop integrals</title>
+</head>
+<body>
+<h1>FF</h1>
+<h3>A library for evaluating one-loop integrals</h3>
+<p>
+FF is a library to evaluate one-loop integrals needed for radiative 
+corrections to scattering processes in particle physics.  The idea of 
+such a library is based on FormF by M. Veltman.  Unfortunately this 
+only runs in CDC and 68000 assembler,  
+and uses very high precision (more than 100 digits) to overcome the numerical 
+instabilities that plague these integrals.  FF uses alternative algorithms 
+which run in double precision Fortran 77.  It is available by anonymous ftp. 
+
+<p>The current version includes
+<ul>
+<li>The scalar one- to sixpoint functions A0 to F0 for real masses
+<li>Vector functions (using the Passarino-Veltman reduction scheme),
+some derived from Andre Aeppli's routines, up to B2,D3,E3,F3
+<li>The A0 to C0 for general complex masses, D0 to F0 in the pole scheme only.
+</ul>
+The user interface is described the manual, which is included in the 
+distribution.  The main point to notice is that the routines check their 
+precision by increasing a parameter <b>ier</b>, which should be set to the 
+number of unreliable digits before calling an ff-routine.  One usually 
+ends up with code like:
+<pre>
+      ier = 0     ! all digits are OK
+      id = 3001   ! my threepoint function (optional, choose anything)
+      call ffxc0(cc0,xpi,ier)
+      if ( ier.gt.10 ) call ffwarn(998,ier,x0,x0) 
+                  ! print out why the answer is so bad
+</pre>
+There is a coupler to C, C++ and Mathematica available from W&uuml;rzburg, <a 
+href="ftp://ftp.physik.uni-wuerzburg.de/pub/hep/LoopTools.html">LoopTools</a>, 
+this also computes the tensor reduction in their convention.
+
+<p>
+<a href="ftp://ftp.nikhef.nl/pub/ff/README">README</a><br>
+<a href="ftp://ftp.nikhef.nl/pub/ff/ff.tar.gz">ff.tar.gz</a><br>
+<a href="ftp://ftp.nikhef.nl/pub/ff/ffmanual.ps.gz">ffmanual.ps.gz</a><br>
+<address>
+<a href="http://www.xs4all.nl/~gjvo/">Geert Jan van Oldenborgh</a><br>
+<a href="mailto:gjvo@xs4all.nl">gjvo@xs4all.nl</a><br>
+</address>
+</body>
+</html>

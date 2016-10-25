@@ -1,0 +1,66 @@
+
+  VBFNLO 2.7.0
+  15 April 2014
+==============================================================================
+
+==============================================================================
+  arXiv:1107.4038, arXiv:1207.4975, arXiv:1404.3940
+  http://www.itp.kit.edu/vbfnlo
+  vbfnlo@itp.kit.edu
+==============================================================================
+
+  This is the release of VBFNLO 2.7.0, a parton level Monte Carlo
+for processes with electroweak bosons.
+
+
+Once unpacked, VBFNLO has the following subdirectories:
+
+*  amplitudes: Routines to calculate matrix elements for the processes provided.
+*  doc: The source of the manual.
+*  helas: Helas subroutines used to calculate helicity amplitudes.
+*  loops: One-loop tensor integrals up to five-point functions.
+*  PDFsets: Built-in parton distributions (CTEQ6L1 for LO and CT10 for NLO
+   calculations, as well as MRST2004qed). 
+*  phasespace: Specialized phasespace generators for the processes provided.
+*  regress: Folder containing example results, together with input files, 
+   for all processes.
+*  src: Source code of the main programs and input files. 
+*  utilities: Routines for administrative tasks: cuts, scale choices and interfaces.
+
+
+TO INSTALL:
+  ./configure --[OPTIONS] [see manual, the file INSTALL or use ./configure --help]
+  make
+  make install
+
+
+TO RUN VBFNLO:
+   ./bin/vbfnlo --input=PATH/TO/INPUT_FILES
+(If the input -- e.g. vbfnlo.dat -- files are in the current directory, the
+--input can of course be omitted.)
+
+
+TO RUN GGFLO:
+   ./bin/ggflo --input=PATH/TO/INPUT_FILES
+
+
+
+  VBFNLO is a fully flexible parton level Monte Carlo program for the
+simulation of vector boson fusion, double and triple vector boson production in
+hadronic collisions at next-to-leading order in the strong coupling constant. 
+Electroweak corrections to Higgs production via vector boson fusion are also 
+included in the SM and MSSM.  VBFNLO includes Higgs and vector boson decays
+with full spin correlations and all off-shell effects.  In addition, VBFNLO 
+implements CP-even and CP-odd Higgs boson production via gluon fusion, associated 
+with two jets, at the leading-order one-loop level.
+
+  A variety of effects arising from beyond the Standard Model physics are 
+implemented for selected processes. Processes can be run in the MSSM, anomalous
+couplings of Higgs and vector bosons can be used, a Three-Site Higgsless model 
+and a Warped Higgsless extra dimension model are included.  The program offers the 
+possibility of generating Les Houches Accord event files for most processes 
+available at leading order.
+
+  Complete documentation, including instructions for building, installing
+and running VBFNLO, is available in the doc/Manual.pdf file.
+

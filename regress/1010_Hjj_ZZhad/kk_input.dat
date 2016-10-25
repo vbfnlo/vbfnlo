@@ -1,0 +1,19 @@
+VBFCALC_SWITCH   =   .true.     ! Should vbfnlo compute couplings and masses? 
+!                                 -> kk_coupl_inp.dat
+MHLM_SWITCH      =   .false.    ! mhlmswitch: set true for 3-site-HLM, 
+!                                 otherwise RS higgsless model
+
+! The following are only used in the RS higgsless model (MHLM_SWITCH=FALSE)
+RDWN             =   9.75d-9    ! location of UV brane in inverse GeV 
+KKMAXW           =   1          ! maximum number of Kaluza-Klein Ws 
+KKMAXZ           =   1          ! maximum number of Kaluza-Klein Zs
+KKMAXG           =   1          ! maximum number of Kaluza-Klein Zprimes
+
+! The following is only used in the 3-site Higgsless Model (MHLM_SWITCH=TRUE)
+WPMASS           =   500d0	! W' mass for 3-Site-Higgsless-Model
+
+GF_K             =  .false.     ! Should vbfnlo compute couplings to fermions? -> kk_coupl_inp.dat
+XI_Z             =   1d0        ! Xi_Z=gfkz/gsmz
+XI_W             =   1d0        ! Xi_W=gfkw/gsmw
+XI_E             =   1d0        ! gwwz'=Xi_E gwwz'_max
+GWWZ_CASE        =   2          !gwwz_case 1:gwwz=0.949*gwwz_SM, 2:gwwz=gwwz_SM, 3:gwwz=1.034*gwwz_SM
