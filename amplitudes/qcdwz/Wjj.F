@@ -131,7 +131,7 @@ c calculate glu currents
 
       
 c eventually calc amplitudes
-	tempR = GG(1)**2/qjj2(pdia(0,in2),pdia(0,out2))
+	tempR = dble(GG(1)**2/qjj2(pdia(0,in2),pdia(0,out2)))
 	i = out/2 ! swapped initial or final state? only needed for colstr 2
 	amp(colstr,qtype(i),-1) = tempR * dotcc(gluWij(0,in,out),gluij(0,-1,in2,out2))
 	amp(colstr,qtype(i), 1) = tempR * dotcc(gluWij(0,in,out),gluij(0, 1,in2,out2))
@@ -366,14 +366,14 @@ c multiply coupl. const. and get |amp|^2
       
       
 c 4q WZ Amplitude
-      subroutine amp4qwVirt(P,id,fsign,nbos,qhela,nlo,rn,res)
+      subroutine amp4qwVirt(P,id,fsign,nbos,nlo,rn,res)
       implicit none
 #include "common.inc"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/scales.inc"
       real*8 P(0:3,max_p,max_kin),rn,res(0:2,3:4,0:2)
-      integer id(4),fsign(4),nbos,qhel,lephel,nlo,qhela
+      integer id(4),fsign(4),nbos,qhel,lephel,nlo
 !       logical skipidfl(2)
       
       real*8 pbar(0:3,4),pdia(0:3,4),kdia(0:3,1),momTemp(0:4)
@@ -1215,7 +1215,7 @@ c here we have to add up both crossing, before we can square the amplitude
 	print*,"res virt+CT    ",resV
 	print*,'sum I+virt+CT  ',((resV(i,j)+resI(i,j),i=1,2),j=3,4)
 	print*,'cancellation   ',((abs((resI(i,j)+resV(i,j))/resI(i,j)),i=1,2),j=3,4)
-	pause
+! 	pause
       endif
 
       if(ldebug) then
@@ -1259,7 +1259,7 @@ c different family
       end       
 
 
-      SUBROUTINE ug2dgwVirt(P,id,fsign,nbos,nlo,ghel2,ghel4,rn,res) ! sum over glu hel if ghel ==0
+      SUBROUTINE ug2dgwVirt(P,id,fsign,nbos,nlo,ghel2,ghel4,res) ! sum over glu hel if ghel ==0
       implicit none
 #include "common.inc"
 #include "VBFNLO/utilities/global.inc"
@@ -1908,7 +1908,7 @@ c square amplitudes
 	print*,'(I+V)*B)',res(0)+res(1)
 	print*,'-V/I    ',-res(0)/res(1)
 	print*,'canell  ',abs((res(1)+res(0))/res(1))
-	pause
+! 	pause
       endif
       res(1) = res(1)*als(1,1)/2d0/pi ! 2Re *als/4pi
       res(0) = res(0)*als(1,1)/2d0/pi 
@@ -2143,8 +2143,8 @@ c square amp
           DO J = 1, 6
               TEMP = TEMP + CF(J,I)*AMP(J)
           ENDDO
-          res(0) =res(0)+TEMP*DCONJG(AMP(I))/DENOM(I)
-          res(i) =res(i)+ AMP(I)*DCONJG(AMP(I))/DENOM(I)
+          res(0) =res(0)+dble(TEMP*DCONJG(AMP(I))/DENOM(I))
+          res(i) =res(i)+ dble(AMP(I)*DCONJG(AMP(I))/DENOM(I))
       ENDDO
       enddo; enddo;enddo ! pol
       
@@ -2462,7 +2462,7 @@ c for lhe output
           colsq(0,1) = 0d0
           colsq(0,2) = 0d0
           do k=1,4; do l=1,2
-            colsq(k,l) = amp(k,l,i,helcfg,gh)*dconjg(amp(k,l,i,helcfg,gh))
+            colsq(k,l) = dble(amp(k,l,i,helcfg,gh)*dconjg(amp(k,l,i,helcfg,gh)))
           enddo; enddo
 c    diff q families
 	  do k=1,2; do l=1,2

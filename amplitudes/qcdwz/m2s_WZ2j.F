@@ -721,7 +721,7 @@ c select subprocess for lha output
 
 #endif
 	else
-	  call ug2dgwVirt(P,id,fsign,nbos,nlo,hel(1),hel(2),rn,amp)
+	  call ug2dgwVirt(P,id,fsign,nbos,nlo,hel(1),hel(2),amp)
           do i=0,2
             amp(i)=amp(i)*4
           enddo
@@ -836,7 +836,7 @@ c sum over q flavors and colors
 	  call amp4qwzVirt(P,id,fsign,nbos,0,0,nlo,rn,amp)
 #endif
 	else
-	  call amp4qwVirt(P,id,fsign,nbos,0,nlo,rn,amp)
+	  call amp4qwVirt(P,id,fsign,nbos,nlo,rn,amp)
 	endif
 #endif
 
@@ -961,10 +961,10 @@ c      integer,save :: numresets
          listp = listp + 1
          if(lfill.and.(lha.or.hepmc)) then
              call fillColoredPartonsQCDVV(iflav,id,colstr,listp)
-             helicity(1)=9d0
-             helicity(2)=9d0
-             helicity(3)=9d0
-             helicity(4)=9d0
+             helicity(1)=9
+             helicity(2)=9
+             helicity(3)=9
+             helicity(4)=9
          endif                  ! numresets.eq.0
       endif
 !       print*,'fl:',listp, iflav,colstr,"min,fill",nmin,lfill

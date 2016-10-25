@@ -132,7 +132,11 @@ c select helicity: h = random number for lepton+photon helicity (h=1:8)
       h = mod(h,8) + 1
 
       ie = sign(1,4-h)
-      iu = (-1)**(h+1)
+      if(bos .eq. 221) then
+         iu = (-1)**(h+1) !muons
+      else if(bos .eq. 251) then
+         iu = 1 ! only left-handed neutrinos
+      end if
       it = (-1)**((h-1)/2)
 
 c...Les Houches interface
@@ -180,11 +184,15 @@ c...Les Houches interface
            CALL JIOXXX(zep(1,J),zem(1,J),GAL,ZERO , ZERO ,ae(1,J))
            CALL JIOXXX(zep(1,J),zem(1,J),GZL,ZMASS,ZWIDTH,ze(1,J))
          END SELECT
-
-         CALL JIOXXX(zmp(1,J),zmm(1,J),GAL,ZERO ,ZERO  ,amu(1,J))
-         CALL JIOXXX(zmp(1,J),zmm(1,J),GZL,ZMASS,ZWIDTH,zmu(1,J))
          
-
+         if(bos .eq. 221) then
+            CALL JIOXXX(zmp(1,J),zmm(1,J),GAL,ZERO,ZERO, amu(1,J))   !A*m
+            CALL JIOXXX(zmp(1,J),zmm(1,J),GZL,ZMASS,ZWIDTH, zmu(1,J))!Z*m
+         else if(bos .eq. 251) then
+            CALL JIOXXX(zmp(1,J),zmm(1,J),GZN,ZMASS,ZWIDTH, zmu(1,J))!Z*v
+            amu(1:4,J) = 0
+            amu(5:6,J) = zmu(5:6,J)
+         endif        
 
         SELECT CASE(procid)
         CASE(ZZhadA)
@@ -226,14 +234,25 @@ c leptonic tensors
         else  ! SM
 
 c leptonic tensors
-           call zza_atozz(v(0,1,J),J,azz(0,J),0) !A -> Z Z -> e- e+ mu- mu+
-           call zza_ztozz(v(0,1,J),J,zzztens(0,J),0) !Z -> Z Z -> e- e+ mu- mu+
-           call zza_atozae(v(0,1,J),J,h,aaze(0,J),0) !A -> Z A -> e- e+ a
-           call zza_ztozae(v(0,1,J),J,h,zzae(0,J),0) !Z -> Z A -> e- e+ a
-           call zza_atozam(v(0,1,J),J,h,aazm(0,J),0) !A -> Z A -> mu- mu+ a
-           call zza_ztozam(v(0,1,J),J,h,zzam(0,J),0) !Z -> Z A -> mu- mu+ a
-           call zza_atozza(v(0,1,J),J,h,azza(0,J),0) !A -> ZZA -> e- e+ mu- mu+ a
-           call zza_ztozza(v(0,1,J),J,h,zzza(0,J),0) !Z -> ZZA -> e- e+ mu- mu+ a
+           if(bos .eq. 221) then !mu- mu+
+            call zza_atozz(v(0,1,J),J,azz(0,J),0)      !A -> Z Z -> e- e+ mu- mu+
+            call zza_ztozz(v(0,1,J),J,zzztens(0,J),0)  !Z -> Z Z -> e- e+ mu- mu+
+            call zza_atozae(v(0,1,J),J,h,aaze(0,J),0)  !A -> Z A -> e- e+ a
+            call zza_ztozae(v(0,1,J),J,h,zzae(0,J),0)  !Z -> Z A -> e- e+ a
+            call zza_atozam(v(0,1,J),J,h,aazm(0,J),0)  !A -> Z A -> mu- mu+ a
+            call zza_ztozam(v(0,1,J),J,h,zzam(0,J),0)  !Z -> Z A -> mu- mu+ a
+            call zza_atozza(v(0,1,J),J,h,azza(0,J),0)  !A -> ZZA -> e- e+ mu- mu+ a
+            call zza_ztozza(v(0,1,J),J,h,zzza(0,J),0)  !Z -> ZZA -> e- e+ mu- mu+ a
+         else if(bos .eq. 251) then !v- v+
+            call zzna_atozz(v(0,1,J),J,azz(0,J),0)      !A -> Z Z -> e- e+ v- v+
+            call zzna_ztozz(v(0,1,J),J,zzztens(0,J),0)  !Z -> Z Z -> e- e+ v- v+
+            call zza_atozae(v(0,1,J),J,h,aaze(0,J),0)  !A -> Z A -> e- e+ a
+            call zza_ztozae(v(0,1,J),J,h,zzae(0,J),0)  !Z -> Z A -> e- e+ a
+            aazm(0:3,J) = 0
+            zzam(0:3,J) = 0
+            call zzna_atozza(v(0,1,J),J,h,azza(0,J),0)  !A -> ZZA -> v- v+ mu- mu+ a
+            call zzna_ztozza(v(0,1,J),J,h,zzza(0,J),0)  !Z -> ZZA -> v- v+ mu- mu+ a
+         endif
 
         endif ! anom or SM
 
@@ -600,7 +619,12 @@ c...Les Houches interface - the most propable subprocess 3jets at LO
             endif
          endif
 
-         m2s(j) = m2s(j) * 8d0     ! factor 2 for random helicity summation
+         if (bos .eq. 221) then
+           m2s(j) = m2s(j) * 8d0           ! factor 2 for random helicity summation
+         else if (bos .eq. 251) then
+           m2s(j) = m2s(j) * 4d0           ! factor 2 for random helicity summation - except Z->nu nu~
+         endif
+
       enddo
 
 

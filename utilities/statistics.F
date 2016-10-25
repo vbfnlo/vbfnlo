@@ -21,6 +21,7 @@ c     variables for the integration loops
       parameter (two = 2)
       common/Ncall1/Ncall,iteration
 
+
       Ncall = N_points(0)-N_iterations1 + iteration 
       
       if(.not.reducesubstat) then
@@ -100,19 +101,74 @@ c     variables for the integration loops
 	case (6,8)
 	  Ncall = two**(Ncall -3)
 	end select
-      CASE(QCDZZjj_ll,QCDZZjj_lnu)
+      CASE(QCDZAjj_l)
+        if(ps_number.eq.1) then
+         Ncall = Ncall -1
+	Select case(sub_number)
+	case (1)
+	  Ncall = two**(Ncall)
+	case (2)
+	  Ncall = two**(Ncall -1)
+	case (3)
+	  Ncall = two**(Ncall -2)
+	case (4)
+	  Ncall = two**(Ncall- 3)
+	case (5)
+	  Ncall = two**(Ncall -2)
+	case (6)
+	  Ncall = two**(Ncall -2)
+	case (7)
+	  Ncall = two**(Ncall -4)
+	end select
+        else
+	Select case(sub_number)
+	case (1)
+	  Ncall = two**(Ncall)
+	case (2)
+	  Ncall = two**(Ncall -1)
+	case (3)
+	  Ncall = two**(Ncall -2)
+	case (4)
+	  Ncall = two**(Ncall- 3)
+	case (5)
+	  Ncall = two**(Ncall -2)
+	case (6,8)
+	  Ncall = two**(Ncall -2)
+	case (7)
+	  Ncall = two**(Ncall -5)
+	end select
+        endif
+      CASE(QCDZAjj_n)
+	Select case(sub_number)
+	case (1)
+	  Ncall = two**(Ncall)
+	case (2)
+	  Ncall = two**(Ncall -1)
+	case (3)
+	  Ncall = two**(Ncall -2)
+	case (4)
+	  Ncall = two**(Ncall- 3)
+	case (5)
+	  Ncall = two**(Ncall -2)
+	case (6,8)
+	  Ncall = two**(Ncall -2)
+	case (7)
+	  Ncall = two**(Ncall -5)
+	end select
+      CASE(QCDZZjj_ll,QCDZZjj_lnu,QCDAAjj)
         Select case(sub_number)
-        case (1)
+        case (1,5)
           Ncall = two**(Ncall)
-        case (2,3)
+        case (6)
           Ncall = two**(Ncall-1)
-        case (5,6)
+        case (2)
           Ncall = two**(Ncall-2)
-        case (7)
-          Ncall = two**(Ncall-5)
-        case (4)
+        case (3,4,7)
           Ncall = two**(Ncall-3)
         end select
+      CASE(ZAjj)
+        if(ps_number.eq.1) Ncall = Ncall - 2
+	Ncall = two**Ncall
       CASE(WPZA, WMZA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
          if (ps_number.eq.1) then
             Ncall = two**( N_points(0) - N_iterations1 + iteration )
@@ -220,6 +276,7 @@ c     variables for the integration loops
       common/Ncall1/Ncall,iteration
       integer gnlo
       common /nlovariable/ gnlo
+      integer add(7)
 
       Ncall = N_points(gnlo)!-N_iterations1 + iteration 
       
@@ -277,13 +334,125 @@ c          print*,'here',ps_number,sub_number,Ncall
         case (8)
           Ncall = two**(Ncall -3)
         end select
-      CASE(QCDZZjj_ll,QCDZZjj_lnu)
-        SELECT CASE(sub_number)
-        CASE(1,2)
+      CASE(QCDZAjj_l)
+        if(ps_number.eq.1) then
+        Ncall = Ncall -1
+         if(gnlo.eq.1) then
+            add(1)=0
+            add(2)=0
+            add(3)=0
+            add(4)=1
+            add(5)=-1
+            add(6)=0
+            add(7)=-2
+         elseif(gnlo.eq.2) then
+            add(1)=1
+            add(2)=1
+            add(3)=0
+            add(4)=1
+            add(5)=1
+            add(6)=2
+            add(7)=-1
+         elseif(gnlo.eq.3) then
+            add(1)=0
+            add(2)=0
+            add(3)=0
+            add(4)=1
+            add(5)=-1
+            add(6)=-1
+            add(7)=-2
+            else
+            add(1)=0
+            add(2)=0
+            add(3)=0
+            add(4)=0
+            add(5)=0
+            add(6)=0
+            add(7)=0
+         endif
+         else
+         if(gnlo.eq.1) then
+            add(1)=0
+            add(2)=-1
+            add(3)=0
+            add(4)=0
+            add(5)=-1
+            add(6)=0
+            add(7)=-2
+         elseif(gnlo.eq.2) then
+            add(1)=0
+            add(2)=0
+            add(3)=0
+            add(4)=-1
+            add(5)=0
+            add(6)=1
+            add(7)=-1
+         elseif(gnlo.eq.3) then
+            add(1)=0
+            add(2)=0
+            add(3)=-1
+            add(4)=0
+            add(5)=-1
+            add(6)=-1
+            add(7)=-2
+            else
+            add(1)=0
+            add(2)=0
+            add(3)=0
+            add(4)=0
+            add(5)=0
+            add(6)=0
+            add(7)=0
+         endif
+       endif
+        Select case(sub_number)
+        case (1)
+          Ncall = two**(Ncall+add(1))
+        case (2)
+          Ncall = two**(Ncall -1+add(2))
+        case (3)
+          Ncall = two**(Ncall -2+add(3))
+        case (4)
+          Ncall = two**(Ncall- 3+add(4))
+        case (5)
+          Ncall = two**(Ncall -1+add(5))
+        case (6)
+          Ncall = two**(Ncall -2+add(6))
+        case (7)
+          Ncall = two**(Ncall -1+add(7))
+        end select
+      CASE(QCDZAjj_n)
+        Select case(sub_number)
+        case (1)
           Ncall = two**(Ncall)
+        case (2)
+          Ncall = two**(Ncall -1)
+        case (3,6)
+          Ncall = two**(Ncall -2)
+        case (4)
+          Ncall = two**(Ncall- 3)
+        case (5)
+          Ncall = two**(Ncall -1)
+        case (7)
+          Ncall = two**(Ncall -3)
+        case (8)
+          Ncall = two**(Ncall -3)
+        end select
+      CASE(QCDZZjj_ll,QCDZZjj_lnu,QCDAAjj)
+        if(gnlo.ge.4.and.(sub_number.eq.3.or.sub_number.eq.4)) Ncall=Ncall+1 
+        SELECT CASE(sub_number)
+        CASE(1,5,6)
+          Ncall = two**(Ncall)
+        CASE(2)
+          Ncall = two**(Ncall-1)
         CASE(3)
+          Ncall = two**(Ncall-2)
+        CASE(4,7)
           Ncall = two**(Ncall-3)
         END SELECT
+      CASE(ZAjj)
+        if(ps_number.eq.1) Ncall = Ncall - 2
+	Ncall = two**Ncall
       CASE(WPZA, WMZA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
          if (ps_number.eq.1) then
             Ncall = two**(N_points(gnlo))
@@ -362,7 +531,7 @@ c include global variables via include-files, e.g. "procID"
       endif
 
       Select Case(procID)
-      CASE(QCDWPAjj,QCDWMAjj)
+      CASE(QCDWPAjj,QCDWMAjj,QCDZAjj_l)
 	select case(ps_number)
 	case(2)
 	  Ncall = two**Ncall
@@ -371,7 +540,11 @@ c include global variables via include-files, e.g. "procID"
 	case default
 	  Ncall = two**(Ncall)
 	end select
-	
+      CASE(ZAjj)
+        if(ps_number.eq.1) Ncall = Ncall - 2
+	Ncall = two**Ncall
+      CASE(QCDZAjj_n)
+	  Ncall = two**(Ncall)
       CASE(WPZA, WMZA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
          if (ps_number.eq.1) then
             Ncall = two**( N_points(-1) - N_iterations2 + iteration )

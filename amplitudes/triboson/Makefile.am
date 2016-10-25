@@ -56,7 +56,9 @@ WWAtowwa.F \
 ZZAtozae.F \
 ZZAtozam.F \
 ZZAtozza.F \
+ZZnAtozza.F \
 ZZAtozz.F \
+ZZnAtozz.F \
 WZAtowa.F \
 WZAtowza.F \
 WZAtowz.F \
@@ -122,6 +124,8 @@ mg2_uuWWAg.F \
 mg2_ddWWAg.F \
 mg2_uuZZA.F \
 mg2_ddZZA.F \
+mg2_uuZZnA.F \
+mg2_ddZZnA.F \
 mg2_uuZZAg.F \
 mg2_ddZZAg.F \
 mg2_udWZA.F \

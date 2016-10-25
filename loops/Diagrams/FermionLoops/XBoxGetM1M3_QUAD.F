@@ -1,13 +1,21 @@
+c ************************************************************************************
+c Author: Francisco Campanario
+c E-mail: francam@particle.uni-karlsruhe.de
+c************************************************************************************
+c************************************************************************************
+c    Declaration of variables 
+c************************************************************************************
+c***********************************************************************************
        subroutine XDget_1M_QUAD(M1,p1sq,p2sq,p3sq,p1p2
      & ,p1p3,p2p3,musq)
        Implicit none
-       Real*16   p1sq, p1p2, p1p3, p1p4
-       Real*16   p2sq, p2p3, p2p4
+       Real*16   p1sq, p1p2, p1p3!, p1p4
+       Real*16   p2sq, p2p3!, p2p4
        Real*16   p3sq, p3p4
        Real*16   p4sq
-       Real*16   s12, s13, s14
-       Real*16   s23, s24
-       Real*16   s34
+       Real*16   s12!, s13!, s14
+       Real*16   s23!, s24
+!       Real*16   s34
        Real*16 M5,M1,M2,M3,M4,musq
        complex*32 A01, A02,A03,A04,A05
        Real*16      A01R, A02R,A03R,A04R,A05R
@@ -193,11 +201,11 @@ c       print*, "here_XGETEM1M3"
 
        p4sq=p1sq+p2sq+p3sq+2*(p1p2+p1p3+p2p3)
        s12 = (p1sq +p2sq+ 2*p1p2) 
-       s13 = (p1sq +p3sq+ 2*p1p3) 
-       s14 = (p1sq +p4sq+ 2*p1p4) 
+!       s13 = (p1sq +p3sq+ 2*p1p3) 
+!       s14 = (p1sq +p4sq+ 2*p1p4) 
        s23 = (p2sq +p3sq+ 2*p2p3) 
-       s24 = (p2sq +p4sq+ 2*p2p4) 
-       s34 = (p3sq +p4sq+ 2*p3p4) 
+!       s24 = (p2sq +p4sq+ 2*p2p4) 
+!       s34 = (p3sq +p4sq+ 2*p3p4) 
 
 
         A01=A0finG_QUAD(M5,musq)  

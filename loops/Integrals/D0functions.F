@@ -1052,6 +1052,11 @@ C	****** NO MASS EQUAL TO ZERO ******
 130	CONTINUE
 	EPS=1D-18
 	IEPS=DCMPLX(0D0,EPS)
+cMK check for configuration that caused problems
+      if(p1.gt.0d0.and.p2.gt.0d0.and.p3.gt.0d0.and.p4.gt.0d0) then
+        print*,"D0 function with all momenta light-like and non-zero massees not working"
+        stop
+      endif
 c check for massless external momentum: excellent candidate for p13,
 c leading to r13 >=1 and real.
         if (abs(q1*q2*q3*q4).le.eps1) then

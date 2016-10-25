@@ -167,6 +167,183 @@ c psiWG
 
       end
 
+      subroutine precalcQCDZZjj(p,lokt,lephel)
+      implicit none
+#include "cacheZZ.inc"
+#include "VBFNLO/utilities/global.inc"
+      real*8 p(0:3,max_p,max_kin)
+      logical lokt(16),lnlo
+      integer lephel,lepkin
+
+      real*8 mjj2,dotrr, mjj2Q,dotrrQ
+      external mjj2,dotrr,dotrrQ
+      real*8 pbar(0:3,5),pdia(0:4,5),mpdia(0:4,5)
+      integer fsignp(4),fsignm(4),id(4),h,i,j,k,idb(4),kin,copy(5,16),mu,pol1,pol2,qh,qt,iV,iV2
+      data fsignp / 1,1,1,1/, fsignm / -1,-1,-1,-1 /, id /1,3,2,4/,idb/4,2,3,1/
+      complex*16 psiTemp(2,-1:1)
+      real*8 momTemp(0:4)
+
+
+c dont' recalculated spinors, that are the same as in kin 1
+      data copy /0,0,0,0,0, 0,2,0,0,0, 0,2,0,0,0, 0,2,0,0,0, ! RE kin, ii kin
+     $                      1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0,
+     $                      1,2,0,0,0, 1,2,0,0,0, 1,2,0,0,0, ! ff kin
+     $                      0,2,0,5,0, 0,2,0,4,0, 0,2,0,3,0, ! if, fi
+     $                      1,0,0,5,0, 1,0,0,4,0, 1,0,0,3,0/
+
+c V currents
+c V1/V2/V12,
+c    for qhel=0:
+c       AZ=1,2 : A and Z current wo coupling
+c    qhel = -1:1:
+c       AZ=3,4 : V coupling to u/d quark with qhel inclouding couplings
+      complex*16 epsV,w4l(0:4) ! (mu, qhel, 12=AZ 34=including coupl to ud, V1 V2 V12, hel->0=rnd hel, kin)
+      real*8 momV
+      common /QCDZZcurrents/ epsV(0:3,-1:1,4,3,0:4,7),w4l,momV(0:4,3,7)
+      logical lAZ(0:2,3) ! V.or.A A V,    V1 V2 V12
+      common /QCDZZcacheL/ lAZ
+      
+      
+c generate psi 
+      do kin=1,16
+      if(lokt(kin)) then 
+
+c use pdia for psi, -pdia for psibar
+c -pdia for bosons !!!!!
+      do mu=0,3
+        pdia(mu,1) = p(mu,1,kin) ! psi in initial state has sign 1
+        pdia(mu,2) = p(mu,2,kin)
+        pdia(mu,3) =-p(mu,3,kin) ! psi in final state has sign -1
+        pdia(mu,4) =-p(mu,4,kin) 
+        pdia(mu,5) =-p(mu,5,kin) 
+        do i=1,5
+          mpdia(mu,i) = -pdia(mu,i)
+        enddo
+      enddo
+      do i=1,5
+        pdia(4,i) = 0d0
+      enddo
+      
+      lepkin=kin
+      if(kin.gt.7) lepkin = 1
+
+c calc spinors
+c kets are psi(:,:, >0 , :)
+c bras are psi(:,:, <0 , :)
+        call psi0mAll(5,p(0,1,kin),psi(1,-1,-5,kin))
+      
+      do i=1,5
+        call polvec(p(0,i,kin),1,epsG(0,i,1,kin))
+        call polvec(p(0,i,kin),2,epsG(0,i,2,kin))
+      enddo
+! 
+!       do i=1,4; do j=i+1,5
+!       do pol1=1,2; do pol2=1,2
+!       do mu = 0,3
+! c gluon copplings
+! c add a minus sign because of pdia convention 
+!         epsGG(mu,i,j,pol1,pol2,kin)= -(2d0*dotrrQ(pdia(0,j),epsG(0,i,pol1,kin))*epsG(mu,j,pol2,kin)
+!      &              -2d0*dotrrQ(pdia(0,i),epsG(0,j,pol2,kin))*epsG(mu,i,pol1,kin)
+!      &        +dotrrQ(epsG(0,i,pol1,kin),epsG(0,j,pol2,kin))*(pdia(mu,i)-pdia(mu,j)))/mjj2Q(pdia(0,i),pdia(0,j))
+!       enddo
+!       enddo;enddo
+!       enddo;enddo 
+
+c psiG
+      do i=1,5
+      if(.not.(kin.ne.1.and.i.eq.5)) then
+        do j=1,5
+        if(i.ne.j) then
+          call bra2r(psi(1,-1,-i,kin),.true.,mpdia(0,i),-1,mpdia(0,j),epsG(0,j,1,kin),psiG(1,-1,-i,j,1,kin),momPsiG(0,-i,j,kin))
+          call bra2r(psi(1, 1,-i,kin),.true.,mpdia(0,i), 1,mpdia(0,j),epsG(0,j,1,kin),psiG(1, 1,-i,j,1,kin),momPsiG(0,-i,j,kin))
+          call bra2r(psi(1,-1,-i,kin),.true.,mpdia(0,i),-1,mpdia(0,j),epsG(0,j,2,kin),psiG(1,-1,-i,j,2,kin),momPsiG(0,-i,j,kin))
+          call bra2r(psi(1, 1,-i,kin),.true.,mpdia(0,i), 1,mpdia(0,j),epsG(0,j,2,kin),psiG(1, 1,-i,j,2,kin),momPsiG(0,-i,j,kin))
+
+          call ket2r(psi(1,-1, i,kin),.true.,pdia(0,i),-1,mpdia(0,j),epsG(0,j,1,kin),psiG(1,-1, i,j,1,kin),momPsiG(0,i,j,kin))
+          call ket2r(psi(1, 1, i,kin),.true.,pdia(0,i), 1,mpdia(0,j),epsG(0,j,1,kin),psiG(1, 1, i,j,1,kin),momPsiG(0,i,j,kin))
+          call ket2r(psi(1,-1, i,kin),.true.,pdia(0,i),-1,mpdia(0,j),epsG(0,j,2,kin),psiG(1,-1, i,j,2,kin),momPsiG(0,i,j,kin))
+          call ket2r(psi(1, 1, i,kin),.true.,pdia(0,i), 1,mpdia(0,j),epsG(0,j,2,kin),psiG(1, 1, i,j,2,kin),momPsiG(0,i,j,kin))
+!           print*,psiG(:,-1,-i,j,:,kin)
+        endif
+        enddo
+
+c psiV(V)
+        do qh=-1,1,2
+        do qt=3,4 
+          do iV=3,1,-1
+          if(lAZ(0,iV)) then
+            call bra2c(psi(1,qh,-i,kin),.true.,mpdia(0,i),qh,momV(0,iV,lepkin),epsV(0,qh,qt,iV,lephel,lepkin),
+     $             psiV(1,qh,qt,-i,iV,kin),momPsiV(0,-i,iV,kin))
+            call ket2c(psi(1,qh, i,kin),.true., pdia(0,i),qh,momV(0,iV,lepkin),epsV(0,qh,qt,iV,lephel,lepkin),
+     $             psiV(1,qh,qt, i,iV,kin),momPsiV(0, i,iV,kin))
+        
+            if(iV.ne.3) then
+             iV2=3-iV
+             if(lAZ(0,iV2)) then
+              call bra2c(psiV(1,qh,qt,-i,iV,kin),.false.,momPsiV(0,-i,iV,kin),qh,momV(0,iV2,lepkin),epsV(0,qh,qt,iV2,lephel,lepkin),
+     $             psitemp(1,1),momTemp)
+                  psiV(:,qh,qt,-i,3,kin) = psiV(:,qh,qt,-i,3,kin) + psitemp(:,1)
+              call ket2c(psiV(1,qh,qt, i,iV,kin),.false.,momPsiV(0, i,iV,kin),qh,momV(0,iV2,lepkin),epsV(0,qh,qt,iV2,lephel,lepkin),
+     $                  psitemp(1,1),momTemp)
+                    psiV(:,qh,qt, i,3,kin) = psiV(:,qh,qt, i,3,kin) + psitemp(:,1)
+              endif
+             endif
+          endif
+          enddo
+
+! c psiVG 
+          if(kin.eq.1) then ! only needed for N+1
+          do iV=3,1,-1
+          if (lAZ(0,iV)) then
+          do j=1,5
+          if(i.ne.j) then
+            do pol1 = 1,2
+              call ket2c(psiG(1,qh,i,j,pol1,kin),.false.,momPsiG(0,i,j,kin),qh,momV(0,iV,lepkin),epsV(0,qh,qt,iV,lephel,lepkin),
+     $                   PsiTemp(1,-1),momtemp)
+              call ket2r(psiV(1,qh,qt, i,iV,kin),.false.,momPsiV(0,i,iV,kin),qh,mpdia(0,j),epsG(0,j,pol1,kin),
+     $                 PsiTemp(1,1),momPsiVG(0,i,iV,j,kin))
+              PsiVG(1,qh,qt,i,iV,j,pol1) = PsiTemp(1,-1)+PsiTemp(1,1)
+              PsiVG(2,qh,qt,i,iV,j,pol1) = PsiTemp(2,-1)+PsiTemp(2,1)
+
+              call bra2c(psiG(1,qh,-i,j,pol1,kin),.false.,momPsiG(0,-i,j,kin),qh,momV(0,iV,lepkin),epsV(0,qh,qt,iV,lephel,lepkin),
+     $                 PsiTemp(1,-1),momtemp)
+              call bra2r(psiV(1,qh,qt,-i,iV,kin),.false.,momPsiV(0,-i,iV,kin),qh,mpdia(0,j),epsG(0,j,pol1,kin),
+     $                 PsiTemp(1,1),momPsiVG(0,-i,iV,j,kin))
+              PsiVG(1,qh,qt,-i,iV,j,pol1) = PsiTemp(1,-1)+PsiTemp(1,1)
+              PsiVG(2,qh,qt,-i,iV,j,pol1) = PsiTemp(2,-1)+PsiTemp(2,1)
+
+              if(iV.ne.3) then
+                iV2=3-iV
+                call ket2c(psiVG(1,qh,qt,i,iV,j,pol1),.false.,momPsiVG(0,i,iV,j,kin),qh,momV(0,iV2,lepkin),
+     $                     epsV(0,qh,qt,iV2,lephel,lepkin),PsiTemp(1,-1),momtemp)
+                PsiVG(1,qh,qt,i,3,j,pol1) = PsiVG(1,qh,qt,i,3,j,pol1) + PsiTemp(1,-1)
+                PsiVG(2,qh,qt,i,3,j,pol1) = PsiVG(2,qh,qt,i,3,j,pol1) + PsiTemp(2,-1)
+
+                call bra2c(psiVG(1,qh,qt,-i,iV,j,pol1),.false.,momPsiVG(0,-i,iV,j,kin),qh,momV(0,iV2,lepkin),
+     $                     epsV(0,qh,qt,iV2,lephel,lepkin),PsiTemp(1,-1),momtemp)
+                PsiVG(1,qh,qt,-i,3,j,pol1) = PsiVG(1,qh,qt,-i,3,j,pol1) + PsiTemp(1,-1)
+                PsiVG(2,qh,qt,-i,3,j,pol1) = PsiVG(2,qh,qt,-i,3,j,pol1) + PsiTemp(2,-1)
+              endif
+                
+              
+            enddo
+          endif
+          enddo
+          endif
+          enddo
+          endif
+        
+        enddo ! qt
+        enddo ! qh
+! 
+      endif
+      enddo
+      
+      endif ! lokt
+      enddo
+
+      end
+
 
 c resturn all spinor psi(::,-NF:NF) where a negative sign of NF corresponds to psibar
       SUBROUTINE PSI0MAll( NF,PBAR,PSI )
@@ -295,6 +472,9 @@ c look for the amplitudes in borncache
           call ug2dgwzCSNew(p,kin,idB,fsignB,nbos,0,usePreCalc,borncache(0,0,0,3,idB(1),idB(3),kin))
 #endif
 #endif
+        elseif(nbos.eq.23.or.nbos.eq.22.or.nbos.eq.21.or.nbos.eq.20.or.abs(nbos).eq.2.or.nbos.eq.24) then
+          nres=2
+          call amp2q2gZZcs(p,kin,idB,fsignB,0,usePreCalc,borncache(0,0,0,3,idB(1),idB(3),kin))
 	elseif(nbos.eq.3.or.nbos.eq.4) then ! W
  	  call ug2dgwCS(p,kin,idB,fsignB,nbos,borncache(0,0,0,3,idB(1),idB(3),kin))
         else
@@ -348,6 +528,115 @@ c calculate TiTj
 ! ! 
 
 
+      subroutine CScolAmpQZZ(p,kin,idB,fsignB,emitB,spectB,nbos,res)
+c get <TiTj> for 2q2g processes, amp = (Born^2, T1T2,T1T3)
+      implicit none
+#include "VBFNLO/utilities/global.inc"
+      real*8 p(0:3,max_p,max_kin), amp(0:2),res(-1:2,3:4,3:4,0:2)
+      integer h,i,j,ii,jj,mini,maxi, kin, idB(4),idtemp(4),signtemp(4),diffFl(0:2),fsignB(4)
+      integer helB,nbos, factorial(4),q,df,per,emitB,spectB
+      integer a,b,q1,q2
+      real*8 CF,CA
+      parameter (CF=4d0/3d0,CA=3d0)
+      logical ldebug
+      parameter (ldebug = .false.)
+      real*8 borncache(0:2,3:4,3:4,0:2,24,16)
+      real*8 tempamp(0:2,0:2)
+      save borncache
+
+      goto 25
+      entry CScolAmpQZZReset()
+      do i=1,24; do j=1,16
+        borncache(0,3,3,0,i,j) = -1d60
+      enddo; enddo
+      return
+      
+      ! convert idb to factorial number
+
+ 25   difffl(0) = 0
+      difffl(1) = 1
+      difffl(2) = 2
+      ii=emitB
+      jj=spectB
+      do i=1,4
+        idtemp(i)=idb(i)
+        signtemp(i)=fsignb(i)
+      enddo
+      select case (nbos)! get a unique permutation index, even if id quarks areinterchanged
+      case(33,44) 
+        if(idb(1).lt.idb(2)) then
+          idtemp(1)=idb(1); signtemp(1)=fsignB(1)
+          idtemp(2)=idb(2); signtemp(2)=fsignB(2)
+        else
+          idtemp(1)=idb(2); signtemp(1)=fsignB(2)
+          idtemp(2)=idb(1); signtemp(2)=fsignB(1)
+          difffl(1) = 2
+          difffl(2) = 1
+          if(ii.eq.1.or.ii.eq.2) ii=3-ii
+          if(jj.eq.1.or.jj.eq.2) jj=3-jj
+        endif
+        if(idb(3).lt.idb(4)) then
+          idtemp(3)=idb(3); signtemp(3)=fsignB(3)
+          idtemp(4)=idb(4); signtemp(4)=fsignB(4)
+        else
+          idtemp(3)=idb(4); signtemp(3)=fsignB(4)
+          idtemp(4)=idb(3); signtemp(4)=fsignB(3)
+          diffFl(1)=3-diffFl(1)
+          diffFl(2)=3-diffFl(2)
+          if(ii.eq.3.or.ii.eq.4) ii=7-ii
+          if(jj.eq.3.or.jj.eq.4) jj=7-jj
+        endif
+      end select
+        
+      do a=1,4
+        factorial(a) = idtemp(a)-1
+        do b=1,a-1
+          if (idtemp(b) .lt. idtemp(a)) factorial(a)=factorial(a)-1
+        enddo
+      enddo
+      per = factorial(1)*6+factorial(2)*2+factorial(3) +1
+
+c look for the amplitudes in borncache
+      if(borncache(0,3,3,0,per,kin).lt.0d0) then
+        call amp4qZZcs(p,kin,idB,fsignB,0,
+     1                  borncache(0,3,3,0,per,kin))
+      endif
+
+c calculate TiTj
+      if(ii.lt.jj) then
+        mini=ii
+        maxi=jj
+      else
+        mini=jj
+        maxi=ii
+      endif
+
+      do q1=3,4
+      do q2=3,4
+      do df=0,2
+        res(-1,q1,q2,df) = 0d0
+        res(1,q1,q2,df) = 0d0
+        res(2,q1,q2,df) = 0d0
+        do h=0,2
+          amp(h) = borncache(h,q1,q2,difffl(df),per,kin)
+        enddo
+        if(mini.eq.0) then
+          res(0,q1,q2,df) = amp(0) ! note that CF isn't included here
+        else if(mini.eq.1) then
+          if(maxi.eq.2) res(0,q1,q2,df)=amp(1)
+          if(maxi.eq.3) res(0,q1,q2,df)=amp(2)
+          if(maxi.eq.4) res(0,q1,q2,df)=-CF*amp(0)-amp(1)-amp(2)
+        else if(mini.eq.2) then
+          if(maxi.eq.3) res(0,q1,q2,df)=-CF*amp(0)-amp(1)-amp(2)
+          if(maxi.eq.4) res(0,q1,q2,df)=amp(2)
+        else
+          res(0,q1,q2,df)=amp(1)
+        endif
+      enddo
+      enddo
+      enddo
+!       print*,res(0,:,:,:)
+      end
 
       subroutine CScolAmpQNew(p,kin,idB,fsignB,emitB,spectB,nbos,res)
 c get <TiTj> for 2q2g processes, amp = (Born^2, T1T2,T1T3)
@@ -489,23 +778,35 @@ c     initial state splitting g -> q qb, g ->gg will be calulated here as well
       double precision  alphas, xmt, alfa, xmz, xmw,s2w, xmh
       common /bkopin/   alphas, xmt, alfa, xmz, xmw, s2w, xmh
 
-      integer beamsign(2),i, dia(4),di,qtype,hel9(9),hel9temp(9)
+      integer beamsign(2),i, dia(4),di,qtype,hel9(9),hel9temp(9),q1,q2
       data hel9 / 0,0,0,0,0,0,0,0,0/
       data hel9temp / -1,-1,-1,-1,-1,-1,-1,-1,-1/
       real*8 x,omx,xa,xxa,omxxa,logx,logomx,logomxxa,muf,T(4,4),logMU2oSij(1,4)
-      real*8 pdfqxa,pdfqxxa, pdfgxa,pdfgxxa,pdfb,pdftemp(-6:6), ampborn(-1:2,3:4,0:2),born,csamp(-1:2)
-      real*8 CF, CA, dotrr, pdf(-6:6,2,2),gamma(3:4)
+      real*8 pdfqxa,pdfqxxa, pdfgxa,pdfgxxa,pdfb,pdftemp(-6:6), ampborn(-1:2,3:4,0:2),born,csamp(-1:2,3:4)
+      real*8 CF, CA, dotrr, pdf(-6:6,2,2),gamma(3:4),ampbornZZ(-1:2,3:4,3:4,0:2)
       real*8 deltaCReal, temp(-6:6), theta,logalpha,logax,QCDVVjjFinColltemp,CScolAmpG
       parameter (deltaCReal=0d0)
       parameter (CF=4d0/3d0, CA=3d0)
       external di,CScolAmpgNew,theta,CScolAmpG
+!       print*,'ivlav',iflav
+!       print*,'id',id
 
 c process specific stuff
       if(nbos.eq.33.or.nbos.eq.44) then
         qtype = 3
+        q1=3
       else if (nbos.eq.32.or.nbos.eq.42.or.nbos.eq.31.or.nbos.eq.41.or.nbos.eq.3.or.nbos.eq.4) then
+        q1=3
         qtype = abs(iflav(id(2)))
         if(qtype.ne.0) qtype = 3+mod(qtype,2) ! 3 or 4, or 0 for glu
+      else if (nbos.eq.23.or.nbos.eq.22.or.nbos.eq.21.or.abs(nbos).eq.2.or.nbos.eq.20.or.nbos.eq.24) then
+        qtype = abs(iflav(id(2))) ! only need information if q or g
+          q1 = abs(iflav(id(3)))
+          q1 = 3+mod(q1,2) ! 3 or 4, or 0 for glu
+        if(qtype.ne.0) then
+          q2 = abs(iflav(id(4)))
+          q2 = 3+mod(q2,2) ! 3 or 4, or 0 for glu
+        endif
       else ! don't forget hel factor 
         print*,'wrong input in fincoll'
         stop
@@ -530,22 +831,45 @@ c process specific stuff
 c get color amp
       if(qtype.eq.0) then ! 2q2g amplitudes
         call CScolAmpGNew(p,1,id,fsign,dia(1),dia(2),nbos,csamp) ! use hel summed amplitudes
-        T(1,2) = csamp(0)
+        T(1,2) = csamp(0,q1)
         call CScolAmpGNew(p,1,id,fsign,dia(in),dia(3),nbos,csamp)
-        T(1,3) = csamp(0)
+        T(1,3) = csamp(0,q1)
         call CScolAmpGNew(p,1,id,fsign,dia(in),dia(4),nbos,csamp)
-        T(1,4) = csamp(0)
+        T(1,4) = csamp(0,q1)
         call CScolAmpGNew(p,1,id,fsign,0,0,nbos,csamp)
-        born   = csamp(0)
+        born   = csamp(0,q1)
       else ! 4q amplitudes
-        call CScolAmpqNew(p,1,id,fsign,dia(1),dia(2),nbos,ampborn)
-        T(1,2) = ampborn(0,qtype,difffamily) ! difffamily is her same family
-        call CScolAmpqNew(p,1,id,fsign,dia(in),dia(3),nbos,ampborn)
-        T(1,3) = ampborn(0,qtype,difffamily)
-        call CScolAmpqNew(p,1,id,fsign,dia(in),dia(4),nbos,ampborn)
-        T(1,4) = ampborn(0,qtype,difffamily)
-        call CScolAmpqNew(p,1,id,fsign,0,0,nbos,ampborn)
-        born = ampborn(0,qtype,difffamily)
+        select case (nbos)
+        case(33,44,32,42,31,41,3,4)
+          call CScolAmpqNew(p,1,id,fsign,dia(1),dia(2),nbos,ampborn)
+          T(1,2) = ampborn(0,qtype,difffamily) ! difffamily is her same family
+          call CScolAmpqNew(p,1,id,fsign,dia(in),dia(3),nbos,ampborn)
+          T(1,3) = ampborn(0,qtype,difffamily)
+          call CScolAmpqNew(p,1,id,fsign,dia(in),dia(4),nbos,ampborn)
+          T(1,4) = ampborn(0,qtype,difffamily)
+          call CScolAmpqNew(p,1,id,fsign,0,0,nbos,ampborn)
+          born = ampborn(0,qtype,difffamily)
+        case(23,22,21,20,24,2,-2)
+!           print*,q1,q2,difffamily
+!           print*
+          call CScolAmpqZZ(p,1,id,fsign,dia(1),dia(2),nbos,ampbornZZ)
+          T(1,2) = ampbornZZ(0,q1,q2,difffamily) ! difffamily is her same family
+          call CScolAmpqZZ(p,1,id,fsign,dia(in),dia(3),nbos,ampbornZZ)
+          T(1,3) = ampbornZZ(0,q1,q2,difffamily) ! difffamily is her same family
+          call CScolAmpqZZ(p,1,id,fsign,dia(in),dia(4),nbos,ampbornZZ)
+          T(1,4) = ampbornZZ(0,q1,q2,difffamily) ! difffamily is her same family
+          call CScolAmpqZZ(p,1,id,fsign,0,0,nbos,ampbornZZ)
+          born = ampbornZZ(0,q1,q2,difffamily) ! difffamily is her same family
+! ! 
+! !           call amp4qzzBorn(P,id,fsign,0,ampbornZZ(0:2,:,:,:))
+! !           print*,born/ampbornZZ(0,q1,q2,difffamily)
+! ! !           print*
+! ! !           print*,born,T(1,2),T(1,3),T(1,4)
+! ! !           pause
+        case default
+          print*,__FILE__, __LINE__
+          stop
+        end select
       endif
 
 c      born = 1d0*4*3*8
@@ -791,11 +1115,11 @@ cccccccccccccccccc
 
 
 c calc born instead
-!       if(iflav(in).eq.0) then
-!       QCDVVjjFinColltemp = pdfgxxa*Born/2d0/(als(1,1)/2d0/pi)/omx*x/omxxa  ! this is the born, factor 2, because we caount each subpr twice (loop), omx, which is included in mathematica and cancelled with *omx in a few lines
-!       else
-!       QCDVVjjFinColltemp = pdfqxxa*Born/2d0/(als(1,1)/2d0/pi)/omx*x/omxxa  ! this is the born
-!       endif
+! !       if(iflav(in).eq.0) then
+! !       QCDVVjjFinColltemp = pdfgxxa*Born/2d0/(als(1,1)/2d0/pi)/omx*x/omxxa  ! this is the born, factor 2, because we caount each subpr twice (loop), omx, which is included in mathematica and cancelled with *omx in a few lines
+! !       else
+! !       QCDVVjjFinColltemp = pdfqxxa*Born/2d0/(als(1,1)/2d0/pi)/omx*x/omxxa  ! this is the born
+! !       endif
       
       QCDVVjjFinColltemp = QCDVVjjFinColltemp*als(1,1)/2d0/pi*omx ! 1/omx was included in mathematica file
       QCDVVjjFinCollBornKin = QCDVVjjFinCollBornKin + QCDVVjjFinColltemp*pdfb/x*omxxa ! dx/x, within real emission this 1/x is put to the pa*pb

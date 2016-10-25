@@ -855,7 +855,7 @@ C   INPUT:
 C
 C            kbar      real*8  array(0:4)
 C                        physical four momentum for boson and mass
-C                        kbar(0:4) = [Ebar, kbarx, kbary, kbarz, mass]
+C                        kbar(0:4) = [Ebar, kbarx, kbary, kbarz, mass**2]
 C
 C            sigmak      integer
 C                        sign factor for vector boson
@@ -949,9 +949,10 @@ C
             RETURN
          END IF
             print*,'HELVEC(longitudinal polarisation) is buggy ?!'
-            stop
+!             stop
          KMAGNI = SQRT(KBAR(1)**2+KBAR(2)**2+KBAR(3)**2)
-         NORMAL = KBAR(4)/(KBAR(0)*KMAGNI)
+         NORMAL = KBAR(0)/(KBAR(4)*KMAGNI)
+         EPSCAR(0) = KMAGNI*KMAGNI/KBAR(0)*NORMAL
          EPSCAR(1) = KBAR(1)*NORMAL
          EPSCAR(2) = KBAR(2)*NORMAL
          EPSCAR(3) = KBAR(3)*NORMAL
@@ -1012,12 +1013,14 @@ C
                   RETURN
                   END IF
             print*,'HELVEC(longitudinal polarisation) is buggy ?!'
-            stop
+!             stop
             KMAGNI = SQRT(KBAR(1)**2+KBAR(2)**2+KBAR(3)**2)
-            NORMAL = KBAR(4)/(KBAR(0)*KMAGNI)
+            NORMAL = KBAR(0)/(sqrt(abs(KBAR(4)))*KMAGNI)
+            EPSHEL(0) = KMAGNI*KMAGNI/KBAR(0)*NORMAL
             EPSHEL(1) = KBAR(1)*NORMAL
             EPSHEL(2) = KBAR(2)*NORMAL
             EPSHEL(3) = KBAR(3)*NORMAL
+            if(KBAR(4).lt.0d0) EPSHEL(0) = EPSHEL(0)*(0d0,1d0)
       ELSE
 C
 C                  Unrecognised value of Lambda

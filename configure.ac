@@ -1,5 +1,5 @@
 dnl name / version / bugreports / tarball name
-AC_INIT([VBFNLO],[2.7.0rc1],[vbfnlo@itp.kit.edu],[VBFNLO])
+AC_INIT([VBFNLO],[2.7.1beta1],[vbfnlo@itp.kit.edu],[VBFNLO])
 
 dnl sanity check
 AC_CONFIG_SRCDIR([src/vbfnlo_main.F])

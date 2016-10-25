@@ -61,13 +61,15 @@ c For most processes no multi-channel approach is used -> .TRUE.
       Choose_PS = .true.
 
       SELECT CASE(procID)
-      CASE(WPA,WMA,WPAJ,WMAJ,WPAJJ,WMAJJ,QCDWPAJJ,QCDWMAJJ)! charge of W does not matter
+      CASE(WPA,WMA,WPAJ,WMAJ,WPAJJ,WMAJJ,QCDWPAJJ,QCDWMAJJ,QCDZAJJ_l)! charge of W does not matter
         if(PS_loops.eq.1) then
           Choose_PS = .true.
         else
           Choose_PS = VA_Choose(PS_number, v(0,1,L), L , 3)
         endif
-      CASE(ZA)
+      CASE(QCDZAJJ_n)! charge of W does not matter
+          Choose_PS = .true.
+      CASE(ZA,ZAjj)
          Choose_PS = VA_Choose(PS_number, v(0,1,L), L , 2)
       CASE(WWA, WPhadWMA, WPWMhadA)
          if(with_anom) then
@@ -75,7 +77,7 @@ c For most processes no multi-channel approach is used -> .TRUE.
          else
             Choose_PS = VVA_Choose(PS_number, v(0,1,L), L , 3, 3)
          endif
-      CASE(ZZA, ZZhadA)
+      CASE(ZZA, ZZhadA, ZZnA)
          if(with_anom) then
             Choose_PS = ZZA_Choose_anom(PS_number, v(0,1,L), L , 2, 2)
          else

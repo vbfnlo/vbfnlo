@@ -7,7 +7,7 @@ c       after modifications on a file created by
 c	Dieter Zeppenfeld, <dieter@pheno.physics.wisc.edu>
 c	Initial version:  1995 March 25 (original file)
 c	Last modified:  2005 Dec. (original fine)
-c       Last modified: 2013 Jul. (this routine)       
+c       Last modified: 2014 Jul. (this routine)       
 c
       subroutine def_ps_hhnj(bos0,bos1,bos2, iwidth0, iwidth1, iwidth2)
       implicit none 
@@ -17,7 +17,7 @@ c
       integer iwidth0, iwidth1, iwidth2 
       parameter ( N1=max_p-nx )
 c
-c set up variables in common block BLIPSIvvnj for call of LIPSNVV
+c set up variables in common block BLIPSIvvnj for call of LIPSNHH
 c 
       DOUBLE PRECISION RM2,RMG,RM2MIN,RM2MAX, S,M2MIN, YJMIN,YJMAX,PTJMIN,EJMIN
       INTEGER INFOJ, iwidth
@@ -30,7 +30,7 @@ c
       DOUBLE PRECISION xg ! parameter for simulation of VV distribution
       integer bos_var
       common /bosin/ xg,bos_var,bos
-c
+
       s = ecm**2
 C Choose cutoff on diparton invariant mass and Q^2 for initial-final 
 C collinear cutoff: for numerical purposes only
@@ -51,14 +51,13 @@ c 1/(mGamma)^2 * |M_decay|^2 from the matrix element squared
       iwidth(1) = iwidth1
       iwidth(2) = iwidth2
 C set resonances: 
-c       bos0 = 0    ==>  broad V1 + V2 mass distribution
-c       bos0 = 6    ==>  sharp Higgs resonance for H-->V1 V2 decay
-c       bos0 = -6   ==>  sharp Higgs resonance for H-->V1 V2 decay plus broad distribution
+c       bos0 = 0    ==>  broad H1 + H2 mass distribution
 
-      if (bos0.eq.0) then
+      if(bos0.eq.0) then
          do i = 1,2
             rm2(i) = xm2(bos(i))
             rmg(i) = xmg(bos(i))
+c
             if (bos(i).eq.2) then
                rm2min(i) = 1d-3 
                rm2max(i) = s/2D0
@@ -70,41 +69,17 @@ c       bos0 = -6   ==>  sharp Higgs resonance for H-->V1 V2 decay plus broad di
                rm2max(i) = s/2D0
             endif
          enddo
-         rm2(0) = 500.**2
-         rmg(0) = 500*500  !300.*500.
-c         rm2min(0) = (sqrt(rm2min(1))+sqrt(rm2min(2)))**2
+cc         rm2(0) = 500.**2
+cc         rmg(0) = 500*500  !300.*500.
+         rm2(0) = (sqrt(xm2(bos(1)))+sqrt(xm2(bos(2))))**2 ! intermediate particle, continuum
+         rmg(0) = sqrt(rm2(0))*500d0
+cc         rm2min(0) = (sqrt(rm2min(1))+sqrt(rm2min(2)))**2
          rm2min(0) = 1d-3    !min( (sqrt(xm2(6))+10d0)**2, 4d0*xm2(2) )	
 c comment: check below if it changes between s and s/2
          rm2max(0) = s/2  !*0.95
 
-c abs(bos0) .eq. 6 does not make any sense for this process	   		
-c$$$      elseif(bos0.eq.6 .or. bos0.eq.-6) then
-c$$$         do i = 0,2
-c$$$            rm2(i) = xm2(abs(bos(i)))
-c$$$            rmg(i) = xmg(abs(bos(i)))
-c$$$            if (bos(i).eq.6) then
-c$$$               rm2min(i) = sqrt(rm2(0))*(1d0-150*rmg(0)/rm2(0))
-c$$$               rm2min(i) = max( rm2min(i), 0d0 )**2
-c$$$               rm2max(i) = min(rm2(0)*(1d0+150*rmg(0)/rm2(0))**2,s/4)	
-c$$$               
-c$$$            elseif (bos(i).eq.-6) then
-c$$$c for "initialization" only (adapted in LIPSNVV for each event):
-c$$$         	rm2min(i) = 1d-3  
-c$$$         	rm2max(i) = s/2d0
-c$$$		xg = sqrt(rm2(0)/rmg(0))
-c$$$		
-c$$$            elseif (bos(i).eq.2) then
-c$$$               rm2min(i) = 1d-3
-c$$$               rm2max(i) = rm2max(0)  ! will be changed in LIPSNVV for 
-c$$$                                      ! each event
-c$$$            else
-c$$$               rm2min(i) = 1d-3
-c$$$               rm2max(i) = s/2D0      ! will be changed in LIPSNVV for 
-c$$$                                      ! each event
-c$$$            endif
-c$$$         enddo
       else
-         print*," bos0 = ",bos0," not implemented in ps_vvnj.f "
+         print*," bos0 = ",bos0," not implemented in ps_hhnj.f "
          stop
       endif
 
@@ -157,8 +132,9 @@ c
 c*****************************************************************************
 c
 c       Michael Rauch, <rauch@particle.uni-karlsruhe.de>
-c       Initial version: Mqy 2012 
+c       Initial version: May 2012 
 c       Last modified by Michael Rauch: May 2012
+c       Last modified by Julien Baglio: July 2014
 c       Based on LIPSVAJ by Michael Rauch
 c
 c phase space generator for the production of 2 Higgs + 2 jets (+ 1 jet)
@@ -167,6 +143,7 @@ c
 c  INPUT:   RD         random number array (between 0 and 1)
 c           RN         additional random number which will not be driven by
 c                      VEGAS
+c           OS         integer flag to manage the decay of the H pair
 c
 c  OUTPUT:  K1,K2      4-vectors for 2 incoming partons
 c           X1,X2      corresponding values of Feynman x
@@ -184,22 +161,26 @@ c****************************************************************************
 
       SUBROUTINE LIPSNHH(N,RD,RN,
      1                   K1,K2,D,Pjets,
-     2                   X1,X2,W)
+     2                   X1,X2,W,OS)
       IMPLICIT NONE
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/process.inc"
-c
-      INTEGER N,NRANDL,N1
+
+      INTEGER N,NRANDL,N1,OS
       REAL*8 TPI
-      PARAMETER (nrandl=12, TPI=2D0*PI )
+c      PARAMETER (nrandl=12, TPI=2D0*PI )
+c      PARAMETER (nrandl=16, TPI=2D0*PI )
+      parameter (TPI=2.d0*PI)
       parameter ( N1=max_p-nx )
-      REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), D(0:3,2), X1, X2, W, K(0:4)
+c      REAL*8 RD(nrandl),RN
+      REAL*8 RD(*),RN
+      REAL*8 K1(0:3), K2(0:3), D(0:3,4), X1, X2, W, K(0:4)
+      REAL*8 DTEMP(0:3,2)
       REAL*8 Q(0:4)
       REAL*8 Pjets(0:3,N)
 
 c
-c set up variables in common block BLIPSIvvnj for call of LIPSNVV
+c set up variables in common block BLIPSIvvnj for call of LIPSNHH
 c 
       DOUBLE PRECISION RM2,RMG,RM2MIN,RM2MAX, S,M2MIN, YJMIN,YJMAX,PTJMIN,EJMIN
       INTEGER INFOJ, iwidth
@@ -222,7 +203,7 @@ C  local variables
 c--------------------------------------------------------------------
 c---------------------------------------------------------------------
 
-      if (ldebug) print*," enter LIPSVHH "
+      if (ldebug) print*," enter LIPSNHH "
 
       W = 1d0             !init of weightfactor
 
@@ -232,16 +213,40 @@ c generate q^2 of intermediate pseudo-state
      1                     rd(1), W, q(4))) return
 c      write(*,*) "XXX w1", w,rm2, rmg
 
+      if(OS.eq.1) then ! H pair on-shell
 c generate 2 -> 1+N process for k1 k2 -> Pjets q_X from rd(4-9/12)
-       if (.not.TwoToJetsPlusX(N, rd(4), 0d0, ecm, pTjmin, q(4),
-     1         k1(0), k2(0), x1, x2, q(0), pjets(0,1), W)) return
+         if (.not.TwoToJetsPlusX(N, rd(4), 0d0, ecm, pTjmin, q(4),
+     1        k1(0), k2(0), x1, x2, q(0), pjets(0,1), W)) return
 c      write(*,*) "XXX w2", w, q
 
 c-------------------------------------------------------------------
 
-c generate phase space for decay of V1 -> l1 + l2 out of rd(2-3)
-      if (.not. TwoBodyDecay(rd(2), rd(3), q(0), q(4), rm2(1), rm2(2),
-     1     d(0,1),d(0,2),W)) return
+c generate phase space for decay of X -> H1 + H2 out of rd(2-3)
+         if (.not. TwoBodyDecay(rd(2), rd(3), q(0), q(4), rm2(1),
+     1         rm2(2), d(0,1),d(0,2),W)) return
+
+
+      else ! H pair is decaying in Narrow-Width approximation
+c generate 2 -> 1+N process for k1 k2 -> Pjets q_X from rd(8-13/16)
+         if (.not.TwoToJetsPlusX(N, rd(8), 0d0, ecm, pTjmin, q(4),
+     1        k1(0), k2(0), x1, x2, q(0), pjets(0,1), W)) return
+
+c-------------------------------------------------------------------
+
+c generate phase space for decay of X -> H1 + H2 out of rd(2-3)
+         if (.not. TwoBodyDecay(rd(2), rd(3), q(0), q(4), rm2(1),
+     1        rm2(2), dtemp(0,1),dtemp(0,2),W)) return
+c generate phase space for decay of H1 -> l1 + l2 out of rd(4-5)
+         call TwoBodyDecay0(rd(4), rd(5), dtemp(0,1), rm2(1),
+     1        d(0,1),d(0,2),W)
+c generate phase space for decay of H2 -> l3 + l4 out of rd(6-7)
+         call TwoBodyDecay0(rd(6), rd(7), dtemp(0,2), rm2(2),
+     1        d(0,3),d(0,4),W)
+c- rescale the weight by the factor (8*pi^2) coming from the decay matrix elements
+         W = W * (4.d0*TPI)**2
+
+
+      endif ! end OS test
 c      write(*,*) "XXX w3", w
 
 c -----------------------------------------------------
@@ -297,6 +302,6 @@ c$$$      endif
 
 c*****************************************************************************
 c
-c    end subroutine LIPSVAJ1
+c    end subroutine LIPSNHH
 c
 c*****************************************************************************

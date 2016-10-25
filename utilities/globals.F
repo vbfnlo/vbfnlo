@@ -147,7 +147,7 @@ c      call proc_assignment(procID)
       call read_stringList("PHTN_GRID",PS_Loops,gridname3,gridname3_default)
       call read_stringList("FLOOP_GRID",PS_Loops,gridname4,gridname4_default)
 
-      call read_Real("ECM",ecm,8000d0)
+      call read_Real("ECM",ecm,13000d0)
       call read_int("BEAM1",sign1,1)
       call read_int("BEAM2",sign2,1)
 

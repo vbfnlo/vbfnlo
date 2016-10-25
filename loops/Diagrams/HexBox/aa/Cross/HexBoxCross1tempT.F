@@ -1,3 +1,11 @@
+c ************************************************************************************
+c Author: Francisco Campanario
+c E-mail: francam@particle.uni-karlsruhe.de
+c************************************************************************************
+c************************************************************************************
+c    Declaration of variables 
+c************************************************************************************
+c***********************************************************************************
        subroutine HexBoxCross1T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,
      &   barpsi_p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,
      &   resultn,resultborn,Div,hel)
@@ -9,19 +17,19 @@
        Integer comp,ngluon,posgluon,Div,hel
        Complex*16 result(6),resultn,resultborn
        
-       if(hel.eq.77) then
+       if(hel.eq.77.or.hel.eq.-3) then
 	 call HexBoxCross177T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,
      &   barpsi_p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,
      &   resultn,resultborn,Div)
-       elseif(hel.eq.67) then
+       elseif(hel.eq.67.or.hel.eq.1) then
 	 call HexBoxCross167T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,
      &   barpsi_p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,
      &   resultn,resultborn,Div)
-       elseif(hel.eq.76) then
+       elseif(hel.eq.76.or.hel.eq.-1) then
 	 call HexBoxCross176T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,
      &   barpsi_p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,
      &   resultn,resultborn,Div)
-       elseif(hel.eq.66) then
+       elseif(hel.eq.66.or.hel.eq.3) then
 	 call HexBoxCross166T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,
      &   barpsi_p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,
      &   resultn,resultborn,Div)

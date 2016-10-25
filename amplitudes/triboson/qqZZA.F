@@ -959,8 +959,8 @@ c print results from checks:
                do isig = -1,1,2
                temp = dreal(mat(k,isig,i))**2+dimag(mat(k,isig,i))**2
                temp1 = dreal(madgr(i,isig,k))**2+dimag(madgr(i,isig,k))**2
-               print*,'vbfnlo/madgraph = ',mat(k,isig,i)/madgr(i,isig,k)
-               print*,'vbfnlo2/madgraph2 = ',temp/temp1
+               print*,'vbfnlo/madgraph(',i,k,isig,') = ',mat(k,isig,i)/madgr(i,isig,k)
+               print*,'vbfnlo2/madgraph2(',i,k,isig,') = ',temp/temp1
                enddo
             enddo
          enddo

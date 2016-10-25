@@ -2319,7 +2319,7 @@ c$$$         end if
             write(*,*)'branching ratio =', BHZZ
             stop
          end if
-      CASE(ZZA, ZZhadA)
+      CASE(ZZA, ZZhadA, ZZnA)
          if (BHZZ .gt. 1D0 .and. with_anom) then      ! relevant due to anomalous AZH, AAH couplings
             write(*,*)'The branching ratio:'
             write(*,*)'    Higgs --> Z Z'

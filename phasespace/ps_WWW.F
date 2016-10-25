@@ -178,8 +178,8 @@ C  local variables
       LOGICAL ldebug
       PARAMETER (ldebug=.false.)
 
-      LOGICAL RESONANCE, TwoBodyDecay, ThreeBodyDecayWWW
-      EXTERNAL RESONANCE, TwoBodyDecay, ThreeBodyDecayWWW
+      LOGICAL RESONANCE, TwoBodyDecay, ThreeBodyDecayWWW,ThreeBodyDecay3Higgs
+      EXTERNAL RESONANCE, TwoBodyDecay, ThreeBodyDecayWWW,ThreeBodyDecay3Higgs
 
 c--------------------------------------------------------------------
 
@@ -318,6 +318,8 @@ c generate phase space for decay of P -> V + V + V out of rd(3):rd(9), rn
          ENDIF
          if (.not. ThreeBodyDecayWWW(rd(3), rt, pY(0), q1(0), q2(0), q3(0), 
      1                                       m1sq, m2sq, m3sq,W, NW)) return
+!          if (.not. ThreeBodyDecay3Higgs(rd(2),pY(0), q1(0), q2(0), q3(0), 
+!      1                                       m1sq, m2sq, m3sq,W, NW)) return
          ! ThreeBodyDecayWWW can do NW as well, but invariant mass limits
          ! not set up properly...
       ENDIF

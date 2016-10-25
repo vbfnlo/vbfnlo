@@ -876,6 +876,7 @@ c Initialize to ZERO the instabilities and other variables
 c Adjust statistics for different phase space regions
                   call statistics_proc_NLO(ps_number)
                   
+                  call cpu_time(time0)
     
                   if (Loops_sub_LO.gt.1) then
                      file_name_out = 'GRID/'//gridname1(ps_number)
@@ -1465,6 +1466,7 @@ c.. Printing summary of results
       if(doVirtuals) then
       select case (procID)
       case(QCDWPZjj, QCDWMZjj,QCDWPWPjj,QCDWMWMjj,QCDWPAjj,QCDWMAjj, QCDWPjj,QCDWMjj
+     &     ,QCDZAjj_l,QCDZAjj_n,QCDZZjj_ll,QCDZZjj_lnu,QCDZjj_l, QCDZjj_nu,QCDAAjj
      &  )
         print*," Approx. error due to instable points: ",instab_error/final_xsec(0,0,0)*100d0," %"
 #ifndef WITH_QUAD

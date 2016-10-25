@@ -1,5 +1,9 @@
 noinst_LTLIBRARIES = libvbf.la
 libvbf_la_SOURCES = \
+toza.F \
+toza_anomal.F \
+qqzaqq.F\
+tozz_temp.F \
 m2s_qqwqq.F   \
 qqwpzqq.F   \
 qqzzqqj.F        \
@@ -46,7 +50,7 @@ qqwpaqqj.F \
 qqwmaqq.F \
 qqwmaqqj.F \
 towa.F \
-towa_anomal.F 
+towa_anomal.F
 
 if WITH_SPIN2 
 libvbf_la_SOURCES += \
@@ -73,7 +77,9 @@ jvirt5.F        \
 gauge5-test-vv.F  \
 jvirt5-isig.F \
 VBF_PENT_ABE.F \
-VBF_BOX_ABE.F
+VBF_BOX_ABE.F \
+VBF_BOX_ABE_CURRENT.F\
+VBF_PENT_ABE_CURRENT.F
 endif
 
 libvbf_la_FFLAGS = $(AM_FFLAGS)
@@ -100,7 +106,9 @@ mg2_wpa_udcc.F \
 mg2_wma_uusc.F \
 mg2_wma_ddsc.F \
 mg2_wma_duss.F \
-mg2_wma_ducc.F 
+mg2_wma_ducc.F \
+mg2_za_ucuc.F \
+mg2_za_udsc.F
 endif
 
 

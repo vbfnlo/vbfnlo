@@ -30,7 +30,7 @@ c set up variables in common block BLIPSIqqVHj for call of LIPSVHj
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
 
       DOUBLE PRECISION xxm2, xxmwidth 
-      COMMON /BLIPSIFLOOPS/ xxm2, xxmwidth
+      COMMON /BLIPSIqqVHj2/ xxm2, xxmwidth
 
 
       logical ldebug
@@ -176,7 +176,7 @@ C                  YJMIN(I) < ABS(Y(I)) < YJMAX(I)
 C   PTJMIN         minimal PT values      REAL*8 Y,PT,PHI,PNJ
 
       DOUBLE PRECISION xxm2, xxmwidth 
-      COMMON /BLIPSIFLOOPS/ xxm2, xxmwidth
+      COMMON /BLIPSIqqVHj2/ xxm2, xxmwidth
 
 
 C  local variables

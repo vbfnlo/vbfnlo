@@ -31,8 +31,8 @@ c*************************************************************************
 
 c VBF: Hjj, Vjj, VVjj
       CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, Hjj_WW, Hjj_ZZ_ll,
-     1     Hjj_ZZ_lnu, HHjj, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
-     2     ZZjj_lnu, WPZjj, WMZjj, WPWPjj, WMWMjj, WPAjj, WMAjj,
+     1     Hjj_ZZ_lnu, HHjj, HHjj_bbtau, HHjj_bbAA, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
+     2     ZZjj_lnu, WPZjj, WMZjj, WPWPjj, WMWMjj, WPAjj, WMAjj,ZAJJ,ZAjj_n,
      3     HAjj, HAjj_AA, HAjj_mu, HAjj_tau, 
      4     HAjj_bbar, HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu, AAjj,
      5     WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
@@ -46,7 +46,7 @@ c VBF: Hjjj
           call HJJJptildemake(n_kin,p(0,1,1),xuz(1,2),v(0,1,1))
 
 c DIBOSON, TRIBOSON
-      CASE( WW, WWZ, ZZZ, ZZWP, ZZWM, WWWP, WWWM , WWA, ZZA, WPZA, WMZA,
+      CASE( WW, WWZ, ZZZ, ZZWP, ZZWM, WWWP, WWWM , WWA, ZZA, ZZnA, WPZA, WMZA,
      1      WPAA, WMAA, ZAA, ZnAA, AAA, WPA, WMA, WPZ, WMZ,
      2      ZZ, ZA, AA,
      3      WPhadWMlep,WPlepWMhad,ZZhad,WPhadZ,WPZhad,WMhadZ,WMZhad,
@@ -76,7 +76,7 @@ c DIBSON PLUS JET
 
 c qcdVVjj
       CASE( QCDWPZjj, QCDWMZjj, QCDWPWPjj,QCDWMWMjj,QCDWPjj,QCDWMjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZjj_l,QCDZjj_nu 
-     &     ,QCDWPAjj, QCDWMAjj)
+     &     ,QCDWPAjj, QCDWMAjj,QCDZAjj_l,QCDZAjj_n,QCDAAjj)
 
 	  call qcdVVJJptildemake(p(0,1,1),xuz(1,2),v(0,1,1))
       
@@ -2390,7 +2390,7 @@ c*************************************************************************
 c VBF: Hjj, Vjj, VVjj
       CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, Hjj_WW, Hjj_ZZ_ll,
      1     Hjj_ZZ_lnu, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
-     2     ZZjj_lnu, WPZjj, WMZjj, WPWPjj, WMWMjj, WPAjj, WMAjj,
+     2     ZZjj_lnu, WPZjj, WMZjj, WPWPjj, WMWMjj, WPAjj, WMAjj,ZAJJ,ZAjj_n,
      3     HAjj, HAjj_AA, HAjj_mu, HAjj_tau, 
      4     HAjj_bbar, HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu,
      5     Hjj_ZZhad, Hjj_WPhadWM, Hjj_WPWMhad)

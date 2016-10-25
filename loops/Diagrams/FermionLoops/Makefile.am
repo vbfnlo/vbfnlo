@@ -37,6 +37,10 @@ if WITH_QUAD
 libDiagramsFLoops_la_FFLAGS += -DWITH_QUAD
 libDiagramsFLoops_la_SOURCES += \
 XBoxGetM1M3_QUAD.F\
+XBoxGetM1M3_QUAD_check.F\
+FermionBoxOddtempCoupling_QUAD.F\
+FermionBoxEventempCoupling_QUAD_check.F\
 FermionBoxEventempCoupling_QUAD.F
+
 
 endif

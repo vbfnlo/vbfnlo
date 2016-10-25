@@ -124,6 +124,20 @@ c first set phase space dimension & NLO parameters
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.false. ! process at lo
          NLO_Loops = 0
+      CASE(HHjj_bbtau,HHjj_bbAA)
+         n_p = 4
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.true.  ! process at nlo
+         NLO_Loops = 1  ! number of different virtual contributions
+         N_points(1) = N_points(0)        ! #points for virtual corr.
+      CASE(HHjjjLO_bbtau,HHjjjLO_bbAA)
+         n_p = 5
+         n_v = 4
+         PS_dimension = 3*(n_p+n_v-nx)-3
+         hasNLO=.false. ! process at lo
+         NLO_Loops = 0
+
 ********************
 * VBF WW processes *
 ********************
@@ -263,6 +277,43 @@ c first set phase space dimension & NLO parameters
          PS_dimension = 3*(n_p+n_v-nx)-3 
          hasNLO=.false.
          NLO_Loops = 0
+********************
+* VBF ZA processes *
+********************
+      CASE(ZAjj)
+         n_p = 4
+         n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3 
+         hasNLO=.true.
+         NLO_Loops = 3
+         N_points(1) = N_points(0)
+         N_points(2) = N_points(0) - 4
+         N_points(3) = N_points(0) - 5
+         photoncut_vbf = .true.
+      CASE(ZAjjjLO)  
+         n_p = 5
+         n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3 
+         hasNLO=.false.
+         NLO_Loops = 0
+         photoncut_vbf = .true.
+      CASE(ZAjj_n)
+         n_p = 4
+         n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3 
+         hasNLO=.true.
+         NLO_Loops = 3
+         N_points(1) = N_points(0)
+         N_points(2) = N_points(0) - 4
+         N_points(3) = N_points(0) - 5
+         photoncut_vbf = .true.
+      CASE(ZAjjjLO_n)  
+         n_p = 5
+         n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3 
+         hasNLO=.false.
+         NLO_Loops = 0
+         photoncut_vbf = .true.
 *******************
 * VBF Z processes *
 *******************
@@ -508,7 +559,18 @@ c first set phase space dimension & NLO parameters
 #ifdef WITH_QCDVV
 ********************
 * QCD VV processes *
-********************         
+********************      
+      CASE(QCDAAjj)
+         n_p = 4
+         n_v = 2
+         PS_dimension = 3*(n_p+n_v-nx)-3+1
+         hasNLO=.true.
+         NLO_Loops = 3
+         N_points(1) = N_points(0) 
+         N_points(2) = N_points(0) -5
+         N_points(3) = N_points(0) -1  
+         print *,"Sorry - this process is not working!"
+         stop
       CASE(QCDWPZjj, QCDWMZjj)
          n_p = 4
          n_v = 4
@@ -527,15 +589,35 @@ c first set phase space dimension & NLO parameters
          N_points(1) = N_points(0) 
          N_points(2) = N_points(0) -6
          N_points(3) = N_points(0) -1
+      CASE(QCDZAjj_l)
+         n_p = 4
+         n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3+1
+         hasNLO=.true.
+         NLO_Loops = 3
+         N_points(1) = N_points(0) 
+         N_points(2) = N_points(0) -6
+         N_points(3) = N_points(0) -1
+      CASE(QCDZAjj_n)
+         n_p = 4
+         n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3+1
+         hasNLO=.true.
+         NLO_Loops = 3
+         N_points(1) = N_points(0) 
+         N_points(2) = N_points(0) -6
+         N_points(3) = N_points(0) -1
       CASE(QCDZZjj_ll, QCDZZjj_lnu)
          n_p = 4
          n_v = 4
          PS_dimension = 3*(n_p+n_v-nx)-3+1
          hasNLO=.true.
          NLO_Loops = 3
-         N_points(1) = N_points(0) 
+         N_points(1) = N_points(0) +0
          N_points(2) = N_points(0) -5
-         N_points(3) = N_points(0) +1
+         N_points(3) = N_points(0) -1
+         N_points(4) = N_points(0) -10
+! !          N_points(5) = N_points(0) -8
       CASE(QCDWPWPjj,QCDWMWMjj)
          n_p = 4
          n_v = 4
@@ -554,6 +636,18 @@ c first set phase space dimension & NLO parameters
       CASE(QCDWPAjjjLO, QCDWMAjjjLO)
          n_p = 5
          n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3+1
+         hasNLO=.false.
+         NLO_Loops = 0
+      CASE(QCDZAjjjLO_l,QCDZAjjjLO_n)
+         n_p = 5
+         n_v = 3
+         PS_dimension = 3*(n_p+n_v-nx)-3+1
+         hasNLO=.false.
+         NLO_Loops = 0
+      CASE(QCDAAjjjLO)
+         n_p = 5
+         n_v = 2
          PS_dimension = 3*(n_p+n_v-nx)-3+1
          hasNLO=.false.
          NLO_Loops = 0
@@ -995,7 +1089,7 @@ c first set phase space dimension & NLO parameters
 *********************
 * ZZA processes *
 *********************
-      CASE(ZZA, ZZhadA)       ! pp -> ZZA
+      CASE(ZZA, ZZhadA, ZZnA)       ! pp -> ZZA
          n_p = 2
          n_v = 5
          PS_dimension = 3*(n_p+n_v-nx)-3
@@ -1004,7 +1098,7 @@ c first set phase space dimension & NLO parameters
          N_points(1) = N_points(0)
          N_points(2) = N_points(0)-2
          N_points(3) = N_points(0)-4
-      CASE(ZZAjLO, ZZhadAjLO)     ! pp -> ZZA j
+      CASE(ZZAjLO, ZZhadAjLO, ZZnAjLO)     ! pp -> ZZA j
          n_p = 3
          n_v = 5
          PS_dimension = 3*(n_p+n_v-nx)-3
@@ -1188,7 +1282,7 @@ c now set particle ids
       CASE(Hjj) ! VBF pp -> Hjj 
          particle_IDs(1)= 100  ! no real particle
          particle_IDs(2)= -100 ! no real particle
-      CASE(Hjj_AA, AAjj) ! VBF pp -> Hjj (for AAjj: spin-2 jj)-> gammagammajj
+      CASE(Hjj_AA, AAjj,QCDAAjj) ! VBF pp -> Hjj (for AAjj: spin-2 jj)-> gammagammajj
          particle_IDs(1)= 22 ! photon
          particle_IDs(2)= 22 ! photon
       CASE(Hjj_mu) ! VBF pp -> Hjj -> mu+mu-jj
@@ -1206,7 +1300,7 @@ c now set particle ids
          do i = 1, N_lepton
             Particle_IDs(i) = finallep(i)
          enddo 
-      CASE(WPAjj, WMAjj,QCDWPAjj,QCDWMAjj)
+      CASE(WPAjj, WMAjj,QCDWPAjj,QCDWMAjj,QCDZAjj_l,QCDZAjj_n, ZAjj, ZAjj_n)
 	 do i = 1, N_lepton
 	    particle_IDs(i) = finallep(i)
          enddo 
@@ -1228,6 +1322,16 @@ c now set particle ids
       CASE(HHjj)
          particle_IDs(1) = 25 ! higgs
          particle_IDs(2) = 25 ! higgs
+      CASE(HHjj_bbtau) ! VBF pp -> HHjj -> bbtau+tau-jj
+         particle_IDs(1) = 5   ! b
+         particle_IDs(2) = -5  ! bbar
+         particle_IDs(3) = -15 ! tau+
+         particle_IDs(4) = 15  ! tau-
+      CASE(HHjj_bbAA) ! VBF pp -> HHjj -> bbAAjj
+         particle_IDs(1) = 5   ! b
+         particle_IDs(2) = -5  ! bbar
+         particle_IDs(3) = 22  ! photon
+         particle_IDs(4) = 22  ! photon
       CASE(Ajj)
          particle_IDs(1)= 22      
       CASE(HAjj)                ! VBF pp -> HAjj 
@@ -1372,7 +1476,7 @@ c now set particle ids
             Particle_IDs(i) = finallep(i)
          enddo
          ! IDs for Higgs and the decay products handled later
-      CASE(WWA, ZZA, WPZA, WMZA,WPA,WMA, ZA, GFZA)
+      CASE(WWA, ZZA, ZZnA, WPZA, WMZA,WPA,WMA, ZA, GFZA)
          do i = 1, N_lepton
             Particle_IDs(i) = finallep(i)
          enddo
@@ -1586,11 +1690,11 @@ c*************************************************************************
          n_p = 5
          n_kin = 3
          PS_dimension = 3*(n_p+n_v-nx)-3
-      CASE(HHjj)
+      CASE(HHjj, HHjj_bbtau, HHjj_bbAA)
          n_p = 5
          n_kin = 3
          PS_dimension = 3*(n_p+n_v-nx)-3
-      CASE(WPAjj,WMAjj)   
+      CASE(WPAjj,WMAjj,ZAjj,ZAjj_n)   
          n_p = 5
          n_kin = 3
          PS_dimension = 3*(n_p+n_v-nx)-3
@@ -1608,7 +1712,7 @@ c*************************************************************************
          n_p = 5
          n_kin = 3
          PS_dimension = 3*(n_p+n_v-nx)-3   
-      CASE(WW, WWZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, WPZA, WMZA, 
+      CASE(WW, WWZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, ZZnA, WPZA, WMZA, 
      1     WPAA, WMAA, ZAA, ZnAA, WPZ, WMZ, ZZ,
      2     WPhadWMlep,WPlepWMhad,ZZhad,
      3     WPhadZ,WPZhad,WMhadZ,WMZhad,
@@ -1644,7 +1748,8 @@ c*************************************************************************
          n_kin = 11
          PS_dimension = 3*(n_p+n_v-nx)-3
 #ifdef WITH_QCDVV
-      CASE(QCDWPZjj,QCDWMZjj,QCDWPWPjj,QCDWMWMjj,QCDZZjj_ll,QCDZZjj_lnu,QCDWPAjj,QCDWMAjj)
+      CASE(QCDWPZjj,QCDWMZjj,QCDWPWPjj,QCDWMWMjj,QCDZZjj_ll,QCDZZjj_lnu
+     &,QCDWPAjj,QCDWMAjj,QCDZAjj_l,QCDZAjj_n,QCDAAjj)
          n_p = 5
          n_kin =16
          PS_dimension = 3*(n_p+n_v-nx)-3+1
@@ -1760,7 +1865,7 @@ c*************************************************************************
 c ********************************
 
       SELECT CASE(procID)
-      CASE ( QCDZZjj_ll,QCDZZjj_lnu,QCDZZjjjLO_ll,QCDZZjjjLO_lnu,QCDZjj_l,QCDZjj_nu)
+      CASE ( QCDAAjj,QCDWPWMjj) 
          print*," "
          print*,"This process is not yet implemented (procID = ",procID,") !"
          print*," "
@@ -1915,6 +2020,14 @@ c   default values for the final state leptons
       CASE(HHjj)
          if (LOplusjet) process = HHjjjLO
          if (.not.LOplusjet) process = HHjj
+         N_lepton = 0
+      CASE(HHjj_bbtau)
+         if (LOplusjet) process = HHjjjLO_bbtau
+         if (.not.LOplusjet) process = HHjj_bbtau
+         N_lepton = 0
+      CASE(HHjj_bbAA)
+         if (LOplusjet) process = HHjjjLO_bbAA
+         if (.not.LOplusjet) process = HHjj_bbAA
          N_lepton = 0
       CASE(HAjj)
          if (LOplusjet) process = HAjjjLO
@@ -2098,6 +2211,20 @@ c   default values for the final state leptons
          finallep_default(1)=  11
          finallep_default(2)= -12
          PS_Loops = 2
+      CASE(ZAjj)
+         if (LOplusjet) process = ZAjjjLO
+         if (.not.LOplusjet) process = ZAjj
+         N_lepton = 2
+         finallep_default(1)= -11
+         finallep_default(2)=  11
+         PS_Loops = 2
+      CASE(ZAjj_n)
+         if (LOplusjet) process = ZAjjjLO_n
+         if (.not.LOplusjet) process = ZAjj_n
+         N_lepton = 2
+         finallep_default(1)=  12
+         finallep_default(2)= -12
+         PS_Loops = 1
       CASE(ZZjj_ll)
          if (LOplusjet) process = ZZjjjLO_ll
          if (.not.LOplusjet) process = ZZjj_ll
@@ -2295,6 +2422,39 @@ c   default values for the final state leptons
          finallep_default(1)= 11
          finallep_default(2)= -12
          PS_Loops = 2
+      CASE(QCDZAjj_l)
+         if (.not.LOplusjet) then
+            process = QCDZAjj_l
+            Loops_sub_LO = 7
+            Loops_sub_NLO= 1
+         else
+            process = QCDZAjjjLO_l
+         endif
+         N_lepton = 2
+         finallep_default(1)= -11
+         finallep_default(2)= 11
+         PS_Loops = 2
+      CASE(QCDZAjj_n)
+         if (.not.LOplusjet) then
+            process = QCDZAjj_n
+            Loops_sub_LO = 7
+            Loops_sub_NLO= 1
+         else
+            process = QCDZAjjjLO_n
+         endif
+         N_lepton = 2
+         finallep_default(1)= 12
+         finallep_default(2)= -12
+         PS_Loops = 1
+      CASE(QCDAAjj)
+         if (.not.LOplusjet) then
+            process = QCDAAjj
+            Loops_sub_LO = 7
+         else
+            process = QCDAAjjjLO
+         endif
+         N_lepton = 0
+         PS_Loops = 1
       CASE(QCDZZjj_ll)
          if (.not.LOplusjet) then
             process = QCDZZjj_ll
@@ -2954,6 +3114,15 @@ c   default values for the final state leptons
          finallep_default(1) =  11
          finallep_default(2) = -11
          PS_Loops = 3
+      CASE(ZZnA)
+         if (LOplusjet) process = ZZnAjLO
+         if (.not.LOplusjet) process = ZZnA
+         N_lepton = 4
+         finallep_default(1) =  11
+         finallep_default(2) = -11
+         finallep_default(3) =  12
+         finallep_default(4) = -12
+         PS_Loops = 3
       CASE(WPZA)
          if (LOplusjet) process = WPZAjLO
          if (.not.LOplusjet) process = WPZA
@@ -3106,13 +3275,13 @@ c   default values for the final state leptons
 c minimal number of jets in the final state for the different processes
       SELECT CASE(procID)
       CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_WW, Hjj_ZZ_ll,
-     1     Hjj_ZZ_lnu, HHjj, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, WPWPjj, 
+     1     Hjj_ZZ_lnu, HHjj, HHjj_bbtau, HHjj_bbAA, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, WPWPjj, 
      2     WMWMjj, ZZjj_ll, ZZjj_lnu,
      3     WPZjj, WMZjj, HAjj, HAjj_AA, HAjj_mu, HAjj_tau,
-     4     HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu, AAjj,
+     4     HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu, AAjj,QCDAAjj,
      5     QCDZZjj_ll,QCDZZjj_lnu,QCDWPZjj,QCDWMZjj,QCDWPWPjj,QCDWMWMjj,
-     6     QCDZjj_l,QCDWPjj,QCDWMjj, Sp2jj_WW, Sp2jj_ZZ_ll,
-     7     Sp2jj_ZZ_lnu,WPAjj, WMAjj,QCDWPAjj,QCDWMAjj)
+     6     QCDZjj_l,QCDZjj_nu,QCDWPjj, QCDWMjj, Sp2jj_WW, Sp2jj_ZZ_ll,
+     7     Sp2jj_ZZ_lnu,WPAjj, WMAjj,QCDWPAjj,QCDWMAjj,QCDZAjj_l,QCDZAjj_n,ZAjj,ZAjj_n)
          if (LOplusjet) njet_min = 3
          if (.not.LOplusjet) njet_min = 2
       CASE(WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
@@ -3145,7 +3314,7 @@ c minimal number of jets in the final state for the different processes
          endif
          njet_min = 4
       CASE(WW, WPZ, WMZ, ZZ, WPA, WMA, ZA, AA,
-     &     WWZ, ZZZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, 
+     &     WWZ, ZZZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, ZZnA,
      &     WPZA, WMZA, WPAA, WMAA, ZAA, ZnAA, AAA,
      &     WP_only, WM_only,
      &     WPH, WPH_AA, WPH_mu, WPH_tau, WPH_WW, WPH_ZZ_ll, WPH_ZZ_lnu,
@@ -3444,7 +3613,8 @@ c*************************************************************************
       symmetryfactor = 1.0d0
 
       SELECT CASE(procID) 
-      CASE(Zjj_l,Zjj_nu,WPjj,WMjj,WPA,WMA,ZA,GFZA,WMAJ,WPAJ,WMAJJ,WPAJJ,QCDWPAJJ,QCDWMAjj, ! only all leps
+      CASE(Zjj_l,Zjj_nu,WPjj,WMjj,WPA,WMA,ZA,GFZA,WMAJ,WPAJ,WMAJJ,WPAJJ,
+     &        QCDWPAJJ,QCDWMAjj,QCDZAjj_l,QCDZAjj_n,ZAjj,ZAjj_n,! only all leps
      &        QCDZjj_l,QCDZjj_nu,QCDWPjj,QCDWMjj)
          if (alllep_flag) then
             if (lepgens .eq. 3) symmetryfactor = 3d0   
@@ -3461,7 +3631,7 @@ c*************************************************************************
      &        WMH_ZZ_lnu, WMHjLOb_ZZ_lnu,    
      &        WPHJ_ZZ_lnu, WPHJJLO_ZZ_lnu,    
      &        WMHJ_ZZ_lnu, WMHJJLO_ZZ_lnu,   
-     &        QCDWPZjj,QCDWMZjj)
+     &        QCDWPZjj,QCDWMZjj,QCDZZjj_lnu)
          if (alllep_flag) then
             if (lepgens .eq. 3) symmetryfactor = 9d0  
             if (lepgens .eq. 2) symmetryfactor = 4d0  
@@ -3565,7 +3735,12 @@ c*************************************************************************
             if (lepgens .eq. 3) symmetryfactor = 4.5d0
             if (lepgens .eq. 2) symmetryfactor = 4d0/3d0
          end if
-      CASE(AA,GFAA,AAjj)
+      CASE(ZZnA) 
+         if (alllep_flag) then
+            if (lepgens .eq. 3) symmetryfactor = 9d0  
+            if (lepgens .eq. 2) symmetryfactor = 4d0  
+         end if
+      CASE(AA,GFAA,AAjj,QCDAAjj)
          symmetryfactor = 0.5d0
       CASE(WPAA,WMAA,ZAA,ZnAA,WPAAj,WMAAj)
          symmetryfactor = 0.5d0
@@ -3941,6 +4116,12 @@ c HIGGS PAIR VIA VBF
       CASE(HHjj)
          pout = 'H H jj'
          if (LOplusjet) pout = " H H jjj"
+      CASE(HHjj_bbtau)
+         pout = "H H jj --> b bbar tau+ tau- jj"
+         if (LOplusjet) pout = "H H jjj --> b bbar tau+ tau- jjj"
+      CASE(HHjj_bbAA)
+         pout = "H H jj --> b bbar A A jj" 
+         if (LOplusjet) pout = "H H jjj --> b bbar A A jjj"
 
 c HIGGS + JET VIA VBF
       CASE(Hjjj)
@@ -4010,6 +4191,10 @@ c DIBOSON PRODUCTION via VBF
       CASE(WMAjj)
          pout = " W-A jj --> "//lepout(1:len_trim(lepout))//" A jj"
          if (LOplusjet) pout = " W-A jjj --> "//
+     &        lepout(1:len_trim(lepout))//" A jjj"
+      CASE(ZAjj,ZAjj_n)
+         pout = " Z A jj --> "//lepout(1:len_trim(lepout))//" A jj"
+         if (LOplusjet) pout = " Z A jjj --> "//
      &        lepout(1:len_trim(lepout))//" A jjj"
       CASE(AAjj)
          pout = " spin2 jj --> A A jj"
@@ -4115,7 +4300,7 @@ c TRIBOSON PRODUCTION
          pout = " W+ W- A --> "//lepout(1:len_trim(lepout))//" A"
          if (LOplusjet) pout = " W+ W- A j --> "//
      &        lepout(1:len_trim(lepout))//" A j"
-      CASE(ZZA, ZZhadA)
+      CASE(ZZA, ZZhadA, ZZnA)
          pout = " ZZA --> "//lepout(1:len_trim(lepout))//" A"
          if (LOplusjet) pout = " ZZA j --> "//
      &        lepout(1:len_trim(lepout))//" A j"
@@ -4225,8 +4410,24 @@ c QCD induced Vjj production
          if (LOplusjet) pout = " W- jjj --> "//
      &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
 
+      CASE(QCDZjj_l, QCDZjj_nu)
+         pout = " Z jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         if (LOplusjet) pout = " Z jjj --> "//
+     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+
 
 c QCD induced VVjj production
+      CASE(QCDAAjj)
+         pout = " A A jj (QCD induced)"
+         if (LOplusjet) pout = " A A jjj (QCD induced)"
+      CASE(QCDZZjj_ll, QCDZZjj_lnu)
+         pout = " Z Z jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         if (LOplusjet) pout = " Z Z jjj --> "//
+     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+      CASE(QCDWPWMjj)
+         pout = " W+ W- jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         if (LOplusjet) pout = " W+ W- jjj --> "//
+     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
       CASE(QCDWPZjj)
          pout = " W+ Z jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
          if (LOplusjet) pout = " W+ Z jjj --> "//
@@ -4242,6 +4443,14 @@ c QCD induced VVjj production
       CASE(QCDWMAjj)
          pout = " W- A jj --> "//lepout(1:len_trim(lepout))//" A jj (QCD induced)"
          if (LOplusjet) pout = " W- A jjj --> "//
+     &        lepout(1:len_trim(lepout))//" A jjj (QCD induced)"
+      CASE(QCDZAjj_l)
+         pout = " Z A jj --> "//lepout(1:len_trim(lepout))//" A jj (QCD induced)"
+         if (LOplusjet) pout = " Z A jjj --> "//
+     &        lepout(1:len_trim(lepout))//" A jjj (QCD induced)"
+      CASE(QCDZAjj_n)
+         pout = " Z A jj --> "//lepout(1:len_trim(lepout))//" A jj (QCD induced)"
+         if (LOplusjet) pout = " Z A jjj --> "//
      &        lepout(1:len_trim(lepout))//" A jjj (QCD induced)"
       CASE(QCDWPWPjj)
          pout = " W+ W+ jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"

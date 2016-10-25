@@ -1,5 +1,4 @@
 c------------------------------------------------------------------------------
-
       subroutine lha_file(imode)
 
       implicit none
@@ -849,7 +848,7 @@ c------------------------------------------------------------------------------
       case(Hjj_tau, HAjj_tau, Hjjj_tau, GFHjj_tau) 
          idflav(1)=-15
          idflav(2)= 15  
-      case(Hjj_AA, HAjj_AA, Hjjj_AA, AAjj, GFHjj_AA) 
+      case(Hjj_AA, HAjj_AA, Hjjj_AA, AAjj, GFHjj_AA,QCDAAjj) 
          idflav(1)= 22
          idflav(2)= 22   
       case(Hjj_bbar, HAjj_bbar, Hjjj_bbar, GFHjj_bbar)
@@ -939,7 +938,8 @@ c------------------------------------------------------------------------------
            idflav(4) = finalquarks_psp(2)
          endif
          idflav(N_lepton+N_decayquarks+1) = 22
-      case(WpA, WmA, ZA, GFZA, WWA, ZZA, WPZA, WMZA,WPAjj,WMAjj,QCDWPAjj,QCDWMAjj)
+      case(WpA, WmA, ZA, GFZA, WWA, ZZA, ZZnA, WPZA, WMZA,WPAjj,WMAjj,
+     &      QCDWPAjj,QCDWMAjj,QCDZAjj_l,QCDZAjj_n,ZAjj,ZAjj_n)
          do i = 1, N_lepton
             idflav(i) = finallep(i)
          enddo
@@ -1102,7 +1102,7 @@ c...particle identity code
          lidup(n_p+1,listposition)= 24
          lidup(n_p+2,listposition)=-24
          lidup(n_p+3,listposition)= 22
-      case(ZZA, ZZhadA)
+      case(ZZA, ZZhadA, ZZnA)
          n_b = 2
          lidup(n_p+1,listposition)= 23
          lidup(n_p+2,listposition)= 23
@@ -1197,6 +1197,14 @@ c...particle identity code
          n_b=1
          lidup(n_p+1,listposition)=-24
          lidup(n_p+2,listposition)= 22
+      case(ZAjj,ZAjj_n) !ZAjj
+         n_b=1
+         lidup(n_p+1,listposition)= 23
+         lidup(n_p+2,listposition)= 22
+      case(QCDZAjj_l,QCDZAjj_n) !ZAjj
+         n_b=1
+         lidup(n_p+1,listposition)= 23
+         lidup(n_p+2,listposition)= 22
       end select
  
       do i1=1,n_b
@@ -1234,7 +1242,8 @@ c...setting photon as final particle in VBF Higgs + photon production
 
 c...setting spin and mothers of photon(s) in diboson and triboson processes
       select case(procid)
-      case(WPA,WMA,ZA,WWA,ZZA,WPZA,WMZA,WPAjj,WMAjj,QCDWPAjj,QCDWMAjj,
+      case(WPA,WMA,ZA,WWA,ZZA,ZZnA,WPZA,WMZA,WPAjj,WMAjj,QCDWPAjj,QCDWMAjj,
+     &     QCDZAjj_l,QCDZAjj_n,ZAjj,ZAjj_n,
      &     WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)  !  one final photon
          lmothup(1,nup,listposition) = 1
          lmothup(2,nup,listposition) = 2

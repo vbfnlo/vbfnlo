@@ -5,6 +5,8 @@ c E-mail: francam@particle.uni-karlsruhe.de
 c Date: 18/01/2010
 c Modified:9/3/2012
 c ******************************************************************************
+c hel = 66,67,76,77 for rr,rl,...
+c or 2*hel1 + hel2 -> 3,1,-1,-3
 
        subroutine HexBoxT(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_
      &   p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,resultn
@@ -17,19 +19,19 @@ c ******************************************************************************
        Integer comp,ngluon,posgluon,Div,hel
        Complex*16 result(6),resultn,resultborn
 
-       if (hel.eq.77) then
+       if (hel.eq.77.or.hel.eq.-3) then
          call HexBox77T(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_
      &   p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,resultn
      &   ,resultborn,Div)
-       elseif (hel.eq.67) then
+       elseif (hel.eq.67.or.hel.eq.1) then
          call HexBox67T(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_
      &   p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,resultn
      &   ,resultborn,Div)
-       elseif (hel.eq.76) then
+       elseif (hel.eq.76.or.hel.eq.-1) then
          call HexBox76T(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_
      &   p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,resultn
      &   ,resultborn,Div)
-       elseif (hel.eq.66) then
+       elseif (hel.eq.66.or.hel.eq.3) then
          call HexBox66T(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_
      &   p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,resultn
      &   ,resultborn,Div)

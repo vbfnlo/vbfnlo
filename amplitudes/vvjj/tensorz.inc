@@ -11,11 +11,13 @@ c  lepton spinors and Z polarization vectors
       integer ie,iu
       
       double complex zep,zem,zup,zum,ze,zu,ae,au,xxea,xxua,
-     1		     xxez,xxuz,zet,zut,aet,aut
-      double precision qe, qu
+     1		     xxez,xxuz,zet,zut,aet,aut,ea
+      double precision qe, qu,qa
 
       common /zemspinor/ ze(6), zu(6), ae(6), au(6), xxea, xxua ,xxez, 
      2  		 xxuz ,zet(6),zut(6),aet(6),aut(6), qe(0:4), qu(0:4)
+      common /vaMom/ ea(6),qa(0:4)
+
 
 c  leptonic tensors
       double complex aazz,azzz,zazz,zzzz,wwzz5,wwzz6, 

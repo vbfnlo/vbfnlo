@@ -43,7 +43,7 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
          call def_ps_vvnj(6,2,2,0,1,1)
       CASE(Ajj)
          call def_ps_vnj(1)
-      CASE(Zjj_l, Zjj_nu)
+      CASE(Zjj_l, Zjj_nu, QCDZjj_l, QCDZjj_nu)
          call def_ps_vnj(2)
       CASE(WPjj, QCDWPjj)
          call def_ps_vnj(3)
@@ -55,7 +55,7 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
          call def_ps_vvnj(0,3,4,1,1,1)
       CASE(ZZjj_ll, ZZjj_lnu, ZZhadjj) 
          call def_ps_vvnj(-6,2,2,1,1,1)
-      CASE(HHjj) 
+      CASE(HHjj, HHjj_bbtau, HHjj_bbAA) 
          call def_ps_hhnj(0,6,6,1,0,0)
       CASE(WPZjj, WPhadZjj, WPZhadjj)
          call def_ps_vvnj(0,3,2,1,1,1)
@@ -65,6 +65,8 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
          call def_ps_qqvaj(3,1)
       CASE(WMAjj,QCDWMAjj)
          call def_ps_qqvaj(4,1)
+      CASE(ZAjj,ZAjj_n)
+         call def_ps_qqvaj(2,1)
       CASE(GFHjj, GFHjj_AA, GFHjj_mu, GFHjj_tau, GFHjj_bbar)
          call def_ps_vnj(6) 
       CASE(GFHjj_WW)
@@ -147,8 +149,13 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
          call def_ps_qqVVj(3,2)
       CASE(QCDWMZjj)
          call def_ps_qqVVj(4,2)
+      CASE(QCDAAjj)
+         call def_ps_qqAAj(1,1)
       CASE(QCDZZjj_ll,QCDZZjj_lnu)
          call def_ps_qqVVj(2,2)
+      CASE(QCDZAjj_l,QCDZAjj_n)
+c         if(mza_min.ge.250d0) PS_loops=1
+         call def_ps_qqvaj(2,1)
       CASE(QCDWPWPjj)
 !       if(sub_number.eq.2.and.(WWJJ_interf.ge.2)) then ! include Higgs resonance
 !          call def_ps_WWW(3,4,3)
@@ -215,7 +222,7 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
          call def_ps_ZZZj(2,2,2)
       CASE(WWA, WPhadWMA, WPWMhadA)
          call def_ps_qqVVAj(3,4,1)
-      CASE(ZZA, ZZhadA)
+      CASE(ZZA, ZZhadA, ZZnA)
          call def_ps_qqVVAj(2,2,1)
       CASE(WPZA, WPhadZA, WPZhadA)
          call def_ps_qqVVAj(3,2,1)
@@ -315,6 +322,8 @@ c fill momentum arrays with zero
             enddo
          enddo
       enddo
+      p=0d0
+      v=0d0
 
       rn = 0d0
 c switch between different processes
@@ -392,8 +401,13 @@ c switch between different processes
          call LIPSNHH(n_p-nx,rand,rn,
      1                p(0,1,1),p(0,2,1),
      2                v(0,1,1),p(0,3,1),
-     3                X(1),X(2),dps)
-      CASE(WPAjj, WMAjj,QCDWPAjj,QCDWMAjj)        !pp -> VAjj(j)
+     3                X(1),X(2),dps,1)
+      CASE(HHjj_bbtau, HHjj_bbAA) ! pp -> HH -> b bbar XX
+         call LIPSNHH(n_p-nx,rand,rn,
+     1                p(0,1,1),p(0,2,1),
+     2                v(0,1,1),p(0,3,1),
+     3                X(1),X(2),dps,0)
+      CASE(WPAjj, WMAjj, ZAjj, QCDWPAjj,QCDWMAjj)        !pp -> VAjj(j)
          if (ps_number.eq.1.and.PS_loops.ne.1) then
             call LIPSVAJ1(n_p-nx,rand,rn,
      1           p(0,1,1), p(0,2,1),
@@ -405,6 +419,11 @@ c switch between different processes
      2           v(0,1,1),p(0,3,1),
      3           X(1),X(2),dps,narrowwidth)
          endif
+      CASE(ZAjj_n)        !pp -> VAjj(j)
+            call LIPSVAJ2(n_p-nx,rand,rn,
+     1           p(0,1,1), p(0,2,1),
+     2           v(0,1,1),p(0,3,1),
+     3           X(1),X(2),dps,narrowwidth)
       CASE(HJJJ,Hjjj_AA, Hjjj_mu, Hjjj_tau, Hjjj_bbar) ! pp -> H + 3 jets
          call LIPSN(n_p-nx, rand, rn,
      1              p(0,1,1), p(0,2,1), 
@@ -440,6 +459,28 @@ c switch between different processes
      3              p(0,3,1), X(1), X(2), dps, 0)  
 
 #ifdef WITH_QCDVV
+      CASE(QCDZAjj_l)        !pp -> ZAjj(j)
+         if (ps_number.eq.1.and.PS_loops.ne.1) then
+            call LIPSVAJ1(n_p-nx,rand,rn,
+     1           p(0,1,1), p(0,2,1),
+     2           v(0,1,1),p(0,3,1),
+     3           X(1),X(2),dps,narrowwidth)
+         else 
+            call LIPSVAJ2(n_p-nx,rand,rn,
+     1           p(0,1,1), p(0,2,1),
+     2           v(0,1,1),p(0,3,1),
+     3           X(1),X(2),dps,narrowwidth)
+         endif
+      CASE(QCDZAjj_n)        !pp -> ZAjj(j)
+            call LIPSVAJ2(n_p-nx,rand,rn,
+     1           p(0,1,1), p(0,2,1),
+     2           v(0,1,1),p(0,3,1),
+     3           X(1),X(2),dps,narrowwidth)
+      CASE(QCDAAjj)
+         call LIPSAAJ(n_p-nx,rand,rn,
+     1                p(0,1,1), p(0,2,1),
+     2                v(0,1,1),p(0,3,1),
+     3                X(1),X(2),dps)
       CASE(QCDWPWPjj,QCDWPZjj,QCDWMZjj,
      1     QCDWMWMjj,QCDZZjj_ll,QCDZZjj_lnu)
 !       if(isub.ne.sub_number) then
@@ -447,7 +488,7 @@ c switch between different processes
 !          call def_ps_WWW(3,4,3)
 ! !          call def_ps_ZZZj(3,4,3)
 !         else
-!          call def_ps_qqVVnj(3,3)
+!          call def_ps_qqVVj(3,3)
 !         endif
 !         isub=sub_number
 !       endif
@@ -671,7 +712,7 @@ c flipped because for GFZA only PS1 relevant
      3                X(1),X(2),dps,narrowwidth, ps_number)
 
 
-      CASE(ZZA, ZZhadA)
+      CASE(ZZA, ZZhadA, ZZnA)
             if (ps_number.eq.1) then
                call LIPSVVAJ(n_p-nx,rand,rn,
      1              p(0,1,1), p(0,2,1),

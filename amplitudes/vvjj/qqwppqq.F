@@ -679,7 +679,7 @@ c from the same quark line
 c
 c prerequisites for virtual corrections:	
       if (lpt.and.icount1.eq.0) then
-         print*, 'criterion chosen: mv5/mvc.gt.0.1d0'
+c         print*, 'criterion chosen: mv5/mvc.gt.0.1d0'
       endif                     !icount1
       if (lpt) then
          icountmax = 2**(N_points(0)-12)

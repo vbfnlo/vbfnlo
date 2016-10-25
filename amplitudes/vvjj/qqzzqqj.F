@@ -326,6 +326,14 @@ c
            pez(mu) =   p(mu,6) - p(mu,5)
            puz(mu) = -(p(mu,8) - p(mu,7))
            pzz(mu) =   pez(mu) + puz(mu)
+	 elseif (bos.eq.211) then
+           pez(mu) =   p(mu,6) - p(mu,5)
+           puz(mu) =   p(mu,7)
+           pzz(mu) =   pez(mu) + puz(mu)
+	 elseif (bos.eq.212) then
+           pez(mu) = -(p(mu,6) - p(mu,5))
+           puz(mu) =   p(mu,7)
+           pzz(mu) =   pez(mu) + puz(mu)
 	 endif
       enddo
 	

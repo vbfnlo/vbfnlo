@@ -47,7 +47,7 @@ c include global variables via include-files, e.g. "procID"
       common /nlovariable/ gnlo
 
       Select Case(procID)
-      CASE(WPZA,WMZA,WPAA,WMAA,ZAA,AAA,WPAAj,WMAAj,WPAJJ,WMAJJ,
+      CASE(WPZA,WMZA,WPAA,WMAA,ZAA,AAA,WPAAj,WMAAj,WPAJJ,WMAJJ,ZAJJ,ZAjj_n,
      &     WPhadZA, WPZhadA, WMhadZA, WMZhadA)
 
          If(gnlo.eq.2) then
@@ -130,7 +130,7 @@ c include global variables via include-files, e.g. "procID"
       
 
       Select Case(procID)
-      CASE(WPZA,WMZA,WPAA,WMAA,ZAA,AAA,WPAAj,WMAAj,WPAJJ,WMAJJ,
+      CASE(WPZA,WMZA,WPAA,WMAA,ZAA,AAA,WPAAj,WMAAj,WPAJJ,WMAJJ,ZAJJ,ZAjj_n,
      &     WPhadZA, WPZhadA, WMhadZA, WMZhadA)
 
          print *," "
@@ -181,7 +181,7 @@ c include global variables via include-files, e.g. "procID"
          endif
 
       CASE(QCDWPZjj, QCDWMZjj,QCDWPWPjj,QCDWMWMjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZjj_l, QCDZjj_nu, QCDWPjj, QCDWMjj
-     &    ,QCDWPAjj, QCDWMAjj)
+     &    ,QCDWPAjj, QCDWMAjj,QCDZAjj_l,QCDZAjj_n,QCDAAjj)
 
          print *
          print *,  " penbox/ fermionloops instabilites "
@@ -230,7 +230,8 @@ c include global variables via include-files, e.g. "procID"
          instab_error = 0d0
          do i=1,Loops_sub_LO
            instab_error = instab_error+ 
-     &                        abs(final_xsec(i,0,2))*dble(box2countsub_Q(i)+boxcountsub_Q(i)+pentcountsub_Q(i)+hexcountsub_Q(i))
+     &                        abs(final_xsec(i,0,2)+final_xsec(i,0,4))
+     &                        *dble(box2countsub_Q(i)+boxcountsub_Q(i)+pentcountsub_Q(i)+hexcountsub_Q(i))
      &                                       /boxcount2sub(i)
          enddo
 
@@ -421,7 +422,7 @@ c temporary remove RE contribution form results
 c add back removed RE contribution form results
       final_xsec(:,:,0) = final_xsec(:,:,0) + final_xsec(:,:,NLO_loops+1)
       final_sdev2(:,:,0) = final_sdev2(:,:,0) + final_sdev2(:,:,NLO_loops+1)
-      final_time(:,:,0) = final_xsec(:,:,0) + final_time(:,:,NLO_loops+1)
+      final_time(:,:,0) = final_time(:,:,0) + final_time(:,:,NLO_loops+1)
       endif ! doNLO
 
 

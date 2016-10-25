@@ -84,6 +84,7 @@ BUILT_SOURCES += $(libFFquad_la_SOURCES)
 endif
 
 ff/ffinit.f: $(srcdir)/ff/ffinit.f.in ff/ff.h ff/aa.h
+	@mkdir -p $(builddir)/ff
 	@sed s%@FFPATH@%"$(pkgdatadir)/ff"% < $(srcdir)/ff/ffinit.f.in > ff/ffinit.f
 	@touch ff/ffinit.f
 
@@ -102,8 +103,8 @@ ff/ff.quad.h: ff/ff.h
 	@sed s%vbf%vbfquad%g < $< > $@
 	@touch $@
 
-ff/ffinit.quad.F: ff/ffinit.f ff/ff.quad.h
-	@sed -e "s%vbf%vbfquad%g" -e "s%ff\.h%ff.quad.h%g" < $< > $@
+ff/ffinit.quad.F: $(srcdir)/ff/ffinit.f.in ff/ff.quad.h
+	@sed -e "s%vbf%vbfquad%g" -e "s%ff\.h%ff.quad.h%g" -e "s%@FFPATH@%\"$(pkgdatadir)/ff\"%" < $(srcdir)/ff/ffinit.f.in > $@
 	@touch $@
 
 ff/ffinit.quad.o: ff/ffinit.quad.F ff/ff.quad.h

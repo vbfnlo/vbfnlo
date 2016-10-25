@@ -1,3 +1,12 @@
+
+c ************************************************************************************
+c Author: Francisco Campanario
+c E-mail: francam@particle.uni-karlsruhe.de
+c************************************************************************************
+c************************************************************************************
+c    Declaration of variables 
+c************************************************************************************
+c***********************************************************************************
       function A0finG(m,musq)
       IMPLICIT NONE
       complex*16 A0finG
@@ -572,6 +581,18 @@ c     mi3 must be nonzero
          call avh_error()
 #endif
       else if (UseFF) then
+c take out mass combination which FF cannot yet handle
+        if ( (abs(m0).lt.eps) .and.
+     &       (abs(m1).lt.eps) .and.
+     &       (abs(m2).lt.eps) .and.
+     &       (abs(m3).lt.eps) ) then
+c           print*, "D0_masses0"
+            D0finG=D0fin(s12,s23,p1,p2,p3,p4,musq)
+         else if ( (m0.eq.m1) .and.
+     &             (m0.eq.m2) .and.
+     &             (m0.eq.m3) ) then
+           D0finG=D04(p1,p2,p3,p4,s12,s23,m0,m1,m2,m3)
+        else
          xpi( 1) = m0**2
          xpi( 2) = m1**2
          xpi( 3) = m2**2
@@ -584,6 +605,7 @@ c     mi3 must be nonzero
          xpi(10) = s23
          ier=0
          call vbfffxd0(D0finG,xpi,ier)
+        endif
       else
       if(m0.ge.eps) then
          if(m1.ge.eps) then

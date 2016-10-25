@@ -432,9 +432,9 @@ c read in additional parameters for two-Higgs model
 #ifdef WITH_VBF
       if (anom) then
          Select Case (procID)
-         Case(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,
+         Case(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,ZAjj,ZAjj_n,
      &        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj, WPhadWPjj, WMhadWMjj,
-     &        Ajj, Zjj_l, Zjj_nu, WPjj, WMjj,WPAjjjLO,WMAjjjLO)
+     &        Ajj, Zjj_l, Zjj_nu, WPjj, WMjj,WPAjjjLO,WMAjjjLO,ZAjjjLO)
             call read_anomVcouplings
             anom_called = .true.
             with_anom = anom
@@ -447,7 +447,7 @@ c read in additional parameters for two-Higgs model
 #ifdef WITH_TRIBOSON
       if (anom) then
          Select Case (procID)
-         Case(WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
+         Case(WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,ZZnA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
      &        WPAAj,WMAAj,
      &        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, ZZWMhad, 
      &        WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,

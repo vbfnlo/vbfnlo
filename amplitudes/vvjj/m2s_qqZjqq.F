@@ -1,7 +1,10 @@
 c
 c	Dieter Zeppenfeld, <dieter@pheno.physics.wisc.edu>
 c	Initial version:  2003 February 12
-c	Last modified by Barbara Jager:   2006 July 11
+c	Modified by Barbara Jager:   2006 July 11
+c       Modified by Julien Baglio:  2014 Oct. 14 (HHjj is included)
+c       Last modified by Francisco Campanario:  2015 Jul 2 (ZAjj is included)
+
 c
 c  this routine computes |ME|^2 for qq->qq e+ve mu-vm~g ("WW")
 c	or qq->qq e+e-mu+mu-g or qq->qq e+e- vm vm~ g ("ZZ")
@@ -42,6 +45,7 @@ c
       integer bos
       real*8 xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v), 
      1       rn(1), xuz(2,2:3), m2s(0:3)
+      real*8 vtemp(0:3,max_v)
       logical lok(3)
 
 c  helicity selection
@@ -150,6 +154,7 @@ c
             enddo
          enddo
       else
+        photon_hel=0
          if (bos.eq.2) then
             write(6,*) " "
             write(6,*) "Zjjj amplitude square information:"
@@ -185,6 +190,18 @@ c
          elseif (bos.eq.21) then
             write(6,*) " "
             write(6,*) "ZZ jjj -> 2l 2v amplitude square information:"
+            write(6,*) "-----------------------------------------------"
+            write(6,*) " "
+            call vtozz_reset
+         elseif (bos.eq.211) then
+            write(6,*) " "
+            write(6,*) "ZA jjj -> 2l A amplitude square information:"
+            write(6,*) "-----------------------------------------------"
+            write(6,*) " "
+            call vtozz_reset
+         elseif (bos.eq.212) then
+            write(6,*) " "
+            write(6,*) "ZA jjj -> 2v A amplitude square information:"
             write(6,*) "-----------------------------------------------"
             write(6,*) " "
             call vtozz_reset
@@ -1166,9 +1183,9 @@ c NCl tensors for NC process (k=1...4)
      -              zaee(0,0,1,j),zzee(0,0,1,j)) !emit V on upper        
                call VVtoll_KK(1,1,h,q12(0,j),v,aaee(0,0,2,j),azee(0,0,2,j),
      -              zaee(0,0,2,j),zzee(0,0,2,j)) !emit V on lower
-               call VVtolln_KK(2,q34(0,j),v,aauu(0,0,1,j),azuu(0,0,1,j),
+               call VVtolln_KK(2,q34(0,j),v(0,3),aauu(0,0,1,j),azuu(0,0,1,j),
      -              zauu(0,0,1,j),zzuu(0,0,1,j)) !emit V on upper        
-               call VVtolln_KK(1,q12(0,j),v,aauu(0,0,2,j),azuu(0,0,2,j),
+               call VVtolln_KK(1,q12(0,j),v(0,3),aauu(0,0,2,j),azuu(0,0,2,j),
      -              zauu(0,0,2,j),zzuu(0,0,2,j)) !emit V on lower
 
 
@@ -1224,9 +1241,9 @@ c NCl tensors for NC process (k=1...4)
      -              azee(0,0,1,j),zaee(0,0,1,j),zzee(0,0,1,j))   !emit V on upper        
 	       call VVtoll(1,1,h,q12(0,j),v,aaee(0,0,2,j),
      -              azee(0,0,2,j),zaee(0,0,2,j),zzee(0,0,2,j))   !emit V on lower
-               call VVtolln(2,q34(0,j),v,aauu(0,0,1,j),
+               call VVtolln(2,q34(0,j),v(0,3),aauu(0,0,1,j),
      -              azuu(0,0,1,j),zauu(0,0,1,j),zzuu(0,0,1,j))   !emit V on upper        
-	       call VVtolln(1,q12(0,j),v,aauu(0,0,2,j),
+	       call VVtolln(1,q12(0,j),v(0,3),aauu(0,0,2,j),
      -              azuu(0,0,2,j),zauu(0,0,2,j),zzuu(0,0,2,j))   !emit V on lower
 
 
@@ -1285,9 +1302,9 @@ c NCl tensors for NC process (k=1...4)
      -              zaee(0,0,1,j),zzee(0,0,1,j)) !emit V on upper        
                call VVtoll_anomal(1,1,h,q12(0,j),v,aaee(0,0,2,j),azee(0,0,2,j),
      -              zaee(0,0,2,j),zzee(0,0,2,j)) !emit V on lower
-               call VVtolln_anomal(2,q34(0,j),v,aauu(0,0,1,j),azuu(0,0,1,j),
+               call VVtolln_anomal(2,q34(0,j),v(0,3),aauu(0,0,1,j),azuu(0,0,1,j),
      -              zauu(0,0,1,j),zzuu(0,0,1,j)) !emit V on upper        
-               call VVtolln_anomal(1,q12(0,j),v,aauu(0,0,2,j),azuu(0,0,2,j),
+               call VVtolln_anomal(1,q12(0,j),v(0,3),aauu(0,0,2,j),azuu(0,0,2,j),
      -              zauu(0,0,2,j),zzuu(0,0,2,j)) !emit V on lower
 
 
@@ -1340,9 +1357,9 @@ c NCl tensors for NC process (k=1...4)
      -              zaee(0,0,1,j),zzee(0,0,1,j)) !emit V on upper        
                call VVtoll(1,1,h,q12(0,j),v,aaee(0,0,2,j),azee(0,0,2,j),
      -              zaee(0,0,2,j),zzee(0,0,2,j)) !emit V on lower
-               call VVtolln(2,q34(0,j),v,aauu(0,0,1,j),azuu(0,0,1,j),
+               call VVtolln(2,q34(0,j),v(0,3),aauu(0,0,1,j),azuu(0,0,1,j),
      -              zauu(0,0,1,j),zzuu(0,0,1,j)) !emit V on upper        
-               call VVtolln(1,q12(0,j),v,aauu(0,0,2,j),azuu(0,0,2,j),
+               call VVtolln(1,q12(0,j),v(0,3),aauu(0,0,2,j),azuu(0,0,2,j),
      -              zauu(0,0,2,j),zzuu(0,0,2,j)) !emit V on lower
 
 
@@ -1356,7 +1373,7 @@ c  CCl tensors for CC (k=5)
 	 
 C for W-W+ --> e+ e- or vm vm~
 c CCl for CC (k=6)
-	
+
                call WWtoll(1,1,h,q34(0,j),v,CCee6(0,0,1,j)) !emit V on upper
                call WWtoll(2,1,h,q12(0,j),v,CCee6(0,0,2,j)) !emit V on lower
                call WWtolln(1,q34(0,j),v,CCuu6(0,0,1,j)) !emit V on upper
@@ -1364,6 +1381,218 @@ c CCl for CC (k=6)
                
             enddo               !j	
          endif    ! end of kk/sm for bos=21
+         
+         
+      elseif (bos.eq.211) then   !ZA -> l+l- A
+c     reset lzs to .true. to force recalculation of virtual contributions in qqwwqq
+         do i = 1,4
+            lzs(i) = .true.
+         enddo
+
+c     select helicity: h ... random number for lepton helicity
+c     combination (h=1:2) 
+      
+	if(photon_hel.eq.0) then
+	  h = mod(h,4) + 1
+	  ie = sign(1,2-h)
+	  iu = (-1)**(h+1)
+	else
+	  h = mod(h,2) + 1
+	  ie = (-1)**(h)
+	  iu = photon_hel
+	endif
+
+
+c...  Les Houches interface         
+         if ((lha.or.hepmc).and..not.doNLO) then
+            helicity(1)= ie
+            helicity(2)=-ie 
+            helicity(3)= iu
+         endif
+
+         CALL IXXXXX(v(0,1),ZERO ,+ie,-1,lep) !e+   
+         CALL OXXXXX(v(0,2),ZERO ,-ie, 1,lem) !e- 
+         CALL VXXXXX(v(0,3),ZERO ,+iu, 1,ea) !a
+
+
+         CALL JIOXXX(lep,lem,GZL ,ZMASS,ZWIDTH,ze) !Zl
+         CALL JIOXXX(lep,lem,GAL ,ZERO,ZERO,ae) !al
+
+cfc to recover old notation
+         do i = 1,4
+            zu(i) = 0d0
+            au(i) = ea(i)
+         enddo  
+         do i = 5,6    !add momentum info to Z->vv current (zu vanishes anyway) 
+            au(i) = ea(i)
+            zu(i)=  ea(i)
+         enddo    
+         
+         do mu = 0,3
+            qe(mu) = v(mu,1)+v(mu,2)
+            qa(mu) = v(mu,3)
+            qvv(mu) = qe(mu) + qa(mu)
+         enddo
+         
+         qe(4) = qe(0)**2-qe(1)**2-qe(2)**2-qe(3)**2
+         qa(4) = abs(qa(0)**2-qa(1)**2-qa(2)**2-qa(3)**2)+1d-20
+
+cjp to recover zz notation
+         do mu=0,4
+            qu(mu)=qa(mu)
+         enddo
+         
+c leptonic tensors
+c we keep the name of the output variables.
+c to reuse most of the original qqzaqq.f 
+         do j=2,3
+            call vvtoza(q12(0,j),q34(0,j),v,h,aazz(0,0,j),azzz(0,0,j),
+     - zazz(0,0,j),zzzz(0,0,j))
+
+C for W+W-
+            call wwtoza(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j)) ! q12 = W+
+            call wwtoza(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j)) ! q12 = W-
+
+C for V1V2 --> e+ e- 
+c NCl tensors for NC process (k=1...4)
+
+            call VVtoll(2,1,h,q34(0,j),v,aaee(0,0,1,j),azee(0,0,1,j),
+     - zaee(0,0,1,j),zzee(0,0,1,j))  !emit V on upper       
+            call VVtoll(1,1,h,q12(0,j),v,aaee(0,0,2,j),azee(0,0,2,j),
+     - zaee(0,0,2,j),zzee(0,0,2,j))  !emit V on lower
+	    aauu=0d0
+	    azuu=0d0
+	    zauu=0d0
+	    zzuu=0d0
+	    
+
+C for W+W- --> e+ e-
+c  CCl tensors for CC (k=5)
+
+            call WWtoll(2,1,h,q34(0,j),v,CCee(0,0,1,j)) !emit V on upper
+            call WWtoll(1,1,h,q12(0,j),v,CCee(0,0,2,j)) !emit V on lower
+C     for W+W- -->  A
+
+cfc ???? k=5 => ud -> sc entiendo es 1???? 
+cfc to check first argument
+
+            call calc_wwtoa(2,iu,q34(0,j),v,CCuu(0,0,1,j)) !emit Z -> e+ e- on upper
+            call calc_wwtoa(1,iu,q12(0,j),v,CCuu(0,0,2,j)) !emit Z -> e+ e- on lower
+ 
+C for W-W+ --> e+ e- 
+c CCl for CC (k=6)
+
+            call WWtoll(1,1,h,q34(0,j),v,CCee6(0,0,1,j)) !emit A on upper
+            call WWtoll(2,1,h,q12(0,j),v,CCee6(0,0,2,j)) !emit A on lower
+
+C     for W-W+ -->  A
+
+cfc  k=6 => du -> cs entiendo es 2
+cfc to check first argument
+
+            call calc_wwtoa(1,iu,q34(0,j),v,CCuu6(0,0,1,j)) !emit Z -> e+ e- on upper
+            call calc_wwtoa(2,iu,q12(0,j),v,CCuu6(0,0,2,j)) !emit Z -> e+ e- on lower
+         enddo ! j
+C     for V --> e+ e- a
+
+            call vtolla(v,h,azz,zzztens)
+            
+
+c----------------------------------------
+
+      elseif (bos.eq.212) then   !ZA -> vv~ A
+c     reset lzs to .true. to force recalculation of virtual contributions in qqwwqq
+      j=1
+         do i = 1,4
+            lzs(i) = .true.
+         enddo
+c     select helicity: h ... random number for lepton helicity
+c     combination (h=1:2) 
+
+	if(photon_hel.eq.0) then
+         h = mod(h,2) + 1
+         ie = 1
+         iu = sign(1,1-h)
+        else
+	 ie=1
+	 iu=photon_hel
+	endif
+     
+
+c...  Les Houches interface         
+         if ((lha.or.hepmc).and..not.doNLO) then
+            helicity(1)= -1
+            helicity(2)= +1 
+            helicity(3)= iu
+         endif
+
+         CALL OXXXXX(v(0,1),ZERO ,-1,+1,lum) !vm	  
+         CALL IXXXXX(v(0,2),ZERO ,+1,-1,lup) !vm~	
+         CALL VXXXXX(v(0,3),ZERO ,+iu, 1,ea) !a
+         
+         au=ea
+         zu=0d0
+
+         CALL JIOXXX(lup,lum,GZN,ZMASS, ZWIDTH,ze) !Zv
+         ze(1:4)=-ze(1:4) ! different fermion order -> sign change in mg amplitudes
+         ae(1:4)=0d0
+         ae(5:6)=ze(5:6)
+         
+         
+         do mu = 0,3
+            qe(mu) = v(mu,1)+v(mu,2)
+            qa(mu) = v(mu,3)
+            qvv(mu) = qe(mu) + qa(mu)
+         enddo
+         
+         qe(4) = qe(0)**2-qe(1)**2-qe(2)**2-qe(3)**2
+         qa(4) = qa(0)**2-qa(1)**2-qa(2)**2-qa(3)**2
+         qu=qa
+
+     
+c leptonic tensors
+       do j=2,3
+C for W+W- --> ve ve~ a
+            call wwtozan(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j)) ! q12 = W+
+            call wwtozan(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j)) ! q12 = W-
+
+C V1V2 --> ve ve~  
+c NCl tensors for NC process (k=1...4)
+      qu=qe ! VVtolln, WWtolln assume Z_l Z_n
+            call VVtolln(2,q34(0,j),v(0,1),aaee(0,0,1,j),azee(0,0,1,j),
+     - zaee(0,0,1,j),zzee(0,0,1,j))     !emit V on upper       
+            call VVtolln(1,q12(0,j),v(0,1),aaee(0,0,2,j),azee(0,0,2,j),
+     - zaee(0,0,2,j),zzee(0,0,2,j))     !emit V on lower
+
+C for W+W- --> ve ve~
+c  CCl tensors for CC (k=5)
+
+            call WWtolln(2,q34(0,j),v(0,1),CCee(0,0,1,j)) !emit V on upper
+            call WWtolln(1,q12(0,j),v(0,1),CCee(0,0,2,j)) !emit V on lower
+C     for W+W- -->  A
+
+cfc  k=5 => ud -> sc entiendo es 1
+
+            call calc_wwtoa(2,iu,q34(0,j),v,CCuu(0,0,1,j)) !emit Z -> ve ve~ on upper
+            call calc_wwtoa(1,iu,q12(0,j),v,CCuu(0,0,2,j)) !emit Z -> ve ve~ on lower
+
+C for W-W+ --> ve ve~ 
+c CCl for CC (k=6)
+
+            call WWtolln(1,q34(0,j),v,CCee6(0,0,1,j)) !emit A on upper
+            call WWtolln(2,q12(0,j),v,CCee6(0,0,2,j)) !emit A on lower
+
+C     for W-W+ -->  A
+
+cfc  k=6 => du -> cs entiendo es 2
+
+            call calc_wwtoa(1,iu,q34(0,j),v,CCuu6(0,0,1,j)) !emit Z -> ve ve~ on upper
+            call calc_wwtoa(2,iu,q12(0,j),v,CCuu6(0,0,2,j)) !emit Z -> ve ve~ on lower
+        enddo ! j
+      azz=0d0
+      zzztens=0d0
+         qu=qa
+c-----------------------------
 
       elseif (bos.eq.16.or.bos.eq.61) then
          if(lok(1))CALL Get_HAjjj_currents(p,v)
@@ -1384,12 +1613,26 @@ c...Les Houches interface
             helicity(2)=0
          endif
 
-         CALL SXXXXX(v(0,1   ),1,wp)                         
-         CALL SXXXXX(v(0,2   ),1,wm)   
+         if(procid.eq.HHjj) then
+            CALL SXXXXX(v(0,1   ),1,wp)                         
+            CALL SXXXXX(v(0,2   ),1,wm)   
+         else ! including H decays
+            do mu = 0,3
+               vtemp(mu,1)=v(mu,1)+v(mu,2)
+               vtemp(mu,2)=v(mu,3)+v(mu,4)
+            enddo
+            CALL SXXXXX(vtemp(0,1   ),1,wp)
+            CALL SXXXXX(vtemp(0,2   ),1,wm)
+         endif   
          
          do mu = 0,3
-            qe(mu) = v(mu,1)
-            qu(mu) = v(mu,2)
+            if(procid.eq.HHjj) then
+               qe(mu) = v(mu,1)
+               qu(mu) = v(mu,2)
+            else
+               qe(mu) = v(mu,1)+v(mu,2)
+               qu(mu) = v(mu,3)+v(mu,4)
+            endif
             qvv(mu) = qe(mu) + qu(mu)
          enddo
          
@@ -1487,6 +1730,7 @@ c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
 c for the NLO contributions x1 = x*y in my notes with x=z=xuz(1,j), y=xi(j-1)
 c
+      pdf=0d0
       x1 = xi(1)*xuz(1,2)
       q_sf = sqrt(mufsq(1,1))
 *      write(*,*)'1 x1, q_sf =', x1, q_sf
@@ -1607,7 +1851,7 @@ c similarly physToDiag(3/4)={2,4} for the 3-4 fermion line
       fsign(4) = 1
       gsign    = 1
 
-      call wbf_zh3j(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
+      call wbf_zh3j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1  	    pdf,res,nmin,nmax)
 
 *      write(*,*)'1, res =', res(
@@ -1632,7 +1876,7 @@ C*******************  q1 qb4 ---> q2 qb3 g V V   **********************
       fsign(3) = -1
       fsign(4) = -1
 
-      call wbf_zh3j(xi,p,v,physToDiag,fsign,gsign,bos, nlo,lok,xuz,
+      call wbf_zh3j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1  	   pdf,res,nmin,nmax)
 
 c      if (ldebug) call resprint(nmin,nmax,res)
@@ -2093,13 +2337,14 @@ c         ENDDO
             else
                m2s(j) = m2s(j)*8d0   ! factor 8 for random helicity summation
             endif
-         elseif ((bos.eq.22).or.(bos.eq.722)) then ! qq->ZZqq (both Z->ll~)
+         elseif ((bos.eq.22).or.(bos.eq.722).or.(bos.eq.211)) then ! qq->ZZqq (both Z->ll~)
                m2s(j) = m2s(j)*4d0   ! factor 4 for random helicity summation
          elseif (bos.eq.11) then ! qq (-> spin-2)-> gamma gamma qq
                m2s(j) = m2s(j)*4d0   ! factor 4 for random helicity summation
-         elseif ((bos.eq.21).or.(bos.eq.721)) then ! qq->ZZqq (one Z->ll~)
+         elseif ((bos.eq.21).or.(bos.eq.721).or.(bos.eq.212)) then ! qq->ZZqq (one Z->ll~)
                m2s(j) = m2s(j)*2d0   ! factor 4 for random helicity summation
          endif
+	if(photon_hel.ne.0) m2s(j)=m2s(j)/2d0
       enddo  ! j loop
 
 
@@ -2163,6 +2408,7 @@ c*****************************************************************
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/process.inc"
 
       real*8 p(0:3,max_p,max_kin), v(0:3,max_v), xi(nx), xuz(2,2:3)
       real*8 pdf(-6:6,2,3), res(maxnumsubproc,0:3)
@@ -2247,7 +2493,7 @@ c
       parameter (ldebug=.false.)
       PARAMETER (lres=.false.)
 
-      double precision tree(6)
+      double precision tree(6), temp
 
 
       if (lres) then
@@ -2404,8 +2650,13 @@ c     &           uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1))
 
       elseif (bos.eq.66) then ! HH production
          do mu = 0,3             ! kinematics
-            pbar(mu,5) = v(mu,1) ! H1
-            pbar(mu,6) = v(mu,2) ! H2
+            if(procid.eq.HHjj) then
+               pbar(mu,5) = v(mu,1) ! H1
+               pbar(mu,6) = v(mu,2) ! H2
+            else ! including H decays
+               pbar(mu,5) = v(mu,1)+v(mu,2) ! H1*
+               pbar(mu,6) = v(mu,3)+v(mu,4) ! H2*
+            endif
          enddo
          fsign(5) = 1
          fsign(6) = 1
@@ -2510,6 +2761,50 @@ c     &           uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1))
      
         
          endif  !lok	
+
+      elseif (bos.eq.211) then         ! ZA to 2 leptons + A
+         do mu = 0,3             ! kinematics for qq-->ZA-->2l A decay
+            pbar(mu,5) = v(mu,1) ! l+
+            pbar(mu,6) = v(mu,2) ! l-
+            pbar(mu,7) = v(mu,3) ! a
+            pbar(mu,8) = 0d0
+         enddo
+         fsign(5) = -1
+         fsign(6) =  1
+         fsign(7) =  1
+         fsign(7) =  1
+!          udsc=temp
+         if (lok(1) .or. nlo.eq.0) then
+	    call qqzzqqj(pbar,fsign,qbar,gsign,bos,
+     1                    uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1))
+         endif
+
+       
+!          if(.true.) then
+! 	  pbar(0:3,1:4) = p(0:3,1:4,1)
+! 	  pbar(0:3,8)=qbar(0:3)
+! 	  call MG_ZA_UDSCG(Pbar,temp)
+! 	  pbar(0:3,8) = 0d0
+!          endif
+! ! 	print*,fsign,nlo,bos
+! !       print*,udsc
+!       
+!         print*,"udsc",temp,udsc(0),temp/udsc(0)
+
+      elseif (bos.eq.212) then         ! ZA to 2 leptons + A
+         do mu = 0,3             ! kinematics for qq-->ZA-->2l A decay
+            pbar(mu,5) = v(mu,1) ! nu
+            pbar(mu,6) = v(mu,2) ! nu~
+            pbar(mu,7) = v(mu,3) ! a
+         enddo
+         fsign(5) = +1
+         fsign(6) = -1
+         fsign(7) =  1
+!          udsc=temp
+         if (lok(1) .or. nlo.eq.0) then
+	    call qqzzqqj(pbar,fsign,qbar,gsign,bos,
+     1                    uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1))
+	 endif
 
       else
          print*," Invalid entry BOS = ",bos,"in call of wbf_zh3j"
@@ -2624,6 +2919,18 @@ c     new routine for speed-up:
          	  call qqzzqq(pbar,fsign, 0,j,bos,
      1                    uucc(j),uuss(j),ddcc(j),ddss(j),
      2			  udsc(j),ducs(j))
+     
+               elseif ((bos.eq.211) .and. lok(j)) then ! ZA -> 2l A
+c     new routine for speed-up:
+         	  call qqzaqq(pbar,fsign, 0,j,bos,1,
+     1                    uucc(j),uuss(j),ddcc(j),ddss(j),
+     2			  udsc(j),ducs(j))
+     
+               elseif ((bos.eq.212) .and. lok(j)) then ! ZA -> 2nu A
+c     new routine for speed-up:
+         	  call qqzaqq(pbar,fsign, 0,j,bos,1,
+     1                    uucc(j),uuss(j),ddcc(j),ddss(j),
+     2			  udsc(j),ducs(j))
                elseif ((bos.eq.16.or.bos.eq.61) .and. lok(j)) then  ! Higgs+ptn
                   CALL HAjj_subtr_ME(fsign,j,uucc(j),uuss(j),ddcc(j),
      -                 ddss(j),udsc(j),ducs(j))
@@ -2635,7 +2942,7 @@ c     new routine for speed-up:
                   udsc(j) = 0d0
                   ducs(j) = 0d0 
                endif
-	       	       
+	              
                NCmatrixelt(0,0,j,2)=uucc(j)
                NCmatrixelt(0,1,j,2)=uuss(j)
                NCmatrixelt(1,0,j,2)=ddcc(j)

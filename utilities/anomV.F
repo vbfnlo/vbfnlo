@@ -435,8 +435,8 @@ c are stored in common blocks in anomV_cplg.inc
 
 ** Some inputs are only used for specific processes
       SELECT CASE(procID)
-      CASE(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,
-     &     WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
+      CASE(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,ZAjj,ZAjj_n,
+     &     WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,ZZnA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
      &     WPAAj,WMAAj,WW,GFWW,WPZ,WMZ,WPA,WMA,
      &     WPhadWMjj, WPWMhadjj, ZZhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, WPhadWPjj, WMhadWMjj,
      &     WPhadWMZ, WPWMhadZ, WWZhad, ZZZhad, ZZhadWP, ZZWPhad, ZZhadWM, ZZWMhad, WPhadWMWP, WPWMhadWP, 
@@ -497,8 +497,8 @@ c         call read_real("FPHI1", fphi1_0,0.0d0) ! fphi1 contributes to the Z bo
       dum = 0d0
 
       Select Case(ProcID)
-      CASE(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,
-     &     WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
+      CASE(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,ZAjj,ZAjj_n,
+     &     WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,ZZnA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
      &     WPAAj,WMAAj,GFWW,WW,WPZ,WMZ,WPA,WMA,
      &     WPhadWMjj, WPWMhadjj, ZZhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, WPhadWPjj, WMhadWMjj,
      &     WPhadWMZ, WPWMhadZ, WWZhad, ZZZhad, ZZhadWP, ZZWPhad, ZZhadWM, ZZWMhad, WPhadWMWP, WPWMhadWP, 
@@ -536,8 +536,8 @@ c         call read_real("FPHI1", fphi1_0,0.0d0) ! fphi1 contributes to the Z bo
       aDkappa0 = aDkappa0_0
 
       Select Case(ProcID)
-      CASE(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,
-     &     WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
+      CASE(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,ZAjj,ZAjj_n,
+     &     WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,ZZnA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
      &     WPAAj,WMAAj,WW,WPZ,WMZ,WPA,WMA,
      &     WPhadWMjj, WPWMhadjj, ZZhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, WPhadWPjj, WMhadWMjj,
      &     WPhadWMZ, WPWMhadZ, WWZhad, ZZZhad, ZZhadWP, ZZWPhad, ZZhadWM, ZZWMhad, WPhadWMWP, WPWMhadWP, 

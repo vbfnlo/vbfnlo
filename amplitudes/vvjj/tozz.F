@@ -12,7 +12,8 @@ c ------------------------------------------------------------
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
       integer lsign(3:6,4),ll,mu,nu,h
-      
+      logical debug
+      parameter (debug=.false.)
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=3,6) / -1, -1, -1, -1/  !h=1
@@ -20,10 +21,16 @@ c ------------------------------------------------------------
 	data (lsign(ll,3),ll=3,6) /  1,  1, -1, -1/  !h=3
 	data (lsign(ll,4),ll=3,6) /  1,  1,  1,  1/  !h=4
 	
+       
 	call WWtoZZ1(q1,q2,P,lsign(3,h),ww(0,0))
 	
-	! helicity combi nr.h is selected
-	
+!         if (debug) then
+!            print*, ww
+!         call WWtoZZ1_temp(q1,q2,P,lsign(3,h),ww(0,0))
+!           print*, ww
+! 	! helicity combi nr.h is selected
+! 	endif
+        
 	end
 		
 c ------------------------------------------------------------	
@@ -617,7 +624,7 @@ C
 C ARGUMENTS 
 C  
       integer idb
-      real*8 q(0:3), v(0:3,4), p(0:3,3:4)
+      real*8 q(0:3), v(0:3,2), p(0:3,3:4)
       complex*16 wll(0:3,0:3)
 C  
 C LOCAL VARIABLES 
@@ -645,15 +652,15 @@ C ----------
          do mu = 0,3
             q1(mu) = q(mu)
 	    q2(mu) = qu(mu)-q(mu)
-	    p(mu,3) = v(mu,3)
-	    p(mu,4) = v(mu,4)
+	    p(mu,3) = v(mu,1)
+	    p(mu,4) = v(mu,2)
          enddo
       elseif (idb.eq.2) then
          do mu = 0,3
             q2(mu) = q(mu)
             q1(mu) = qu(mu)-q(mu)
-	    p(mu,3) = v(mu,3)
-	    p(mu,4) = v(mu,4)
+	    p(mu,3) = v(mu,1)
+	    p(mu,4) = v(mu,2)
          enddo
       endif
 	
@@ -1344,7 +1351,6 @@ C ----------
 	 w(i,4) = lem(i)
 	 w(i,6) = lup(i)
 	 w(i,5) = lum(i)
-	 	
          w(i,8) = - zu(i)
        	enddo
       	do i = 5,6
@@ -2204,7 +2210,7 @@ c ------------------------------------------------------------
       IMPLICIT NONE
 
         integer idb
-        real*8 q(0:3), v(0:3,4)
+        real*8 q(0:3), v(0:3,2)
         complex*16 aa(0:3,0:3)
         complex*16 az(0:3,0:3)
         complex*16 za(0:3,0:3)
@@ -2247,7 +2253,7 @@ C
 C ARGUMENTS 
 C  
       integer idb
-      real*8 q(0:3), v(0:3,4), p(0:3,3:4)
+      real*8 q(0:3), v(0:3,2), p(0:3,3:4)
       complex*16 zz(0:3,0:3)
 C  
 C LOCAL VARIABLES 
@@ -2276,15 +2282,15 @@ C ----------
          do mu = 0,3
             q1(mu) = q(mu)
 	    q2(mu) = qu(mu)-q(mu)
-	    p(mu,3) = v(mu,3)
-	    p(mu,4) = v(mu,4)
+	    p(mu,3) = v(mu,1)
+	    p(mu,4) = v(mu,2)
          enddo
       elseif (idb.eq.2) then
          do mu = 0,3
             q2(mu) = q(mu)
             q1(mu) = qu(mu)-q(mu)
-	    p(mu,3) = v(mu,3)
-	    p(mu,4) = v(mu,4)
+	    p(mu,3) = v(mu,1)
+	    p(mu,4) = v(mu,2)
          enddo
       endif
  

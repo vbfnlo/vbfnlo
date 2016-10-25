@@ -35,13 +35,15 @@ c     (common block tagjetdef in cuts.inc)
       CASE(Hjj, Hjj_AA, AAjj, Hjj_mu, Hjj_tau, Hjj_bbar, Hjj_WW,
      &     Hjj_ZZ_ll, Hjj_ZZ_lnu, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj,
      &     WPWMjj, WPWPjj, WMWMjj, ZZjj_ll, ZZjj_lnu, WPZjj, WMZjj, 
-     &     WPAjj, WMAjj, HAjj, 
+     &     WPAjj, WMAjj, ZAjj, ZAjj_n, HAjj, 
      &     HAjj_AA, HAjj_mu, HAjj_tau, HAjj_bbar, HAjj_WW, 
      &     HAjj_ZZ_ll, HAjj_ZZ_lnu,
+     &     HHjj, HHjj_bbtau, HHjj_bbAA,
      &     GFHjj, GFHjj_AA, GFHjj_mu, GFHjj_tau, GFHjj_bbar,
      &     GFHjj_WW, GFHjj_ZZ_ll, GFHjj_ZZ_lnu, 
-     &     QCDWPWPjj,QCDWMWMjj,QCDWPZjj,QCDWMZjj,QCDZZjj_ll,QCDZZjj_lnu,
-     &     QCDWPjj, QCDWPAjj, QCDWMAjj,QCDWMjj, QCDZjj_l, QCDZjj_nu, 
+     &     QCDWPWPjj,QCDWMWMjj,QCDWPZjj,QCDWMZjj,QCDZZjj_ll,QCDZZjj_lnu,QCDAAjj,
+     &     QCDWPjj, QCDWPAjj, QCDWMAjj,QCDWMjj, QCDZjj_l,QCDZAjj_l,QCDZAjj_n,
+     &     QCDZjj_nu, QCDWPWMjj, 
      &     Hjjj, Hjjj_AA, Hjjj_mu,
      &     Hjjj_tau, Hjjj_bbar, Hjjj_WW, Hjjj_ZZ_ll, Hjjj_ZZ_lnu,
      &     WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj,
@@ -113,9 +115,10 @@ c leptons cuts
       call read_real("MLL_MIN",mllmin,15d0)
       call read_real("MLL_MAX",mllmax,14000d0)
       call read_logical("MLL_OSONLY",mllosonly,.true.)
+*      call read_logical("NEUTRINO_CUT",lneutrinoCut,.false.)
 *      call read_real("PT_IN_MIN", ptinmin, 10d0)
       call read_real("PTMISS_MIN", ptmiss_min, 0d0)
-
+*      call read_real("MZA_MIN", mza_min, 0d0)
 !      ! Cut on neutrino pT, default 0 to be compatible with old
 !      ! configuration files (which don't contain PT_IN_MIN)
 !      call read_real("PT_IN_MIN", ptinmin, 0d0)
@@ -141,6 +144,7 @@ c photon cuts
       call read_real("EFISOLCUT",eff_phopart,1d0)
       call read_real("MLG_MIN",mlAmin,0d0)
       call read_real("MLG_MAX",mlAmax,14000d0)
+*      call read_int("PHOTONHEL",photon_hel,0)
 *      call read_real("MT_MIN",MTmin,0d0)
 *      call read_real("MT_MAX",MTmax,14000d0)
 
@@ -161,7 +165,8 @@ c Jet veto cuts
       call read_real("YMAX_VETO",ymax_veto,4.5d0)
       call read_real("PTMIN_VETO",ptmin_veto,10d0)
 
-
+*      print *,"min m(ZA) (only for(ZAjj)   (M_ZA_MIN): ", mza_min
+      
 c semileptonic decay cuts
       if (semileptonic) then
         call read_int("SINGLE_DECAYJET",semilep_fatjet,0)
@@ -275,11 +280,13 @@ c print information on cuts
       print *,"minimum invariant dilepton mass        (MLL_MIN): ",mllmin
       print *,"maximum invariant dilepton mass        (MLL_MAX): ",mllmax
       print *,"m_ll cuts only on opposite-sign l   (MLL_OSONLY): ",mllosonly
+*      print *,"treat neutrino as lepton:         (NEUTRINO_CUT): ",lneutrinoCut
       print *,"maximum photon rapidity                (Y_G_MAX): ",ymax_g
       print "(A,5(G9.4e1))"," minimum photon pt       (PT_G_MIN):    ",(ptgmin(i), i=1,n_photon)
 *      print "(A,5(G9.4e1))"," maximum photon pt       (PT_G_MAX):    ",(ptgmax(i), i=1,n_photon)
       print *,"photon isolation cut                 (PHISOLCUT): ",isol_phopart
       print *,"efficiency of photon isolation cut   (EFISOLCUT): ",eff_phopart
+*      print *,"photon helicity                      (PHOTONHEL): ",photon_hel
       print *,"minimum invariant lepton-photon mass   (MLG_MIN): ",mlAmin
       print *,"maximum invariant lepton-photon mass   (MLG_MAX): ",mlAmax
       print *,"minimal missing transverse momentum (PTMISS_MIN): ",ptmiss_min
@@ -397,7 +404,6 @@ c     external functions
       tag1 = 0
       tag2 = 0
 
-
 c define tagging jets for VBF processes
       if (vbfprocess .or. semilepAlwaysVBFCuts) call DefineTaggingJets(jets(0,1,L), njets(L))
 
@@ -407,7 +413,6 @@ c call of function Basic_Cuts for all processes
      1                   njets(L), leptons(0,1,L), nl(L), 
      2                   invisible(0,1,L), ninv(L),
      3                   photons(0,1,L), nphotons(L), decayPartonsCombined(L) )
-
 
 c call of vbf_cuts only for vbf processes
       if ((vbfprocess .or. semilepAlwaysVBFCuts) .and. Cuts) then
@@ -577,7 +582,7 @@ c     input variables
       real*8 mom(0:3), vectorbosonmass
       logical fatDecayJet
 
-      logical pass_cuts, had_rec
+      logical pass_cuts, had_rec, ltemp
 
       double precision RSEPS
       external RSEPS
@@ -591,7 +596,8 @@ c     photon isolation stuff
 c pt-ordered leptons and photons
       double precision ptlepton(max_v)
       double precision ptphoton(max_v)
-
+      real*8 temp(0:7),mass2
+      external mass2
   
       logical ldebug
       parameter (ldebug=.false.)
@@ -732,12 +738,23 @@ c$$$!               print*,MT2, mla, MTmin, MTmax
 c$$$               pass_cuts=pass_cuts.and.(MT2.gt.MTmin**2).and.(MT2.le.MTmax**2)
 c$$$      endif
 
-! c...NEW photon isolation cut according to Frixione,PLB 429(1998),369
+!     c...NEW photon isolation cut according to Frixione,PLB 429(1998),369
+
+      ltemp=.true.
+!       print*
+!       print*
+!       print*
+!       print*,'cuts.F'
+!       print*, "nphotons",nphotons, "npartons",npartons
        do i=1, nphotons
          k=0
          do j=1, npartons
             delta(j)=RSEPS(photons(6,i),photons(7,i),partons(6,j),
      -           partons(7,j))
+!             print*,"j",j, npartons, delta(j)
+!             print*,"partons(6,j)",partons(6,j)
+!             print*,"partons(7,j)",partons(7,j)
+!             print*, "parton", partons(:,j)
             if (delta(j).lt.isol_phopart) then
                k=k+1
                dlist(k,i)=delta(j)
@@ -753,10 +770,14 @@ c$$$      endif
                   spt(k,i)=spt(k,i)+ptlist(kk,i)
                endif
             enddo
+!             ltemp=ltemp
             pass_cuts=pass_cuts
      &           .and.(spt(k,i).le.eff_phopart*photons(5,i)*flist(k,i))
+
          enddo
        enddo
+!          print*, "pass_cuts in cuts", ltemp,eff_phopart,isol_phopart
+!          print*
 
 
 
@@ -852,7 +873,24 @@ c... monojet case
 
       endif
 
+cfc      select case(procID)
+cfc      case(ZAjj,ZAjjjLO)
+cfc! m_za_min
+cfc      temp(:3) = leptons(:3,1)+leptons(:3,2)+photons(:3,1)
+cfc      temp(4) = mass2(temp(0))
+cfc      temp(4)=sqrt(temp(4))
+cfc      pass_cuts = pass_cuts .and. temp(4).ge.mza_min
+cfc      case(ZAjj_n,ZAjjjLO_n)
+cfc! m_za_min
+cfc      temp(:3) = invisible(:3,1)+invisible(:3,2)+photons(:3,1)
+cfc      temp(4) = mass2(temp(0))
+cfc      temp(4)=sqrt(temp(4))
+cfc      pass_cuts = pass_cuts .and. temp(4).ge.mza_min
+cfcc      if (.not.temp(4).ge.mza_min) print*, "pass_cuts2", temp(4)
+cfc      end select
 
+
+      
       BASIC_CUTS = pass_cuts
       
       RETURN
@@ -1071,6 +1109,7 @@ c     taken. In addition pt, y and phi information is calculated and stored.
 c*************************************************************************
       implicit none
 #include "global.inc"
+#include "cuts.inc"
       real*8 v(0:3,max_v,max_kin)
       real*8 leptons(0:8,max_v,max_kin)
       integer n_leptons(max_kin), Lmax
@@ -1091,6 +1130,10 @@ c     get leptons out of decay_particles
             if ( (abs(particle_IDs(i)).eq.11) ! check if it is a lepton
      &           .or.(abs(particle_IDs(i)).eq.13)
      &           .or.(abs(particle_IDS(i)).eq.15) ! taus!!
+cfc     &       .or.lneutrinoCut .and.(
+cfc     &               (abs(particle_IDs(i)).eq.12) ! check if it is a lepton
+cfc     &           .or.(abs(particle_IDs(i)).eq.14)
+cfc     &           .or.(abs(particle_IDS(i)).eq.16))
      &           ) then
                n_leptons(l)=n_leptons(l)+1
                do mu = 0,3      ! transfer to "leptons"
@@ -1172,6 +1215,7 @@ c     y and phi information is calculated and stored.
 c*************************************************************************
       implicit none
 #include "global.inc"
+#include "cuts.inc"
       real*8 v(0:3,max_v,max_kin)
       real*8 invisible(0:8,max_v,max_kin)
       integer n_invisible(max_kin), Lmax
@@ -1193,6 +1237,9 @@ c     get invisible particles out of decay_particles
             if ( (abs(particle_IDs(i)).eq.12) ! check if it is a neutrino
      &           .or.(abs(particle_IDs(i)).eq.14)
      &           .or.(abs(particle_IDS(i)).eq.16)
+cfc   if ( (.not.lneutrinoCut) .and.((abs(particle_IDs(i)).eq.12) ! check if it is a neutrino
+cfc     &           .or.(abs(particle_IDs(i)).eq.14)
+cfc     &           .or.(abs(particle_IDS(i)).eq.16))
      &           .or.(abs(particle_IDS(i)).eq.LSP)) then
                n_invisible(l)=n_invisible(l)+1
                do mu = 0,3      ! transfer to "invisible"

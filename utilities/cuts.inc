@@ -12,20 +12,25 @@
       double precision rgg_min, rgg_max, rjg_min, rlg_min, ymax_g
       double precision ptgmin,ptgmax, dely_jphot
       double precision isol_phopart, eff_phopart,ptinmin
-      double precision mllmin,mllmax,mlAmin, mlAmax, MTmax,MTmin
+      double precision mllmin,mllmax,mlAmin, mlAmax, MTmax,MTmin,mtwa_min,mza_min
       logical mllosonly
 
       common/jetdef/rjjmin,ymax_part,njet_min
       common/jetalgo/jetgenktp
 
       double precision eta_central, ptmin_tag_1, ptmin_tag_2, ptmin_central, semilep_v_mass_range
+      double precision gaugelimit
+      common /gaugelim/ gaugelimit
       integer semilep_fatjet, def_tagjet, semilep_reconst_v_had
       logical hard_central, semileptonic, decayPartonsCombined(max_kin), semilepAlwaysVBFCuts
 
       integer tag1,tag2
-      logical vbfprocess
+      logical vbfprocess, lneutrinoCut
+
+      common/tempNeutrinoCut/ lneutrinoCut
       
-      common/basiccuts/ptmin_def(max_jets), ymax_def, ptmiss_min, min_jets
+      common/basiccuts/ptmin_def(max_jets), ymax_def, ptmiss_min,mtwa_min,mza_min, min_jets
+
 
       common/photoncuts/isol_phopart, eff_phopart
 

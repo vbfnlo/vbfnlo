@@ -2,6 +2,15 @@
      -   b4,m,p1,p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result,result
      -   n)
 c ************************************************************************************
+c Author: Francisco Campanario
+c E-mail: francam@particle.uni-karlsruhe.de
+c************************************************************************************
+c************************************************************************************
+c    Declaration of variables 
+c************************************************************************************
+c***********************************************************************************
+
+c ************************************************************************************
 c determine the fermion looop
 c Note: No couplings are assigned
 c Note: To make it shorter in the promgram: mu_p2,...->mup2,... 
@@ -272,7 +281,7 @@ cc off-shell
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
        else
           print*,"D:Wrong momenta recusntraciont"
-          stop
+c          stop
        endif
 
           
@@ -281,8 +290,8 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
       do i=0,3
       if(abs(ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)).gt.1d-14) then
-      print*, "conv",ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)
-      stop
+c      print*, "conv",ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)
+!       stop
       endif
       enddo
 
@@ -290,25 +299,25 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
           do i=0,3
             if(abs(p1(i)-ptemp(i,1)).gt.1d-8) then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p1(",i,")=",p1(i)-ptemp(i,1)
-            stop
+!             stop
             endif
             enddo
              do i=0,3
                 if(abs(p2(i)-ptemp(i,2)).gt.1d-8)then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p2(",i,")=",p2(i)-ptemp(i,2)
-            stop
+!             stop
             endif
             enddo
              do i=0,3
                 if(abs(p3(i)-ptemp(i,3)).gt.1d-8)then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p3(",i,")=",p3(i)-ptemp(i,3)
-            stop
+!             stop
             endif
             enddo
              do i=0,3
                 if(abs(p4(i)-ptemp(i,4)).gt.1d-8)then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p4(",i,")=",p4(i)-ptemp(i,4)
-            stop
+!             stop
             endif
              enddo
 

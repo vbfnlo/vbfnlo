@@ -4,6 +4,8 @@ c Author: Francisco Campanario
 c E-mail: francam@particle.uni-karlsruhe.de
 c Modified:4/6/2012
 
+c hel = 66,67,76,77 for rr,rl,...
+c or 2*hel1 + hel2 -> 3,1,-1,-3
 
        subroutine PenBoxCrossT(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi
      &   _p2,psi_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,res
@@ -16,19 +18,19 @@ c Modified:4/6/2012
        integer comp,ngluon,posgluon,div,hel
        complex*16 result(3),resultn,resultborn
        
-       if(hel.eq.77) then
+       if(hel.eq.77.or.hel.eq.-3) then
 	call PenBoxCross77T(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi
      &   _p2,psi_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,res
      &   ultborn,Div)
-       elseif(hel.eq.67) then
+       elseif(hel.eq.67.or.hel.eq.1) then
 	call PenBoxCross67T(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi
      &   _p2,psi_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,res
      &   ultborn,Div)
-       elseif(hel.eq.76) then
+       elseif(hel.eq.76.or.hel.eq.-1) then
 	call PenBoxCross76T(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi
      &   _p2,psi_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,res
      &   ultborn,Div)
-       elseif(hel.eq.66) then
+       elseif(hel.eq.66.or.hel.eq.3) then
 	call PenBoxCross66T(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi
      &   _p2,psi_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,res
      &   ultborn,Div)

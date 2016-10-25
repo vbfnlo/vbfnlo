@@ -868,8 +868,8 @@ c calculate subprocess
 	    flav(id(1)) = 2*family*fsign(1)  ! up type ( or anti up)
 	    flav(id(3)) = (2*family-1)*fsign(3) 
 	  else 
-            flav(id(3)) = 2*family*fsign(1)  ! up type ( or anti up)
-            flav(id(1)) = (2*family-1)*fsign(3) 	    
+            flav(id(3)) = 2*family*fsign(3)  ! up type ( or anti up)
+            flav(id(1)) = (2*family-1)*fsign(1) 	    
 	  endif
 
 	  if (ldebug) then

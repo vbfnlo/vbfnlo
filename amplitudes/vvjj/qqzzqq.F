@@ -2532,7 +2532,7 @@ c
 c prerequisites for virtual corrections:
             if (ldebug) then	
 	       if (lpt.and.icount1.eq.0) then
-		   print*, "criterion chosen: mv5/mvc.gt.1d0"
+c		   print*, "criterion chosen: mv5/mvc.gt.1d0"
 	       endif !icount1
             endif
 

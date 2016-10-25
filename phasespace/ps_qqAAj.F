@@ -167,7 +167,7 @@ c
       PARAMETER (nrandl=10, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
       REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:4)
-      REAL*8 Pjet(0:3)
+      REAL*8 Pjet(0:3,N)
 
       REAL*8 RM2,RMG,RM2MIN,RM2MAX, S,YJMIN,YJMAX,PTC
       REAL*8 RM2MINX, RM2MAXX, M2MIN
@@ -250,11 +250,18 @@ c for LO/NLO we only need continuum, if FERMIONLOOP=2 or 3 (also) Higgs peak
       endif
 
 
-      IF(N.EQ.1) THEN ! 2 -> JET+Y
+      IF(N.GE.2) THEN ! 2 -> JETs+Y
+c generate 2 -> 2 process for k1 k2 -> Pjet q_Y from rd(4),rd(5),rd(6)
+         rf = rd(3)
+         if(.not. TwoToJetsPlusX(N,rd(4), rn, ecm, pTc, pY(4),
+     1           k1(0), k2(0), x1, x2, pY(0), pJet(0,1), W)) W=0
+
+         if (W.eq.0) return
+      ELSEIF(N.EQ.1) THEN ! 2 -> JET+Y
 c generate 2 -> 2 process for k1 k2 -> Pjet q_Y from rd(4),rd(5),rd(6)
          rf = rd(3)
          call TwoToJetPlusX(rd(4), rn, ecm, pTc, pY(4),
-     1           k1(0), k2(0), x1, x2, pY(0), pJet(0), W)
+     1           k1(0), k2(0), x1, x2, pY(0), pJet(0,1), W)
 
          if (W.eq.0) return
 
@@ -290,28 +297,33 @@ c -----------------------------------------------------
 
          print*, "--- momenta conservation ? ---"
          do mu=0,3
-            test = k1(mu)+k2(mu)-Pjet(mu)-q(mu,1)-q(mu,2)-q(mu,3)
+            test = k1(mu)+k2(mu)-sum(Pjet(mu,1:N))-q(mu,1)-q(mu,2)-q(mu,3)
             if (test.gt.1E-9) print*, test
             test = q(mu,1)-v(mu,1)-v(mu,2) 
             if (test.gt.1E-9) print*, test
-            test = k1(mu)+k2(mu)-Pjet(mu)-v(mu,1)-v(mu,2)
+            test = k1(mu)+k2(mu)-sum(Pjet(mu,1:N))-v(mu,1)-v(mu,2)
      &             -v(mu,3)-v(mu,4)
              if (test.gt.1E-9) print*, test
          enddo
          print*,"tau*s = (k1+k2)^2"
          test = tau*s - dotrr(k1,k1)-dotrr(k2,k2)-2*dotrr(k1,k2)
          print*, test
-         print*,"---tau*s = (q1 + q2 + q3 + pjet)^2 ?---"
+         print*,"---tau*s = (q1 + q2 + q3 + pjet)^2 ?--- "
          test = tau*s - dotrr(q(0,1),q(0,1)) - dotrr(q(0,2),q(0,2))
      &     - dotrr(q(0,3),q(0,3)) - 2*dotrr(q(0,1),q(0,2))
      &     - 2*dotrr(q(0,1),q(0,3)) - 2*dotrr(q(0,2),q(0,3))
-     &     - dotrr(Pjet(0),Pjet(0)) - 2*dotrr(Pjet(0),q(0,1))
-     &     - 2*dotrr(Pjet(0),q(0,2)) - 2*dotrr(Pjet(0),q(0,3))
+         do i=1,N
+         test = test
+     &     - dotrr(Pjet(0,i),Pjet(0,i)) - 2*dotrr(Pjet(0,i),q(0,1))
+     &     - 2*dotrr(Pjet(0,i),q(0,2)) - 2*dotrr(Pjet(0,i),q(0,3))
+         enddo
          print*, test
          print*, "--- mass equal to zero ? ---"
          print*,"p1^2 = ",dotrr(k1(0),k1(0))
          print*,"p2^2 = ",dotrr(k2(0),k2(0))
-         print*,"Pjet^2 = ",dotrr(Pjet(0),Pjet(0))
+         do i=1,N
+          print*,"Pjet^2 = ",dotrr(Pjet(0,i),Pjet(0,i))
+         enddo
          print*,"v1^2 = ",dotrr(v(0,1),v(0,1))
          print*,"v2^2 = ",dotrr(v(0,2),v(0,2))
          print*, "-----------------------"

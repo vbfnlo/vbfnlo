@@ -185,11 +185,15 @@ cccccccccccccccccccccccccccccccccccccc
        Complex*16 result_graph_Q(3),result_color_Q(2)
        real*8 resultgauge_Q(2)
        integer jtemp
+       logical gaugetrue
        logical wardidtest_Q(0:8),wardpAbe(2)
        common/wardpenNoAbe/wardpAbe
 
-       wardpAbe(1)=.false.
-       wardpAbe(2)=.false.
+       if(gauge.eq.1) then
+       gaugetrue=.true.
+       else
+       gaugetrue=.false.
+       endif
 
        musq=musqIn
        resultgauge(1)=1d9
@@ -210,6 +214,10 @@ c*******************************************************************************
        if(tdble.ne.tdble) then
           tdble=1d9
        endif   
+
+       if(gaugetrue) then
+       wardpAbe(1)=.false.
+       wardpAbe(2)=.false.
 
 c       print*,"Inside new"
        if(tdble.gt.GaugeAccuracyPenLnA) then
@@ -290,6 +298,7 @@ c          stop
 
 
 #endif
+       endif ! gaugetrue
        end
 
 

@@ -295,124 +295,84 @@ AC_SUBST(GSLLIBS)
 dnl #### LHAPDF ######
 AC_DEFUN([VBFNLO_CHECK_LHAPDF],
 [
-AC_MSG_CHECKING([for LHAPDF])
-HAS_LHAPDF="yes"
-LHAPDF_DIR=""
-LHAPDF_LIBDIR=""
-AC_ARG_WITH(LHAPDF,[  --with-LHAPDF=/path/to/LHAPDF/ or --without-LHAPDF to use internal PDF sets], [if test -n "$with_LHAPDF" -a "x$with_LHAPDF" != "xyes" -a "x$with_LHAPDF" != "xno"; then LHAPDF_DIR="$with_LHAPDF"; elif test "x$with_LHAPDF" = "xno"; then HAS_LHAPDF="no"; fi])
 
-if test -n "$LHAPDF_DIR"; then
-	if test "`uname -m`" = "x86_64" -a -d "$LHAPDF_DIR/lib64" -a -e "$LHAPDF_DIR/lib64/libLHAPDF.la" ; then
-		LHAPDF_LIBDIR=$LHAPDF_DIR/lib64
-	else
-		LHAPDF_LIBDIR=$LHAPDF_DIR/lib
-	fi
-fi
+AC_ARG_WITH(LHAPDF,
+			AC_HELP_STRING([--with-LHAPDF=DIR],[location of LHAPDF installation]),
+dnl			[  --with-LHAPDF=/path/to/LHAPDF/ or --without-LHAPDF to use internal PDF sets], 
+			[],
+			[with_LHAPDF=no])
 
-LHAPDF_LDFLAGS=""
-if test -n "$LHAPDF_LIBDIR"; then
-  if test -e $LHAPDF_LIBDIR/libLHAPDF.so -o -e $LHAPDF_LIBDIR/libLHAPDF.dylib
-  then
-    LHAPDF_LDFLAGS="-L$LHAPDF_LIBDIR -Wl,-rpath,$LHAPDF_LIBDIR"
-  else
-    HAS_LHAPDF="no"
-  fi
-fi
-
-LHAPDF_LIBS="-lLHAPDF"
-
-oldLIB="$LIBS"
-oldLDFLAGS="$LDFLAGS"
-
-if test "$HAS_LHAPDF" == "yes"; then
-dnl Now lets see if the libraries work properly
-  LIBS="$LIBS $LHAPDF_LIBS"
-  LDFLAGS="$LDFLAGS $LHAPDF_LDFLAGS"
-  AC_LANG_PUSH([C++])
-  AC_LINK_IFELSE([AC_LANG_PROGRAM([[extern "C" { void initpdf_(int&); }]],
-                                  [[int i = 1; initpdf_(i);]])], ,
-                                  HAS_LHAPDF="no")
-  AC_LANG_POP([C++])
-fi
-
-LIBS="$oldLIB"
-LDFLAGS="$oldLDFLAGS"
-
-LHAPDF_VERSION=""
-
-if test "$HAS_LHAPDF" == "yes"; then
-  AC_MSG_RESULT([yes])
-
-  AC_MSG_CHECKING([path to pdf sets])
-
-  dnl Try to get PDF path and check which version of LHAPDF is used
-  LHAPDF_PDFPATH=""
-  dnl  Try lhapdf-config
-  if test -x "$LHAPDF_DIR/bin/lhapdf-config"; then
-    dnl  get LHAPDF version
-    LHAPDF_VERSION=`$LHAPDF_DIR/bin/lhapdf-config --version`
-    LHAPDF_VERSION=${LHAPDF_VERSION:0:1}
-    if test "x$LHAPDF_VERSION" == "x6"; then
-      LHAPDF_PDFPATH=`$LHAPDF_DIR/bin/lhapdf-config --datadir`
-    else
-      LHAPDF_PDFPATH=`$LHAPDF_DIR/bin/lhapdf-config --pdfsets-path`
-    fi
-    if ! test -d "$LHAPDF_PDFPATH"; then
-      dnl  Try without final PDFsets directory
-      LHAPDF_PDFPATH="${LHAPDF_PDFPATH%PDFsets}"
-      if ! test -d "$LHAPDF_PDFPATH"; then
-        LHAPDF_PDFPATH=""
-      fi
-    fi
-  else
-    dnl if lhapdf-config is not present: assume LHAPDF version 5
-    LHAPDF_VERSION="5 (assumed)"
-  fi
-  dnl if lhapdf-config does not exist or did not give a valid path: try standard dirs
-  if test "x$LHAPDF_PDFPATH" == "x"; then
-    dnl  Try standard dir of LHAPDF 5
-    LHAPDF_PDFPATH="$LHAPDF_DIR/share/lhapdf/PDFsets"
-    if ! test -d "$LHAPDF_PDFPATH"; then
-    dnl  Try without final PDFsets directory
-      LHAPDF_PDFPATH="${LHAPDF_PDFPATH%PDFsets}"
-      if ! test -d "$LHAPDF_PDFPATH"; then
-        LHAPDF_PDFPATH=""
-      fi
-    fi
-    dnl  Try standard dir of LHAPDF 6
-    LHAPDF_PDFPATH="$LHAPDF_DIR/share/LHAPDF"
-    if ! test -d "$LHAPDF_PDFPATH"; then
-      LHAPDF_PDFPATH=""
-    else
-      LHAPDF_VERSION="6 (assumed)"
-    fi
-  fi
-
-  if test "x$LHAPDF_PDFPATH" == "x"; then
-    AC_MSG_RESULT([not found])
-    AC_WARN([Could not guess path to pdfs.])
-    AC_WARN([Set it explicitly via PDFPATH or in vbfnlo.dat!])
-  else
-    AC_MSG_RESULT([$LHAPDF_PDFPATH])
-  fi
-  dnl output LHAPDF version
-  AC_MSG_CHECKING([which LHAPDF version we are using])
-  AC_MSG_RESULT([$LHAPDF_VERSION])
-elif test "x$with_LHAPDF" == "xno" -o "x$with_LHAPDF" == "x"; then
-  AC_MSG_RESULT([not required])
+if test "x$with_LHAPDF" = "xno"; then
+	HAS_LHAPDF="no"
+	LHAPDF_DIR=""
+	LHAPDF_LDFLAGS=""
+	LHAPDF_LIBS=""
+	LHAPDF_PDFPATH=""
+	AC_MSG_CHECKING([for LHAPDF])
+	AC_MSG_RESULT([not required])
 else
-  AC_MSG_ERROR([LHAPDF was requested but the library was not found.
-    In case of LHAPDF version 6, the compatibility functions for FORTRAN are needed (compile LHAPDF with --enable-lhaglue).])
+	HAS_LHAPDF="yes"
+	if test "x$with_LHAPDF" = "xyes"; then
+		LHAPDF_DIR=""
+	else
+		LHAPDF_DIR=$with_LHAPDF
+	fi
+  
+	dnl search for the lhapdf-config script
+	if test -z "$LHAPDF_DIR"; then
+		dnl assume lhapdf-config in system path
+		AC_PATH_PROG(lhaconfig, lhapdf-config)
+	else
+		AC_PATH_PROG(lhaconfig, lhapdf-config, [""], ${LHAPDF_DIR}/bin)
+	fi
+
+	if test -z "${lhaconfig}"; then
+	    if test -z "$LHAPDF_DIR"; then
+			AC_MSG_ERROR([--with-lhapdf was given, but can't find the "lhapdf-config" program in PATH]);
+		else
+			AC_MSG_ERROR([--with-lhapdf was given, but can't find the "lhapdf-config" program in ${LHAPDF_DIR}/bin]);
+		fi
+	else
+	   dnl now see if LHAPDF is functional
+       AC_MSG_CHECKING([for LHAPDF])
+	   save_LDFLAGS="$LDFLAGS"
+	   save_LIBS="$LIBS"
+
+	   LDFLAGS="${LDFLAGS} -L`${lhaconfig} --libdir`"
+	   LIBS="${LIBS} -lLHAPDF"
+	   AC_LANG_PUSH(C++)
+	   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[extern "C" { void initpdf_(int&); }]], 
+						  [[int i = 1; initpdf_(i);]])], 
+						  [lhaok='yes'], [lhaok='no'])
+	   AC_LANG_POP()
+	   LDFLAGS="$save_LDFLAGS"
+	   LIBS="$save_LIBS"
+
+	   if test "${lhaok}" = "yes"; then
+		  LHAPDF_LDFLAGS="-L`${lhaconfig} --libdir`"
+		  LHAPDF_LIBS="-lLHAPDF"
+		  LHAPDF_PDFPATH="`${lhaconfig} --datadir`"
+		  LHAPDF_VERSION="`${lhaconfig} --version | cut -d. -f1`"
+		  LHAPDF_DIR="`${lhaconfig} --prefix`"
+		  AC_MSG_RESULT([yes])
+	   else
+		  AC_MSG_RESULT([no])
+		  AC_MSG_ERROR([--with-lhapdf was given, but can't find LHAPDF])
+	   fi
+	fi
+
+	dnl output LHAPDF version
+	AC_MSG_CHECKING([which LHAPDF version are we using])
+	AC_MSG_RESULT([$LHAPDF_VERSION])
 fi
+
 AC_SUBST(LHAPDF_DIR)
 AC_SUBST(LHAPDF_LIBS)
 AC_SUBST(LHAPDF_LDFLAGS)
 AC_SUBST(LHAPDF_PDFPATH)
 AM_CONDITIONAL([WITH_LHAPDF], [test "x$HAS_LHAPDF" == "xyes"])
-LHAPDF_VERSION=${LHAPDF_VERSION:0:1}
 AM_CONDITIONAL([WITH_LHAPDF_6], [test "x$LHAPDF_VERSION" == "x6"])
 ])
-
 
 dnl #### HEPMC ######
 AC_DEFUN([VBFNLO_CHECK_HEPMC],

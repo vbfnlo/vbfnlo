@@ -1,3 +1,4 @@
+
        subroutine PenEvenGSim_QUAD(cpl,MM1,MM3,MM4,p1,p2,p3,p4,p5, mup1, mu
      -   p2,mup3,mup4,mup5,musq,comp,result)
 c ************************************************************************************
@@ -170,7 +171,7 @@ ccccccccccccccccccccc For QUAD precission ccccccccccccccccccccccccc
      &                     tmass, bmass, lmass, cmass
       common /COUPL_MASS/  hmass, wmass, zmass, amass,
      &                     tmass, bmass, lmass, cmass
-
+      integer numberz
        M1_QUAD=MM1
        M3_QUAD=MM3
        M4_QUAD=MM4
@@ -223,21 +224,25 @@ cfc        do i=1,5
 cfc          print*,"pi",i, psq(i)
 cfc        enddo
 cfc        print*, "ZMAS*ZAMS", ZMASS*ZMASS
-
+       numberZ=0
 cccccccc Identify the Z cccccccccccccccccccccccc
        j1=0
        do i=1,5
        if(j1.eq.0) then
        if(abs(psq(i)/(ZMASS*ZMASS)-1d0).lt.1d-5) then
         j1=i
+        numberz=numberz+1
        endif
        else
        if(abs(psq(i)/(ZMASS*ZMASS)-1d0).lt.1d-5) then
         j2=i
+        numberz=numberz+1
        endif
        endif
        enddo
 
+c       print*, "number Z", numberZ
+       if(NUMBERZ.eq.2) then
 ccccccccccccccccccccccccccccccccccc
 c first Z
 
@@ -515,10 +520,63 @@ c j4
 
 
 
+ 
+       elseif(NUMBERZ.eq.0.or.numberz.eq.1) then
+
+        do jtemp=1,5
+       if(psq(jtemp).le.10d-7) THEN 
+             J3=JTEMP
+           if (ptemp(0,jtemp).ge.0d0) then
+           ptemp(0,jtemp)=SQRT(
+     &                     +ptemp(1,jtemp)*ptemp(1,jtemp)+
+     -                      ptemp(2,jtemp)*ptemp(2,jtemp)+
+     -                      ptemp(3,jtemp)*ptemp(3,jtemp))
+           else
+           ptemp(0,jtemp)=-SQRT(
+     &                     +ptemp(1,jtemp)*ptemp(1,jtemp)+
+     -                      ptemp(2,jtemp)*ptemp(2,jtemp)+
+     -                      ptemp(3,jtemp)*ptemp(3,jtemp))
+           endif
+   
+      else
+         j4=jtemp
+      ENDIF
+    
+      ENDDO
+cc off-shell 
+       do i=0,3
+       ptemp(i,j4)=0q0
+       do jtemp=1,5
+       if (jtemp.ne.j4) then
+       ptemp(i,j4)=-ptemp(i,jtemp)+ptemp(i,j4)
+       endif
+       enddo
+       enddo
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+       else
+          print*,"D:Wrong momenta recusntraciont"
+          print*, "number of Z", NUMBERZ
+          do i=1,4
+          print*, "psq particle ", i,"is",  psq(i)
+          enddo
+c          stop
+
+      do i=0,3
+      print*, "conv",ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)
+            write(*,'(A3,I1,A2,E25.16,E25.16)') "p1(",i,")=",p1(i)-ptemp(i,1)
+            write(*,'(A3,I1,A2,E25.16,E25.16)') "p2(",i,")=",p2(i)-ptemp(i,2)
+            write(*,'(A3,I1,A2,E25.16,E25.16)') "p3(",i,")=",p3(i)-ptemp(i,3)
+            write(*,'(A3,I1,A2,E25.16,E25.16)') "p4(",i,")=",p4(i)-ptemp(i,4)
+             enddo
+
+       endif
+
+
+
       do i=0,3
       if(abs(ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)+ptemp(i,5)).gt.1d-14) then
       print*, "conv",ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)+ptemp(i,5)
-      stop
+!       stop
       endif
       enddo
 
@@ -526,34 +584,34 @@ c j4
           do i=0,3
             if(abs(p1(i)-ptemp(i,1)).gt.1d-8) then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p1(",i,")=",p1(i)-ptemp(i,1)
-            stop
+!             stop
             endif
             enddo
              do i=0,3
                 if(abs(p2(i)-ptemp(i,2)).gt.1d-8)then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p2(",i,")=",p2(i)-ptemp(i,2)
-            stop
+!             stop
             endif
             enddo
              do i=0,3
                 if(abs(p3(i)-ptemp(i,3)).gt.1d-8)then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p3(",i,")=",p3(i)-ptemp(i,3)
-            stop
+!             stop
             endif
             enddo
              do i=0,3
                 if(abs(p4(i)-ptemp(i,4)).gt.1d-8)then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p4(",i,")=",p4(i)-ptemp(i,4)
-            stop
+!             stop
             endif
              enddo
              do i=0,3
                 if(abs(p5(i)-ptemp(i,5)).gt.1d-8)then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p5(",i,")=",p5(i)-ptemp(i,5)
-            stop
+!             stop
             endif
            enddo
- 
+
 
 c       pause
 cfC
@@ -710,16 +768,16 @@ cfC
       p5_QUAD(i)=ptemp(i,5)
 
       enddo
-c$$$      print*, 'p1QUAD',p1_QUAD
-c$$$      print*, 'p2QUAD',p2_QUAD
-c$$$      print*, 'p3QUAD',p3_QUAD
-c$$$      print*, 'p4QUAD',p4_QUAD
-c$$$      print*, 'p5QUAD',p5_QUAD
-c$$$c$$$      print*, 'p6QUAD',p6_QUAD
-c$$$      Print*, 'Conser',(p1_QUAD(i)+p2_QUAD(i)+p3_QUAD(i)+
-c$$$     -   p4_QUAD(i)+p5_QUAD(i),i=0,3)
-c$$$      Print*, 'Conser',(p1(i)+p2(i)+p3(i)+
-c$$$     -   p4(i)+p5(i)+p6(i),i=0,3)
+cfc      print*, 'p1QUAD',p1_QUAD
+cfc      print*, 'p2QUAD',p2_QUAD
+cfc      print*, 'p3QUAD',p3_QUAD
+cfc      print*, 'p4QUAD',p4_QUAD
+cfc      print*, 'p5QUAD',p5_QUAD
+cfcc$$$      print*, 'p6QUAD',p6_QUAD
+cfc      Print*, 'Conser',(p1_QUAD(i)+p2_QUAD(i)+p3_QUAD(i)+
+cfc     -   p4_QUAD(i)+p5_QUAD(i),i=0,3)
+cfc      Print*, 'Conser',(p1(i)+p2(i)+p3(i)+
+cfc     -   p4(i)+p5(i),i=0,3)
 
        p1sq_QUAD = dotrr_QUAD(p1_QUAD,p1_QUAD)
        p1p2_QUAD = dotrr_QUAD(p1_QUAD,p2_QUAD)

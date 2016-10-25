@@ -419,29 +419,52 @@ c local variables, external functions etc.
       external dotrr, psumsq
       double precision pi,pi2o3
       parameter (pi=3.14159 26535 89793d0,pi2o3=pi**2/3d0)
+      double precision k1sq,k2sq
+      double complex D0fin,C0fin,B0fin
+      external D0fin,C0fin,B0fin
 c
       sc = -2*dotrr(k1,k2)
       tc = psumsq(k2,q2)
       q1sqc = dotrr(q1,q1)
       q2sqc = dotrr(q2,q2)
+
 c
 c now determine the required B0, C0 and D0 functions
 c D0 = D0t(s,t,q1sq,q2sq) = D0t(s,t,q2sq,q1sq)
-      D0c = D0t(sc,tc,q2sqc,q1sqc)
-c
+c      D0c = D0t(sc,tc,q2sqc,q1sqc)
+c      Print*, "D0c", D0c
+      D0c = D0fin(tc,sc,0d0,q2sqc,q1sqc,0d0,-sc)
+c     print*, "D0_general", D0fin(tc,sc,0d0,q2sqc,q1sqc,0d0,-sc)/D0c
+c     
 c C0123 = C0(0,q2sq,t), C0124 = C0(0,s,0), C0134 = C0(t,q1sq,0),
 c C0234 = C0(q2sq,q1sq,s)
-      C0124 = C0t(0d0,sc,0d0,-sc)
-      C0234 = C0t(q2sqc,q1sqc,sc,-sc)
-      C0123 = C0t(0d0,q2sqc,tc,-sc)
-      C0134 = C0t(tc,q1sqc,0d0,-sc)
+c      C0124 =    C0t(0d0,sc,0d0,-sc)
+      C0124 = -C0fin(0d0,sc,0d0,-sc)
+c      print*, "C0124", C0fin(0d0,sc,0d0,-sc)/C0124
+c      C0234 =    C0t(q2sqc,q1sqc,sc,-sc)
+      C0234=  -C0fin(q2sqc,q1sqc,sc,-sc)
+c      print*, "C0234", C0fin(q2sqc,q1sqc,sc,-sc)/C0234
+c      C0123 =   C0t(0d0,q2sqc,tc,-sc)
+      c0123 =-C0fin(0d0,q2sqc,tc,-sc)
+c      print*, "C0123", C0fin(0d0,q2sqc,tc,-sc)/C0123
+c      C0134 =    C0t(tc,q1sqc,0d0,-sc)
+      C0134 = -C0fin(tc,q1sqc,0d0,-sc)
+c      print*, "C0134", C0fin(tc,q1sqc,0d0,-sc)/C0134
 c
 c and now the B0 functions: B0t(q1sq), B0t(q2sq), B0t(t)
 c Note: B0t(s,musq=s) = 2
-      B0aq1 = B0t(q1sqc,-sc)
-      B0aq2 = B0t(q2sqc,-sc)
-      B0at  = B0t(tc,-sc)
-      B0as  = B0t(sc,-sc)
+c      B0aq1 =   B0t(q1sqc,-sc)
+      B0aq1 = B0fin(q1sqc,-sc)
+c      print*, "B0aq1 ",B0fin(q1sqc,-sc)/B0aq1
+c      B0aq2 =   B0t(q2sqc,-sc)
+      B0aq2 = B0fin(q2sqc,-sc)
+c      print*, "B0aq2 ",B0fin(q2sqc,-sc)/B0aq2
+c      B0at  =   B0t(tc,-sc)
+      B0at  = B0fin(tc,-sc)
+c      print*, "B0at ",B0fin(tc,-sc)/B0at
+c      B0as  =   B0t(sc,-sc)
+      B0as  = B0fin(sc,-sc)
+c      print*, "B0at ",B0fin(tc,-sc)/B0at
 c
 c Now everything is ready to calculate the C_ij and D_ij functions
       B0a(1) = 0

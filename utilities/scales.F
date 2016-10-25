@@ -71,13 +71,13 @@ c dynamic scale = momentum transfer of W/Z
       CASE(1)
          SELECT CASE(procID)
          CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, Hjj_WW, Hjj_ZZ_ll,
-     1        Hjj_ZZ_lnu, HHjj, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
+     1        Hjj_ZZ_lnu, HHjj, HHjj_bbtau, HHjj_bbAA, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
      2        ZZjj_lnu, WPZjj, WMZjj, HAjj, HAjj_AA, HAjj_mu, HAjj_tau, 
      3        HAjj_bbar, HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu, AAjj, WPWPjj, 
      4        WMWMjj, Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu, 
      5        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
      6        Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad, WPhadWPjj, WMhadWMjj,
-     7        WPAjj, WMAjj)
+     7        WPAjj, WMAjj, ZAjj, ZAjj_n)
             print*,"Dynamical factorization scale chosen:"
             print*,"        momentum transfer of W/Z  "
          CASE DEFAULT
@@ -90,14 +90,14 @@ c dynamic scale = min(pt_j)
       CASE(2)
          SELECT CASE(procID)
          CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, Hjj_WW, Hjj_ZZ_ll,
-     1        Hjj_ZZ_lnu, HHjj, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
+     1        Hjj_ZZ_lnu, HHjj, HHjj_bbtau, HHjj_bbAA, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
      2        ZZjj_lnu, Hjjj, Hjjj_AA, Hjjj_mu, Hjjj_tau, Hjjj_bbar, Hjjj_WW, 
      3        Hjjj_ZZ_ll,Hjjj_ZZ_lnu, WPZjj, WMZjj,WPAAj, WMAAj, HAjj, HAjj_AA, HAjj_mu,
      4        HAjj_tau, HAjj_bbar, HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu,
      5        WPWPjj,WMWMjj,AAjj,
      6        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
      7        Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad, WPhadWPjj, WMhadWMjj, 
-     8        Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu,WPAjj, WMAjj)
+     8        Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu, WPAjj, WMAjj, ZAjj, ZAjj_n)
 
 
             print*,"Dynamical factorization scale chosen:"
@@ -130,7 +130,7 @@ c dynamic scale = invariant primary boson mass
      6     )       
             print*,"Dynamical factorization scale chosen:"
             print*,"      invariant VV mass "
-         CASE(ZZWP, ZZWM, WWZ, WWWP, WWWM, ZZZ, WWA, ZZA, WPZA, WMZA,
+         CASE(ZZWP, ZZWM, WWZ, WWWP, WWWM, ZZZ, WWA, ZZA, ZZnA, WPZA, WMZA,
      1        WPAA, WMAA, ZAA,ZnAA, AAA, WPAAj, WMAAj,
      2        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, 
      3        ZZWMhad, WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
@@ -165,7 +165,7 @@ c constant scale = higgs mass
 c dynamic scale = minimal ET
       CASE(7)
          SELECT CASE(procID)
-         CASE(WW, GFWW, WWZ, ZZWP, ZZWM, WWWP, WWWM, ZZZ, WWA, ZZA, WPZA, 
+         CASE(WW, GFWW, WWZ, ZZWP, ZZWM, WWWP, WWWM, ZZZ, WWA, ZZA, ZZnA, WPZA, 
      -        WMZA, WPAA, WMAA, ZAA, ZnAA, AAA, WPAAj, WMAAj,
      -        WPA,WMA,WPZ,WMZ,ZZ,GFZZ,ZA,GFZA,AA,GFAA,
      &        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
@@ -196,8 +196,9 @@ c dynamic scale = minimal ET
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(8)
          SELECT CASE(procID)
-         CASE( QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,
-     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu)
+         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,
+     &        QCDZAjj_l,QCDZAjj_n, ZAjj, ZAjj_n)
             print*,"Dynamical factorization scale chosen:"
             print*,"      mu_F = ( sum(pT partons) + sum( ET V ) )/2 "
        CASE DEFAULT
@@ -209,8 +210,9 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
 c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
       CASE(9)
          SELECT CASE(procID)
-         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,
-     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu)
+         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n,
+     2        ZAjj, ZAjj_n)
             print*,"Dynamical factorization scale chosen:"
             print*,"      mu_F = ( sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) )/2"
             print*,"( see arXiv 1311.6738 ) "
@@ -223,8 +225,9 @@ c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(10)
          SELECT CASE(procID)
-         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,
-     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu)
+         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n,
+     2         ZAjj, ZAjj_n)
             print*,"Dynamical factorization scale chosen:"
             print*,"      mu_F = ( ET(jj) + ET(VV) )/2"
          CASE DEFAULT
@@ -232,7 +235,7 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
      1            id_muf = ",id_muf
             STOP
          END SELECT
-         
+
 
 
       CASE DEFAULT
@@ -258,13 +261,13 @@ c dynamic scale = momentum transfer of W/Z
       CASE(1)
          SELECT CASE(procID)
          CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, Hjj_WW, Hjj_ZZ_ll,
-     1        Hjj_ZZ_lnu, HHjj, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
+     1        Hjj_ZZ_lnu, HHjj, HHjj_bbtau, HHjj_bbAA, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
      2        ZZjj_lnu, WPZjj, WMZjj, HAjj, HAjj_AA, HAjj_mu, HAjj_tau, 
      3        HAjj_bbar, HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu, AAjj, WPWPjj, 
      4        WMWMjj, Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu, 
      5        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
      6        Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad, WPhadWPjj, WMhadWMjj,
-     7        WPAjj, WMAjj)
+     7        WPAjj, WMAjj, ZAjj, ZAjj_n)
             print*,"Dynamical value for alphas chosen:"
             print*,"alphas = alpha(momentum transfer of W/Z)"   
          CASE DEFAULT
@@ -277,14 +280,14 @@ c dynamic scale alpha(min(pt_j))
       CASE(2)
          SELECT CASE(procID)
          CASE(Hjj, Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, Hjj_WW, Hjj_ZZ_ll,
-     1        Hjj_ZZ_lnu, HHjj, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
+     1        Hjj_ZZ_lnu, HHjj, HHjj_bbtau, HHjj_bbAA, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
      2        ZZjj_lnu, Hjjj, Hjjj_AA, Hjjj_mu, Hjjj_tau, Hjjj_bbar, Hjjj_WW, 
      3        Hjjj_ZZ_ll,Hjjj_ZZ_lnu, WPZjj, WMZjj, WPAAj, WMAAj, HAjj, HAjj_AA, HAjj_mu, 
      4        HAjj_tau, HAjj_bbar, HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu, AAjj,
      5        WPWPjj, WMWMjj, Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu, 
      6        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
      7        Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad, WPhadWPjj, WMhadWMjj,
-     8        WPAjj, WMAjj)
+     8        WPAjj, WMAjj, ZAjj,ZAjj_n)
 
 
             print*,"Dynamical scale for alphas chosen:"
@@ -316,7 +319,7 @@ c dynamic scale = invariant VV mass
      &        WPAJ, WMAJ, WPZJ, WMZJ)
             print*,"Dynamical value for alphas chosen:"
             print*,"alphas = alpha(invariant VV mass)"
-         CASE(ZZWP, ZZWM, WWZ, WWWP, WWWM, ZZZ, WWA, ZZA, WPZA, WMZA,
+         CASE(ZZWP, ZZWM, WWZ, WWWP, WWWM, ZZZ, WWA, ZZA, ZZnA, WPZA, WMZA,
      1        WPAA, WMAA, ZAA, ZnAA,AAA, WPAAj, WMAAj,
      2        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, 
      3        ZZWMhad, WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
@@ -354,7 +357,7 @@ c constant scale = higgs mass
 c dynamic scale = minimal ET
       CASE(7)
          SELECT CASE(procID)
-         CASE(WW, GFWW, WWZ, ZZWP, ZZWM, WWWP, WWWM, ZZZ, WWA, ZZA, WPZA, 
+         CASE(WW, GFWW, WWZ, ZZWP, ZZWM, WWWP, WWWM, ZZZ, WWA, ZZA, ZZnA, WPZA, 
      -        WMZA, WPAA, WMAA, ZAA, ZnAA, AAA, WPAAj, WMAAj, 
      -         WPA,WMA,WPZ,WMZ, ZZ, GFZZ, ZA, GFZA, AA, GFAA,
      &        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
@@ -383,8 +386,9 @@ c dynamic scale = minimal ET
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(8)
          SELECT CASE(procID)
-         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,
-     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu)
+         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,
+     &        QCDZAjj_l,QCDZAjj_n, ZAjj, ZAjj_n)
             print*,"Dynamical renormalization scale chosen:"
             print*,"      mu_R = ( sum(pT partons) + sum( ET V ) )/2 "
          CASE DEFAULT
@@ -396,8 +400,10 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
 c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
       CASE(9)
          SELECT CASE(procID)
-         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,
-     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu)
+         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n,
+     &        ZAjj,ZAjj_n)
+
             print*,"Dynamical renormalization scale chosen:"
             print*,"      mu_R = ( sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) )/2"
             print*,"( see arXiv 1311.6738 ) "
@@ -410,8 +416,10 @@ c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(10)
          SELECT CASE(procID)
-         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,
-     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu)
+         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+     1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n
+     2        ,ZAjj,ZAjj_n)
+
             print*,"Dynamical renormalization scale chosen:"
             print*,"      mu_R = ( ET(jj) + ET(VV) )/2"
          CASE DEFAULT
@@ -493,10 +501,10 @@ c VBF: Hjj, Vjj, VVjj
      1     Hjj_ZZ_lnu, Ajj, Zjj_l, Zjj_nu, WPjj, WMjj, WPWMjj, ZZjj_ll,
      2     ZZjj_lnu, WPZjj, WMZjj, HAjj, HAjj_AA, HAjj_mu, HAjj_tau, 
      3     HAjj_bbar, HAjj_WW, HAjj_ZZ_ll, HAjj_ZZ_lnu, AAjj,WPWPjj,
-     4     WMWMjj, HHjj, Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu, 
+     4     WMWMjj, HHjj, HHjj_bbtau, HHjj_bbAA, Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu, 
      5     WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
      6     Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad, WPhadWPjj, WMhadWMjj,
-     7     WPAjj, WMAjj)
+     7     WPAjj, WMAjj, ZAjj, ZAjj_n)
           call calcVBFscales(p, v, jets, njets, leptons, nl, photons, 
      1                                            nphotons, 3, nlo)
 
@@ -522,7 +530,7 @@ c including WH, WHj and W, Wj
           call calcVXjScales(p, v, jets, njets, leptons, nl, photons, nphotons, nlo, Lmax)
 
 c TRIBOSON
-      CASE(WWZ, ZZZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, WPZA, WMZA,
+      CASE(WWZ, ZZZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, ZZnA, WPZA, WMZA,
      1        WPAA, WMAA, ZAA, ZnAA, AAA,
      2        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, 
      3        ZZWMhad, WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
@@ -539,8 +547,8 @@ c Gluon fusion
          call calcGGFScales(p)
 
 c QCD induced processes
-      CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,
-     1 QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu)
+      CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+     1 QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n)
          call calcQCDscales(p, v, jets, njets, leptons, nl, photons, 
      1                                            nphotons, Lmax, nlo)
 
@@ -591,8 +599,8 @@ c     input variables
 
       real*8 q12(0:4,max_kin), q34(0:4,max_kin), qsq, qsq2, pt(max_jets), exp
       integer L, mu, i
-      real*8 alphas5,mass2
-      external alphas5,mass2
+      real*8 alphas5,mass2,temp,transverseEnergy,tempvec(0:3),y12
+      external alphas5,mass2,transverseEnergy
 
 
 c----------------------------      
@@ -638,6 +646,68 @@ c constant scale = higgs mass
             mufsq(2,L) = qsq
          enddo
 
+         
+c HT/2 HT = sum(pT partons) + sum( ET V )
+      CASE(8)
+          do L=1,Lmax
+            temp=0d0
+            do i = 1,n_p ! sum over parton pt
+              temp = temp + sqrt(p(1,i,L)*p(1,i,L) + p(2,i,L)*p(2,i,L))
+            enddo
+            do i = 1,nphotons(L) ! sum over photon pt
+              temp = temp + photons(5,i,L)
+            enddo
+            do i = 1,n_v-nphotons(L),2 ! sum over lepton pairs
+              tempvec(:)= v(:,i,L) + v(:,i+1,L)
+              temp = temp + transverseEnergy(tempvec)
+            enddo
+            
+            temp=temp/2d0*xif
+            temp = temp**2
+            mufsq(1,L) = temp
+            mufsq(2,L) = temp
+         enddo
+
+c sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
+      CASE(9)
+          do L=1,Lmax
+            temp=0d0
+            y12 = 0.5d0*(jets(6,1,L)+jets(6,2,L)) ! avg rapidity of two hardest jets
+            do i = 1,njets(L) ! sum over jets
+              temp = temp + jets(5,i,L)*exp(abs(jets(6,i,L)-y12))
+            enddo
+            do i = 1,nphotons(L) ! sum over photon pt
+              temp = temp + photons(5,i,L)
+            enddo
+            do i = 1,n_v-nphotons(L),2 ! sum over lepton pairs
+              tempvec(:)= v(:,i,L) + v(:,i+1,L)
+              temp = temp + transverseEnergy(tempvec)
+            enddo
+            
+            temp=temp/2d0*xif
+            temp = temp**2
+            mufsq(1,L) = temp
+            mufsq(2,L) = temp
+         enddo
+
+
+c E_T(jj) + E_T(VV)
+      CASE(10)
+          do L=1,Lmax
+            tempvec = jets(0:3,1,L) + jets(0:3,2,L)
+            temp = transverseEnergy(tempvec) 
+            
+            tempvec=0d0
+            do i=1,n_v 
+              tempvec = tempvec + v(0:3,i,L)
+            enddo
+            temp = temp + transverseEnergy(tempvec)
+            
+            temp=temp/2d0*xif
+            temp = temp**2
+            mufsq(1,L) = temp
+            mufsq(2,L) = temp
+         enddo
 
 
       CASE DEFAULT
@@ -712,7 +782,95 @@ c constant scale = higgs mass
             als(1,L) = als(1,1)
             als(2,L) = als(1,1)
          enddo
+         
+c HT/2 HT = sum(pT partons) + sum( ET V )
+      CASE(8)
+          do L=1,Lmax
+           if(Njets(L).ge.2) then
+            temp=0d0
+            do i = 1,n_p ! sum over parton pt
+              temp = temp + sqrt(p(1,i,L)*p(1,i,L) + p(2,i,L)*p(2,i,L))
+            enddo
+            do i = 1,nphotons(L) ! sum over photon pt
+              temp = temp + photons(5,i,L)
+            enddo
+            do i = 1,n_v-nphotons(L),2 ! sum over lepton pairs
+              tempvec(:)= v(:,i,L) + v(:,i+1,L)
+              temp = temp + transverseEnergy(tempvec)
+            enddo
+            
+            temp=temp/2d0*xir
+            temp = temp**2
+            mursq(1,L) = temp
+            if(nlo.eq.0) then
+              als(1,L) = alphas5(mursq(1,L),0)
+            else
+              als(1,L) = alphas5(mursq(1,L),1)
+            endif
+           else
+            als(1,L) = 0d0
+           endif
+           als(2,L) = als(1,L)
+         enddo
 
+c sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
+      CASE(9)
+          do L=1,Lmax
+           if(Njets(L).ge.2) then
+            temp=0d0
+            y12 = 0.5d0*(jets(6,1,L)+jets(6,2,L)) ! avg rapidity of two hardest jets
+            do i = 1,njets(L) ! sum over jets
+              temp = temp + jets(5,i,L)*exp(abs(jets(6,i,L)-y12))
+            enddo
+            do i = 1,nphotons(L) ! sum over photon pt
+              temp = temp + photons(5,i,L)
+            enddo
+            do i = 1,n_v-nphotons(L),2 ! sum over lepton pairs
+              tempvec(:)= v(:,i,L) + v(:,i+1,L)
+              temp = temp + transverseEnergy(tempvec)
+            enddo
+            
+            temp=temp/2d0*xir
+            temp = temp**2
+            mursq(1,L) = temp
+            if(nlo.eq.0) then
+              als(1,L) = alphas5(mursq(1,L),0)
+            else
+              als(1,L) = alphas5(mursq(1,L),1)
+            endif
+           else
+            als(1,L) = 0d0
+           endif
+           als(2,L) = als(1,L)
+         enddo
+
+
+c E_T(jj) + E_T(VV)
+      CASE(10)
+          do L=1,Lmax
+           if(Njets(L).ge.2) then
+            tempvec = jets(0:3,1,L) + jets(0:3,2,L)
+            temp = transverseEnergy(tempvec) 
+            
+            tempvec=0d0
+            do i=1,n_v 
+              tempvec = tempvec + v(0:3,i,L)
+            enddo
+            temp = temp + transverseEnergy(tempvec)
+            
+            temp=temp/2d0*xir
+            temp = temp**2
+            mursq(1,L) = temp
+            if(nlo.eq.0) then
+              als(1,L) = alphas5(mursq(1,L),0)
+            else
+              als(1,L) = alphas5(mursq(1,L),1)
+            endif
+           else
+            als(1,L) = 0d0
+           endif
+           als(2,L) = als(1,L)
+         enddo
 
 
 
@@ -1051,7 +1209,6 @@ c----------------------------
 c----------------------------      
 c   renormalization scale
 c----------------------------      
-
       call CalcVXjScale_helper(p, v, jets, njets, leptons, nl, photons, nphotons, nlo, lmax, xir, id_mur, mur_user, .true., qsq)
 
       mursq(1,1:lmax) = qsq(1:lmax)
@@ -1269,8 +1426,9 @@ c     input variables
       integer Lmax, njets(max_kin), nl(max_kin), nphotons(max_kin), nlo
       
       integer L,i,mu,j
-      real*8 tempvec(0:3),y12
+      real*8 tempvec(0:3),y12, temp2
       real*8 transverseEnergy
+      external transverseEnergy
       real*8 temp,alphas5,mass2,temp8(0:8),mjj2
       external alphas5,mass2,mjj2
       
@@ -1356,6 +1514,8 @@ c E_T(jj) + E_T(VV)
             mufsq(1,L) = temp
             mufsq(2,L) = temp
          enddo
+
+
 
 
       end select

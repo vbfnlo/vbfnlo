@@ -1,14 +1,29 @@
    
- -----------------------------------------------------
- VBFNLO, version 2.7.99 svn 6122
+ -----------------------------------------------------------------
+ VBFNLO, version 2.7.1 beta1 svn 7545
  Comput. Phys. Commun. 180 (2009) 1661 [arXiv:0811.4559 [hep-ph]]
- arXiV: 1107.4038, arXiV: 1207.4975
- http://www.itp.kit.edu/~vbfnloweb/
- -----------------------------------------------------
-   
-   
+ arXiv:1107.4038, arXiv:1207.4975, arXiv:1404.3940
+ http://www.itp.kit.edu/vbfnlo
+ -----------------------------------------------------------------
+ Process-specific references (please cite as well if appropriate):
+ F. Campanario, M. Kerner, Le Duc Ninh, D. Zeppenfeld
+ Phys.Rev.Lett. 111 (2013) 052003, e-Print: arXiv:1305.1623
  
- TIME=        2014           2          23          60           2          56          32         300
+ -----------------------------------------------------------------
+   
+   
+   
+ Initialising LoopTools ..
+   
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
   
         Information on global parameters
  -----------------------------------------------
@@ -44,7 +59,6 @@
  -----------------------------------------------
  
   pp -> W- Z jj -> l+ l- l- vl~ jj
- 
  
  QCD induced W- Z + 2 jets production with fully leptonic decay.
  Process is implemented at LO and NLO QCD.
@@ -197,32 +211,30 @@
 
  ---------------------------------------------------
 
-  Open error on file random.dat
-  Using default values.
   Random number generator initialized with seed =            0
  
           information on histogram config
  -----------------------------------------------
  
-  Open error on file histograms.dat
-  Using default values.
- SMEARING           =      F
+ SMEARING           =      T
+ SMEAR_VALUE        =       0.20000000000000001     
  CALC_ERROR_GNUPLOT =      F
+ CALC_ERROR_ROOT    =      F
  CALC_ERROR_1D      =      T
  CALC_ERROR_2D      =      F
  
 HIST_ID1      =      0.00    250.00  # dS/dpT_j (fb/GeV)
 HIST_ID2      =      0.00    500.00  # dS/dpTmax_j (fb/GeV)
 HIST_ID3      =      0.00    200.00  # dS/dpTmin_j (fb/GeV)
-HIST_ID4      =     -5.00      5.00  # dS/deta_j (fb)
-HIST_ID5      =     -5.00      5.00  # dS/deta_j1 (fb)
-HIST_ID6      =     -5.00      5.00  # dS/deta_j2 (fb)
+HIST_ID4      =     -5.00      5.00  # dS/dy_j (fb)
+HIST_ID5      =     -5.00      5.00  # dS/dy_j1 (fb)
+HIST_ID6      =     -5.00      5.00  # dS/dy_j2 (fb)
 HIST_ID7      =      0.00    500.00  # dS/dpTmax_l (fb/GeV)
 HIST_ID8      =      0.00    200.00  # dS/dpTmin_l (fb/GeV)
 HIST_ID9      =      0.00      5.00  # dS/d|eta|max_l (fb)
 HIST_ID10     =      0.00      5.00  # dS/d|eta|min_l (fb)
 HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
-2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/deta_jj dm_jj (fb/GeV)
+2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/dy_jj dm_jj (fb/GeV)
  
  -----------------------------------------------
  
@@ -1501,8 +1513,6 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
   total result for virtual PS            1
   sigma =    9.8205357718986441       +-    2.1787535077672289E-002  fb
   
- 
- TIME=        2014           2          23          60           7           1          19         195
    
  Summary for FF ..
    
@@ -1524,11 +1534,11 @@ the warning system has been disabled
  -----------------------------------------------
 
  iteration  1:
- integral = -4.082898E+00,  sigma = 7.673E-01
- efficacy = 8.006E-06,  raw efficacy = 8.006E-06
- f_positive = 1.802E-2,  f_zero = 9.354E-1,  f_negative = 4.659E-2
+ integral = -3.872697E+00,  sigma = 7.081E-01
+ efficacy = 7.602E-06,  raw efficacy = 7.602E-06
+ f_positive = 1.788E-2,  f_zero = 9.354E-1,  f_negative = 4.673E-2
  accumulated statistics:
- integral = -4.082898E+00,  sigma = 7.673E-01,  chi^2/iteration = 0.000E+00
+ integral = -3.872697E+00,  sigma = 7.081E-01,  chi^2/iteration = 3.553E-15
 
  MONACO:  grid written to file grid3_1.out.1
 
@@ -1537,11 +1547,11 @@ the warning system has been disabled
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
 
  iteration  2:
- integral = -3.327136E+00,  sigma = 2.458E-01
- efficacy = 1.361E-05,  raw efficacy = 8.074E-07
- f_positive = 3.381E-2,  f_zero = 8.589E-1,  f_negative = 1.073E-1
+ integral = -3.610856E+00,  sigma = 3.535E-01
+ efficacy = 1.031E-05,  raw efficacy = 8.225E-07
+ f_positive = 3.340E-2,  f_zero = 8.600E-1,  f_negative = 1.066E-1
  accumulated statistics:
- integral = -3.397470E+00,  sigma = 2.341E-01,  chi^2/iteration = 8.798E+05
+ integral = -3.663099E+00,  sigma = 3.163E-01,  chi^2/iteration = 1.094E+05
 
  MONACO:  grid written to file grid3_1.out.2
 
@@ -1550,11 +1560,11 @@ the warning system has been disabled
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
 
  iteration  3:
- integral = -3.614984E+00,  sigma = 1.465E-01
- efficacy = 1.886E-05,  raw efficacy = 3.618E-08
- f_positive = 4.529E-2,  f_zero = 7.936E-1,  f_negative = 1.611E-1
+ integral = -3.704662E+00,  sigma = 2.926E-01
+ efficacy = 3.513E-06,  raw efficacy = 1.309E-07
+ f_positive = 4.603E-2,  f_zero = 7.867E-1,  f_negative = 1.673E-1
  accumulated statistics:
- integral = -3.553767E+00,  sigma = 1.242E-01,  chi^2/iteration = 1.500E+00
+ integral = -3.685495E+00,  sigma = 2.148E-01,  chi^2/iteration = 1.187E-01
 
  MONACO:  grid written to file grid3_1.out.3
 
@@ -1563,11 +1573,11 @@ the warning system has been disabled
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
 
  iteration  4:
- integral = -3.778240E+00,  sigma = 1.927E-01
- efficacy = 2.589E-06,  raw efficacy = 7.288E-08
- f_positive = 5.026E-2,  f_zero = 7.710E-1,  f_negative = 1.788E-1
+ integral = -3.738849E+00,  sigma = 2.066E-01
+ efficacy = 2.779E-06,  raw efficacy = 6.560E-08
+ f_positive = 4.872E-2,  f_zero = 7.923E-1,  f_negative = 1.590E-1
  accumulated statistics:
- integral = -3.619631E+00,  sigma = 1.044E-01,  chi^2/iteration = 1.229E+00
+ integral = -3.713207E+00,  sigma = 1.489E-01,  chi^2/iteration = 7.540E-02
 
  MONACO:  grid written to file grid3_1.out.4
 
@@ -1576,11 +1586,11 @@ the warning system has been disabled
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
 
  iteration  5:
- integral = -3.672621E+00,  sigma = 8.373E-02
- efficacy = 5.020E-06,  raw efficacy = 3.000E-08
- f_positive = 5.699E-2,  f_zero = 7.636E-1,  f_negative = 1.794E-1
+ integral = -3.512869E+00,  sigma = 1.121E-01
+ efficacy = 2.617E-06,  raw efficacy = 3.113E-09
+ f_positive = 5.066E-2,  f_zero = 7.648E-1,  f_negative = 1.846E-1
  accumulated statistics:
- integral = -3.651875E+00,  sigma = 6.532E-02,  chi^2/iteration = 8.719E-01
+ integral = -3.585346E+00,  sigma = 8.957E-02,  chi^2/iteration = 4.353E-01
 
  MONACO:  grid written to file grid3_1.out.5
 
@@ -1589,24 +1599,29 @@ the warning system has been disabled
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
 
  iteration  6:
- integral = -3.618403E+00,  sigma = 4.875E-02
- efficacy = 7.084E-06,  raw efficacy = 1.525E-08
- f_positive = 5.572E-2,  f_zero = 7.684E-1,  f_negative = 1.758E-1
+ integral = -3.473915E+00,  sigma = 5.188E-02
+ efficacy = 5.096E-06,  raw efficacy = 8.771E-09
+ f_positive = 5.040E-2,  f_zero = 7.765E-1,  f_negative = 1.732E-1
  accumulated statistics:
- integral = -3.630379E+00,  sigma = 3.907E-02,  chi^2/iteration = 6.961E-01
+ integral = -3.501906E+00,  sigma = 4.489E-02,  chi^2/iteration = 6.162E-01
 
  MONACO:  grid written to file grid3_1.out.6
  
   result for real emissions 
-  sigma =   -3.6303794762401917       +-    3.9070626417016731E-002  fb
+  sigma =   -3.5019056157988397       +-    4.4889745044011567E-002  fb
   
+ 
+total number of errors and warnings
+===================================
+fferr: no errors
+ 
   
   final result at NLO 
-  sigma =    6.1901562956584524       +-    4.4734891677290174E-002  fb  0.72267790247340902      %
+  sigma =    6.3186301560998039       +-    4.9897754407159059E-002  fb  0.78969259435115635      %
 
   penbox/ fermionloops instabilites 
       total calls                2000016
-      instabilities dble             175   8.7499300005599960E-003 %
+      instabilities dble              15   7.4999400004799961E-004 %
       instabilities quad               3   1.4999880000959992E-004 %
   Box instabilites 
       total calls                1151112
@@ -1646,22 +1661,21 @@ the warning system has been disabled
 
  RE subprocesses
  PS            1
- subproc           1  -3.6303794762401917       +-    3.9070626417016731E-002
+ subproc           1  -3.5019056157988397       +-    4.4889745044011567E-002
   
   
   
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     VBFNLO 2.7.1 beta1 svn 7545
    
-  PROCESS:         6230   :   p p -->  W- Z jj -->  e- ve~ mu- mu+ jj (QCD induced)
+  PROCESS:         3230   :   p p -->  W- Z jj -->  e- ve~ mu- mu+ jj (QCD induced)
    
   TOTAL result (LO):          5.9959070113239399       +-    4.9963927953305355E-003  fb     8.3330058086195952E-002 %
   NLO virtual result:         9.8205357718986406       +-    2.1787535077672286E-002  fb    0.22185688829745001      %
-  QCD real emission:         -3.6303794762401917       +-    3.9070626417016731E-002  fb    -1.0762132904486417      %
-  TOTAL result (NLO):         6.1901562956584524       +-    4.4734891677290174E-002  fb    0.72267790247340902      %
-  Approx. error due to instable points:    3.8446593845135662E-003  %
-  K-Factor:                   1.0323969808016786     
+  QCD real emission:         -3.5019056157988397       +-    4.4889745044011567E-002  fb    -1.2818662171102380      %
+  TOTAL result (NLO):         6.3186301560998039       +-    4.9897754407159059E-002  fb    0.78969259435115635      %
+  Approx. error due to instable points:    8.7405779198467901E-003  %
+  K-Factor:                   1.0538239075700082     
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   
   
- 
- TIME=        2014           2          23          60          10          35          39         702

@@ -136,7 +136,11 @@ c     select helicity: h = random number for lepton+photon helicity (h=1:8)
       h = mod(h,8) + 1
 
       ie = sign(1,4-h)
-      iu = (-1)**(h+1)
+      if(bos .eq. 221) then
+         iu = (-1)**(h+1) !muons
+      else if(bos .eq. 251) then
+         iu = 1 ! only left-handed neutrinos
+      end if
       it = (-1)**((h-1)/2)
 
 c...Les Houches interface
@@ -150,8 +154,8 @@ c...Les Houches interface
       
       CALL OXXXXX(v(0,1,1),ZERO ,-ie,+1,zem(1,1)) !e- 
       CALL IXXXXX(v(0,2,1),ZERO ,+ie,-1,zep(1,1)) !e+        
-      CALL OXXXXX(v(0,3,1),ZERO ,-iu,+1,zmm(1,1)) !mu-      
-      CALL IXXXXX(v(0,4,1),ZERO ,+iu,-1,zmp(1,1)) !mu+
+      CALL OXXXXX(v(0,3,1),ZERO ,-iu,+1,zmm(1,1)) !mu- or v      
+      CALL IXXXXX(v(0,4,1),ZERO ,+iu,-1,zmp(1,1)) !mu+ or v~
       CALL VXXXXX(qz(0,1),ZERO ,it,1,atau(1,1)) !A
 
       SELECT CASE(procid)
@@ -169,9 +173,14 @@ c...Les Houches interface
         CALL JIOXXX(zep(1,1),zem(1,1),GZL,ZMASS,ZWIDTH, ze(1,1)) !Z*e
       END SELECT
 
-      CALL JIOXXX(zmp(1,1),zmm(1,1),GAL,ZERO,ZERO, amu(1,1))   !A*m
-      CALL JIOXXX(zmp(1,1),zmm(1,1),GZL,ZMASS,ZWIDTH, zmu(1,1))!Z*m
-      
+      if(bos .eq. 221) then
+         CALL JIOXXX(zmp(1,1),zmm(1,1),GAL,ZERO,ZERO, amu(1,1))   !A*m
+         CALL JIOXXX(zmp(1,1),zmm(1,1),GZL,ZMASS,ZWIDTH, zmu(1,1))!Z*m
+      else if(bos .eq. 251) then
+         CALL JIOXXX(zmp(1,1),zmm(1,1),GZN,ZMASS,ZWIDTH, zmu(1,1))!Z*v
+         amu(1:4,1) = 0
+         amu(5:6,1) = zmu(5:6,1)
+      endif
 c************ reduction of pentagon contribution *************
 #ifdef WITH_NLO
       if (abs(nlo).eq.5 .or. nlo.eq.-4) then
@@ -220,7 +229,7 @@ c leptonic tensors:
       SELECT CASE(procid)
       CASE(ZZhadA)
          call anomal_formfactor(qzza(0,1),qze(0,1),qzmu(0,1),qz(0,1))
-         call zza_atozz_had(v(0,1,1),1,azz(0,1),0)      !A -> Z Z -> e- e+ mu- mu+
+         call zza_atozz_had(v(0,1,1),1,azz(0,1),0)      !A -> Z Z -> e- e+ mu- mu+ 
          call zza_ztozz_had(v(0,1,1),1,zzztens(0,1),0)      !Z -> Z Z -> e- e+ mu- mu+
          call zza_atozae_had(v(0,1,1),1,h,aaze(0,1),0)  !A -> Z A -> e- e+ a
          call zza_ztozae_had(v(0,1,1),1,h,zzae(0,1),0)  !Z -> Z A -> e- e+ a
@@ -253,14 +262,25 @@ c contribute ( = 0: all diagrams, = 1: no non resonant diagrams)
 
 c leptonic tensors, last entry defines whether the non resonant diagrams
 c contribute ( = 0: all diagrams, = 1: no non resonant diagrams)
-         call zza_atozz(v(0,1,1),1,azz(0,1),0)      !A -> Z Z -> e- e+ mu- mu+
-         call zza_ztozz(v(0,1,1),1,zzztens(0,1),0)      !Z -> Z Z -> e- e+ mu- mu+
-         call zza_atozae(v(0,1,1),1,h,aaze(0,1),0)  !A -> Z A -> e- e+ a
-         call zza_ztozae(v(0,1,1),1,h,zzae(0,1),0)  !Z -> Z A -> e- e+ a
-         call zza_atozam(v(0,1,1),1,h,aazm(0,1),0)  !A -> Z A -> mu- mu+ a
-         call zza_ztozam(v(0,1,1),1,h,zzam(0,1),0)  !Z -> Z A -> mu- mu+ a
-         call zza_atozza(v(0,1,1),1,h,azza(0,1),0)  !A -> ZZA -> e- e+ mu- mu+ a
-         call zza_ztozza(v(0,1,1),1,h,zzza(0,1),0)  !Z -> ZZA -> e- e+ mu- mu+ a
+         if(bos .eq. 221) then !mu- mu+
+            call zza_atozz(v(0,1,1),1,azz(0,1),0)      !A -> Z Z -> e- e+ mu- mu+
+            call zza_ztozz(v(0,1,1),1,zzztens(0,1),0)  !Z -> Z Z -> e- e+ mu- mu+
+            call zza_atozae(v(0,1,1),1,h,aaze(0,1),0)  !A -> Z A -> e- e+ a
+            call zza_ztozae(v(0,1,1),1,h,zzae(0,1),0)  !Z -> Z A -> e- e+ a
+            call zza_atozam(v(0,1,1),1,h,aazm(0,1),0)  !A -> Z A -> mu- mu+ a
+            call zza_ztozam(v(0,1,1),1,h,zzam(0,1),0)  !Z -> Z A -> mu- mu+ a
+            call zza_atozza(v(0,1,1),1,h,azza(0,1),0)  !A -> ZZA -> e- e+ mu- mu+ a
+            call zza_ztozza(v(0,1,1),1,h,zzza(0,1),0)  !Z -> ZZA -> e- e+ mu- mu+ a
+         else if(bos .eq. 251) then !v v~
+            call zzna_atozz(v(0,1,1),1,azz(0,1),0)      !A -> Z Z -> e- e+ v v~
+            call zzna_ztozz(v(0,1,1),1,zzztens(0,1),0)  !Z -> Z Z -> e- e+ v v~
+            call zza_atozae(v(0,1,1),1,h,aaze(0,1),0)  !A -> Z A -> e- e+ a
+            call zza_ztozae(v(0,1,1),1,h,zzae(0,1),0)  !Z -> Z A -> e- e+ a
+            aazm(0:3,1) = 0
+            zzam(0:3,1) = 0
+            call zzna_atozza(v(0,1,1),1,h,azza(0,1),0)  !A -> ZZA -> e- e+ v v~ a
+            call zzna_ztozza(v(0,1,1),1,h,zzza(0,1),0)  !Z -> ZZA -> e- e+ v v~ a
+         endif
 
       endif ! anom or SM
 
@@ -516,7 +536,11 @@ c...Les Houches interface - the most propable subprocess
          END SELECT
       endif
       
-      m2s = m2s * 8d0           ! factor 2 for random helicity summation
+      if (bos .eq. 221) then
+        m2s = m2s * 8d0           ! factor 2 for random helicity summation
+      else if (bos .eq. 251) then
+        m2s = m2s * 4d0           ! factor 2 for random helicity summation - except Z->nu nu~
+      endif
       
       m2s_qqZZA = m2s
       
@@ -614,8 +638,13 @@ c  helicity selection, for debugging
 
 #ifdef WITH_MADGRAPH
       if (ldebug) then
+        if (bos .eq. 221) then
          call suu_zza(pbar,fsign,uuzza2)
          call sdd_zza(pbar,fsign,ddzza2)
+        else if (bos .eq. 251) then
+         call suu_zzna(pbar,fsign,uuzza2)
+         call sdd_zzna(pbar,fsign,ddzza2)
+        endif
       endif
 #endif
 

@@ -36,7 +36,7 @@ c
          write(stdo,*)
      &        ' helas-error : fo in fvoxxx has zero momentum'
       endif
-      if ( abs(vc(1))+abs(vc(2)+abs(vc(3))+abs(vc(4)).eq.rZero ) then
+      if ( abs(vc(1))+abs(vc(2))+abs(vc(3))+abs(vc(4)).eq.rZero ) then
          write(stdo,*) ' helas-warn  : vc in fvoxxx is zero vector'
       endif
       if ( abs(vc(5))+abs(vc(6)).eq.rZero ) then

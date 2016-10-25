@@ -1775,7 +1775,14 @@ c transfer momentum information of EW bosons to q1,q2
             eps2(mu) = jext(mu)
             mom(mu) = k2(mu)+q2(mu)
             q1(mu) = k1(mu)-mom(mu)
+
          enddo
+cfc         print*, "curr1"
+cfc                print*, "k1", k1
+cfc                print*, "k2", -k2
+cfc                print*, "q1", -q1
+cfc                print*, "q2", -q2
+
       elseif (ivmu.eq.2) then     ! eps1 and q1 are specified, eps2 = mu = free index
          q1(0) = dreal(jext(4))
          q1(1) = dreal(jext(5))
@@ -1786,6 +1793,12 @@ c transfer momentum information of EW bosons to q1,q2
             mom(mu) = k1(mu)-q1(mu)
             q2(mu) = mom(mu)-k2(mu)
          enddo
+cfc         print*, "curr2_old"
+cfc                print*, "k1", k1
+cfc                print*, "k2", -k2
+cfc                print*, "q1", -q1
+cfc                print*, "q2", -q2
+
       endif
       q1(4) = q1(0)**2-q1(1)**2-q1(2)**2-q1(3)**2
       q2(4) = q2(0)**2-q2(1)**2-q2(2)**2-q2(3)**2

@@ -52,6 +52,7 @@ tensor_redux_DijLUdeRank4312_G_Div.F\
 tensor_redux_DijLUdeRank4321_G_Div.F
 endif
 
+
 libTID_la_FFLAGS = $(AM_FFLAGS)
 
 if WITH_QUAD

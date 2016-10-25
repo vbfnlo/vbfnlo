@@ -35,6 +35,7 @@ c definitions for second Higgs
       
       DOUBLE PRECISION xg ! parameter for simulation of VV distribution
       integer bos_var
+      
       common /bosin/ xg,bos_var,bos
 
       double precision M2_i(max_res),MG_i(max_res),F_i(max_res)         ! for resonances of intermediate particles
@@ -297,6 +298,7 @@ C  local variables
       save ic
       logical ldebug
       parameter (ldebug=.false.)
+      
 
 c only relevant for spin-2 scenario
       double precision xmassx, xwidthx   !mass and width of the spin-2 resonance
@@ -359,7 +361,7 @@ C  the rapidity range in the second step
                PT(I) = 1/X
                W = W/0.8d0*DELX*PT(I)**3
             else
-               xmin = 0
+               xmin = 0d0
                xmax = ptjmin(i)
                DELX = XMAX-XMIN
                PT(i) = XMIN + R(J+2)/0.2d0*DELX

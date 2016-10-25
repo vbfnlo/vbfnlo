@@ -31,6 +31,8 @@ ALLDIRS = \
   250_WpWpjj \
   270_WpAjj \
   280_WmAjj \
+  290_ZAjj_l \
+  291_ZAjj_n \
   300_WW    \
   310_WpZ    \
   320_WmZ    \
@@ -141,14 +143,20 @@ ALLDIRS = \
   200_WWjj_TwoHiggs\
   800_WpAAj  \
   810_WmAAj  \
+  3120_QCDZjj_l \
+  3121_QCDZjj_nu \
   3130_QCDWPjj \
   3140_QCDWMjj \
+  3210_QCDZZjj_l \
+  3211_QCDZZjj_nu \
   3220_QCDWPZjj \
   3230_QCDWMZjj \
   3250_QCDWPWPjj \
   3260_QCDWMWMjj \
   3270_QCDWPAjj \
   3280_QCDWMAjj \
+  3290_QCDZAjj_l \
+  3291_QCDZAjj_nu \
 
 
 

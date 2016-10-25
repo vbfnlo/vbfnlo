@@ -158,6 +158,13 @@ c*******************************************************************************
        s34 = (p3sq +p4sq+ 2*p3p4) 
        s35 = (p3sq +p5sq+ 2*p3p5) 
        s45 = (p4sq +p5sq+ 2*p4p5) 
+
+cfc       print*, "p1", p1
+cfc       print*, "p2", p2
+cfc       print*, "p3", p3
+cfc       print*, "p4", p4
+cfc       print*, "p5", p5
+
 c       Write(*,'(a5,F20.10)')," p1sq ", p1sq 
 c       Write(*,'(a5,F20.10)')," p1p2 ", p1p2
 c       Write(*,'(a5,F20.10)')," p1p3 ", p1p3

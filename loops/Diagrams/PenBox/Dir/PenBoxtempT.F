@@ -3,7 +3,8 @@ c ******************************************************************************
 c Author: Francisco Campanario
 c E-mail: francam@particle.uni-karlsruhe.de
 c Modified:4/6/2012
-
+c hel = 66,67,76,77 for rr,rl,...
+c or 2*hel1 + hel2 -> 3,1,-1,-3
        subroutine PenBoxT(p1,p2,p3,p4,p5,barpsi_p1,psi_p5,barpsi_p2,p
      &   si_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,resultbo
      &   rn,Div,hel)
@@ -15,19 +16,19 @@ c Modified:4/6/2012
        integer comp,ngluon,posgluon,Div,hel
        complex*16 result(3),resultn,resultborn
  
-       if( hel.eq.77) then
+       if( hel.eq.77.or.hel.eq.-3) then
 	 call PenBox77T(p1,p2,p3,p4,p5,barpsi_p1,psi_p5,barpsi_p2,p
      &   si_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,resultbo
      &   rn,Div)
-       elseif( hel.eq.67) then
+       elseif( hel.eq.67.or.hel.eq.1) then
 	 call PenBox67T(p1,p2,p3,p4,p5,barpsi_p1,psi_p5,barpsi_p2,p
      &   si_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,resultbo
      &   rn,Div)
-       elseif( hel.eq.76) then
+       elseif( hel.eq.76.or.hel.eq.-1) then
 	 call PenBox76T(p1,p2,p3,p4,p5,barpsi_p1,psi_p5,barpsi_p2,p
      &   si_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,resultbo
      &   rn,Div)
-       elseif( hel.eq.66) then
+       elseif( hel.eq.66.or.hel.eq.3) then
 	 call PenBox66T(p1,p2,p3,p4,p5,barpsi_p1,psi_p5,barpsi_p2,p
      &   si_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,resultbo
      &   rn,Div)

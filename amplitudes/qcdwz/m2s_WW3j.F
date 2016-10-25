@@ -897,7 +897,7 @@ c for lhe output
       colsq(0,1) = 0d0
       colsq(0,2) = 0d0
       do k=1,4; do l=1,2
-        colsq(k,l) = amp(k,l)*dconjg(amp(k,l))
+        colsq(k,l) = dble(amp(k,l)*dconjg(amp(k,l)))
       enddo; enddo
 c    diff q families
       do k=1,2; do l=1,2

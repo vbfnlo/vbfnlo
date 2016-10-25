@@ -19,7 +19,6 @@ cMK this contribution should get a POSITIVE sign
        Real*8 musq,m,resultgauge,resultgaugeE,resultgaugeO
        integer gauge,comp,Div
 
-
        call  FermionBoxCouplingTE(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,p2,p3,p4,
      &  mup1,mup2,mup3,mup4,musq,gauge,comp,resultE,resultgaugeE,Div)
 ! 
@@ -105,6 +104,17 @@ c For QUAD
        complex*16 rg4_Q
        logical wardfb(2)
        common/wardpfermionbox/wardfb
+       logical GaugeE,GaugeO
+       common/FloopPenggzz/GaugeE,GaugeO
+       logical debugodd
+       parameter (debugodd=.false.)
+
+
+       if(debugodd) then
+          result=0d0
+          resultgauge=0d0
+          return
+       endif
 
 	wardfb(1)=.false.
         wardfb(2)=.false.
@@ -220,9 +230,8 @@ c Safe results
 
 cfccCCCCCCCCCCCc TO RESCUE
 cfc
-cfccmr        if(.false.) then
+cfc        if(.false.) then
         if(resultgauge.gt.Sensitivity) then
-
 cfc
 cfc        GramCS=.true.
 cfc        GramDS=.true.
@@ -356,9 +365,14 @@ cfc              endif  ! degug
 cfc            endif   ! FinalSensitivity
   
 #ifdef WITH_QUAD
+c        if(.false.) then
             if(abs(resultgauge).gt.FinalSensitivity) then
-
+c               PRINT*, "fINALsENSITIVITY",FinalSensitivity
+c              PAUSE
+           GaugeE = .true. 
         resultgauge_Q=1d99
+
+        
 
        call  FermionBoxEvenCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,
      & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result_Q,resultn_Q)
@@ -445,15 +459,69 @@ c Gauge 4
 
 
 
-        if(resultgauge_Q.lt. FinalSensitivity)  wardfb(2)=.true.
+        if(resultgauge_Q.lt. FinalSensitivity)  then
+              wardfb(2)=.true.
 
            if(abs(resultgauge_Q).lt.abs(resultgauge)) then
              result=result_Q
              resultgauge=resultgauge_Q
-           endif
-c           print*
-c           print*,"BE:QUAD to rescued failed",Real(m),Real(resultgauge),
+
+c           print*,"BE:QUAD rescued",Real(m),Real(resultgauge),
 c     &  Real(resultgauge_cp),Abs(CMPLX(result_cp)/CMPLX(result)-1),CMPLX(result)
+
+           if(abs(result_Q).gt.1d-6) then
+!               print*
+!               print*
+!               print*
+!               print*,"BE:QUAD  rescued faile??"
+!               print*
+!               print*
+!               print*
+
+!        call  FermionBoxEvenCouplings_QUAD_check(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,
+!      & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result_Q,resultn_Q)
+!           print*,"BE:QUAD  rescued faile??",Real(m),resultgauge,
+!      &  resultgauge_Q,Abs(CMPLX(result_Q)/CMPLX(result)-1),CMPLX(result)
+!            print*,'p1',p1,dotrr(p1,p1)
+!            print*,'p2',p2,dotrr(p2,p2)
+!            print*,'p3',p3,dotrr(p3,p3)
+!            print*,'p4',p4,dotrr(p4,p4)
+!            print*, "result", result
+!            print*, "result_Q", result_Q
+!            print*, temp1,temp2,temp3,temp4
+!            print*, "resultnQ", resultn_Q(1:5)
+!            print*, "resultnQ", resultn(1:5)
+!            print*
+!            pause
+           endif
+           endif
+           else
+           print*,"BE:QUAD to rescued failed",Real(m),resultgauge,
+     &  resultgauge_Q,Abs(CMPLX(result_Q)/CMPLX(result)-1),CMPLX(result)
+c           print*, "result", result
+c           print*, "result_Q", result_Q
+c           print*, temp1,temp2,temp3,temp4
+c           print*, "resultnQ", resultn_Q(1:5)
+c           print*, "resultnQ", resultn(1:5)
+c           print*
+cfc           if(abs(result_Q).gt.1d-6) then
+cfc       call  FermionBoxEvenCouplings_QUAD_check(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,
+cfc     & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result_Q,resultn_Q)
+cfc           print*,'p1',p1,dotrr(p1,p1)
+cfc           print*,'p2',p2,dotrr(p2,p2)
+cfc           print*,'p3',p3,dotrr(p3,p3)
+cfc           print*,'p4',p4,dotrr(p4,p4)
+c           print*, "result", result
+c           print*, "result_Q", result_Q
+c           print*, temp1,temp2,temp3,temp4
+c           print*, "resultnQ", resultn_Q(1:5)
+c           print*, "resultnQ", resultn(1:5)
+c           print*
+
+cfc       endif
+           
+
+        endif
         endif
 #endif
            else  ! sensitivity
@@ -497,6 +565,7 @@ cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccc
        subroutine FermionBoxCouplingO(za1,za2,za3,za4,zb1,zb2,zb3,zb4,
      & m,p1,p2,p3,p4,mup1,mup2,mup3,mup4,musq,gauge,comp,result,resultgauge)
        implicit none
+#include "VBFNLO/loops/Utilities/GaugeTest.inc"
        Real*8 za1,za2,za3,za4,zb1,zb2,zb3,zb4
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
        Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
@@ -504,8 +573,41 @@ cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccc
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
        Complex*16 result,resulttemp,resulttemp2,resultn(5),resultZERO(5)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
+       real*8 resultgauge_cp
+       complex*16 result_cp
        complex*16 rg1,rg2,rg3,rg4
        integer gauge,i,comp
+       real*8 Sensitivity, FinalSensitivity
+c For QUAD
+       Real*8 resultgauge_q
+       complex*16 result_Q
+       complex*16 resultn_Q(5)
+       complex*16 rg1_Q,rg2_Q,rg3_Q
+       complex*16 rg4_Q
+       logical wardfb(2)
+       common/wardpfermionbox/wardfb
+       logical GaugeE,GaugeO
+       common/FloopPenggzz/GaugeE,GaugeO
+       logical DEBUGodd
+       PARAMETER(DEBUGodd=.false.)
+
+       iF(DEBUGodd) THEN
+          RESULT=0D0
+          RESULTGAUGE=0D0
+          return
+       ENDIF
+
+
+
+
+	wardfb(1)=.false.
+        wardfb(2)=.false.
+
+        Sensitivity=GaugeAccuracyBoxL
+        FinalSensitivity=GaugeAccuracyBoxL
+
+c        Sensitivity=1d-9
+c        FinalSensitivity=1d-9
 
         resultgauge=1d99
 
@@ -562,6 +664,33 @@ c Gauge 4
           else
           temp4=abs(rg4 - resultn(5)  )
           endif
+       if(temp1+1.eq.temp1) then
+          temp1=1d9
+       endif   
+
+       if(temp1.ne.temp1) then
+          temp1=1d9
+       endif
+
+       if(temp2+1.eq.temp2) then
+          temp2=1d9
+       endif   
+
+       if(temp2.ne.temp2) then
+          temp2=1d9
+       endif
+
+       if(temp3+1.eq.temp3) then
+          temp3=1d9
+       endif   
+
+       if(temp3.ne.temp3) then
+          temp3=1d9
+       endif
+
+       if(temp4+1.eq.temp4) then
+          temp4=1d9
+       endif   
       
 c FC %          print*, "rg1O",rg1
 c FC %          print*, "rg2O",rg2
@@ -574,7 +703,131 @@ c FC %          print*, "temp4",temp4
 c FC %c	read(*,*)
 
           resultgauge=max(temp1,temp2,temp3,temp4)
+
+
+c Safe results
+          result_cp=result
+          resultgauge_cp=resultgauge
+
+cfccCCCCCCCCCCCc TO RESCUE
+cfc
+cfc        if(.false.) then
+        if(resultgauge.gt.Sensitivity) then
+
+
+#ifdef WITH_QUAD
+c        if(.false.) then
+            if(abs(resultgauge).gt.FinalSensitivity) then
+c               PRINT*, "fINALsENSITIVITY",FinalSensitivity
+c              PAUSE
+
+           GaugeE = .true. 
+        resultgauge_Q=1d99
+
+        call  FermionBoxOddCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,
+     & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result_Q,resultn_Q)
+
+   
+    
+       
+c Call for Gauge
+
+          call fermionBoxOddCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,
+     &     p1,p2,p3,p4,mup1test,mup2,mup3,mup4,musq,-1,rg1_Q,resultZERO)
+          call fermionBoxOddCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,
+     &     p1,p2,p3,p4,mup1,mup2test,mup3,mup4,musq,-1,rg2_Q,resultZERO)
+          call fermionBoxOddCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,
+     &     p1,p2,p3,p4,mup1,mup2,mup3test,mup4,musq,-1,rg3_Q,resultZERO)
+          call fermionBoxOddCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,
+     &     p1,p2,p3,p4,mup1,mup2,mup3,mup4test,musq,-1,rg4_Q,resultZERO)
+c Gauge 1
+          if (abs(rg1_Q).gt.1d-7) then
+          temp1=abs(rg1_Q/(resultn_Q(2)) -1d0)
+          else
+          temp1=abs(rg1_Q-resultn_Q(2))   
+          endif
+
+c Gauge 2
+         if (abs(rg2_Q).gt.1d-7) then
+          temp2=abs(rg2_Q/resultn_Q(3) -1d0) 
+          else
+          temp2=abs(rg2_Q -resultn_Q(3)  ) 
+          endif
+
+c Gauge 3
+         if (abs(rg3_Q).gt.1d-7) then
+          temp3=abs(rg3_Q/resultn_Q(4) -1d0 )
+          else
+             temp3=abs(rg3_Q  -resultn_Q(4) )
+         endif
+
+c Gauge 4
+          if (abs(rg4_Q).gt.1d-7) then
+          temp4=abs(rg4_Q/resultn_Q(5) -1d0)
+          else
+          temp4=abs(rg4_Q - resultn_Q(5)  )
+          endif
+
+
+       if(temp1+1.eq.temp1) then
+          temp1=1d9
+       endif   
+
+       if(temp1.ne.temp1) then
+          temp1=1d9
+       endif
+
+       if(temp2+1.eq.temp2) then
+          temp2=1d9
+       endif   
+
+       if(temp2.ne.temp2) then
+          temp2=1d9
+       endif
+
+       if(temp3+1.eq.temp3) then
+          temp3=1d9
+       endif   
+
+       if(temp3.ne.temp3) then
+          temp3=1d9
+       endif
+
+       if(temp4+1.eq.temp4) then
+          temp4=1d9
+       endif   
+
+       if(temp4.ne.temp4) then
+          temp4=1d9
+       endif
+
+          resultgauge_Q=max(temp1,temp2,temp3,temp4)
+
+
+
+
+        if(resultgauge_Q.lt. FinalSensitivity) then
+c             print*, "BO:QUAD to rescued works",Real(m),Real(resultgauge),
+c     &        Real(resultgauge_Q),Abs(CMPLX(result)/CMPLX(result_Q)-1)
+c     &        ,CMPLX(result_Q)
+             result=result_Q
+             resultgauge=resultgauge_Q
+           if(abs(resultgauge_Q).lt.abs(resultgauge)) then
+             result=result_Q
+             resultgauge=resultgauge_Q
+           endif
+        else
+c           print*
+           print*,"BO:QUAD to rescued failed",Real(m),Real(resultgauge_cp),
+     &  Real(resultgauge_Q),Abs(CMPLX(result_cp)/CMPLX(result_Q)-1),CMPLX(result_cp)
+           endif
+           endif
+#endif
+           ELSE
+	wardfb(1)=.true.
+        wardfb(2)=.true.
+           endif
         
-        endif
+        endif !if gauge
          
         end

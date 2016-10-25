@@ -2583,7 +2583,8 @@ c
         ! VVjj in VBF:
         ! p1, p2 are momenta of incoming bosons, p3, p4 are momenta of outgoing bosons
         CASE(WPWMjj,ZZjj_ll,ZZjj_lnu,WPZjj,WMZjj,WPWPjj,WMWMjj,WPAjj,WMAjj,
-     &       WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj, WPhadWPjj, WMhadWMjj)
+     &       WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj, WPhadWPjj, WMhadWMjj,
+     &       ZAjj,ZAjj_n)
 
            s=(p3(0)+p4(0))**2-(p3(1)+p4(1))**2-(p3(2)+p4(2))**2-(p3(3)+p4(3))**2 ! two outgoing boson momenta
 
@@ -2595,7 +2596,7 @@ c
 
         ! Triboson
         ! p1 is momentum of incoming boson, p2, p3, p4 are momenta of outgoing bosons
-        CASE(WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
+        CASE(WWZ,ZZZ,ZZWP,ZZWM,WWWP,WWWM,WWA,ZZA,ZZnA,WPZA,WMZA,WPAA,WMAA,ZAA,ZnAA,AAA,
      &       WPAAj,WMAAj,
      &       WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, ZZWMhad,
      &       WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,

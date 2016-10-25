@@ -60,7 +60,7 @@ c*************************************************************************
       NLOoffset2d = HIST2dMAX/3
 c
 c reset histogram contents to zero     
-c
+c 
       do id = 1,HISTMAX
          nbin(ID) = 100
          hlo(ID) = 0d0
@@ -1137,10 +1137,10 @@ c check if internal arrays are large enough
       call read_HistList(idstring,histconf,histconfdefault)
       write(*,'(2A,2F10.2,2A)'),idstring, "=", histconf, "  # ", title
       
-      nbin(ID) = bins
-      hlo(ID) = histconf(1)!min
-      hup(ID) = histconf(2)!max
-      htitles(ID) = title
+      htitles(ID) = trim(title)
+      write(htitles(ID+NLOoffset),*) title," (NLO)"
+      write(htitles(ID+2*NLOoffset),*) title," (K)"
+
 
       ! TODO: this is unnecessary for i=2,
       ! data for k-fac not explicitly stored
@@ -1160,22 +1160,13 @@ c check if internal arrays are large enough
          hist(id+i*NLOoffset)%hsum = 0
          hist(id+i*NLOoffset)%hsumm = 0
          hist(id+i*NLOoffset)%hsquare = 0
-         hist(id+i*NLOoffset)%hcount =0
-      enddo
+         hist(id+i*NLOoffset)%hcount = 0
 
-      nbin(ID+NLOoffset) = bins
-      hlo(ID+NLOoffset) = histconf(1)!min
-      hup(ID+NLOoffset) = histconf(2)!max
-c      htitles(ID+NLOoffset) = title(1:index(title,"  ")-1)//" (NLO)"
-      write(htitles(ID+NLOoffset),*) title," (NLO)"
-      htitles(ID+NLOoffset) = htitles(ID+NLOoffset)(1:len_trim(htitles(ID+NLOoffset)))
-     
-      nbin(ID+2*NLOoffset) = bins
-      hlo(ID+2*NLOoffset) = histconf(1)!min
-      hup(ID+2*NLOoffset) = histconf(2)!max
-c      htitles(ID+2*NLOoffset) = title(1:index(title,"  ")-1)//" (K)"
-      write(htitles(ID+2*NLOoffset),*) title," (K)"
-      htitles(ID+2*NLOoffset) = htitles(ID+2*NLOoffset)(1:len_trim(htitles(ID+2*NLOoffset)))
+         nbin(ID+i*NLOoffset) = bins
+         hlo(ID+i*NLOoffset) = histconf(1)!min
+         hup(ID+i*NLOoffset) = histconf(2)!max
+
+      enddo
 
       hstored(ID) = .true.
      
@@ -1244,13 +1235,15 @@ c check if internal arrays are large enough
       write(h2dtitles(ID+2*NLOoffset2d),*) title," (K)"
 
       do i=0,2 ! loop over LO, NLO, kfac
+         xlabels(ID+i*NLOoffset2d) = xlabel
+         ylabels(ID+i*NLOoffset2d) = ylabel
+
          nbinX(ID+i*NLOoffset2d) = xbins
          hloX(ID+i*NLOoffset2d) = histconf(1) !xmin
          hupX(ID+i*NLOoffset2d) = histconf(2) !xmax
          nbinY(ID+i*NLOoffset2d) = ybins
          hloY(ID+i*NLOoffset2d) = histconf(3) !ymin
          hupY(ID+i*NLOoffset2d) = histconf(4) !ymax      
-         h2dtitles(ID+i*NLOoffset2d) = h2dtitles(ID+i*NLOoffset2d)(1:len_trim(h2dtitles(ID+i*NLOoffset2d)))
 
          ! check for reallocation: the user might have called CreateHist twice with the same histogram ID
          if (allocated(hist2d(id+i*NLOoffset2d)%hsum))    deallocate(hist2d(id+i*NLOoffset2d)%hsum)
@@ -1771,7 +1764,7 @@ c     the 2d-histograms
             write (20,"(A)") 'set xlabel "'//xlabels(id)(1:len_trim(xlabels(id)))//'"'
             write (20,"(A)") 'set ylabel "'//ylabels(id)(1:len_trim(ylabels(id)))//'"'
             write (20,"(A)") "set palette rgbformulae 30,31,32 negative"
-            if (id .le. 2*NLOoffset2d) then
+            if (id .le. NLOoffset2d) then
                ! LO
                write(charid,*) ID
                charid = myadjustl(charid)

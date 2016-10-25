@@ -88,6 +88,10 @@
 
 ! actual number of kinematics
       integer n_kin, n_qed
+      
+      
+      integer photon_hel
+      common/ZAjjhel/ photon_hel
 
 
 !     The particle identification code according to the Monte Carlo particle numbering scheme.

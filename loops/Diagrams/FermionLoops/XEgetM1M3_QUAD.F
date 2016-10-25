@@ -1,3 +1,11 @@
+c ************************************************************************************
+c Author: Francisco Campanario
+c E-mail: francam@particle.uni-karlsruhe.de
+c************************************************************************************
+c************************************************************************************
+c    Declaration of variables 
+c************************************************************************************
+c***********************************************************************************
        subroutine XEgetsim_R5_QUAD(M5,M1,M2,M3,M4,p1sq,p2sq,p3sq,p4sq,p5sq,p1p2
      & ,p1p3,p1p4,p2p3,p2p4,p3p4,p1p5,p4p5,musq)
        Implicit none
@@ -192,12 +200,12 @@
        external A0finG_QUAD,B0finG_QUAD,C0finG_QUAD,D0finG_QUAD
        external E0finG_QUAD
 
-cfc       PRINTb=.TRUE.
-cfc       PRINTc=.TRUE.
-cfc       PRINTd=.TRUE.
-cfc       PRINTe=.TRUE.
+      PRINTb=.false.
+      PRINTc=.false.
+      PRINTd=.false.
+      PRINTe=.false.
 
-c       print*, "here_XGETEM1M3"
+c       print*, "Sim_here_XGETEM1M3"
 
        s12 = (p1sq +p2sq+ 2*p1p2) 
        s13 = (p1sq +p3sq+ 2*p1p3) 
@@ -292,7 +300,7 @@ c
        call tens_red2_R3_G_QUAD(M5,M4,p5sq,A05,A05R,A05I,A01,A01R,A01I,B015,
      -   B015R,B015I,B15R,B15I) 
 c
-c       print*, "here_XGETEM1M3after B"
+c       print*, "Sim_here_XGETEM1M3after B"
 c
        C0123=C0finG_QUAD(M5,M1,M2,p1sq,p2sq,s12,musq)
        call tens_red3_new_Re_Com_R4_G_QUAD(M5,M1,M2,p1sq,p2sq,s12,
@@ -375,7 +383,7 @@ c
      & C0245,C0245R,C0245I,C245R,C245I)
 
 c
-c       print*, "here_XGETEM1M3after C"
+c       print*, "Sim_here_XGETEM1M3after C"
 c
        D01234=D0finG_QUAD(M5,M1,M2,M3,s12,s23,p1sq,p2sq,p3sq,s45,musq)
        call tens_red4_new_Re_Com_R5_G_QUAD(M5,M1,M2,M3,p1sq,p2sq,p3sq,p1p2
@@ -414,7 +422,7 @@ c
 
 
 c
-c       print*, "here_XGETEM1M3after D"
+c       print*, "Sim_here_XGETEM1M3after D"
 c
 
 
@@ -429,7 +437,7 @@ c
      -   D1345R,D1245R,D1235R,D1234R,D02345I,D01345I,D01245I,D01235I,
      -   D01234I,D2345I,D1345I,D1245I,D1235I,D1234I,E12345R,E12345I)
 
-c       print*, "here_XGETEM1M3after E"
+c       print*, "Sim_here_XGETEM1M3after E"
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 c                    B0
@@ -456,6 +464,7 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
        call R3_From_BijR_QUAD_to_Dbl(B045R_d,B045I_d,B45R_d,B45I_d,
      &    B045R,B045I,B45R,B45I)
 
+c       print*, "Sim_here_XGETEM1M3after B dble"
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 c                    C0
@@ -481,29 +490,8 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      -              C0245R,C0245I,C245R,C245I)
       call  R4_From_CijR_QUAD_to_Dbl(C0345R_d,C0345I_d,C345R_d,C345I_d,
      -              C0345R,C0345I,C345R,C345I)
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c                D0
-c
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      call  R5_From_DijR_QUAD_to_Dbl(D01234R_d,D01234I_d,D1234R_d,D1234I_d,
-     -            D01234R,D01234I,D1234R,D1234I)
-      call  R5_From_DijR_QUAD_to_Dbl(D01235R_d,D01235I_d,D1235R_d,D1235I_d,
-     -            D01235R,D01235I,D1235R,D1235I)
-      call  R5_From_DijR_QUAD_to_Dbl(D01245R_d,D01245I_d,D1245R_d,D1245I_d,
-     -            D01245R,D01245I,D1245R,D1245I)
-      call  R5_From_DijR_QUAD_to_Dbl(D01345R_d,D01345I_d,D1345R_d,D1345I_d,
-     -            D01345R,D01345I,D1345R,D1345I)
-      call  R5_From_DijR_QUAD_to_Dbl(D02345R_d,D02345I_d,D2345R_d,D2345I_d,
-     -            D02345R,D02345I,D2345R,D2345I)
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c                E0
-c
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      call  R5_From_EijR_QUAD_to_Dbl(E012345R_d,E012345I_d,E12345R_d,E12345I_d,
-     -        E012345R,E012345I,E12345R,E12345I)
 
+c       print*, "Sim_here_XGETEM1M3after C dble"
 
 cfc       If(PrintB) then
 cfc       write(*,*)"B12"
@@ -586,6 +574,37 @@ cfc       If(PrintC) then
 cfc       write(*,*)"C245",C0245R_d,C0245I_d
 cfc       call print_CijR(DCMPLX(C0245),C245R_d,C245I_d)
 cfc       Endif
+
+
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c
+c                D0
+c
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      call  R5_From_DijR_QUAD_to_Dbl(D01234R_d,D01234I_d,D1234R_d,D1234I_d,
+     -            D01234R,D01234I,D1234R,D1234I)
+      call  R5_From_DijR_QUAD_to_Dbl(D01235R_d,D01235I_d,D1235R_d,D1235I_d,
+     -            D01235R,D01235I,D1235R,D1235I)
+      call  R5_From_DijR_QUAD_to_Dbl(D01245R_d,D01245I_d,D1245R_d,D1245I_d,
+     -            D01245R,D01245I,D1245R,D1245I)
+      call  R5_From_DijR_QUAD_to_Dbl(D01345R_d,D01345I_d,D1345R_d,D1345I_d,
+     -            D01345R,D01345I,D1345R,D1345I)
+      call  R5_From_DijR_QUAD_to_Dbl(D02345R_d,D02345I_d,D2345R_d,D2345I_d,
+     -            D02345R,D02345I,D2345R,D2345I)
+
+c       print*, "Sim_here_XGETEM1M3after D dble"
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c
+c                E0
+c
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      call  R5_From_EijR_QUAD_to_Dbl(E012345R_d,E012345I_d,E12345R_d,E12345I_d,
+     -        E012345R,E012345I,E12345R,E12345I)
+
+c       print*, "Sim_here_XGETEM1M3after E dble"
+
 cfc       If(PrintD) then
 cfc       write(*,*)"D1234",D01234R_d,D01234I_d
 cfc       write(*,*)"D1234",D01234R,D01234I
@@ -620,7 +639,7 @@ cfc       endif
 
 
 
-
+c       print*, "end sim XEget"
 
        return
        end
@@ -767,7 +786,7 @@ cMK
 cccccccccccccccccccccccccccccccccccccccc
       indx_B(1)=1
       indx_B(2)=2
-      indx_B(1)=3
+      indx_B(3)=3
 ccccccccccccccccccccccccccccccccccccc
       B0R=B0R_QUAD
       B0I=B0I_QUAD

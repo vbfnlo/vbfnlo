@@ -106,14 +106,19 @@
       PARAMETER( Sp2jjjLO_ZZ_ll = 9196 )
       PARAMETER( Sp2jjjLO_ZZ_lnu= 9197 )
 
-      INTEGER HHjj,HHjjjLO
-      PARAMETER( HHjj          = 160  ) 
+      INTEGER HHjj, HHjj_bbtau, HHjj_bbAA
+      INTEGER HHjjjLO, HHjjjLO_bbtau, HHjjjLO_bbAA
+      PARAMETER( HHjj          = 160  )
+      PARAMETER( HHjj_bbtau    = 161  )
+      PARAMETER( HHjj_bbAA     = 162  )
       PARAMETER( HHjjjLO       = 9160 )
+      PARAMETER( HHjjjLO_bbtau = 9161 )
+      PARAMETER( HHjjjLO_bbAA  = 9162 )
 
-      INTEGER WPWMjj, WPWPjj, WMWMjj, WPZjj, WMZjj, WMAjj, WPAjj
+      INTEGER WPWMjj, WPWPjj, WMWMjj, WPZjj, WMZjj, WMAjj, WPAjj, ZAjj, ZAjj_n
       INTEGER WPhadWMjj, WPWMhadjj, WPhadZjj, WMhadZjj, WPZhadjj, WMZhadjj, WPhadWPjj, WMhadWMjj
       INTEGER ZZjj_ll, ZZjj_lnu, ZZhadjj
-      INTEGER WPWMjjjLO,WPWPjjjLO,WMWMjjjLO,WPZjjjLO,WMZjjjLO,WPAjjjLO,WMAjjjLO
+      INTEGER WPWMjjjLO,WPWPjjjLO,WMWMjjjLO,WPZjjjLO,WMZjjjLO,WPAjjjLO,WMAjjjLO,ZAjjjLO,ZAjjjLO_n
       INTEGER WPhadWMjjjLO, WPWMhadjjjLO, WPhadZjjjLO, WMhadZjjjLO, WPZhadjjjLO, WMZhadjjjLO,WPhadWPjjjLO,WMhadWMjjjLO
       INTEGER ZZjjjLO_ll,ZZjjjLO_lnu, ZZhadjjjLO
       PARAMETER( WPWMjj        = 200  )
@@ -134,6 +139,8 @@
       PARAMETER( WMhadWMjj     = 261  )
       PARAMETER( WPAjj         = 270  )
       PARAMETER( WMAjj         = 280  )
+      PARAMETER( ZAjj          = 290  )
+      PARAMETER( ZAjj_n        = 291  )
       PARAMETER( WPWMjjjLO     = 9200 )
       PARAMETER( WPhadWMjjjLO  = 9201 )
       PARAMETER( WPWMhadjjjLO  = 9202 )
@@ -152,6 +159,8 @@
       PARAMETER( WMhadWMjjjLO  = 9261  )
       PARAMETER( WPAjjjLO      = 9270 )
       PARAMETER( WMAjjjLO      = 9280 )
+      PARAMETER( ZAjjjLO       = 9290 )
+      PARAMETER( ZAjjjLO_n     = 9291 )
 
 
       INTEGER WW, WPZ, WMZ, ZZ, WPA, WMA, ZA, AA
@@ -253,9 +262,9 @@
       PARAMETER( GFAA          = 4370 )
 
 
-      INTEGER WWZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, WPZA, WMZA
+      INTEGER WWZ, ZZWP, ZZWM, WWWP, WWWM, WWA, ZZA, ZZnA, WPZA, WMZA
       INTEGER WPAA, WMAA, ZAA,ZnAA, AAA
-      INTEGER WWZjLO, ZZWPjLO, ZZWMjLO, WWWPjLO, WWWMjLO, WWAjLO, ZZAjLO
+      INTEGER WWZjLO, ZZWPjLO, ZZWMjLO, WWWPjLO, WWWMjLO, WWAjLO, ZZAjLO, ZZnAjLO
       INTEGER WPZAjLO, WMZAjLO, WPAAjLO, WMAAjLO, ZAAjLO,ZnAAjLO, AAAjLO
       INTEGER WPAAj, WMAAj
       INTEGER WPAAjjLO, WMAAjjLO
@@ -292,6 +301,7 @@
       PARAMETER( WPWMhadA      = 462  )
       PARAMETER( ZZA           = 470  )
       PARAMETER( ZZhadA        = 471  )
+      PARAMETER( ZZnA          = 472  )
       PARAMETER( WPZA          = 480  )
       PARAMETER( WPhadZA       = 481  )
       PARAMETER( WPZhadA       = 482  )
@@ -328,6 +338,7 @@
       PARAMETER( WPWMhadAjLO   = 9462 )
       PARAMETER( ZZAjLO        = 9470 )
       PARAMETER( ZZhadAjLO     = 9471 )
+      PARAMETER( ZZnAjLO       = 9472 )
       PARAMETER( WPZAjLO       = 9480 )
       PARAMETER( WPhadZAjLO    = 9481 )
       PARAMETER( WPZhadAjLO    = 9482 )
@@ -462,6 +473,9 @@
       INTEGER QCDWPWPjj,QCDWPWPjjjLO,QCDWMWMjj,QCDWMWMjjjLO
       INTEGER QCDZZjj_ll,QCDZZjj_lnu,QCDZZjjjLO_ll,QCDZZjjjLO_lnu
       INTEGER QCDWPAjj, QCDWMAjj, QCDWPAjjjLO, QCDWMAjjjLO
+      INTEGER QCDZAjj_l,  QCDZAjjjLO_l, QCDAAjj, QCDAAjjjLO
+      INTEGER QCDZAjj_n,  QCDZAjjjLO_n, QCDWPWMjj
+      PARAMETER( QCDWPWMjj     =  3200 )
       PARAMETER( QCDZZjj_ll    =  3210 )
       PARAMETER( QCDZZjj_lnu   =  3211 )
       PARAMETER( QCDZZjjjLO_ll = 93210 )
@@ -474,6 +488,12 @@
       PARAMETER( QCDWMAjj      =  3280  )
       PARAMETER( QCDWPAjjjLO   = 93270  )
       PARAMETER( QCDWMAjjjLO   = 93280  )
+      PARAMETER( QCDZAjj_l    =   3290 )
+      PARAMETER( QCDZAjjjLO_l =  93290 )
+      PARAMETER( QCDZAjj_n    =   3291 )
+      PARAMETER( QCDZAjjjLO_n =  93291 )
+      PARAMETER( QCDAAjj       =  3299 )
+      PARAMETER( QCDAAjjjLO    = 93299 )
       PARAMETER( QCDWPWPjj     =  3250 )
       PARAMETER( QCDWMWMjj     =  3260 )
       PARAMETER( QCDWPWPjjjLO  = 93233 )
