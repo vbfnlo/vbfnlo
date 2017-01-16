@@ -9,6 +9,7 @@ c                                   V1 --> l1 l2, H stable
 c
 
       subroutine def_ps_qqVHj(bos1,bos2,bos21,bos22)
+          use globalvars, only: ldoblha
 
 
       implicit none
@@ -98,7 +99,6 @@ c      ptjmin = 0.0d0
      1         "  to ",f12.3," GeV" )
  72   format ( " boson has mass ",f8.2," GeV and width ",
      1         f10.4," GeV" )
- 80   format ( " configuration ", i3 )
       if (.not.ldoblha) then
         write(6,*)
         write(6,*) "--------------------PHASE SPACE VHj------------------"
@@ -117,7 +117,6 @@ c      ptjmin = 0.0d0
       end
 
 
-
 C**********************  LIPSVHj   ****************************************
 C
       SUBROUTINE LIPSVHj(N,RD,RN,
@@ -130,7 +129,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=(1+3)*3, TPI=2D0*PI )
       real*8 RD(*),RN
-      real*8 K1(0:3),K2(0:3),V(0:3,max_v,max_kin),X1,X2,W,K(0:3)
+      real*8 K1(0:3),K2(0:3),V(0:3,max_v,max_kin),X1,X2,W
       real*8 PJET(0:3,N)
 
 C Phase space generator for production of V + H + 1 jet at hadron colliders
@@ -160,7 +159,6 @@ c  Example input for p p -> W -> W H -> e ve H
 c      N = 0, NW = 0 (default)
 
 
-
 C  INPUT INFORMATION on the phase space region is transferred via the
 
       REAL*8 RM2,RMG,RM2MIN,RM2MAX, S,YJMIN,YJMAX,PTJMIN
@@ -186,8 +184,8 @@ C  local variables
       INTEGER I,MU,rdoffset,rdoffset2
 
       real*8 test, rf
-      real*8 y, y_border, tau, q(0:4,4), y2 !numbos
-      real*8 pX(0:4), sinthetaX
+      real*8 q(0:4,4) !numbos
+      real*8 pX(0:4)
       real*8 rm2max1, rm2maxw2
       double precision dotrr
       external dotrr
@@ -476,7 +474,6 @@ c         print*, "y2    = ", y2
          print *, "-----------------------"
 200      format (A,1x,f10.3)       
 201      format (A,1x,2(f10.3))
-202      format (A,1x,/,3(5(es9.0,1x),/))
 
       endif
 

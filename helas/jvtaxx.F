@@ -41,7 +41,6 @@ c      include "dimension.inc"
       q2 = q(0)**2 -q(1)**2 -q(2)**2 -q(3)**2
 
 
-
 c Gluon propagator:
 
       dv = - g /sqrTwo / q2
@@ -72,4 +71,3 @@ c tensor indices the indices of the outgoing vector current
 
       return
       end
-

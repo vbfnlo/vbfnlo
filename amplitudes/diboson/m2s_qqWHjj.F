@@ -18,7 +18,7 @@
       ! NWH: switches Higgs boson, default in amplitudes.F is 0
       integer NW,NWH
  
-      integer i,j,k,ktemp,mu,
+      integer i,j,k,mu,
      &  nlo,signpdf1,signpdf2,
      &   bos
       logical lokt(11),fincolcalc,pdfchange
@@ -744,7 +744,6 @@ c...Les Houches interface - the most propable subprocess
          borncache(9,1)=borncache145(3,1)
 
 
-
       endif
 
 ! Kinematics 4
@@ -997,7 +996,6 @@ c...Les Houches interface - the most propable subprocess
          dipole(2)=dipoleb(1)
          dipole(3)=dipolea(2)
          dipole(5)=dipoleb(2)
-
 
 
          if(.not. doSubprocesses .or. (sub_number .eq. 1)) then
@@ -1261,7 +1259,6 @@ c...Les Houches interface - the most propable subprocess
       endif
 
 
-
 !      
       if (lokt(5).and.fincolcalc) then  ! this is one of the initial-initial kinematics, e.g. eq 5.147 in Catani-Seymour
 !
@@ -1494,7 +1491,6 @@ c...Les Houches interface - the most propable subprocess
       end
 
 
-
       subroutine getyourscalesready_dibos(xi,pdfchange,pdf,pdfckm,l)
 
       implicit none
@@ -1507,7 +1503,7 @@ c...Les Houches interface - the most propable subprocess
       real*8, intent(out) :: pdf(-6:6,2),pdfckm(-6:6,2)
       real*8 pdftmp(-6:6,2)
       real*8, intent(in) :: xi(nx)
-      integer j,k,pdfsign
+      integer k,pdfsign
       logical pdfchange
       integer, intent(in) :: l
 
@@ -1542,18 +1538,17 @@ c...Les Houches interface - the most propable subprocess
       end
 
 
-
       subroutine finitecollqqREMWH(xa,x,patilde,pb,pin,mufac,quark,result,pdfchange)
 
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
-     &   xxa,pdfqxa,pdfgxa,pdfqxxa,pdfgxxa,logomx, logomxxa,logx,omx,omxxa,
+     &   xxa,pdfqxa,pdfgxa,pdfqxxa,logomx, logomxxa,logx,omx,omxxa,
      &   Logmupapb2,logmupapi2,NF,mufacsq,mufac,pdftmp(-6:6),one,inv2
       double precision pdfckm(-6:6)
 
@@ -1621,9 +1616,7 @@ c...Les Houches interface - the most propable subprocess
      -  (4.*Logx*pdfqxa*x**2)/(3.*omx**2)
 
 
-
       end
-
 
 
       subroutine finitecollgqREMWH(xa,x,patilde,pb,pin,mufac,result,pdfchange)
@@ -1632,7 +1625,7 @@ c...Les Houches interface - the most propable subprocess
 
 #include "VBFNLO/utilities/global.inc"
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
@@ -1722,7 +1715,6 @@ c...Les Houches interface - the most propable subprocess
       end
 
 
-
       subroutine finitecollqgREMWH(xa,x,patilde,pb,pin,mufac,quark,result,pdfchange)
 
       implicit none
@@ -1730,11 +1722,11 @@ c...Les Houches interface - the most propable subprocess
 #include "VBFNLO/utilities/global.inc"
 
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
-     &   xxa,pdfqxa,pdfgxa,pdfqxxa,pdfgxxa,logomx, logomxxa,logx,omx,omxxa,
+     &   xxa,pdfqxa,pdfgxa,pdfqxxa,logomx, logomxxa,logx,omx,omxxa,
      &   Logmupapb2,logmupapi2,NF,mufacsq,mufac,pdftmp(-6:6),one,inv2,zero
       parameter (one=1d0,inv2=1d0/2d0,zero=0d0)
       external dotrr
@@ -1952,7 +1944,6 @@ c     kin1 -> both, kin2 -> g
 
       dipoleres(2)=(Contract_Trjcj(dipole(0,0),borncurr)
      &             )*color*symmetry
-
 
 
       dipole(0,0)=-1d0/2d0/pipa/xika*8.*pis*alfas*CF*(2./(1.-xika+ui)-(1.+xika))
@@ -2275,7 +2266,6 @@ c
       end
 
 
-
       subroutine daibdipole145_dib(n,sel,kin,xuz,pmi,pa,pb,p,v,dipoleres)
 
       implicit none
@@ -2577,8 +2567,6 @@ c
       end
 
 
-
-
       subroutine test40_dib(n,sel,kin,xuz,pj,pmi,pa,p,v,dipoleres)
 
       implicit none
@@ -2650,7 +2638,6 @@ c
       endif
 
 
-
       do mu=0,3
          do nu=0,mu-1
             metric(mu,nu)=0d0
@@ -2694,4 +2681,4 @@ c
       end
 
 
-      
+

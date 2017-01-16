@@ -27,7 +27,6 @@ c include global variables via include-files, e.g. "procID"
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -112,7 +111,6 @@ c include global variables via include-files, e.g. "procID"
       END
 
 
-
 ********************************************************************************
 ********************************************************************************
       
@@ -126,7 +124,7 @@ c include global variables via include-files, e.g. "procID"
 #include "VBFNLO/utilities/process.inc"
 #include "VBFNLO/utilities/scales.inc"
 
-      integer i,ps_number
+      integer i
       
       Select Case(procID)
       CASE(WPZA,WMZA,WPAA,WMAA,ZAA,AAA,WPAAj,WMAAj,WPAJJ,WMAJJ,ZAJJ,ZAjj_n,
@@ -261,8 +259,6 @@ c include global variables via include-files, e.g. "procID"
          endif
 
 
-
-         
          instab_error = 0d0
          do i=1,Loops_sub_LO
            instab_error = instab_error+ 
@@ -275,7 +271,6 @@ c include global variables via include-files, e.g. "procID"
       return
 
       end
-
 
 
 ********************************************************************************
@@ -306,9 +301,7 @@ c include global variables via include-files, e.g. "procID"
       endif
 
 
-
       if(procID/1000.ne.3) then ! don't show this for QCD induced processes
-
 
 
       if (PS_Loops .gt. 1 .and. doNLO) then
@@ -412,11 +405,9 @@ c      write(*,*) ""
      &        100d0*Sqrt(final_sdev2(0,ps_number,NLO_loops+1))/final_xsec(0,ps_number,NLO_loops+1)," %"
          enddo
       end if
-      
 
-      
+
       else ! QCD processes
-
 
 
       if(doNLO) then
@@ -460,7 +451,6 @@ c add back removed RE contribution form results
       final_sdev2(:,:,0) = final_sdev2(:,:,0) + final_sdev2(:,:,NLO_loops+1)
       final_time(:,:,0) = final_time(:,:,0) + final_time(:,:,NLO_loops+1)
       endif ! doNLO
-
 
 
       endif ! QCD process

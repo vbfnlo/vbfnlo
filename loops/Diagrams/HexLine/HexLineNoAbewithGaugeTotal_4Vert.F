@@ -5,9 +5,9 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p4(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(6,3),result_color(3)
@@ -40,7 +40,7 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3)
        Complex*16 barpsi_p4(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
@@ -48,7 +48,7 @@
        Complex*16 result_graph(6,3),result_color(3),result_color_g(3)
      &            ,resulth(6,3)
        real*8 resultgauge(2)
-       Integer Div,Gauge
+       Integer Gauge
        complex*16 resulttemp
        integer k
        real*8 td(3)
@@ -102,8 +102,6 @@
         call NoAbe4vertHexLine(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2test,mup3test,mup5,mup6,alpha,musq,ngluon,posgluon,-1,resulth
      -   ,result_color_g)
-
-
 
 
        do k=1,3
@@ -197,8 +195,6 @@
         end
 
 
-
-
         subroutine  NoAbe4vertHexLineDivT(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,div,gauge)
@@ -206,7 +202,7 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3)
        Complex*16 barpsi_p4(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
@@ -259,8 +255,6 @@
        resultgauge(1)=max(td(1),td(2),td(3))
 
 
-
-
         elseif(gauge.eq.2)then
 
         do i=0,3
@@ -271,8 +265,6 @@
         call NoAbe4vertHexLineDiv(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2test,mup3test,mup5,mup6,alpha,musq,ngluon,posgluon,-1,resulth
      -   ,result_color_g,Div)
-        
-
 
 
        do k=1,3
@@ -294,9 +286,7 @@
        enddo
 
 
-
        resultgauge(2)=max(td(1),td(2),td(3))
-
 
 
         elseif(gauge.eq.3)then
@@ -311,7 +301,6 @@
      -   up2test,mup3test,mup5,mup6,alpha,musq,ngluon,posgluon,-1,resulth
      -  ,result_color_g,Div)
 
-  
 
        do k=1,3
        resulttemp=0
@@ -342,8 +331,6 @@
         call NoAbe4vertHexLineDiv(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2test,mup3test,mup5,mup6,alpha,musq,ngluon,posgluon,-1,resulth
      -   ,result_color_g,Div)
-        
- 
 
 
        do k=1,3
@@ -370,7 +357,6 @@
         
         
         end
-
 
 
 c gauge test of Hexagon using Pentagon: result_gaugeHex(1,1) and (1,2) should be the results of the Hexagons with mu2->p2 and mu3->p3; ngluons=2
@@ -435,8 +421,6 @@ c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
-
-
        subroutine NoAbe4vertHexLineTotalQ(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,Div,gauge)
@@ -444,9 +428,9 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 #include "VBFNLO/loops/Utilities/GaugeTest.inc"
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p4(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(6,3),result_color(3)
@@ -455,8 +439,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cccccccccccccccccccccccccccccccccccccccccccccccccc
        logical printGaugePrec, gaugetrue
        parameter (printGaugePrec = .false.)
-       real*8 comGaugePrec
-     
+
 
        integer jtemp
        common/ hexgaugeValue/t
@@ -537,7 +520,6 @@ c       endif
        if(tdble.gt.Accuracy) then
 
 
-
           call NoAbe4vertHexLineTotal_QUAD(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph_Q,result_color_Q,resultgauge_Q,Div,gauge)
@@ -612,14 +594,10 @@ c       print*, "WardH QUAD:1g",
       endif ! gaugetrue
 
 
-
           end subroutine
 
 
-
-
 #ifdef WITH_QUAD
-
 
 
        subroutine NoAbe4vertHexLineTotal_QUAD(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
@@ -628,9 +606,9 @@ c       print*, "WardH QUAD:1g",
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p4(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(6,3),result_color(3)
@@ -664,7 +642,7 @@ c       print*, "WardH QUAD:1g",
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3)
        Complex*16 barpsi_p4(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
@@ -672,7 +650,7 @@ c       print*, "WardH QUAD:1g",
        Complex*16 result_graph(6,3),result_color(3),result_color_g(3)
      &            ,resulth(6,3)
        real*8 resultgauge(2)
-       Integer Div,Gauge
+       Integer Gauge
        complex*16 resulttemp
        integer k
        real*8 td(3)
@@ -726,8 +704,6 @@ c       print*, "WardH QUAD:1g",
         call NoAbe4vertHexLine_QUAD(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2test,mup3test,mup5,mup6,alpha,musq,ngluon,posgluon,-1,resulth
      -   ,result_color_g)
-
-
 
 
        do k=1,3
@@ -819,8 +795,6 @@ c       print*, "WardH QUAD:1g",
         
         
         end
-
-
 
 
 cFC        subroutine  NoAbe4vertHexLineDivT_QUAD(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
@@ -994,7 +968,6 @@ cFC        endif
 cFC        
 cFC        
 cFC        end
-
 
 
 c gauge test of Hexagon using Pentagon: result_gaugeHex(1,1) and (1,2) should be the results of the Hexagons with mu2->p2 and mu3->p3; ngluons=2

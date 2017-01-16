@@ -35,7 +35,7 @@ c
 
       implicit none
       real * 8  p1sq, p2sq, s12
-      complex*16 B0_23, B0_13, B0_12, C0,ct
+      complex*16 C0,ct
       real*8 r1, r2r1, det,p1p2,r10,r21
 
       real*8 BijR_12(2,3),BijR_13(2,3),BijR_23(2,3)
@@ -50,7 +50,7 @@ c
       real*8 z11,z12,z21,z22,iz11,iz22
 
       real*8 Rr(2),RI(2),PRr(2),PRI(2)
-      REAL*8 Inv18,Inv36
+
       real*8 B21r_12,B21r_13,B21r_23
       real*8 B21I_12,B21I_13,B21I_23
       real*8 B22r_12,B22r_13,B22r_23
@@ -61,7 +61,7 @@ c
       integer i,j
       Logical Singular
       common/DetCountML/Singular
-      integer Div
+
       p1p2 = (s12 - p1sq - p2sq)*0.5d0
 
       m0sq=m0*m0
@@ -121,7 +121,6 @@ c       If( (deter/detAbs).le.1d-5) Singular=.true.
        B21I_23= BijI_23(1,2)
        B22I_23= BijI_23(2,2)
 
-  
 
       If(abs(p1sq).gt.abs(p1p2)) then
           z11=2d0*p1sq
@@ -281,8 +280,6 @@ c       CijI(1,1) = RI(1)
        CijI(2,3) = RI(2)
 
 
-
-
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c 0000
 
@@ -329,7 +326,6 @@ c      Cij(8,4)=Rr(1)
 c       Rr(1)=(Pr(1)-z12*Rr(2))*iz11 
 c      Cij(8,4)=Rr(1)
        CijI(7,4)=RI(2)
-
 
 
        return
@@ -489,7 +485,6 @@ c       CijI(1,1) = RI(1)
        CijI(2,3) = RI(2)
 
 
-
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c 0000
 c       Cij(9,4)=(4*m0sq + 4*m1sq + 4*m2sq - p1sq - 
@@ -552,7 +547,6 @@ c      Cij(8,4)=Rr(1)
 c       Rr(1)=(Pr(2)-z12*Rr(2))*iz11 
 c      Cij(8,4)=Rr(1)
        CijI(7,4)=RI(2)
-
 
 
        endif

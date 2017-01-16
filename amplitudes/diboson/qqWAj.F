@@ -1,8 +1,8 @@
 ****************subroutine QQWAj *************************************
 c
-c	Johannes Bellm, <johannes@particle.physik.uni-karlsruhe.de>
-c	Initial version:  2011 April
-c	Last modified: 
+c        Johannes Bellm, <johannes@particle.physik.uni-karlsruhe.de>
+c        Initial version:  2011 April
+c        Last modified: 
 c
 c       Adapted from qqVVj by Vera Hankele
 c
@@ -22,14 +22,14 @@ c  This code includes only real emission contributions, i.e.
 c
 c      return udwa = |M_real|^2   etc.
 c
-c	fpials is attached only in the end of the code
+c        fpials is attached only in the end of the code
 c
 c index j = 2:3 indicates, whether g is emitted from 
-c		upper line (j=2) or lower line (j=3)
-c	l is the gluon polarization in the kartesian basis (l=1,2)
-c		l=0 stands for building blocks without gluon emission
-c	k is the process ID (1:udwa)
-c	isig1/isig3 are the helicities of parton1/2 
+c                upper line (j=2) or lower line (j=3)
+c        l is the gluon polarization in the kartesian basis (l=1,2)
+c                l=0 stands for building blocks without gluon emission
+c        k is the process ID (1:udwa)
+c        isig1/isig3 are the helicities of parton1/2 
 c
 c*********************************************************************
 
@@ -54,91 +54,57 @@ c variables for the main part of the program
       real*8 fpials(2:3), fpi
       parameter (fpi=4d0*pi)
 
-      double precision  pbar(0:3,2+n_v), qbar(0:4), fac, musq, q(0:3)
-      double precision  udwa, res(2),resv(2),udwag
-      double precision  p(0:3,2+n_v), pq(0:4,2),p21(0:4),
-     1                  pww(0:4), fqp(0:4,2), fqm(0:4,2)
-      double precision pgWP(0:4,2), pgWM(0:4,2), pWP(0:4,2), pWM(0:4,2),
-     1                 pgZb(0:4,2), pgAb(0:4,2), pZ(0:4,2), pA(0:4,2)
+      double precision  pbar(0:3,2+n_v), qbar(0:4), q(0:3)
+      double precision  udwa, res(2), udwag
+      double precision  p(0:3,2+n_v), pq(0:4,2)
 
-      integer  sign(2+n_v), gsign, mu, i, jj, k, kk, id, isig
-      integer  ifl(2), js1, js3, is, bos
+      double precision pgWP(0:4,2), pWP(0:4,2),
+     1                 pgAb(0:4,2), pA(0:4,2)
+
+      integer  sign(2+n_v), gsign, mu, i, k, isig
+      integer  ifl(2), bos
       integer  l   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
-      integer jmin, jmax
-      logical jlog2,jlog3
-      double complex prop21(4,2:3), prop43(4,2:3),
-     1		     prop_pm(4,2:3),prop_mp(4,2:3)
 
 
       double complex mat(2,-1:1,0:2,9),temp, temp1
-      double complex mata(2,-1:1,0:2,9),
-     1 		     matz(2,-1:1,0:2,9)
-      double complex mm(2,-1:1,2),m5(3,3:4,2:3,2)
-      double complex ga,gb,gc,gd
-      double complex maa, maz, mza, mzz, mww5, mww6
-      double complex  mpm(4,2:3,2), mmp(4,2:3,2)
-      double complex  m1u,m2u,m1l,m2l,z1u,z1l
-      double complex  m1(-1:1,2,3), m2(-1:1,2,3),m3(-1:1,2,3),m4(-1:1,2,3)
-      double complex  matot,ratot,raz,raa! for checks only
+      double complex mata(2,-1:1,0:2,9)
+
+      double complex mm(2,-1:1,2)
+
+      double complex  m2(-1:1,2,3),m4(-1:1,2,3)
+      double complex  raz! for checks only
       double precision eps(0:3,2) ! g in kartesian basis 
-      double complex psi(2,-1:1,4), psiWM(2,-1:1,2), psiWP(2,-1:1,2),
-     1               psiZb(2,-1:1,2), psiAb(2,-1:1,2)
-      double complex psiWMg(2,-1:1, 2,2), psiWPg(2,-1:1, 2,2),
-     1               psiZg(2,-1:1, 2,2),psiAg(2,-1:1, 2,2)
-      double complex jqq(0:5,-1:1,2,0:2), braketg(2,-1:1,2,2)
+      double complex psi(2,-1:1,4), psiWP(2,-1:1,2),
+     1               psiAb(2,-1:1,2)
+      double complex psiWPg(2,-1:1, 2,2),
+     1               psiAg(2,-1:1, 2,2)
+      double complex braketg(2,-1:1,2,2)
       double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2), 
-     &               jqqa(0:5,-1:1,2), jh1(0:5,-1:1), jh2(0:5,-1:1)
-      double complex jqqgWP(0:5,-1:1,2,0:3), jqqgWM(0:5,-1:1,2,0:3),
-     1               jqqgZ(0:5,-1:1,2,0:3), jqqgA(0:5,-1:1,2,0:3)
-      double complex jwp(0:5,-1:1,-1:1,4,0:2), jwm(0:5,-1:1,-1:1,4,0:2)
-      double precision fq(0:4,4),dummy(0:4),
-     1 		       bq(0:4,4)
-      double complex bkjqq(2,-1:1,-1:1,4,2:3,0:2),
-     1		     bkjqqg(2,-1:1,-1:1,4,2:3,0:2),
-     1 		     gbkjqq(2,-1:1,-1:1,4,2:3,0:2)
-      double complex braketgWP(2,-1:1,2,2),braketgWM(2,-1:1,2,2),
-     1               braketgZ(2,-1:1,2,2),braketgA(2,-1:1,2,2)   
-      double precision  pwpg(0:4,4),pwmg(0:4,4)
-      double precision  pga(0:4,4),pgz(0:4,4),
-     3			pag(0:4,4),pzg(0:4,4)
-      double complex psia(2,-1:1,-1:1,4), psiz(2,-1:1,-1:1,4)
-      double complex ja(0:5,-1:1,-1:1,4,0:2), jz(0:5,-1:1,-1:1,4,0:2),
-     1		     jag(0:5,-1:1),jga(0:5,-1:1),jg0(0:5,-1:1),
-     1		     jgz(0:5,-1:1),jzg(0:5,-1:1),jgm(0:5,-1:1)
-      double complex jwgi(0:5,-1:1),jgwi(0:5,-1:1),jwg0i(0:5,-1:1),
-     1		     jwgii(0:5,-1:1),jgwii(0:5,-1:1),jwg0ii(0:5,-1:1)
-      double complex epsa0(0:3),epsz0(0:3),epsa(0:3),epsz(0:3),
-     1               epsNCwp(0:5,-1:1,3:4,2,2:3,0:2),
-     2		     epsNCwm(0:5,-1:1,3:4,2,2:3,0:2)
-      double complex qepswp(3:4,2:3,0:2),qepswm(3:4,2:3,0:2)
-      double complex jj21m(0:2),jj21p(0:2),jj43m(0:2),jj43p(0:2)
-      double complex zp(4:5,2:3),zm(4:5,2:3)
-      double complex zpm(2:3,2),zmp(2:3,2)
-      double complex ma(-1:1,2,0:2), mz(-1:1,2,0:2), mw(-1:1,2,0:2)
-      double complex propt(-1:1,-1:1,6,2:3,2)
-      double complex  zm2i(2:4)
+     &               jqqa(0:5,-1:1,2)
+      double complex jqqgWP(0:5,-1:1,2,0:3),
+     1               jqqgA(0:5,-1:1,2,0:3)
+
+      double complex braketgWP(2,-1:1,2,2),
+     1               braketgA(2,-1:1,2,2)   
+      double precision  pwpg(0:4,4)
+      double precision  pag(0:4,4)
+
+      double complex mw(-1:1,2,0:2)
+
       double complex contract_Tjj,! contract_T1j,contract_T2j,
-     1 		     dotcc, dotrc, dotqj, s1c
+     1                      dotcc, dotrc, dotqj, s1c
       external contract_Tjj, !contract_T1j,contract_T2j,
-     1 	       dotcc, dotrc, dotqj, s1c
+     1                dotcc, dotrc, dotqj, s1c
       integer lh
       double complex madgr(9,-1:1,-1:1,2),m1kb(2,-1:1,9),m2kb(2,-1:1,9) !checks
-      double complex m1hj(-1:1,2:3),m1kj(2,2:3)
-      double complex m1haj(-1:1,2:3),m1hzj(-1:1,2:3),
-     1 		     m1hu(-1:1,2:3),m1hl(-1:1,2:3),m1hc(-1:1),
-     1 		     m1hua(-1:1,2:3),m1hla(-1:1,2:3),
-     1 		     m1huz(-1:1,2:3),m1hlz(-1:1,2:3),
-     1 		     m1kaj(2,2:3),m1kzj(2,2:3),
-     1 		     m1ku(2,2:3),m1kl(2,2:3),m1kc(2),
-     1 		     m1kua(2,2:3),m1kla(2,2:3),m1kc2(2),m1kc3(2),
-     1 		     m1kuz(2,2:3),m1klz(2,2:3),m1hc2(-1:1),m1hc3(-1:1)
+
       double complex im
       parameter (im = (0d0,1d0))
       logical ldebug, linit, lerror, ldebugm
-      integer n,m
+
      
-      save ifl, zm2i, linit
-	
+      save ifl, linit
+        
       data linit /.true./, lerror /.true./, ldebug /.false./
       parameter(ldebugm = .false.) 
 
@@ -169,7 +135,7 @@ c define flavors of external quarks for the 2 NC subprocesses
 
       do k = 1,1
          do isig = -1,1,2
-	    do l = 0,2
+            do l = 0,2
                do i = 1,9
                   mat(k,isig,l,i)  = 0
                   mata(k,isig,l,i) = 0
@@ -185,7 +151,7 @@ c define the internal momenta
             p(mu,i) = pbar(mu,i)*sign(i)
          enddo
 
-	 q(mu) = qbar(mu)*gsign
+         q(mu) = qbar(mu)*gsign
 
       enddo
 
@@ -203,7 +169,7 @@ c     psi(1,isig1,2) = <2|_isig
 
 c  Get the gluon polarization vector and the gluon emission spinors
 
-      do l = 1,2	! 2 gluon polarizations
+      do l = 1,2        ! 2 gluon polarizations
 
          call polvec(qbar,l,eps(0,l))  ! get gluon pol.vectors
 
@@ -215,7 +181,7 @@ c         enddo
 
 c--- End of QCD gaugecheck -------------------------------------------    
 
-         do isig = -1,-1         ! not needed in this process	! fermion helicity 
+         do isig = -1,-1         ! not needed in this process        ! fermion helicity 
 
 c     NOTES for bras and kets: .true. if psi is a 2-spinor of the chi
 c     form as output by psi0m, .false. otherwise.  the last entry is
@@ -360,7 +326,7 @@ c     either side of the ffV vertex:
      &              psi(1,-1,1),p(0,1),jqagq(0,-1,l))
 
             do mu = 0,5                                               
-	       jqqa(mu,isig,l) = jqgaq(mu,isig,l) + jqagq(mu,isig,l)
+               jqqa(mu,isig,l) = jqgaq(mu,isig,l) + jqagq(mu,isig,l)
 c                            = (<2|gam.mu|q,1>+<2,q|gam.mu|1>)_l,isig)
             enddo
          enddo
@@ -449,7 +415,7 @@ c sum the graphs, square them and map them onto udwa
 
          res(1) = 0
          do isig = -1,-1         ! not needed in this process
- 	    do l = 1,2
+             do l = 1,2
                mm(1,isig,l) = 0
                do i = 1,7
                   mm(1,isig,l) = mm(1,isig,l) +  mat(1,isig,l,i)  

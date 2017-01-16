@@ -50,29 +50,26 @@ c     electroweak couplings are taken from KOPPLN
       double precision  pbar(0:3,2+n_v)
       double precision  uuwwz, ddwwz, res(2),resv(2)
       double precision  p(0:3,2+n_v), pwpz(0:4), pwmz(0:4),
-     1                  pwm(0:4), pww(0:4), fqp(0:4,2), fqm(0:4,2),
-     2                  fqz(0:4,2), fq(0:4,2)
-      double precision  fqmz(0:4,2), fqmp(0:4,2), fqzm(0:4,2)
-      integer  sign(2+n_v), nlo, mu, i, j, k, isig, N
+     1                  fqp(0:4,2), fqm(0:4,2),
+     2                  fqz(0:4,2)
+
+      integer  sign(2+n_v), nlo, mu, i, k, isig, N
       integer  ifl(2)
       double complex psiwp(2,-1:1,2), psiwm(2,-1:1,2),
      1               psia(2,-1:1,2), psiz(2,-1:1,2),
      2               jwp(0:5,-1:1,2), jwm(0:5,-1:1,2),
      3               ja(0:5,-1:1,2), jz(0:5,-1:1,2)
-      double complex psiwmz(2,-1:1,2), psiwmwp(2,-1:1,2),
-     1               psizwm(2,-1:1,2), 
-     2               jwmz(0:5,-1:1,2), jwmwp(0:5,-1:1,2),
-     3               jzwm(0:5,-1:1,2)
+
       double complex j5pm(6), j5mp(6), jbpm(6), jbmp(6)
       double complex temp, temp1
       double complex mat(2,-1:1,10), matv(2,-1:1,10), mborn1, mborn2
       double complex madgr(10,-1:1,2)
       double complex mm(2,-1:1), mv(2,-1:1), zero
       double complex ma, mz, m1, m2, m3, m4
-      double complex mva, mvz, mv1, mv2, mv3, mv4
+      double complex mv1, mv2, mv3, mv4
       double complex psi(2,-1:1,2), jqq(0:5,-1:1)
       double complex dotcc, s1c, dotrc
-      double precision dotrr, psumsq, temp2
+      double precision dotrr, psumsq
       external dotcc, s1c, dotrr, dotrc, psumsq
       save ifl
       parameter (zero = (0d0,0d0) )
@@ -100,11 +97,11 @@ c variables for virtual corrections
       save pentcount, pentcount2
 
 c variables for implementation of the pentagon routine
-      double complex resultgauge, resultgaugeb, borntest(3), penttest(3)
+      double complex borntest(3), penttest(3)
       double precision minus_qp(0:3),minus_qm(0:3),minus_qz(0:3)
       double precision minus_qww(0:3), minus_qwmz(0:3), minus_qwpz(0:3)
       double precision p1(0:3), p2(0:3) 
-      double complex pentgauge1(1:3), pentgauge2(1:3)
+
       double complex pentcontr1(3), pentcontr2(3), pentcontr3(3)
 
 c variables for implementation of the box routine
@@ -114,8 +111,8 @@ c variables for implementation of the box routine
       double complex cte
 
 c variables for test purposes
-      double precision qmu(0:3), sc, q1sqc, q2sqc, tc, p1p2
-      double precision psq, qsq, lsq, tsq, pq, pl, pt, ql, qt, lt
+
+
       integer NW !NW = 1 means Narrow width approximaion
                  !NW = 0 means full calculation
 

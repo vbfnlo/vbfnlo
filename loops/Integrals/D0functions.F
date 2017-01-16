@@ -156,8 +156,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-
-
 c    ***********   D00m_fin(s,t,musq)   *************
 c
 c Scalar box with MASSLESS PROPAGATORS and with external kinematics: 
@@ -182,11 +180,11 @@ c          N_ep = i/(4 pi)^2 (4 pi)^ep Gamma(1+ep) (musq)^(-ep)
       function D00m_fin(s,t,musq)
       implicit none
       double complex D00m_fin
-      double precision s,t,m4sq,musq
-      double precision ms,mt,mm4sq
-      double complex lnms,lnmt,lnmm4sq,lnsot
-      double complex li2arg1,li2arg2
-      double precision arg1,arg2
+      double precision s,t,musq
+      double precision ms,mt
+      double complex lnms,lnmt,lnsot
+
+
       double complex ipi
       parameter (ipi=(0d0,3.14159265358979323846264338328d0))
       double precision pi,pi2, pi2o3t5
@@ -299,13 +297,6 @@ c     (m4sq/t.lt.0d0)
 
       D01m_fin = prefactor * ris
       end
-
-
-
-
-
-
-
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -440,7 +431,6 @@ c          N_ep = i/(4 pi)^2 (4 pi)^ep Gamma(1+ep) (musq)^(-ep)
       external theta, dilog, im_part, sgn,eta3
 
 
-
       if (musq.lt.0d0) then
          write(*,*) 
      -        'POSSIBLE ERROR IN D02m_fine: SCALE MUSQ LESS THAN ZERO!!'
@@ -487,7 +477,6 @@ c     (m3sq/t.lt.0d0)
       else
          li2arg2 = dilog(arg2)
       endif
-     
 
 
 c     (m1sq/s.lt.0d0)
@@ -510,8 +499,6 @@ c     (m3sq/s.lt.0d0)
       im_b = m3sq/t*(1d0/m3sq-1d0/t)
       im_ab =m1sq*m3sq/(s*t)*(1d0/m1sq-1d0/s+1d0/m3sq-1d0/t)
 
-
-       
 
 c     m1sq*m3sq/(s*t)  < 0
       if (arg5.gt.1d0) then
@@ -553,8 +540,6 @@ c      write(*,*) "ris", ris
       end
 
 
-
-
 c    ***********   D03m_fin(s,t,m2sq,m3sq,m4sq,musq)   *************
 c
 c Scalar box with MASSLESS PROPAGATORS and with external kinematics: 
@@ -581,14 +566,12 @@ c          N_ep = i/(4 pi)^2 (4 pi)^ep Gamma(1+ep) (musq)^(-ep)
       implicit none
       double complex D03m_fin
       double precision s,t,m2sq,m3sq,m4sq,musq
-      double complex D03m_fin_BDK,D03m_fin_DN
+      double complex D03m_fin_BDK
 
       D03m_fin = D03m_fin_BDK(s,t,m2sq,m3sq,m4sq,musq)
 c      D03m_finpaco = D03m_fin_DN(s,t,m2sq,m3sq,m4sq,musq)
       
       end
-
-
 
 
       function D03m_fin_BDK(s,t,m2sq,m3sq,m4sq,musq)
@@ -612,7 +595,6 @@ c      D03m_finpaco = D03m_fin_DN(s,t,m2sq,m3sq,m4sq,musq)
       external theta, dilog, sgn, im_part,eta3
 
 
-      double precision test
       integer icount, bcount
       data icount /0/
       data bcount /0/
@@ -713,9 +695,6 @@ c      endif
       end
 
 
-
-
-
 c    ***********   D04m_fin(s,t,m1sq,m2sq,m3sq,m4sq,musq)   *************
 c
 c Scalar box with MASSLESS PROPAGATORS and with external kinematics: 
@@ -774,7 +753,7 @@ c
       double complex eta_k34ok13(2),eta_k24ok12(2)
       double complex lik34ok13(2), logk34ok13(2)
       double complex lik24ok12(2), logk24ok12(2)
-      double complex D04m_fin_real
+
 
       external dilog, eta3, theta, sgn      
 
@@ -884,7 +863,6 @@ c     complex dilog
       enddo
 
 
-
 c      write(*,*) '=========>', 
 c     #     (lnk12+lnk13-lnk14-lnk23)*(-ln_mx(1)+ln_mx(2))
 
@@ -900,7 +878,6 @@ c     #     (lnk12+lnk13-lnk14-lnk23)*(-ln_mx(1)+ln_mx(2))
       D04m_fin = total/a/m2**2/(x(1)-x(2))
       
       end
-
 
 
 ********************************************************************************
@@ -939,7 +916,6 @@ c        FUNCTION D04(P1,P2,P3,P4,P12,P23,M1,M2,M3,M4)
         complex*16 D1,D2,D3,D4
 
         EXTERNAL VLI2, sqe, etas,V_ETA
-        
 
 
         D1=DCMPLX(0d0,0d0)
@@ -1209,11 +1185,27 @@ c	IF( DIMAG(R(1,3)).EQ.0D0 ) THEN !org (makes troubles in squark pentagons)
      *		      -R(1,3)*K(1,2)+K(2,3)
 	   A4 = ((K(2,4)-2D0*R(2,4))*XX0(I)
      *		      -R(2,4)*K(1,4)+K(1,2))/DD
-	   L1 = LOG( A1-ABS(A1)*IEPS )
-     	   L2 = LOG( A2+ABS(A2)*IEPS*G(I)*SIGN(1D0,DREAL(R(1,3))
-     *				        	  *DIMAG(RS(2,4))) )
-	   L3 = LOG( A3-ABS(A3)*IEPS )
-	   L4 = LOG( A4+ABS(A4)*IEPS*G(I)*SIGN(1D0,DIMAG(RS(2,4))) )
+           if (A1.ne.0) then
+	     L1 = LOG( A1-ABS(A1)*IEPS )
+           else
+             L1 = -1d99
+           endif
+           if (A2.ne.0) then
+             L2 = LOG( A2+ABS(A2)*IEPS*G(I)*SIGN(1D0,DREAL(R(1,3))
+     *                                            *DIMAG(RS(2,4))) )
+           else
+             L2 = -1d99
+           endif
+           if (A3.ne.0) then
+             L3 = LOG( A3-ABS(A3)*IEPS )
+           else
+             L3 = -1d99
+           endif
+           if (A4.ne.0) then
+             L4 = LOG( A4+ABS(A4)*IEPS*G(I)*SIGN(1D0,DIMAG(RS(2,4))) )
+           else
+             L4 = -1d99
+           endif
 
 c org. code:
 c$$$	   D04 = D04 

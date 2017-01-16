@@ -6,7 +6,7 @@ c
       implicit none
       real*16 dilog_QUAD
       real*16 zin
-      real*16  z, u, ans, zext,rm,test
+      real*16  z, ans, zext,test
       real*16 fac
     
 
@@ -34,7 +34,7 @@ c Use instead the complex version: function li2_QUAD(zin)
       real*16  d24,d26,d28,d30,d32,d34,d36,d38
       real*16  I2,I4,I9,I16,I25,I36,I49,I64,I81,I100,I121,I144
       REAL*16  I169
-      real*16  t,t1,t2,t4,t6,t8,t16,t32
+      real*16  t,t1,t2,t4,t8,t16,t32
   
       parameter (b0=1q0,            d0 =1q0,      c0= b0/d0,I2=1q0/2q0, I4=1/4q0 )
       parameter (b1=-1q0/2q0,       d1 =2q0,      c1= b1/d1,I9=1q0/9q0)
@@ -105,7 +105,6 @@ c
       fac = 1q0
       zext=0q0
 
- 
 
       if(z.lt.0q0) then  
         t=Log(-z)

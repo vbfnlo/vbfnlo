@@ -53,7 +53,7 @@ c variables for the main part of the program
       double precision  udwzaj, res(2)
       double precision  p(0:3,2+n_v)
 
-      integer  sign(2+n_v), gsign, mu, i, j, k, isig, ps_number
+      integer  sign(2+n_v), gsign, mu, i, isig, ps_number
       integer  ifl(2), lh, l, bos
 
       double precision fqa(0:4,2), fqp(0:4,2), fqz(0:4,2)
@@ -61,25 +61,23 @@ c variables for the main part of the program
       double precision pgWP(0:4,2), pgA(0:4,2), pWPg(0:4,2)
       double precision pAg(0:4,2), pwpz(0:3), pwpa(0:3), pzpa(0:3)
       double precision eps(0:3,2) ! g in kartesian basis
-      double complex psi(2,-1:1,2), psiWM(2,-1:1,2), psiWP(2,-1:1,2)
+      double complex psi(2,-1:1,2), psiWP(2,-1:1,2)
       double complex psia(2,-1:1,2), psiz(2,-1:1,2), psiaz(2,-1:1,2)
       double complex braketg(2,-1:1,2,2)
       double complex braketgWP(2,-1:1,2,2), braketgAZ(2,-1:1,2,2)
       double complex braketgA(2,-1:1,2,2), braketgZ(2,-1:1,2,2)
-      double complex psiWPg(2,-1:1, 2,2), psiWMg(2,-1:1, 2,2)
+      double complex psiWPg(2,-1:1, 2,2)
       double complex psiAg(2,-1:1,2,2), psiZg(2,-1:1,2,2)
       double complex psiAZg(2,-1:1,2,2)
       double complex mat(2,-1:1,2,10), madgr(10,-1:1,-1:1,2)
-      double complex matt(2,-1:1,2,10)
+
       double complex mm(2, -1:1,2)
       double complex m1kb(2,-1:1,10), m2kb(2,-1:1,10), temp, temp1
       double complex m1(3,2), m2(3,2), m3(3,2), m4(3,2)
-      double complex ma, mz, mw
-      double complex ja(0:5,-1:1,4,2), jz(0:5,-1:1,4,2)
-      double complex jwm(0:5,-1:1,4,2), jwp(0:5,-1:1,4,2)
-      double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2)
-      double complex jqqa(0:5,-1:1,2)
-   
+      double complex mw
+
+      double complex jwp(0:5,-1:1,4,2)
+
 
       double complex im
       double complex dotcc, s1c, dotrc

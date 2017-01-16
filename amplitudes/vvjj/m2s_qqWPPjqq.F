@@ -23,6 +23,7 @@ c
      &                   xuz,   !in:  x, u, z for subtraction terms
      &                   m2s    !out: |M|^2*pdf1*pdf2 
      &                        )
+          use globalvars, only: ldoblha
       implicit none
 c
 c declare input/output variables
@@ -61,7 +62,7 @@ c
 c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
       real*8 x1,x2
-      real*8 q12(0:4,3), q34(0:4,3), qvv(0:3), !qww(0:3), 
+      real*8 q12(0:4,3), q34(0:4,3), !qww(0:3), 
      1 	     lnQomu(2:3), omxi(2:3), 
      1       Ax(2:3), Bx(2:3), Cx(2:3), Dxi(2:3), tgs2oqsq(2:3), 
      2       ln1mxi, lnrat, z, lnz
@@ -69,8 +70,8 @@ c
 c declare local variables
 c
 c
-      real*8 q_sf, wtot(0:3)
-      real*8 qa3,qa5,q35, dotrr
+      real*8 q_sf
+      real*8 dotrr
       external dotrr
 
       integer init/0/, I, J, mu
@@ -78,8 +79,8 @@ c
 c
 c declare variables for summation process
 c
-      INTEGER LFLAVR(5:6), ires, nmaxold, FSIGN(4+max_v), gsign
-      save LFLAVR, nmaxold
+      INTEGER ires, nmaxold, FSIGN(4+max_v), gsign
+      save nmaxold
 
       integer physToDiag(5), nlo, nmin, nmax, nproc(8)
       save nmin, nmax, nproc
@@ -90,7 +91,7 @@ c     = 2,3: sutraction terms for emision off 12 or 34 line
 c     = 0  : subtracted result which drives integration, i.e
 c res(*,0) = res(*,1)-res(*,2)-res(*,3)
       real*8 res(maxnumsubproc,0:3)
-      integer sj
+
 c
 c declare parton distribution variables
 c
@@ -99,7 +100,11 @@ c
 c define program switches
 c
       logical ldebug
+c      common/ dbug / ldebug	!store "debugging value"
       parameter (ldebug=.false.)
+c      data ldebug /.true./		!output debug information
+      logical lcoll,lsoft	! parameters for subtraction tests
+      parameter (lcoll=.false.,lsoft=.false.)
 c      
       common /hcount / h
       real*8 weight,rnumb,RandomNumber
@@ -267,7 +272,6 @@ c
            enddo                  !j
 
 
-
          else !SM      
 
 c leptonic tensors
@@ -308,6 +312,26 @@ c
 
       endif                     ! end of bos = ...
 
+c
+c  ---------------------------------------------------------------------
+c
+cc  debugging:
+cc
+cc collinear subtraction:
+c	if (lcoll) then 
+c      	    ldebug = lok(1).and.lok(2).and.lok(3).and.
+c     #      	    dotrr(p(0,5,1),p(0,1,1)).lt.1
+c	    if (ldebug) print*,"coll.dot.:",lok(1),lok(2),lok(3),
+c     #      		       dotrr(p(0,5,1),p(0,1,1))
+cc      
+cc soft subtraction:	
+c       elseif (lsoft) then		       
+c	   ldebug = lok(1).and.lok(2).and.lok(3).and.p(0,5,1).lt.1	
+c	   if (ldebug) print*,"soft.mom.:",lok(1),lok(2),lok(3),p(0,5,1)   
+c       endif
+c
+c  ---------------------------------------------------------------------
+c
 c scales and als:
       if (.false.) then
          write(6,*) " "
@@ -707,7 +731,6 @@ c         ENDDO
       enddo  ! j loop
 
 
-
 c
 c ---------------------------------------------------------------
 c debugging:
@@ -745,6 +768,7 @@ c
 c*****************************************************************
       subroutine wbf_wpp3j(xi,p,v,physToDiag,fsign,gsign,bos,
      1                    nlo,lok,xuz,pdf,res,nmin,nmax)
+          use globalvars, only: ldoblha
 
       implicit none
 
@@ -804,16 +828,16 @@ c  helicity selection
       integer jsig, jsig1, jsig3, jsig5
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 c
-      real*8 pbar(0:3,4+max_v), qbar(0:4), y,q2,v2,q3,v3,sub(2:3), 
+      real*8 pbar(0:3,4+max_v), qbar(0:4),q2,v2,q3,v3,sub(2:3), 
      1       e_in(2), dotrr, gs2(2:3), polcolq, polcolg
-      real*8 xa
+
       integer iflav(5), diagToPhys(5), FL_ZHg
       external dotrr, FL_ZHg
 
-      logical loldp, ldebug, lres
+      logical loldp, ldebug
       data e_in/0d0,0d0/
       save e_in,loldp, gs2,polcolq,polcolg
-      integer i,if1,if2,icc1,j,k,mu, fc(6), fcb(6)
+      integer i,if1,if2,j,k,mu, fc(6), fcb(6)
       
       parameter (ldebug=.false.)
 
@@ -822,9 +846,9 @@ c
       real*8 ucdsb(-1:1,-1:1,2:3),ucds(0:3)
       real*8 dsucb(-1:1,-1:1,2:3),dsuc(0:3)
       integer if1min,if2min
-      integer fs3,fs4
+
       save ucdsb, dsucb
-      integer i1,i2,ifmin,lw,qw,bosi
+
       real*8 ucds_temp(0:3)  ! for debugging
 
 

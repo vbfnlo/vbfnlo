@@ -96,11 +96,11 @@ c*******************************************************************************
         Real*8 Dij1234R(13,3)
         Real*8 Dij1234I(13,3)
        Complex*16 SMB(4),SMG(4) ,Fa(5),F(27),K(1)
-       Real*8 FI(27),FR(27),FaI(5),FaR(5),PaR(9),PaI(9),KI(1),KR(1)
+       Real*8 FI(27),FR(27),PaR(9),PaI(9),KI(1),KR(1)
        Complex*16 barpsi_p4(2),psi_p1(2),mup2(0:3),mup3(0:3)
        Complex*16 SC1c,SC3rcc,SC1r,dotrc,dotcc,result(5),resultg(5)
        Complex*16 resultgauge(2),resultgaugeb(2),resultb 
-       Real*8 musq,p4t,Is12,P(18) 
+       Real*8 musq,Is12,P(18) 
        EXTERNAL   dotrc,dotcc,SC1c,SC1r,SC3rcc
        Integer alpha,comp,gaugetest,ngluon,posgluon
        common/invarianetsmm/p1sq,p2sq,p3sq,p4sq,s12,s23,Is12

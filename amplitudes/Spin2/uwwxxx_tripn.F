@@ -16,10 +16,10 @@ c
       implicit none
       double complex wp(6), wm(6) 
 
-      integer i, j, k, l, m, n, a, s
+      integer i, j, k, l, m, n
 
       double complex yww(6,4), uww(18)
-      double precision p1(4), p2(4), pT(4), p1p2
+      double precision pT(4)
       double precision MET(4,4), B(4,4,4,4), mf(4) 
       double complex cZero, d
       double precision rZero, rTwo, rOne
@@ -132,7 +132,6 @@ c      with upper and lower indices:
 
          enddo
       enddo
-
 
 
       uww(1) = yww(1,1)

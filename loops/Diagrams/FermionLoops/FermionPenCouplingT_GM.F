@@ -43,7 +43,7 @@ c       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
 c       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
        Complex*16 result(2),resultE,resultO
-       Real*8 musq,resultgauge,resultgaugeE,resultgaugeO
+       Real*8 musq,resultgauge
        integer gauge,comp,Div
 
        cpl(3)=za3
@@ -63,8 +63,6 @@ c       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
         resultO=result(2)
 
        end
-
-
 
 
         subroutine FermionPenCouplingT_GM345(cpl,m1,m2,m3,p1,p2,p3,p4,p5,
@@ -111,9 +109,9 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
        Real*8 cpl(10),m1,m2,m3
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
-       Complex*16 result,resulttemp,resulttemp2
+       Complex*16 result
        Real*8 musq,resultgauge
-       integer gauge,i,comp,Div
+       integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionPenCoupling_G345(cpl,m1,m2,m3,p1,p2,p3,p4,p5,
@@ -137,11 +135,11 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
        Complex*16 mup5test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(1,6),resultn1(1,6)
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4,temp5
+       Complex*16 result,resultn1(1,6)
+       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
        real*8 resultgauge_cp
        complex*16 result_cp
-       complex*16 rg1(1,6),rg2(1,6),rg3(1,6),rg4(1,6),rg5(1,6)
+       complex*16 rg1(1,6),rg2(1,6),rg3(1,6),rg4(1,6)
        integer gauge,i,comp
        common/GramSwitch/GramCS,GramDS
        logical GramCS,GramDS
@@ -159,8 +157,8 @@ c For QUAD
        complex*16 result_Q
        complex*16 resultn1_Q(1,6)
        complex*16 rg1_Q(1,6),rg2_Q(1,6),rg3_Q(1,6)
-       complex*16 rg4_Q(1,6),rg5_Q(1,6)
-       logical dble1
+       complex*16 rg4_Q(1,6)
+
         Sensitivity=GaugeAccuracyPenL
         FinalSensitivity=GaugeAccuracyPenL
      
@@ -170,7 +168,6 @@ c For QUAD
         GramDS=.false.
         resultgauge=1d99
 c        dble1=.false.
-
 
 
 c        if(dble1) then
@@ -194,7 +191,6 @@ cc        pause
 c        endif
 c       endif
 c       stop
-
 
 
       if (gauge.gt.0) then
@@ -367,7 +363,7 @@ c             p4sq=dotrr(p1,p1)
           print*, "rg3",rg3(1,1)
           print*, "rg4",rg4(1,1)
           print*, "result1",resultn1(1,2)
-          print*, "result2",resultn1(1,3)
+          print*, "result",resultn1(1,3)
           print*, "result3",resultn1(1,4)
           print*, "result4",resultn1(1,5)
 
@@ -401,7 +397,6 @@ c       pause
             endif   ! FinalSensitivity
 
 
-
 #ifdef WITH_QUAD
             if(abs(resultgauge).gt.FinalSensitivity) then
 cfc            print*, "HERE_QUAD"
@@ -423,15 +418,13 @@ cfc            write(*,'(A3,I1,A2,E25.16,E25.16)') "p5(",i,")=",p5(i)
 cfc             enddo
 
 
-
         resultgauge_Q=1d99
 
        call  PenEvenGSim_QUAD(cpl,m1,m2,m3,p1,
      & p2,p3,p4,p5,mup1,mup2,mup3,mup4,mup5,musq,comp,resultn1_Q)
        
 
-       result_Q=resultn1_Q(1,1)    
-     
+       result_Q=resultn1_Q(1,1)
 
 
 c Call for Gauge
@@ -509,13 +502,8 @@ c     &  Real(resultgauge_cp),Abs(CMPLX(result_cp)/CMPLX(result)-1),CMPLX(result
 #endif
 
 
-
-
        endif  ! Sensitivity
        endif ! Gauge
-
-
-
 
 
 cFC       print*, "comp",comp
@@ -618,7 +606,7 @@ cFC          print*, "temp4",temp4
 cFC          print*, "temp5",temp5
 cFC          pause
 cFC          print*, "result1",resultn(1)
-cFC          print*, "result2",resultn(2)
+cFC          print*, "result",resultn(2)
 cFC          print*, "result3",resultn(3)
 cFC          print*, "result4",resultn(4)
 cFC          print*, "result5",resultn(5)
@@ -636,12 +624,12 @@ cFCcccccccccccccccccccc    ODD PART cccccccccccccccccccccccccccccccccccccccccccc
        Real*8 cpl(10),m1,m2,m3
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
-       Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 mup5test(0:3)
-       Complex*16 result,resulttemp,resulttemp2
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4,temp5
-       complex*16 rg1,rg2,rg3,rg4,rg5
-       integer gauge,i,comp,Div
+
+
+       Complex*16 result
+       Real*8 musq,resultgauge
+
+       integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionPenCouplingO_G345(cpl,m1,m2,m3,p1,p2,p3,p4,p5,
@@ -665,7 +653,7 @@ cFCcccccccccccccccccccc    ODD PART cccccccccccccccccccccccccccccccccccccccccccc
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
        Complex*16 mup5test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(1,6),resultn1(1,6)
+       Complex*16 result,resultn1(1,6)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4,temp5
        real*8 resultgauge_cp
        complex*16 result_cp
@@ -689,8 +677,8 @@ c For QUAD
        Real*8 resultgauge_q
        complex*16 result_Q
        complex*16 resultn1_Q(1,6)
-       complex*16 rg1_Q(1,6),rg2_Q(1,6),rg3_Q(1,6)
-       complex*16 rg4_Q(1,6),rg5_Q(1,6)
+       complex*16 rg2_Q(1,6),rg3_Q(1,6)
+       complex*16 rg5_Q(1,6)
 
 
         Sensitivity=GaugeAccuracyPenL
@@ -860,7 +848,7 @@ c             p4sq=dotrr(p1,p1)
           print*, "rg3",rg3(1,1)
           print*, "rg4",rg4(1,1)
           print*, "result1",resultn1(1,2)
-          print*, "result2",resultn1(1,3)
+          print*, "result",resultn1(1,3)
           print*, "result3",resultn1(1,4)
           print*, "result4",resultn1(1,5)
 
@@ -892,10 +880,6 @@ c             p4sq=dotrr(p1,p1)
 c       pause
               endif  ! degug
             endif   ! FinalSensitivity
-
-
-
-
 
 
 #ifdef WITH_QUAD
@@ -944,7 +928,6 @@ c Gauge 5
           endif
 
           resultgauge_Q=max(temp2,temp3,temp5)
-
 
 
         if(resultgauge_Q.lt. FinalSensitivity) then

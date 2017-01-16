@@ -2,16 +2,12 @@ dnl name / version / bugreports / tarball name
 AC_INIT([VBFNLO],[3.0.0beta2],[vbfnlo@itp.kit.edu],[VBFNLO])
 
 dnl sanity check
-AC_CONFIG_SRCDIR([src/vbfnlo_main.F])
+AC_CONFIG_SRCDIR([src/vbfnlo_main.F90])
 
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl place build and install tools in here
 AC_CONFIG_AUX_DIR([config])
-
-if test -n "$F77" ; then
-  AC_MSG_ERROR([F77 is set internally. Please use FC to specify a non-default Fortran compiler.])
-fi
 
 dnl fix warning of automake 1.12
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
@@ -24,10 +20,10 @@ if test "x$FCFLAGS" = "x" ; then
 fi
 FFLAGS=$FCFLAGS
 if test "x$CXXFLAGS" = "x" ; then
-  CXXFLAGS=-O2
+    CXXFLAGS="-O2"
 fi
 if test "x$CCFLAGS" = "x" ; then
-  CCFLAGS=-O2
+    CCFLAGS="-O2"
 fi
 
 AC_CHECK_TOOL(SWVERS, sw_vers)
@@ -48,8 +44,9 @@ fi
 
 dnl initialization
 AC_LANG([Fortran])
-AM_INIT_AUTOMAKE([1.9 gnu -Wall])
-AC_PROG_LIBTOOL
+AM_INIT_AUTOMAKE([1.9 gnu -Wall subdir-objects foreign])
+AC_PROG_LIBTOOL([disable-static])
+AC_PROG_F77()
 AC_PROG_FC([], 95)
 if test "x$FC" == "x" ; then
   AC_MSG_ERROR([No Fortran compiler found.])
@@ -62,10 +59,7 @@ AC_PROG_CXX
 dnl to setup include dir
 AC_PROG_LN_S
 
-
-
 dnl check which fortran compiler is used and set compiler specific flags
-
 VBFNLO_CHECK_FC
 
 
@@ -91,9 +85,9 @@ dnl check for requested VBFNLO features
 
 VBFNLO_CHECK_KK
 
-VBFNLO_CHECK_SPIN2
-
 VBFNLO_CHECK_NLO
+
+VBFNLO_CHECK_MPI
 
 VBFNLO_CHECK_MADGRAPH
 
@@ -108,18 +102,17 @@ dnl the check for GSL depends on VBFNLO_CHECK_KK
 VBFNLO_CHECK_GSL
 
 
-dnl check if this is a developer version (in this case display SVN/GIT revision)
-
+dnl check if this is a developer version (in this case display GIT revision)
 VBFNLO_VERSIONSTRING
 
+dnl set naming conventions for Fortran-C linking
+VBFNLO_CFORTRANLINK
 
 dnl set compiler flags, depending on requested options
-
 VBFNLO_SET_FLAGS
 
-dnl set naming conventions for Fortran-C linking
-
-VBFNLO_CFORTRANLINK
+dnl check for presence of pdflatex for Manual
+VBFNLO_CHECK_LATEX
 
 
 dnl Makefiles to be generated
@@ -156,12 +149,14 @@ AC_CONFIG_FILES([include/Makefile
 		 amplitudes/vvj/Makefile	
 		 amplitudes/vvjj/Makefile
 		 amplitudes/hjjj/Makefile	
+         regress/Makefile
 		 lib/Makefile
 		 src/Makefile
+                 doc/Makefile 
 		 Makefile])
 
 AC_CONFIG_HEADERS([utilities/VBFNLOConfig.h])
 
-VBFNLO_SUMMARY
-
 AC_OUTPUT
+
+VBFNLO_SUMMARY

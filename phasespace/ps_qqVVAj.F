@@ -15,6 +15,7 @@ c
 c****************************************************************************
 
       SUBROUTINE DEF_PS_QQVVAj(bos1,bos2,bos3)
+          use globalvars, only: ldoblha
 
       IMPLICIT NONE
 
@@ -23,8 +24,6 @@ c****************************************************************************
 
       INTEGER bos(3), i, bos1, bos2, bos3
       common /psvvabos/bos
-
-c set up variables in common block BLIPSI for call of LIPSVVVJ
 
       REAL*8 RM2, RMG, RM2MIN, RM2MAX, S, PTJMIN
       REAL*8 RM2MINX, RM2MAXX, M2MIN, RM2MINY, RM2MAXY
@@ -97,7 +96,6 @@ c set up variables in common block BLIPSI for call of LIPSVVVJ
       endif
 
 
-
 c cutoff for numerical purposes
 
       m2min = 0.01d0**2
@@ -162,11 +160,6 @@ c                      V(*,5) = photon
 c           Pjet(0:3)  4-vector for the jet, assumed massless
 c           W          the weight of the phase space point
 c
-c
-c
-c  INPUT INFORMATION on the phase space region is transferred via the
-c    common block /BLIPSI/
-c
 c****************************************************************************
 
       SUBROUTINE LIPSVVAJ(N,RD,RN,
@@ -181,7 +174,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=15, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:3)
+      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       REAL*8 Pjet(0:3,N)
       REAL*8 Pjets(0:3,N+1)
 
@@ -201,24 +194,16 @@ c
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER I, MU
 
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw
+      REAL*8 Y, Y2
+
+
+      REAL*8 test
+      REAL*8 tau, q(0:4,3)  
+      REAL*8 pX(0:4)
+
+
       REAL*8 RM2MAXV1, RM2MAXV2
 
 !      DOUBLE PRECISION xxwidth, xxm
@@ -382,7 +367,7 @@ c****************************************************************************
       REAL*8 TPI
       PARAMETER (nrandl=15, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:3)
+      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       REAL*8 Pjet(0:3)
       REAL*8 RM2, RMG, RM2MIN, RM2MAX, S, PTC
       REAL*8 RM2MINX, RM2MAXX, RM2MINY, RM2MAXY, M2MIN
@@ -393,23 +378,14 @@ c****************************************************************************
       DOUBLE PRECISION CLR, XM2, XMG, B, VE, A
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
-      INTEGER I, J, II, JJ, MU, ic
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw
+      INTEGER MU
+      REAL*8 Y, Y2
+
+
+      REAL*8 test
+      REAL*8 tau, q(0:4,3)  
+      REAL*8 pX(0:4)
+
 
       INTEGER bos(3)
       common /psvvabos/bos
@@ -586,7 +562,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=15, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:3)
+      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       REAL*8 Pjet(0:3)
       REAL*8 RM2, RMG, RM2MIN, RM2MAX, S, PTC
       REAL*8 RM2MINX, RM2MAXX, RM2MINY, RM2MAXY, M2MIN
@@ -597,23 +573,14 @@ c
       DOUBLE PRECISION CLR, XM2, XMG, B, VE, A
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
-      INTEGER I, J, II, JJ, MU, ic
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw
+      INTEGER MU
+      REAL*8 Y, Y2
+
+
+      REAL*8 test
+      REAL*8 tau, q(0:4,3)  
+      REAL*8 pX(0:4)
+
 
       INTEGER bos(3)
       common /psvvabos/bos

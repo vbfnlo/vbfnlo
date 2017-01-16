@@ -86,7 +86,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       Complex*32 F(166,5) 
       real*16 x1,x2,x3,x4,x5,X,IX,IX2,IX3,IX4,IX5,IPX5,IX35 
       real*16 Y(5,5,5),P(1356) 
-      Integer k,i1,i2,i3 
+      Integer k 
       p6s=p1s+p2s+p3s+p4s+p5s+2q0*(p1p2+p1p3+p1p4 
      -+p1p5+p2p3+p2p4+p2p5+p3p4+p3p5+p4p5) 
       p5p6=-(p1p5+p2p5+p3p5+p4p5+p5s)  

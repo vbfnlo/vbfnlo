@@ -47,7 +47,7 @@ c Modified:30/7/2008
        Complex*16 result_color_g(2),resulth(3)
        real*8 resultgauge(2)
        Real*8 musq,musqIn
-       Integer alpha,comp,ngluon,posgluon, Div,gauge,i
+       Integer alpha,comp,ngluon,posgluon,gauge,i
        Common/musqInv/musq
        musq=musqIn
 c************************************************************************************
@@ -64,7 +64,6 @@ c*******************************************************************************
     
         call  NoAbe2gaPenLine(p1,p2,p3,p4,p5,barpsi_p3,psi_p1,mup2test
      &   ,mup4,mup5,alpha,musq,ngluon,posgluon,-1,resulth,result_color_g)
-
 
 
         if(abs(resulth(3)).gt.abs(resulth(1))) then
@@ -87,11 +86,6 @@ C        resultgauge(1)=(abs((resulth(1)+resulth(2))/(-resulth(3)) -1d0))
 
 
         end
-
-
-
-
-
 
 
        subroutine NoAbe2gaPenLineDivT(p1,p2,p3,p4,p5,barpsi_p3,psi_p1,mup2
@@ -129,7 +123,6 @@ c*******************************************************************************
      &   ,mup4,mup5,alpha,musq,ngluon,posgluon,-1,resulth,result_color_g,Div)
 
 
-
         if(abs(resulth(3)).gt.abs(resulth(1))) then
            if(abs(resulth(3)).gt.abs(resulth(2))) then
               resultgauge(1)=(abs((resulth(1)+resulth(2))/(-resulth(3)) -1d0))
@@ -160,7 +153,6 @@ c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
-
        subroutine NoAbe2gaPenLineTotalQ(p1,p2,p3,p4,p5,barpsi_p3,psi_p1,mup2
      &   ,mup4,mup5,alpha,musqIn,ngluon,posgluon,comp,result_graph,result_color,resultgauge,Div,gauge)
 c ************************************************************************************
@@ -180,13 +172,12 @@ c Modified:30/7/2008
        Common/musqInv/musq
 
 cccccccccccccccccccccccccccccccccccccc 
-       real*8 t,tdble,tquad,td
-       logical Ward,ward_q
+       real*8 tdble,tquad
        Complex*16 result_graph_Q(3),result_color_Q(2)
        real*8 resultgauge_Q(2)
        integer jtemp
        logical gaugetrue
-       logical wardidtest_Q(0:8),wardpAbe(2)
+       logical wardpAbe(2)
        common/wardpenNoAbe/wardpAbe
 
        if(gauge.eq.1) then
@@ -339,8 +330,6 @@ c*******************************************************************************
        end
 
 
-
-
        subroutine NoAbe2gaPenLineT_QUAD(p1,p2,p3,p4,p5,barpsi_p3,psi_p1,mup2
      &   ,mup4,mup5,alpha,musqIn,ngluon,posgluon,comp,result_graph,result_color,resultgauge,gauge)
 c ************************************************************************************
@@ -357,7 +346,7 @@ c Modified:30/7/2008
        Complex*16 result_color_g(2),resulth(3)
        real*8 resultgauge(2)
        Real*8 musq,musqIn
-       Integer alpha,comp,ngluon,posgluon, Div,gauge,i
+       Integer alpha,comp,ngluon,posgluon,gauge,i
        Common/musqInv/musq
        musq=musqIn
 c************************************************************************************
@@ -392,10 +381,8 @@ c        print*,"result2g",resulth(3)
              resultgauge(1)=(abs((resulth(1)+resulth(3))/(-resulth(2)) -1d0)) 
             ENDIF
         ENDIF
-    
 
 
-        
        endif
 
 

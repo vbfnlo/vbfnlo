@@ -28,6 +28,7 @@ c     This routine is intended to do the initialization of parameters that
 c     are process dependent. However process dependent coupling parameters
 c     should be set in InitCouplings, or shouldn"t they?
 c*************************************************************************
+          use globalvars, only: ldoblha
       implicit none
 #include "global.inc"
 #include "process.inc"
@@ -432,11 +433,11 @@ c first set phase space dimension & NLO parameters
          NLO_Loops = 0  
          lflavr(5) = 2   ! lflavr is not used at all in qqbqqi for ibos=1
          lflavr(6) = 2 
-         call qqbqqi(1,lflavr)     
+         call qqbqqi(1,lflavr) 
          photoncut_vbf = .true.
 ********************************
 * VBF Higgs + photon processes *
-********************************
+********************************    
       CASE(HAjj, HAjj_AA, HAjj_mu, HAjj_tau, HAjj_bbar)
          n_p = 4
          if (ldoblha .and. (process.eq.HAjj)) then
@@ -804,7 +805,11 @@ c first set phase space dimension & NLO parameters
      7      WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar 
      &    )
          n_p = 2
-         n_v = 4 !4 for higgsdecay, 3 if higgs stable
+         if (ldoblha .and. (process == WPH .or. process == WMH)) then
+            n_v = 3
+         else
+            n_v = 4 !4 for higgsdecay and vbfnlo-internal (fake decay products)
+         endif
          PS_dimension = 3*(n_p+n_v-nx-1)
          hasNLO=.true.
          NLO_LOOPS = 1
@@ -994,7 +999,11 @@ c first set phase space dimension & NLO parameters
      7      WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar 
      &    )
          n_p = 3
-         n_v = 4 !l, v, H; 4 for higgsdecay, 3 if no higgs decay
+         if (ldoblha .and. (process == WPHJ .or. process == WMHJ)) then
+            n_v = 3
+         else
+            n_v = 4 !4 for higgsdecay and vbfnlo-internal (fake decay products)
+         endif
          PS_dimension = 3*(n_p+n_v-nx-1)
          hasNLO=.true.  ! process at nlo
          !NLO_Loops = 1
@@ -1031,7 +1040,11 @@ c first set phase space dimension & NLO parameters
      7      WMHJJLO, WMHJJLO_AA, WMHJJLO_mu, WMHJJLO_tau, WMHJJLO_bbar
      &    )
          n_p = 4
-         n_v = 4
+         if (ldoblha .and. (process == WPHJJLO .or. process == WMHJJLO)) then
+            n_v = 3
+         else
+            n_v = 4 !4 for higgsdecay and vbfnlo-internal (fake decay products)
+         endif
          PS_dimension = 3*(n_p+n_v-nx-1)
          hasNLO=.false.
       CASE(      
@@ -1327,13 +1340,10 @@ c first set phase space dimension & NLO parameters
 
 #endif
 
-
       CASE DEFAULT
-         print*,"In initprocess no initialization "//
-     &          "of phase space dimension."
-         print*,"Maybe the desired process was not "//
-     &          "included in configure-option enable_processes!"
-         stop
+         print*,"In initprocess no initialization of phase space dimension."
+         print*,"Maybe the desired process was not included in configure-option enable_processes!"
+         stop 2
       END SELECT
 
 c set n_kin, the number of different kinematics to n_kin = 1
@@ -1645,14 +1655,14 @@ c*************************************************************************
       character*250 filename
       character*8 istr 
       character*250 line
-      integer iunit, i1, id, i2, ier
-      logical doprint, lreference
+      integer iunit
+      logical lglobalprint, lreference
 
       character*250 GetInputPath
       external GetInputPath
 
       iunit=10
-      doprint = .false.
+      lglobalprint = .false.
 
 c Open file
       filename = "procinfo.dat"
@@ -1674,24 +1684,24 @@ c Open file
 c read lines and print infos
  50   CONTINUE
       read(iunit,"(a100)",end=99,err=99) line    
-      if (index(line,"##").eq.1) doprint = .false.
+      if (index(line,"##").eq.1) lglobalprint = .false.
       if (INDEX(line,istr).eq.1) then 
-         doprint = .true.
+         lglobalprint = .true.
          lreference = .false.
          goto 50
       endif
-      if (doprint .and. .not.printrefonly) print *, line(1:len_trim(line))
+      if (lglobalprint .and. .not.printrefonly) print *, trim(line)
 c get "References:" lines separately if printrefonly
       if (INDEX(line,"Reference").eq.1) then
         lreference = .true.
         if (printrefonly) line = line((index(line,":")+2):len_trim(line))
-        if (doprint .and. printrefonly) then
+        if (lglobalprint .and. printrefonly) then
           write(*,*)'-----------------------------------------------------------------'
           write(*,*)'Process-specific references (please cite as well if appropriate):'
         endif
       endif
-      if (doprint .and. printrefonly .and. lreference) then
-        print *, line(1:len_trim(line))
+      if (lglobalprint .and. printrefonly .and. lreference) then
+        print *, trim(line)
       endif
 
       GOTO 50
@@ -1701,11 +1711,10 @@ c get "References:" lines separately if printrefonly
       RETURN
  77   CONTINUE
       print *
-      print *," Error in reading ",filename(1:len_trim(filename))
+      print *," Error in reading ",trim(filename)
       print *
       RETURN
       END
-
 
 
 #ifdef WITH_NLO
@@ -1896,7 +1905,6 @@ c ifdef with_nlo
 #endif
 
 
-
 c*************************************************************************  
       subroutine proc_assignment
 c*************************************************************************  
@@ -1908,6 +1916,8 @@ c               process:  process identifier
 c               finallep_default:  default numbers for final state leptons
 c     
 c*************************************************************************  
+          use globalvars, only: ldoblha
+          use readinput, only: read_logical
       implicit none
 
       logical kkswitch, anomswitch
@@ -1917,7 +1927,6 @@ c*************************************************************************
 #include "cuts.inc"
 
 
-      
       if (ldoblha) then
         kkswitch = .false.
         anomswitch = .false.
@@ -1938,7 +1947,7 @@ c*************************************************************************
 c ********************************
 
       SELECT CASE(procID)
-      CASE ( QCDAAjj,QCDWPWMjj) 
+      CASE (QCDAAjj) 
          print*," "
          print*,"This process is not yet implemented (procID = ",procID,") !"
          print*," "
@@ -3494,7 +3503,7 @@ c*************************************************************************
 #include "mssm.inc"
 
 c local variables
-      integer nl, ordered(7), i, j, k, m, lep(7)
+      integer nl, ordered(7), i, j, k, lep(7)
       integer i2
 
       nl = N_lepton
@@ -3582,22 +3591,23 @@ c remove second lepton from list
             j = j+1
           endif
        enddo
-      do i = 1, N_lepton
-      ! note: not valid for processes with hadronic decays:
-      ! here index of leptons and index of v do not correspond...
-      ! would have to add a shift (at the moment for WPlepWMhad +2)
-      ! but atm this is only used in WAAj...
-         select case(finallep(i))
-         case(11,-11)
-            particle_mass(i) = ME
-         case(13,-13)
-            particle_mass(i) = MM
-         case(15,-15)
-            particle_mass(i) = ML
-         case default
-            particle_mass(i) = 0d0
-         end select
-      enddo
+       ! the following code is unused
+      ! do i = 1, N_lepton
+      ! ! note: not valid for processes with hadronic decays:
+      ! ! here index of leptons and index of v do not correspond...
+      ! ! would have to add a shift (at the moment for WPlepWMhad +2)
+      ! ! but atm this is only used in WAAj...
+      !    select case(finallep(i))
+      !    case(11,-11)
+      !       particle_mass(i) = ME
+      !    case(13,-13)
+      !       particle_mass(i) = MM
+      !    case(15,-15)
+      !       particle_mass(i) = ML
+      !    case default
+      !       particle_mass(i) = 0d0
+      !    end select
+      ! enddo
 
 c$$$      do i = 1, N_lepton
 c$$$         write(*,*)'i, finallep(i) =', i, finallep(i)
@@ -3880,7 +3890,6 @@ c$$$      stop
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -3997,7 +4006,6 @@ c (LEPTONS = 99 in vbfnlo.dat) has been chosen
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -4014,7 +4022,7 @@ c (LEPTONS = 99 in vbfnlo.dat) has been chosen
 
       character*50 lep(n_lepton+N_decayquarks), speclep, lepout, pin1, pin2, pin
       character*100 pout
-      character*50 pouts1, pouts2, pouts3
+      character*50 pouts1, pouts2
 
       integer i
 
@@ -4195,36 +4203,36 @@ c HIGGS via VBF and gluon fusion
          pout = "H jj --> b bbar jj"
          if (LOplusjet) pout = "H jjj --> b bbar jjj"
       CASE(Hjj_WW,GFHjj_WW, Hjj_WPhadWM, Hjj_WPWMhad)
-         pout = "H jj --> W+ W- jj --> "//lepout(1:len_trim(lepout))//
+         pout = "H jj --> W+ W- jj --> "//trim(lepout)//
      &        " jj"
          if (LOplusjet) pout = "H jjj --> W+ W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(Hjj_ZZ_ll,Hjj_ZZ_lnu,GFHjj_ZZ_ll,GFHjj_ZZ_lnu, Hjj_ZZhad)
-         pout = "H jj --> Z Z jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = "H jj --> Z Z jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = "H jjj --> Z Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
 
       CASE(Sp2jj_WW)
        if (with_spin2) then
-         pout = "spin2 jj --> W+ W- jj --> "//lepout(1:len_trim(lepout))//
+         pout = "spin2 jj --> W+ W- jj --> "//trim(lepout)//
      &        " jj"
          if (LOplusjet) pout = "spin2 jjj --> W+ W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
         else
-         pout = "H jj --> W+ W- jj --> "//lepout(1:len_trim(lepout))//
+         pout = "H jj --> W+ W- jj --> "//trim(lepout)//
      &        " jj"
          if (LOplusjet) pout = "H jjj --> W+ W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
         endif
       CASE(Sp2jj_ZZ_ll,Sp2jj_ZZ_lnu)
        if (with_spin2) then
-         pout = "spin2 jj --> Z Z jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = "spin2 jj --> Z Z jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = "spin2 jjj --> Z Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
        else
-         pout = "H jj --> Z Z jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = "H jj --> Z Z jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = "H jjj --> Z Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
        endif
 
 c HIGGS PAIR VIA VBF
@@ -4255,99 +4263,99 @@ c HIGGS + JET VIA VBF
          pout = "H jjj --> b bbar jjj"
          if (LOplusjet) pout = "H jjjj --> b bbar jjjj"
       CASE(Hjjj_WW)
-         pout = "H jjj --> W+ W- jjj --> "//lepout(1:len_trim(lepout))//
+         pout = "H jjj --> W+ W- jjj --> "//trim(lepout)//
      &        " jjj"
          if (LOplusjet) pout = "H jjjj --> W+ W- jjjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjjj"
+     &        trim(lepout)//" jjjj"
       CASE(Hjjj_ZZ_ll,Hjjj_ZZ_lnu)
-         pout = "H jjj --> Z Z jjj --> "//lepout(1:len_trim(lepout))//
+         pout = "H jjj --> Z Z jjj --> "//trim(lepout)//
      &        " jjj"
          if (LOplusjet) pout = "H jjjj --> Z Z jjjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjjj"
+     &        trim(lepout)//" jjjj"
 
 c SINGLE VECTOR BOSON via VBF
       CASE(Zjj_l, Zjj_nu)
-         pout = " Z jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " Z jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(WPjj)
-         pout = " W+ jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " W+ jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " W+ jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(WMjj)
-         pout = " W- jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " W- jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(Ajj)
          pout = " A jj"
          if (LOplusjet) pout = " A jjj"
 
 c DIBOSON PRODUCTION via VBF
       CASE(WPWMjj, WPhadWMjj, WPWMhadjj)
-         pout = " W+ W- jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " W+ W- jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " W+ W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(ZZjj_ll, ZZjj_lnu, ZZhadjj)
-         pout = " Z Z jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " Z Z jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " Z Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(WPZjj, WPhadZjj, WPZhadjj)
-         pout = " W+ Z jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " W+ Z jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " W+ Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(WMZjj, WMhadZjj, WMZhadjj)
-         pout = " W- Z jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " W- Z jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " W- Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(WPAjj)
-         pout = " W+A jj --> "//lepout(1:len_trim(lepout))//" A jj"
+         pout = " W+A jj --> "//trim(lepout)//" A jj"
          if (LOplusjet) pout = " W+A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj"
+     &        trim(lepout)//" A jjj"
       CASE(WMAjj)
-         pout = " W-A jj --> "//lepout(1:len_trim(lepout))//" A jj"
+         pout = " W-A jj --> "//trim(lepout)//" A jj"
          if (LOplusjet) pout = " W-A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj"
+     &        trim(lepout)//" A jjj"
       CASE(ZAjj,ZAjj_n)
-         pout = " Z A jj --> "//lepout(1:len_trim(lepout))//" A jj"
+         pout = " Z A jj --> "//trim(lepout)//" A jj"
          if (LOplusjet) pout = " Z A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj"
+     &        trim(lepout)//" A jjj"
       CASE(AAjj)
          pout = " spin2 jj --> A A jj"
          if (LOplusjet) pout = " spin2 jj --> A A jjj"
       CASE(WPWPjj, WPhadWPjj)
-         pout = " W+ W+ jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " W+ W+ jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " W+ W+ jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
       CASE(WMWMjj, WMhadWMjj)
-         pout = " W- W- jj --> "//lepout(1:len_trim(lepout))//" jj"
+         pout = " W- W- jj --> "//trim(lepout)//" jj"
          if (LOplusjet) pout = " W- W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj"
+     &        trim(lepout)//" jjj"
 
 c DIBOSON PRODUCTION
       CASE(WW, GFWW, WPhadWMlep, WPlepWMhad, GFWPhadWMlep, GFWPlepWMhad)
-         pout = " W+ W- --> "//lepout(1:len_trim(lepout))
+         pout = " W+ W- --> "//trim(lepout)
          if (LOplusjet) pout = " W+ W- j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(WPZ, WPhadZ, WPZhad)
-         pout = " W+ Z --> "//lepout(1:len_trim(lepout))
+         pout = " W+ Z --> "//trim(lepout)
          if (LOplusjet) pout = " W+ Z j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(WMZ, WMhadZ, WMZhad)
-         pout = " W- Z --> "//lepout(1:len_trim(lepout))
+         pout = " W- Z --> "//trim(lepout)
          if (LOplusjet) pout = " W- Z j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(ZZ, GFZZ, ZZhad, GFZZhad)
-         pout = " Z Z --> "//lepout(1:len_trim(lepout))
+         pout = " Z Z --> "//trim(lepout)
          if (LOplusjet) pout = " Z Z j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(WPA)
-         pout = " W+ A --> "//lepout(1:len_trim(lepout))//" A"
+         pout = " W+ A --> "//trim(lepout)//" A"
          if (LOplusjet) pout = " W+ A j --> "//
-     &        lepout(1:len_trim(lepout))//" A j"
+     &        trim(lepout)//" A j"
       CASE(WMA)
-         pout = " W- A --> "//lepout(1:len_trim(lepout))//" A"
+         pout = " W- A --> "//trim(lepout)//" A"
          if (LOplusjet) pout = " W- A j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
 
       ! Higgsstrahlung
       CASE(
@@ -4368,9 +4376,9 @@ c DIBOSON PRODUCTION
      &        TRIM(lepout)//" j"
 
       CASE(ZA, GFZA)
-         pout = " Z A --> "//lepout(1:len_trim(lepout))//" A"
+         pout = " Z A --> "//trim(lepout)//" A"
          if (LOplusjet) pout = " Z A j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(AA, GFAA)
          pout = " A A "
          if (LOplusjet) pout = " AA j"
@@ -4388,70 +4396,70 @@ c single W production
 
 c TRIBOSON PRODUCTION
       CASE(WWZ, WPhadWMZ, WPWMhadZ, WWZhad)
-         pout = " W+ W- Z --> "//lepout(1:len_trim(lepout))
+         pout = " W+ W- Z --> "//trim(lepout)
          if (LOplusjet) pout = " W+ W- Z j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(ZZWP, ZZhadWP, ZZWPhad)
-         pout = " Z Z W+ --> "//lepout(1:len_trim(lepout))
+         pout = " Z Z W+ --> "//trim(lepout)
          if (LOplusjet) pout = " Z Z W+ j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(ZZWM, ZZhadWM, ZZWMhad)
-         pout = " Z Z W- --> "//lepout(1:len_trim(lepout))
+         pout = " Z Z W- --> "//trim(lepout)
          if (LOplusjet) pout = " Z Z W- j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(WWWP, WPhadWMWP, WPWMhadWP)
-         pout = " W+ W- W+ --> "//lepout(1:len_trim(lepout))
+         pout = " W+ W- W+ --> "//trim(lepout)
          if (LOplusjet) pout = " W+ W- W+ j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(WWWM, WMhadWPWM, WMWPhadWM)
-         pout = " W+ W- W- --> "//lepout(1:len_trim(lepout))
+         pout = " W+ W- W- --> "//trim(lepout)
          if (LOplusjet) pout = " W+ W- W- j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(ZZZ, ZZZhad)
-         pout = " ZZZ --> "//lepout(1:len_trim(lepout))
+         pout = " ZZZ --> "//trim(lepout)
          if (LOplusjet) pout = " ZZZ j --> "//
-     &        lepout(1:len_trim(lepout))//" j"
+     &        trim(lepout)//" j"
       CASE(WWA, WPhadWMA, WPWMhadA)
-         pout = " W+ W- A --> "//lepout(1:len_trim(lepout))//" A"
+         pout = " W+ W- A --> "//trim(lepout)//" A"
          if (LOplusjet) pout = " W+ W- A j --> "//
-     &        lepout(1:len_trim(lepout))//" A j"
+     &        trim(lepout)//" A j"
       CASE(ZZA, ZZhadA, ZZnA)
-         pout = " ZZA --> "//lepout(1:len_trim(lepout))//" A"
+         pout = " ZZA --> "//trim(lepout)//" A"
          if (LOplusjet) pout = " ZZA j --> "//
-     &        lepout(1:len_trim(lepout))//" A j"
+     &        trim(lepout)//" A j"
       CASE(WPZA, WPhadZA, WPZhadA)
-         pout = " W+ Z A --> "//lepout(1:len_trim(lepout))//" A"
+         pout = " W+ Z A --> "//trim(lepout)//" A"
          if (LOplusjet) pout = " W+ Z A j --> "//
-     &        lepout(1:len_trim(lepout))//" A j"
+     &        trim(lepout)//" A j"
       CASE(WMZA, WMhadZA, WMZhadA)
-         pout = " W- Z A --> "//lepout(1:len_trim(lepout))//" A"
+         pout = " W- Z A --> "//trim(lepout)//" A"
          if (LOplusjet) pout = " W- Z A j --> "//
-     &        lepout(1:len_trim(lepout))//" A j"
+     &        trim(lepout)//" A j"
       CASE(WPAA)
-         pout = " W+ A A --> "//lepout(1:len_trim(lepout))//" A A"
+         pout = " W+ A A --> "//trim(lepout)//" A A"
          if (LOplusjet) pout = " W+ A A j --> "//
-     &        lepout(1:len_trim(lepout))//" A A j"
+     &        trim(lepout)//" A A j"
       CASE(WMAA)
-         pout = " W- A A --> "//lepout(1:len_trim(lepout))//" A A"
+         pout = " W- A A --> "//trim(lepout)//" A A"
          if (LOplusjet) pout = " W- A A j --> "//
-     &        lepout(1:len_trim(lepout))//" A A j"
+     &        trim(lepout)//" A A j"
       CASE(ZAA,ZnAA)
-         pout = " Z A A --> "//lepout(1:len_trim(lepout))//" A A"
+         pout = " Z A A --> "//trim(lepout)//" A A"
          if (LOplusjet) pout = " Z A A j --> "//
-     &        lepout(1:len_trim(lepout))//" A A j"
+     &        trim(lepout)//" A A j"
       CASE(AAA)
          pout = " A A A "
          if (LOplusjet) pout = " A A A j "
 
 c TRIBOSON PLUS JET
       CASE(WPAAj)
-         pout = " W+ A A j --> "//lepout(1:len_trim(lepout))//" A A j"
+         pout = " W+ A A j --> "//trim(lepout)//" A A j"
          if (LOplusjet) pout = " W+ A A jj --> "//
-     &        lepout(1:len_trim(lepout))//" A A jj"
+     &        trim(lepout)//" A A jj"
       CASE(WMAAj)
-         pout = " W- A A j --> "//lepout(1:len_trim(lepout))//" A A j"
+         pout = " W- A A j --> "//trim(lepout)//" A A j"
          if (LOplusjet) pout = " W- A A jj --> "//
-     &        lepout(1:len_trim(lepout))//" A A jj"
+     &        trim(lepout)//" A A jj"
 
 c HIGGS PLUS PHOTON via VBF
       CASE(HAjj)
@@ -4471,40 +4479,40 @@ c HIGGS PLUS PHOTON via VBF
          if (LOplusjet) pout = "H A jjj --> b bbar A jjj"
       CASE(HAjj_WW)
          pout = "H A jj --> W+ W- A jj --> "//
-     &        lepout(1:len_trim(lepout))//" A jj"
+     &        trim(lepout)//" A jj"
          if (LOplusjet) pout = "H A jjj --> W+ W- A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj"
+     &        trim(lepout)//" A jjj"
       CASE(HAjj_ZZ_ll,HAjj_ZZ_lnu)
-         pout = "H A jj --> Z Z A jj --> "//lepout(1:len_trim(lepout))//
+         pout = "H A jj --> Z Z A jj --> "//trim(lepout)//
      &        " A jj"
          if (LOplusjet) pout = "H A jjj --> Z Z A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj"
+     &        trim(lepout)//" A jjj"
 
 c DIBOSON PLUS JET
       CASE(WPZj)
-         pout = " W+ Z j --> "//lepout(1:len_trim(lepout))//" j"
+         pout = " W+ Z j --> "//trim(lepout)//" j"
          if (LOplusjet) pout = " W+ Z jj --> "//
-     &        lepout(1:len_trim(lepout))//" jj"
+     &        trim(lepout)//" jj"
       CASE(WMZj)
-         pout = " W- Z j --> "//lepout(1:len_trim(lepout))//" j"
+         pout = " W- Z j --> "//trim(lepout)//" j"
          if (LOplusjet) pout = " W- Z jj --> "//
-     &        lepout(1:len_trim(lepout))//" jj"
+     &        trim(lepout)//" jj"
       CASE(WPAj)
-         pout = " W+ A j --> "//lepout(1:len_trim(lepout))//" A j"
+         pout = " W+ A j --> "//trim(lepout)//" A j"
          if (LOplusjet) pout = " W+ A jj --> "//
-     &        lepout(1:len_trim(lepout))//" A jj"
+     &        trim(lepout)//" A jj"
       CASE(WMAj)
-         pout = " W- A j --> "//lepout(1:len_trim(lepout))//" A j"
+         pout = " W- A j --> "//trim(lepout)//" A j"
          if (LOplusjet) pout = " W- A jj --> "//
-     &        lepout(1:len_trim(lepout))//" A jj"
+     &        trim(lepout)//" A jj"
       CASE(WWj,GFWWj)
-         pout = " W+ W- j --> "//lepout(1:len_trim(lepout))//" j"
+         pout = " W+ W- j --> "//trim(lepout)//" j"
          if (LOplusjet) pout = " W+ W- jj --> "//
-     &        lepout(1:len_trim(lepout))//" jj"
+     &        trim(lepout)//" jj"
       CASE(ZZj,GFZZj)
-         pout = " Z Z j --> "//lepout(1:len_trim(lepout))//" j"
+         pout = " Z Z j --> "//trim(lepout)//" j"
          if (LOplusjet) pout = " Z Z jj --> "//
-     &        lepout(1:len_trim(lepout))//" jj"
+     &        trim(lepout)//" jj"
 
       CASE(
      &   WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar,
@@ -4525,18 +4533,18 @@ c DIBOSON PLUS JET
 
 c QCD induced Vjj production
       CASE(QCDWPjj)
-         pout = " W+ jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " W+ jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " W+ jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
       CASE(QCDWMjj)
-         pout = " W- jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " W- jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
 
       CASE(QCDZjj_l, QCDZjj_nu)
-         pout = " Z jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " Z jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
 
 
 c QCD induced VVjj production
@@ -4544,45 +4552,41 @@ c QCD induced VVjj production
          pout = " A A jj (QCD induced)"
          if (LOplusjet) pout = " A A jjj (QCD induced)"
       CASE(QCDZZjj_ll, QCDZZjj_lnu)
-         pout = " Z Z jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " Z Z jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " Z Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
-      CASE(QCDWPWMjj)
-         pout = " W+ W- jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
-         if (LOplusjet) pout = " W+ W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
       CASE(QCDWPZjj)
-         pout = " W+ Z jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " W+ Z jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " W+ Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
       CASE(QCDWMZjj)
-         pout = " W- Z jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " W- Z jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " W- Z jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
       CASE(QCDWPAjj)
-         pout = " W+ A jj --> "//lepout(1:len_trim(lepout))//" A jj (QCD induced)"
+         pout = " W+ A jj --> "//trim(lepout)//" A jj (QCD induced)"
          if (LOplusjet) pout = " W+ A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj (QCD induced)"
+     &        trim(lepout)//" A jjj (QCD induced)"
       CASE(QCDWMAjj)
-         pout = " W- A jj --> "//lepout(1:len_trim(lepout))//" A jj (QCD induced)"
+         pout = " W- A jj --> "//trim(lepout)//" A jj (QCD induced)"
          if (LOplusjet) pout = " W- A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj (QCD induced)"
+     &        trim(lepout)//" A jjj (QCD induced)"
       CASE(QCDZAjj_l)
-         pout = " Z A jj --> "//lepout(1:len_trim(lepout))//" A jj (QCD induced)"
+         pout = " Z A jj --> "//trim(lepout)//" A jj (QCD induced)"
          if (LOplusjet) pout = " Z A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj (QCD induced)"
+     &        trim(lepout)//" A jjj (QCD induced)"
       CASE(QCDZAjj_n)
-         pout = " Z A jj --> "//lepout(1:len_trim(lepout))//" A jj (QCD induced)"
+         pout = " Z A jj --> "//trim(lepout)//" A jj (QCD induced)"
          if (LOplusjet) pout = " Z A jjj --> "//
-     &        lepout(1:len_trim(lepout))//" A jjj (QCD induced)"
+     &        trim(lepout)//" A jjj (QCD induced)"
       CASE(QCDWPWPjj)
-         pout = " W+ W+ jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " W+ W+ jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " W+ W+ jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
       CASE(QCDWMWMjj)
-         pout = " W- W- jj --> "//lepout(1:len_trim(lepout))//" jj (QCD induced)"
+         pout = " W- W- jj --> "//trim(lepout)//" jj (QCD induced)"
          if (LOplusjet) pout = " W- W- jjj --> "//
-     &        lepout(1:len_trim(lepout))//" jjj (QCD induced)"
+     &        trim(lepout)//" jjj (QCD induced)"
 
 
       END SELECT
@@ -4593,8 +4597,8 @@ c QCD induced VVjj production
          write(*,*)' GLUON FUSION (1-loop):'
       end if
 
-      write(*,*)' PROCESS: ', procID, "  :   ", pin(1:len_trim(pin)), 
-     &     " --> ", pout(1:len_trim(pout))
+      write(*,*)' PROCESS: ', procID, "  :   ", trim(pin), 
+     &     " --> ", trim(pout)
 
       if (with_anom .or. with_anomHiggs) 
      &     write(*,*)'   with anomalous couplings'

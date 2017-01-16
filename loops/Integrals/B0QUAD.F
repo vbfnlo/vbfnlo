@@ -21,7 +21,6 @@ c     ris(3) = coeff of 1/ep^2
       parameter (pi=3.14159265358979323846264338327950288q0)
       complex*32 ipi
       parameter (ipi=(0,3.14159265358979323846264338327950288q0))
-      integer j,offshellleg
 
 
 c      complex*32 B0
@@ -65,13 +64,12 @@ c     #       ' invariant equal to zero'
       end
 
 
-
 c --------------------------------------
 c   B0finG2=B0finG(M1,0,s,musq)                                 
 c --------------------------------------
       subroutine B0fin_QUAD_Div(s,musq,id,B0finG2Div)
       implicit none 
-      real*16 M1,s,musq
+      real*16 s,musq
       integer id
       complex*32 B0finG2Div
       if(id.eq.1) then

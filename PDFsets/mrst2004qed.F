@@ -31,7 +31,6 @@ C--   Alternative LHAPDF-like interface: return PDFs in an array.
       GAMpdf = phot   ! photon
 
 
-      
 c      print*,'photon=',phot
       end  
 
@@ -78,9 +77,6 @@ c      if(x.lt.xmin.or.x.gt.xmax)       print 98,x
       elseif(mode.eq.2) then
         call mrst2(x,q2,upv,dnv,usea,dsea,str,chm,bot,glu,phot) 
       endif 
-  99  format('  WARNING:  Q^2 VALUE IS OUT OF RANGE   ','q2= ',e10.5)
-  98  format('  WARNING:   X  VALUE IS OUT OF RANGE   ','x= ',e10.5)
-      return
       end
 
       subroutine mrst1(x,qsq,upv,dnv,usea,dsea,str,chm,bot,glu,phot)
@@ -130,7 +126,7 @@ c      if(x.lt.xmin.or.x.gt.xmax)       print 98,x
 *sophy: changed open statement
         path=GetPdfsetsPath()
         datafile = 'qed6-10gridp.dat'
-        path=path(1:len_trim(path))//"/"//datafile
+        path=trim(path)//"/"//datafile
         open(unit=33,file=path,status='old')
 
         do 20 n=1,nx-1
@@ -263,7 +259,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea 9=photon
 *sophy: changed open statement
         path=GetPdfsetsPath()
         datafile = 'qed6-10gridn.dat'
-        path=path(1:len_trim(path))//"/"//datafile
+        path=trim(path)//"/"//datafile
         open(unit=34,file=path,status='old')
 
         do 20 n=1,nx-1
@@ -352,10 +348,10 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea 9=photon
       implicit none
       integer nx, my, iwt, j, k, l, m, n
       double precision xx, yy, cc, cl, d1, d2, d1d2, dx, dy, z
-      double precision ff, ff1, ff2, ff12, wt, xxd, yy0, yy1, yy2, yy12
+      double precision ff, ff1, ff2, ff12, xxd, yy0, yy1, yy2, yy12
       double precision polderiv
       dimension xx(nx),yy(my),ff(nx,my),ff1(nx,my),ff2(nx,my),
-     -     ff12(nx,my),yy0(4),yy1(4),yy2(4),yy12(4),z(16),wt(16,16),
+     -     ff12(nx,my),yy0(4),yy1(4),yy2(4),yy12(4),z(16),
      -     cl(16),cc(nx,my,4,4),iwt(16,16)
 
       data iwt/1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

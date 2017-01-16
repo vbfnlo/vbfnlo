@@ -37,8 +37,6 @@ c      include 'QUADmuonc0d0.inc'
       end
 
 
-
-
 c --------------------------------------
 c   B0finG1=B0finG(0,0,s,musq)  s<=>0                               
 c --------------------------------------
@@ -53,7 +51,7 @@ c      include 'QUADmuonc0d0.inc'
       complex*32 Ipi, Ieps 
       parameter(pi=3.141 592 653 589 793 238 462 643 383 279 502 88q0,
      & Ipi=(0q0,3.141 592 653 589 793 238 462 643 383 279 502 88q0),Ieps=(0q0,1q-78))
-      real*16 s,musq,b,c
+      real*16 s,musq
 
       if(abs(s).lt.1d-7) then
        B0finG1_QUAD=0q0
@@ -115,7 +113,7 @@ c      include 'QUADmuonc0d0.inc'
       complex*32 Ipi, Ieps 
       parameter(pi=3.141 592 653 589 793 238 462 643 383 279 502 88q0,
      & Ipi=(0q0,3.141 592 653 589 793 238 462 643 383 279 502 88q0),Ieps=(0q0,1q-78))
-      real*16 M1,s,musq,msq
+      real*16 M1,musq,msq
 
       msq = M1*M1
       B0finG3_QUAD = -Log(msq/musq)+2.q0
@@ -193,7 +191,7 @@ c      include 'QUADmuonc0d0.inc'
       parameter(pi=3.141 592 653 589 793 238 462 643 383 279 502 88q0,
      &  Ipi=(0q0,3.141 592 653 589 793 238 462 643 383 279 502 88q0)
      & ,Ieps=(0q0,1q-78))
-      real*16 M1,s,musq,msq
+      real*16 M1,musq,msq
       if(abs(m1).gt.1d-7) then
       msq = M1*M1
       B0finG6_QUAD = -Log(msq/musq)
@@ -201,13 +199,6 @@ c      include 'QUADmuonc0d0.inc'
       B0finG6_QUAD=0q0
       endif
       end
-
-
-
-
-
-
-
 
 
       function B0finG_QUAD(m0,m1,p1sq,musq)

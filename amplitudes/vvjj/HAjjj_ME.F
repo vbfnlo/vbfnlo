@@ -1,5 +1,6 @@
 
       subroutine HAjjj_ME(Isign,gsign,uucc,uuss,ddcc,ddss,udsc,ducs)
+          use globalvars, only: ldoblha
 
       IMPLICIT NONE
 
@@ -12,7 +13,7 @@
       integer Isign(4+n_v),gsign,iflavF1,iflavF3,isigF,isigA,isigG,iorder,
      $     iinsA,iinsG,k,i,mu,iisig(3,4)
       double precision uucc(3),uuss(3),ddcc(3),ddss(3),udsc(3),ducs(3),
-     $     res(6,0:2),den,fac,p57,p68,p87,ph(0:4),xmtau,xmmu,dotrr
+     $     res(6,0:2),fac,dotrr
 
       DOUBLE PRECISION CLR,XM2,XMG,B,V,A
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
@@ -1317,8 +1318,6 @@ c     SubAmp_(iflavF1,iflavF3,isigF,isigA,isigG,iinsA,iinsG)
                enddo
             enddo
          enddo
-
-
 
 
          endif !=endif gsign

@@ -336,12 +336,11 @@ c
 *	local variables
 *
 	integer i,j,k,l,m,n,ier0,ieps,ni(4,3:4),ntot(3:4),
-     +		n1a,n1b,ii1,vbfnffeta,vbfnffet1,i2pi,n2a,ip,ipi12p(4),ipitot,
+     +		n1a,vbfnffeta,vbfnffet1,ip,ipi12p(4),ipitot,
      +		ipitop
 	DOUBLE COMPLEX cs1,cs2,cs1p,cs2p,cs3p(40),c,cc,clogy,vbfzfflog,
      +		vbfzfflo1,cmip,yy,zz,yy1,zz1,dyyzz,hulp3,hulp4,xhck
-	DOUBLE PRECISION rloss,xm1,xm2,xm1p,xm2p,absc,xmax,s1,s2,s3,s4,
-     +		y1m,y1m1,y1p,y1p1
+	DOUBLE PRECISION rloss,xm1,xm2,xm1p,xm2p,absc,xmax
 *
 *	common blocks
 *
@@ -720,7 +719,7 @@ c
   760	continue
 *  #] add eta's:
 *  #[ debug:
-  800	if ( lwrite ) then
+     	if ( lwrite ) then
 	    ier0 = 0
 	    do 805 i=1,40
 		cs3p(i) = 0

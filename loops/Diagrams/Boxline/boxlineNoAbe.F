@@ -102,10 +102,10 @@ c*******************************************************************************
         Real*8 Dij1234R(13,3)
         Real*8 Dij1234I(13,3)
        Complex*16 SMB(4),SMG(4) ,Fa(3),F(17)
-      Real*8 FI(17),FR(17),FaI(3),FaR(3)
+      Real*8 FI(17),FR(17)
       Complex*16 SC1r,SC1c,SC3rcc,dotrc,dotcc,result
        Complex*16 resultgauge(2) 
-       Real*8 musq,p4t,Is12,Is23,Is12s23,P(35) 
+       Real*8 musq,Is12,Is23,Is12s23,P(35) 
        EXTERNAL   dotrc,dotcc,SC1c,SC1r,SC3rcc
        Integer alpha,comp,gaugetest
        common/FfunctionsNoAbemm/F
@@ -472,8 +472,6 @@ c*******************************************************************************
      -   3mup4,p4mup2, p4mup4,mup2mup4,Fa)
 
 
-
-
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************
@@ -574,8 +572,6 @@ c       write(*,'(a7,E26.18,E26.18)') "SMG(1)=", SMG(1)
 c       write(*,'(a7,E26.18,E26.18)') "SMG(2)=", SMG(2)
 c       write(*,'(a7,E26.18,E26.18)') "SMG(3)=", SMG(3)
 c       write(*,'(a7,E26.18,E26.18)') "SMG(4)=" ,SMG(4)
-
-
 
 
 c************************************************************************************
@@ -740,7 +736,7 @@ c************** Calling the Fa functions****************************************
        Complex*16 mup2mup4
         common/FfunctionsNoAbemm/F
       Complex*16 Fa(3),F(17)
-      Real*8 P(35) 
+
         Fa(1) = -(p2mup4*F(1))+p3mup4*F(2)+p4mup4*F(3)
        Fa(2) = -(p2mup2*F(4))+p3mup2*F(5)+p4mup2*F(6)
        Fa(3) = p2mup2*p2mup4*F(7)+mup2mup4*F(8)+p2mup4*p4mup2*F(9)+p2m

@@ -4,7 +4,7 @@
 c     So far the syntax in correct.
       implicit none
 c     arguments
-      integer isig,graphid
+      integer isig
       real*8 k1(0:3),k2(0:3),q1(0:4),q2(0:4)
       complex*16 psi1(2),psi2(2),eps1(0:3),eps2(0:3)
       complex*16 mborn(2),mvirt(4)
@@ -12,7 +12,7 @@ c     local variables
       integer mu,k
       real*8 mom(0:3)
       real*8 s,t,u,q2s,q1s
-      complex*16 ce1(3),ce2(3),cq(3),cborn(4),trieps1q2
+      complex*16 ce1(3),ce2(3),cq(3),cborn(4)
       complex*16 d0,d11,d12,d13,d21,d22,d23,d24,d25,d26,d27
       complex*16 d31,d32,d33,d34,d35,d36,d37,d38,d39,d310
       complex*16 d311,d312,d313

@@ -7,27 +7,27 @@
       real*8 P(0:3,max_p,max_kin), res(0:2,3:4),rn
       integer id(4),fsign(4),lephel,qhel,ghel1,ghel2,nlo, qhel0,ghel10,ghel20,lephel0,bos
       
-      real*8 pbar(0:3,2),qdia(0:3,2),gdia(0:4,3),epsGr(0:3,3),ptemp(0:4)
-      complex*16 epsG(0:3,3),epstemp(0:3)
+      real*8 pbar(0:3,2),qdia(0:3,2),gdia(0:4,3),epsGr(0:3,3)
+      complex*16 epsG(0:3,3)
 
       complex*16  amp(2),psitemp(2,-1:1,2),ampv(3,3:4),ampb(2,3:4),ampborn(2,3:4),ampi(3)
       complex*16 ortb(3),ortv(3),orti(3),ort(3)
       complex*16 s1c, dotcc, dotrc,s1r
-      real*8 mass2,dotrr,mjj2,qjj2
+      real*8 mass2,dotrr,mjj2
       
       complex*16 psiVGlocal(2,-1:1,3:4,2,2,2)
-      integer i,j,mu,nu, tempi2(2)
-      integer glu1,glu2,iV1,iV2, q, hel(0:2),h1,h2,h3
+      integer i,j,mu, tempi2(2)
+      integer glu1,glu2,iV1,iV2, q
       
 
-      real*8 momPsiG(0:4,2,2),mompsiV(0:4,2,3),momtemp(0:4),momin(0:4,5),td
+      real*8 momPsiG(0:4,2,2),mompsiV(0:4,2,3),momtemp(0:4),td
       complex*16 psi(2,-1:1,2) !neg id for outgoing (bra), pos id for incoming (ket)
       complex*16 psiG(2,-1:1,2,2) ! ,helq,qid,gid,kin
       complex*16 psiV(2,-1:1,3:4,2,3),momtempc(0:4)
-      complex*16 gluV(0:3,-1:1,3:4,0:3),checkg(5,3),checkgb(2),boxresRen(3)
+      complex*16 gluV(0:3,-1:1,3:4,0:3),checkg(5,3),checkgb(2)
       
       logical ltop, lborn,lbox,lpent, lhex, lfloop,lcsi,lsimple, ldebug,isNaN,lgaugeBorn,lZZ,lZ4l,lhiggs
-      logical lcontrib(3)
+
       external isNaN
       integer div, idia, ngauge, nGaugeAbe, nGaugeNoAbe, comp,flsplit
       real*8 musq, kdia(0:4,3)
@@ -38,7 +38,7 @@
       complex*16 tempres(13),tempresb,hexgauge(4,30),hexgaugeb(30),tempc,tempborn
       complex*16 pengauge(3,4),pengaugeb(3,4)
       complex*16 tempvirt(0:3,3:4),ctemp(18),tempcurr(0:3,-1:1,2),nothing(9)
-      complex*16 ttteemp(0:3,2,3)
+
 
       logical wardidtest(0:22),wardidtest_q(0:22),GaugeOK(2),gaugetestfailed
       logical wardpAbe(2),wardpNoAbe(2),wardhAbe(2)
@@ -118,9 +118,8 @@ c       AZ=3,4 : V coupling to u/d quark with qhel inclouding couplings
 !       lpent  = .false.
 !       lhex   = .false.
 !       lCSI   = .false.
-      
-      
-      
+
+
       lfloop=lfloop.and.div.eq.0
       res=0d0
       
@@ -248,8 +247,7 @@ c build currents and calc amplitudes
           call curr(qhel,PsiV(1,-1,q,2,1),PsiV(1,-1,q,1,2),tempcurr(0,-1,2))
           gluV(:,-1:1:2,q,3) = gluV(:,-1:1:2,q,3)+tempcurr(:,-1:1:2,1) + tempcurr(:,-1:1:2,2)
         endif
-          
-        
+
 
         amp(:)=0d0
 c amp(1) = tb ta with Peskin-S. conventions of factors i
@@ -1182,8 +1180,6 @@ c qqgg=1234
       endif ! lCSI
 
 
-
- 
 c square amplitudes
 
       if(ldebug) then

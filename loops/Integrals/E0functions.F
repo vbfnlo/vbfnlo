@@ -192,9 +192,6 @@ c
 c
 
 
-
-
-
       function E02(psq, qsq, lsq, tsq,
      #     pq, pl, pt, ql, qt, lt, 
      #     D0_2345,D0_1345,D0_1245,D0_1235,D0_1234)

@@ -5,14 +5,18 @@ c ******************************************************************************
 
 ! ! #define CALC_WJJ      
       SUBROUTINE ug2dgwzVirt(P,id,fsign,nbos,nlo,lephel,ghel2,ghel4,rn,res) ! sum over glu hel if ghel ==0
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "common.inc"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/scales.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
       real*8 P(0:3,max_p,max_kin), res(0:2),rn ! for gauge test
       integer id(4),fsign(4),nbos,nlo,lephel,ghel2 ,ghel4 
-      logical lnlo
+
       
       complex*16 epsW(0:3,7),epsWV(0:3,-1:1,7) 
       complex*16 epsV(0:3,-1:1,3:4,-1:1,7) ! ( , mu-hel, u/d , quark-hel), coupl. const to quarks included
@@ -21,32 +25,32 @@ c ******************************************************************************
       common /qcdwznew/ epsW, epsWV, epsV,epsA,epsZ,momV,momW,momWV
  
 
-      real*8 pbar(0:3,2),qbar(0:4,2),pdia(0:3,2),qdia(0:4,3),kdia(0:3,3),momTemp(0:4),mass
-      complex*16 qdiac(0:4,3),momWc(0:3),momVc(0:3),momWVc(0:3),kdiac(0:3,3)
+      real*8 pbar(0:3,2),qbar(0:4,2),pdia(0:3,2),qdia(0:4,3),kdia(0:3,3),momTemp(0:4)
+      complex*16 qdiac(0:4,3),kdiac(0:3,3)
       real*8 momPsiW(0:4,2),momPsiV(0:4,2),momPsiWV(0:4,2),momPsiG(0:4,2,2)
       complex*16 Psi(2,-1:1,2), PsiW(2,2),PsiV(2,2),PsiWV(2,2), PsiG(2,2,2), PsiWG(2,2,2)
       complex*16 epsG(0:3,3), PsiTemp(2,-1:1),PsiVV(2,2), amp(3),glutemp(0:3)
-      complex*16 gluW(0:3), gluWV(0:3), gluWG(0:3,2,2), gluWVG(0:3,2), tempcurr(0:3,-1:1,4)
+      complex*16 gluW(0:3), gluWV(0:3), gluWG(0:3,2,2), tempcurr(0:3,-1:1,4)
       complex*16 ampb(3),ampv(3),ampi(3), tempborn, tempvirt,tempvirt2,tempvirt3,tempvirt4
       complex*16 ortb(3),ortv(3),orti(3),ort(3)
-      complex*16 s1c, dotcc, dotrc,dotcr,tempc,cte,B0fin,C0fin,B0findiv
-      real*8 mass2,musq,lm,ls,ths,theta,tempr,temp3r(3)
-      integer i,j,mu,nu,tempi2(2), colstr,qtype(2),h,n
-      integer minhel, maxhel, glu1,glu2,div
+      complex*16 s1c, dotcc, dotrc,tempc
+      real*8 mass2,musq
+      integer i,j,mu,tempi2(2),qtype(2)
+      integer glu1,glu2,div
       integer cpl(3),nfi(3),nGaugeAbe,nGaugeNonAbe
       real*8 mf(3)
       logical lsimple,lborn,lbox,lpent,lhex,lCSI,lnloWV,lnloW,lV,lVV,lG,lGG,ldebug,tempbool
-      complex*16 hexamp(6,3),hexampCol(6,3),hexres(13,30),hexgauge(4,30),hexborn(30),hexgaugeb(4,30),trash,gluren(3)
+      complex*16 hexamp(6,3),hexres(13,30),hexgauge(4,30),hexborn(30),hexgaugeb(4,30)
       complex*16 boxgauge(2,3),boxres(5,3),boxgaugeb(2,3),boxborn(3),nothing(9),checkg(5,3,2),checkgb(2,2)
-      complex*16 pengauge(3,8),penres(8,8),pengaugeb(3,8),penborn(8),floopres(6),helas(6)
+      complex*16 pengauge(3,8),penres(8,8),pengaugeb(3,8),penborn(8),floopres(6)
       real*8 gaugeReal(2,4),floopgauge(6),logmuosij(3,4)
       logical wardidtest(0:22)
       real*8 td,gaugeprecision,mjj2,dotrr
       external mjj2,dotrr
       real*8 CF,CA,CFCA,TR
-      real*8 squared(2,2)
+
       parameter( CF = 4d0/3d0, CA = 3d0, CFCA=-1d0/6d0, TR=0.5d0)
-      integer glu3
+
       logical ltop,printall
       logical printGaugeFail,IsNaN
       external isnan
@@ -54,9 +58,8 @@ c ******************************************************************************
 
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
-      
-      complex*16 eHelas(6,10)
-      real*8 epsmunurhosigma,epsrrrr
+
+
       logical printGaugePrec, GaugeOK(2),return0ifGaugeFails
       logical recalculatePSpoint
       common /comRecalcPSpoint/ recalculatePSpoint
@@ -97,6 +100,17 @@ cfc
           res(0) = 0d0; res(1) = 0d0; res(2) = 0d0
 	  return
 	endif
+      if (ldoblha) then
+        mursq(1,1) = blha_scale**2
+        lborn=  .true. 
+        lsimple=.true. 
+        lbox =  .true. 
+        lpent=  .true. 
+        lhex =  .true. 
+        lCSI =  .false. 
+	lnloW = .true.
+	lnloWV= .true.
+      endif
         
 !       else
 ! ! 	lborn  = nloContrib.eq.1
@@ -187,7 +201,6 @@ cfc
       
       qtype(1) = nbos/10 ! (W+Z)? u type : d type
       qtype(2) = 7-qtype(1)
-      
 
 
 #ifdef CALC_WJJ
@@ -460,9 +473,8 @@ c!       print*,'test',tempborn
 
       ampv(1) = ampv(1)-tempvirt
       ampv(2) = ampv(2)+tempvirt
-      
-      
-      
+
+
 c glu glu glu* ! 2 directions have opposite sign but different color structure
       call FermionVertCouplingT(1d0,1d0,1d0,1d0,1d0,1d0,
      $		0d0,
@@ -1547,8 +1559,6 @@ c	if(printGaugeFail) then
       endif
 
 
-
-      
       enddo
      
       hexcount2m = hexcount2m + 1
@@ -1598,14 +1608,19 @@ c amp still contains all contributions
 !         ampb(3) = amp(3)
 !       endif
 
-      if(lCSI) then
+      if(lCSI.or.ldoblha) then
       logmuosij(1,2) = log(musq/dotrr(pbar(0,1),pbar(0,2))/2d0)
       logmuosij(1,3) = log(musq/dotrr(pbar(0,1),qbar(0,1))/2d0)
       logmuosij(1,4) = log(musq/dotrr(pbar(0,1),qbar(0,2))/2d0)
       logmuosij(2,3) = log(musq/dotrr(pbar(0,2),qbar(0,1))/2d0)
       logmuosij(2,4) = log(musq/dotrr(pbar(0,2),qbar(0,2))/2d0)
       logmuosij(3,4) = log(musq/dotrr(qbar(0,1),qbar(0,2))/2d0)
+      ampb(1) = amp(1)
+      ampb(2) = amp(2)
+      ampb(3) = amp(3)
+      endif
       
+      if(lCSI) then
       if (ldebug) then
 	print*,'pbar_ij'
 	print*,dotrr(pbar(0,1),pbar(0,2))
@@ -1616,10 +1631,6 @@ c amp still contains all contributions
 	print*,dotrr(qbar(0,1),qbar(0,2))
       endif
       
-      ampb(1) = amp(1)
-      ampb(2) = amp(2)
-      ampb(3) = amp(3)
-
       if(div.eq.2) then
 	ampi(1) = ampb(1)*26d0/3d0
 	ampi(2) = ampb(2)*26d0/3d0
@@ -1663,10 +1674,48 @@ c amp still contains all contributions
 	endif
       endif
       endif ! lCSI
+      if (ldoblha) then
+c remember for the conversions that we take alphas/(4*pi)*2*Re(conjg(ampb)*ampv) later
+c convert from Gamma(1+epsilon) to 1/Gamma(1-epsilon) convention : -alphas*pi/6*(CF+CA)*Born
+        ampv(1) = ampv(1) - Pi**2/3d0*(blha_CF+blha_CA)*ampb(1)
+        ampv(2) = ampv(2) - Pi**2/3d0*(blha_CF+blha_CA)*ampb(2)
+c add dim red contribution if blha_tgamma{Quark.Gluon} != 0: -alphas/pi*(gammatilde_q+gammatilde_g)(with incl.-)*Born
+        ampv(1) = ampv(1) - 2d0*(blha_tgammaQuark+blha_tgammaGluon)*ampb(1)
+        ampv(2) = ampv(2) - 2d0*(blha_tgammaQuark+blha_tgammaGluon)*ampb(2)
+
+c set divergent epsilon^-2 and epsilon^-1 terms
+        if (blha_amptype(blha_curproc).eq.1) then ! loop
+            blha_amp(1)=blha_amp(1)
+     &        -als(1,1)*(blha_CA+blha_CF)/Pi*
+     &          dble(blha_CF**2*blha_CA*(ampb(1)*dconjg(ampb(1))
+     &                              +ampb(2)*dconjg(ampb(2)))
+     &              -blha_CF*ampb(1)*dconjg(ampb(2)))
+            blha_amp(2)=blha_amp(2)
+     &        -als(1,1)*blha_CF/blha_CA/4d0/Pi*
+     &          ( ( logmuosij(1,2) - logmuosij(1,4) - logmuosij(2,3) 
+     &              + blha_CA**2*(4*blha_CF*(blha_gammaGluon + blha_gammaQuark) 
+     &              - logmuosij(1,3) + logmuosij(1,4) + logmuosij(2,3) 
+     &              - logmuosij(2,4) + 4*CF**2*(logmuosij(1,4) 
+     &              + logmuosij(2,3) - logmuosij(3,4))) + logmuosij(3,4) 
+     &              + 4*blha_CA**3*blha_CF*logmuosij(3,4)
+     &            )*dble(ampb(2)*dconjg(ampb(2)))
+     &           +( logmuosij(1,2) - logmuosij(1,4) - logmuosij(2,3) 
+     &              + 4*blha_CA**2*blha_CF*(blha_gammaGluon + blha_gammaQuark 
+     &              + blha_CF*(logmuosij(1,4) + logmuosij(2,3) 
+     &              - logmuosij(3,4))) + logmuosij(3,4) 
+     &              + 2*blha_CA**3*blha_CF*(logmuosij(1,3) - logmuosij(1,4) 
+     &              - logmuosij(2,3) + logmuosij(2,4) + 2*logmuosij(3,4))
+     &            )*dble(ampb(1)*dconjg(ampb(1)))
+     &           +( -2*blha_gammaGluon - 2*blha_gammaQuark 
+     &              + 2*blha_CA*logmuosij(1,2) - 2*blha_CF*logmuosij(1,2) 
+     &              - blha_CA*logmuosij(1,3) - blha_CA*logmuosij(1,4) 
+     &              - blha_CA*logmuosij(2,3) - blha_CA*logmuosij(2,4)
+     &            )*dble(ampb(2)*dconjg(ampb(1)))*2d0*blha_CA
+     &          )
+        endif
+      endif
 
 
-
- 
 c square amplitudes
 
       if(ldebug) then
@@ -1729,9 +1778,6 @@ c square amplitudes
       res(1) = res(1)*als(1,1)/2d0/pi ! 2Re *als/4pi
       res(0) = res(0)*als(1,1)/2d0/pi 
 
-      res(1) = res(0)+res(1) ! V+I
-      res(0) = res(1)+res(2) ! V+I+B
-
       if(IsNan(res,0d0,3,0)) then
         if(ldebug.or..not.recalculatePSpoint) print*,"NaN in "__FILE__,__LINE__
         do i=0,2
@@ -1742,5 +1788,19 @@ c square amplitudes
         recalculatePSpoint=.false.
         res=0d0
       endif
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.1) then ! loop
+          blha_amp(3)= blha_amp(3)+
+     &      res(0)
+          blha_amp(4)= blha_amp(4)+
+     &      res(2)
+        else
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
+
+      res(1) = res(0)+res(1) ! V+I
+      res(0) = res(1)+res(2) ! V+I+B
 
       end

@@ -15,6 +15,8 @@ c
      &                   v,	!in:  momenta associated with WW decay fermions
      &                   rn,     !in:  random number for z integration 
      &                   m2s  )  !out: |M|^2*pdf1*pdf2 
+          use globalvars, only: ldoblha
+          use VBFNLO_HIGGSTO, only: VBFNLO_HIGGSTO_gridHt
       implicit none
 c
 c declare input/output variables
@@ -45,17 +47,16 @@ c
 c
 c declare variables for summation process
 c
-      INTEGER LFLAVR(5:6), ires, nmaxold
-      save LFLAVR, nmaxold
+      INTEGER ires
 
       integer FSIGN(4+max_v), gsign, physToDiag(5), 
-     $     nlo, nmin, nmax,nd,nproc(8)
+     $     nlo, nmin, nmax,nproc(8)
       save nmin, nmax,nproc
 c
 c store contributions from subprocess ip in res(ip) where
 c  
       real*8 res(maxnumsubproc)
-      real*8 sum,delta,dot0p
+      real*8 sum,dot0p
       external dot0p
 c
 c declare parton distribution variables
@@ -472,12 +473,13 @@ c
 c*****************************************************************
       subroutine wbf_h3j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,
      1     pdf,res,nmin,nmax)
+          use globalvars, only: ldoblha
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/BLHAhelper.inc"
-      real*8 p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), xi(nx), 
-     $     xuz(2,2:max_kin)
+      real*8 p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), xi(nx)
+
       real*8 pdf(-6:6,2,5), res(maxnumsubproc)
       integer physToDiag(5), fsign(4+max_v), gsign, 
      $     bos, nlo, nmin, nmax
@@ -520,14 +522,14 @@ c
 c     variables for subtractions
       real*8 lns21,lnt21,lnu21,lns43,lnt43,lnu43
       real*8 s21,t21,u21,s43,t43,u43,asotpi
-      real*8 musq,as0tpi,l21,l43,fac(3)
+      real*8 musq,l21,l43,fac(3)
 c     variables for convolution of pdf's
       integer iflav(5),diagToPhys(5),FL_H3j
       real*8 dot0p
       external FL_H3j
       external dot0p
       logical ChargedCurrent, sametype, oneAntiparticle
-      logical ldebug,lcoll
+      logical ldebug
       parameter (ldebug=.false.)
       integer i,if1,if2,icc1,j,k,mu,jc   
       
@@ -1210,7 +1212,7 @@ c  subroutine fillColorless.
 
       integer iflav(5),id1,id2,id3,id4,id5,listposition,i,i1
       integer iflavour(5),colstruc
-      double precision prob1, prob2, rn, RandomNumber
+
       logical ldebug
       parameter (ldebug=.false.)
 

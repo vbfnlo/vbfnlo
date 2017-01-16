@@ -63,8 +63,8 @@ c variables for the main part of the program
       parameter (fpi=4d0*pi)
 
       double precision  pbar(0:3,2+n_v), qbar(0:4), q(0:3)
-      double precision pbarwm(0:3,2+n_v)
-      double precision  udwh, res(2),resv(2),udwhg
+
+      double precision  udwh, res(2),udwhg
       double precision  p(0:3,2+n_v), pq(0:4,2)
 
       integer sign(2+n_v), gsign, mu, i, k, isig
@@ -383,8 +383,7 @@ c sum the graphs, square them and map them onto udwa
 
          enddo
       enddo
-      res(1) = res(1)*4d0*fpials(2)  ! C_2*3 is the color factor     
-
+      res(1) = res(1)*4d0*fpials(2)  ! C_2*3 is the color factor
 
 
       udwh = res(1)

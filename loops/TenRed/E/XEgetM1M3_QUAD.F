@@ -576,7 +576,6 @@ cfc       call print_CijR(DCMPLX(C0245),C245R_d,C245I_d)
 cfc       Endif
 
 
-
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 c                D0
@@ -635,8 +634,6 @@ cfc       write(*,*)"E12345",E012345R_d,E012345I_d
 cfc       write(*,*)"E12345",E012345R,E012345I
 cfc       call print_EijR(DCMPLX(E012345),E12345R_d,E12345I_d)
 cfc       endif
-
-
 
 
 c       print*, "end sim XEget"
@@ -799,7 +796,6 @@ ccccccccccccccccccccccccccccccccccccc
       end
 
 
-
       subroutine R4_From_CijR_QUAD_to_Dbl(C0R,C0I,CijR,CijI,
      -              C0R_QUAD,C0I_QUAD,CijR_QUAD,CijI_QUAD)
       implicit none
@@ -838,7 +834,6 @@ ccccccccccccccccccccccccccccccccccccc
       indx_D(3)=13
       indx_D(4)=22
       indx_D(5)=34
-
 
 
       D0R=D0R_QUAD

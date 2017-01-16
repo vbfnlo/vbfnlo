@@ -13,7 +13,7 @@ cMK this contribution should get a POSITIVE sign
        implicit none
        Real*8 za1,za2,za3,za4,zb1,zb2,zb3,zb4
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 result,resultE,resultO
        Real*8 musq,m,resultgauge,resultgaugeE,resultgaugeO
@@ -45,13 +45,13 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
        implicit none
        Real*8 za1,za2,za3,za4,zb1,zb2,zb3,zb4
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
-       complex*16 rg1,rg2,rg3,rg4
-       integer gauge,i,comp,Div
+
+       Complex*16 result
+       Real*8 musq,m,resultgauge
+
+       integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionBoxCoupling(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,p2,p3,p4
@@ -72,7 +72,7 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
 c       Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(5),resultZERO(5)
+       Complex*16 result,resultn(5),resultZERO(5)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
        real*8 resultgauge_cp
        complex*16 result_cp
@@ -81,14 +81,8 @@ c       Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        common/GramSwitch/GramCS,GramDS
        logical GramCS,GramDS
 c Checking Gram massive
-       real*8 p1sq,p2sq,p3sq,p1p2,p1p3,p2p3
-       real*8 C0234R, C0134R, C0124R, C0123R
-       real*8 C234R(6,3), C134R(6,3), C124R(6,3), C123R(6,3)
-       real*8 C0234I, C0134I, C0124I, C0123I
-       real*8 C234I(6,3), C134I(6,3), C124I(6,3), C123I(6,3)
-       real*8 D01234R, D1234R(22,4)
-       real*8 D01234I, D1234I(22,4)
-       complex*16 D01234
+
+
        real*8 dotrr
        external dotrr
        logical printmy
@@ -133,8 +127,7 @@ cfc         call  FermionBoxEvenCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m
 cfc     & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result_Q,resultn_Q)
                          
        call  FermionBoxEvenCouplings(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,
-     & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result,resultn)                         
-
+     & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result,resultn)
 
 
        if (gauge.gt.0) then
@@ -183,7 +176,6 @@ c Gauge 4
           else
           temp4=abs(rg4 - resultn(5)  )
           endif
-          
 
 
        if(temp1+1.eq.temp1) then
@@ -219,9 +211,6 @@ c Gauge 4
        endif
 
 
-
-
-      
           resultgauge=max(temp1,temp2,temp3,temp4)
         
 c Safe results
@@ -335,7 +324,7 @@ cfc          print*, "rg2",rg2
 cfc          print*, "rg3",rg3
 cfc          print*, "rg4",rg4
 cfc          print*, "result1",resultn(2)
-cfc          print*, "result2",resultn(3)
+cfc          print*, "result",resultn(3)
 cfc          print*, "result3",resultn(4)
 cfc          print*, "result4",resultn(5)
 cfc
@@ -372,7 +361,6 @@ c              PAUSE
            GaugeE = .true. 
         resultgauge_Q=1d99
 
-        
 
        call  FermionBoxEvenCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,
      & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result_Q,resultn_Q)
@@ -416,7 +404,6 @@ c Gauge 4
           endif
 
 
-
        if(temp1+1.eq.temp1) then
           temp1=1d9
        endif   
@@ -450,13 +437,7 @@ c Gauge 4
        endif
 
 
-
-
           resultgauge_Q=max(temp1,temp2,temp3,temp4)
-
-
-
-
 
 
         if(resultgauge_Q.lt. FinalSensitivity)  then
@@ -535,7 +516,6 @@ cfc       endif
         end
 
 
-
 cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
@@ -544,13 +524,13 @@ cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccc
        implicit none
        Real*8 za1,za2,za3,za4,zb1,zb2,zb3,zb4
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
-       complex*16 rg1,rg2,rg3,rg4
-       integer gauge,i,comp,Div
+
+       Complex*16 result
+       Real*8 musq,m,resultgauge
+
+       integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionBoxCouplingO(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,p2,p3,p4
@@ -571,7 +551,7 @@ cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(5),resultZERO(5)
+       Complex*16 result,resultn(5),resultZERO(5)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
        real*8 resultgauge_cp
        complex*16 result_cp
@@ -596,8 +576,6 @@ c For QUAD
           RESULTGAUGE=0D0
           return
        ENDIF
-
-
 
 
 	wardfb(1)=.false.
@@ -727,9 +705,7 @@ c              PAUSE
         call  FermionBoxOddCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,p1,
      & p2,p3,p4,mup1,mup2,mup3,mup4,musq,comp,result_Q,resultn_Q)
 
-   
-    
-       
+
 c Call for Gauge
 
           call fermionBoxOddCouplings_QUAD(za1,za2,za3,za4,zb1,zb2,zb3,zb4,m,
@@ -802,8 +778,6 @@ c Gauge 4
        endif
 
           resultgauge_Q=max(temp1,temp2,temp3,temp4)
-
-
 
 
         if(resultgauge_Q.lt. FinalSensitivity) then

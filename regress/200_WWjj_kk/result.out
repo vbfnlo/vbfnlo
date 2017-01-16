@@ -1,0 +1,747 @@
+   
+ -----------------------------------------------------------------
+ VBFNLO, version 3.0.0 beta2 GIT b46287f2
+ Comput. Phys. Commun. 180 (2009) 1661[arXiv:0811.4559 [hep-ph]]
+ arXiV:1107.4038, arXiV:1207.4975, arXiv:1404.3940
+ http://www.itp.kit.edu/vbfnlo
+ -----------------------------------------------------------------
+ Process-specific references (please cite as well if appropriate):
+ B. Jager, C. Oleari, D. Zeppenfeld
+ JHEP 0607 (2006) 015, e-Print: hep-ph/0603177
+ C. Englert diploma thesis
+ e-Print: http://www-itp.particle.uni-karlsruhe.de/prep/diploma/PSFiles/Diplom_Englert.ps.gz
+ For Spin-2:
+ J. Frank, M. Rauch and D. Zeppenfeld,
+ Phys.Rev.D87, 055020 (2013) [arXiv:1211.3658 [hep-ph]],
+ J. Frank diploma thesis
+ e-Print: www-itp.particle.uni-karlsruhe.de/prep/diploma/PSFiles/Diplom_Frank.pdf
+ 
+ -----------------------------------------------------------------
+   
+   
+   
+ Initialising LoopTools ..
+   
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
+  
+        Information on global parameters
+ -----------------------------------------------
+   PROCESS               =      200
+   LOPROCESS_PLUS_JET    =        F
+   KK_MOD                =        T
+   ANOM_CPL              =        F
+   LEPTONS               =    12  -11  -12   11
+   LO_ITERATIONS         =        6
+   NLO_ITERATIONS        =        6
+   LO_POINTS             =       26
+   NLO_POINTS            =       26
+   NLO_SWITCH            =        T
+   EWCOR_SWITCH          =        F
+   FERMIONLOOP           =        3
+   LHA_SWITCH            =        F
+   HEPMC_SWITCH          =        F
+   LO_GRID               = grid2_1                                           
+   NLO_GRID              = grid3_1                                           
+   PHTN_GRID             = grid4_1                                           
+   FLOOP_GRID            = grid5_1                                           
+   ECM                   =  14000.0    
+   BEAM1                 =        1
+   BEAM2                 =        1
+   ID_MUF                =        1
+   ID_MUR                =        1
+   MUF_USER              =  100.000    
+   MUR_USER              =  100.000    
+   XIF                   =  1.00000    
+   XIR                   =  1.00000    
+   SHOWTIMING            =        T
+ 
+       information on the selected process 
+ -----------------------------------------------
+ 
+  pp -> W+ W- jj -> l+ l- vl vl~ jj
+ 
+ W pair + 2 jets production in vector boson fusion with fully leptonic decay.
+ The Higgs contribution is included.
+ Process is implemented at LO and NLO QCD.
+ This process can be run in the AdS Higgsless and Three-Site Higgsless scenarios using:
+    "kk_input.dat" or "kk_coupl_inp.dat".
+ Anomalous couplings can be set in "anomV.dat".
+ This process can be run in spin-2 models using:
+    "spin2coupl.dat"
+ References: B. Jager, C. Oleari, D. Zeppenfeld
+ JHEP 0607 (2006) 015, e-Print: hep-ph/0603177
+ C. Englert diploma thesis
+ e-Print: http://www-itp.particle.uni-karlsruhe.de/prep/diploma/PSFiles/Diplom_Englert.ps.gz
+ For Spin-2:
+ J. Frank, M. Rauch and D. Zeppenfeld,
+ Phys.Rev.D87, 055020 (2013) [arXiv:1211.3658 [hep-ph]],
+ J. Frank diploma thesis
+ e-Print: www-itp.particle.uni-karlsruhe.de/prep/diploma/PSFiles/Diplom_Frank.pdf
+ 
+ Initializing PDF set CT10
+  
+               Physics parameters
+ -----------------------------------------------
+   HTYPE                 =        0
+   MODEL                 =        1
+   ANOM_CPL              =        F
+   KK_MOD                =        T
+   SPIN2                 =        F
+   HMASS                 =  120.000    
+   HWIDTH                = -999.000    
+   TOPMASS               =  172.400    
+   BOTTOMMASS            =  4.85500    
+   CHARMMASS             =  1.65000    
+   TAU_MASS              =  1.77684    
+   EWSCHEME              =        3
+   FERMI_CONST           = 0.116637E-04
+   WMASS                 =  80.3980    
+   ZMASS                 =  91.1876    
+   
+ Running in the SM
+   
+ Higgs mass =   120.00000000000000     
+   
+   
+  
+ Information on scale setting in InitScales 
+ -------------------------------------------
+  
+ Dynamical factorization scale chosen:
+         momentum transfer of W/Z  
+ Dynamical value for alphas chosen:
+ alphas = alpha(momentum transfer of W/Z)
+ Initializing PDF set cteq6l1
+  
+  
+  
+  
+   Information on couplings, masses and widths
+ ===============================================
+  
+   SM coupling parameters 
+ ---------------------------
+   G_Fermi                         : 0.000011663700
+   SIN**2 of the weak mixing angle : 0.22264585
+   Q.E.D. fine structure constant  : 1/132.34070    
+   SU(2) coupling constant g       : 0.65305673
+   U(1) coupling constant g'       : 0.34950127
+   Q.C.D. LO alfas(MZ)             : 0.12980813
+   Q.C.D. NLO alfas(MZ)            : 0.11798159
+  
+      particle masses
+ ---------------------------
+   mass of the Z0 boson            :   91.1876
+   mass of the W+/- boson          :   80.3980
+   mass of the Higgs boson         :  120.0000
+   mass of the top quark           :  172.4000
+   mass of the bottom quark at MH  :    2.8132
+  (All other fermions have mass equal ZERO)
+  
+      particle widths
+ ---------------------------
+   total widths of Z0              :   2.508420 GeV
+   total widths of W+ or W-        :   2.097673 GeV
+   total widths of Higgs           :   0.003578 GeV
+   total widths of top quark       :   1.339784 GeV
+  
+     branching ratios
+ ---------------------------
+   W -> lepton anti-lepton         : 10.8397227 %
+   W -> massless quark anti-quark  : 33.7404159 %
+   W -> top bottom                 :  0.0000000 %
+  
+   Z -> neutrino anti-neutrino     :  6.6129820 %
+   Z -> charged lepton anti-lepton :  3.3460763 %
+   Z -> up-type quark anti-quark   : 11.9908090 %
+   Z -> down-type quark anti-quark : 15.3804024 %
+   Z -> top anti-top               :  0.0000000 %
+  
+   H -> WW                         : 13.4257085 %
+   H -> ZZ                         :  1.5167593 %
+   H -> bottom anti-bottom         : 65.5969832 %
+   H -> top anti-top               :  0.0000000 %
+   H -> charm anti-charm           :  3.8970452 %
+   H -> tau anti-tau               :  6.9405324 %
+   H -> mu anti-mu                 :  0.0245739 %
+   H -> gluon gluon                :  8.2279367 %
+   H -> gamma gamma                :  0.2323288 %
+   H -> Z gamma                    :  0.1381319 %
+  
+   VBFCALC_SWITCH        =        T
+   MHLM_SWITCH           =        F
+   RDWN                  = 0.975000E-08
+   KKMAXW                =        3
+   KKMAXZ                =        3
+   KKMAXG                =        2
+ **************************************************
+ Initiated Warped Higgsless Calculation
+ **************************************************
+ ALL PREVIOUS HIGGS-RELATED INFORMATION IS OBSOLETE
+ **************************************************
+ Couplings and Kaluza-Klein masses are calculated
+ by VBFNLO
+ Kaluza-Klein related Information is written to
+ kk_coupl_inp.dat:  Parameters included in the 
+ proceeding run
+ kkcheck.dat:  Kaluza-Klein information and 
+ relative sum rule violation
+ **************************************************
+  
+   KKMAXW                =        3
+   KKMAXZ                =        3
+   KKMAXG                =        2
+   KK_MASSW              =   699.73      1106.2      1584.7    
+   KK_MASSZ              =   694.75      1111.6      1579.3    
+   KK_MASSG              =   718.16      1604.5    
+   CPL_W0-W0-ZX          =  0.58607     0.33946E-01 0.17387E-04 0.12665E-02
+   CPL_W1-W0-ZX          =  0.50324E-01 0.25203     0.16660     0.11510E-02
+   CPL_W1-W1-ZX          =  0.21344      1.3329     0.87760E-01 0.42493    
+   CPL_W2-W0-ZX          =  0.27090E-03 0.12585     0.34299     0.12319    
+   CPL_W2-W1-ZX          =  0.19350     0.63700E-01  1.2633     0.30605E-01
+   CPL_W2-W2-ZX          =  0.22388     0.96277     0.37949E-01 0.49322    
+   CPL_W3-W0-ZX          =  0.18882E-02 0.21010E-02 0.16319     0.25394    
+   CPL_W3-W1-ZX          =  0.19572E-02 0.41426     0.39743E-01 0.90979    
+   CPL_W3-W2-ZX          =  0.18231     0.56651E-01 0.65197     0.20009E-02
+   CPL_W3-W3-ZX          =  0.21613     0.91836     0.53142E-02 0.16084    
+   CPL_W0-W0-GX          =  0.26979E-01 0.10072E-02
+   CPL_W1-W0-GX          =   0.0000     0.22211     0.25475E-02
+   CPL_W1-W1-GX          =  0.30815      1.1396     0.34855    
+   CPL_W2-W0-GX          =   0.0000     0.12055     0.98992E-01
+   CPL_W2-W1-GX          =   0.0000     0.65735E-02 0.84228E-01
+   CPL_W2-W2-GX          =  0.30815     0.80301     0.44400    
+   CPL_W3-W0-GX          =   0.0000     0.57234E-03 0.22233    
+   CPL_W3-W1-GX          =   0.0000     0.38250     0.78975    
+   CPL_W3-W2-GX          =   0.0000     0.46850E-03 0.64179E-02
+   CPL_W3-W3-GX          =  0.30815     0.76204     0.13852    
+   CPL_W0-W0-W0-WX       =  0.66356    
+   CPL_W1-W0-W0-WX       =  0.20986    
+   CPL_W1-W1-W0-WX       =  0.37836    
+   CPL_W1-W1-W1-WX       =  0.75168      1.8777    
+   CPL_W2-W0-W0-WX       =  0.86136E-01
+   CPL_W2-W1-W0-WX       =  0.33950    
+   CPL_W2-W1-W1-WX       =  0.43363     0.33705    
+   CPL_W2-W2-W0-WX       =  0.41599    
+   CPL_W2-W2-W1-WX       =  0.64388      1.4027    
+   CPL_W2-W2-W2-WX       =  0.58320     0.13878      1.5874    
+   CPL_W3-W0-W0-WX       =  0.41452E-01
+   CPL_W3-W1-W0-WX       =  0.15917    
+   CPL_W3-W1-W1-WX       =  0.44579      1.2855    
+   CPL_W3-W2-W0-WX       =  0.32992    
+   CPL_W3-W2-W1-WX       =  0.28771     0.29186    
+   CPL_W3-W2-W2-WX       =  0.46528     0.66894     0.98740E-01
+   CPL_W3-W3-W0-WX       =  0.41232    
+   CPL_W3-W3-W1-WX       =  0.62326      1.4569    
+   CPL_W3-W3-W2-WX       =  0.48303     0.15828      1.1665    
+   CPL_W3-W3-W3-WX       =  0.26141     0.90287     0.18273      1.5718    
+   CPL_W0-W0-Z0-ZX       =  0.34601    
+   CPL_W0-W0-Z1-ZX       =  0.29786E-01 0.13045    
+   CPL_W0-W0-Z2-ZX       =  0.78753E-02 0.64602E-01 0.20026    
+   CPL_W0-W0-Z3-ZX       =  0.37738E-02 0.49511E-01 0.66387E-01 0.72027E-01
+   CPL_W1-W0-Z0-ZX       =  0.40855E-01
+   CPL_W1-W0-Z1-ZX       =  0.79865E-01 0.32020    
+   CPL_W1-W0-Z2-ZX       =  0.10366     0.16292     0.39131    
+   CPL_W1-W0-Z3-ZX       =  0.33079E-01 0.66780E-02 0.26164E-01 0.11469    
+   CPL_W1-W1-Z0-ZX       =  0.80627E-01
+   CPL_W1-W1-Z1-ZX       =  0.26025      2.0160    
+   CPL_W1-W1-Z2-ZX       =  0.23892     0.13482      1.7739    
+   CPL_W1-W1-Z3-ZX       =  0.14114E-01 0.40161E-01 0.40016     0.34274    
+   CPL_W2-W0-Z0-ZX       =  0.95822E-02
+   CPL_W2-W0-Z1-ZX       =  0.68905E-01 0.12017E-01
+   CPL_W2-W0-Z2-ZX       =  0.13885     0.31023     0.33456    
+   CPL_W2-W0-Z3-ZX       =  0.67052E-01 0.25044E-01 0.19225     0.20085    
+   CPL_W2-W1-Z0-ZX       =  0.85293E-01
+   CPL_W2-W1-Z1-ZX       =  0.10542     0.85353    
+   CPL_W2-W1-Z2-ZX       =  0.25856      1.4938     0.10723E-01
+   CPL_W2-W1-Z3-ZX       =  0.25918E-01 0.64358     0.55527     0.56669    
+   CPL_W2-W2-Z0-ZX       =  0.11833    
+   CPL_W2-W2-Z1-ZX       =  0.21037      1.3858    
+   CPL_W2-W2-Z2-ZX       =  0.37698     0.25489E-01  2.5091    
+   CPL_W2-W2-Z3-ZX       =  0.12118     0.41623     0.15959E-01 0.55781    
+   CPL_W3-W0-Z0-ZX       =  0.23159E-02
+   CPL_W3-W0-Z1-ZX       =  0.39632E-01 0.13652    
+   CPL_W3-W0-Z2-ZX       =  0.93969E-01 0.31013E-01 0.31023    
+   CPL_W3-W0-Z3-ZX       =  0.10315     0.22013     0.17261     0.38908E-01
+   CPL_W3-W1-Z0-ZX       =  0.38676E-01
+   CPL_W3-W1-Z1-ZX       =  0.48624E-01  1.2956    
+   CPL_W3-W1-Z2-ZX       =  0.75407E-01  1.0343      1.4617    
+   CPL_W3-W1-Z3-ZX       =  0.18075      1.2131     0.41414E-01 0.46781    
+   CPL_W3-W2-Z0-ZX       =  0.81371E-01
+   CPL_W3-W2-Z1-ZX       =  0.35077E-01  1.0980    
+   CPL_W3-W2-Z2-ZX       =  0.15015      1.1137     0.90955    
+   CPL_W3-W2-Z3-ZX       =  0.19975     0.30649E-01  1.0184     0.83492E-02
+   CPL_W3-W3-Z0-ZX       =  0.10966    
+   CPL_W3-W3-Z1-ZX       =  0.53015E-01 0.23826    
+   CPL_W3-W3-Z2-ZX       =  0.28917     0.19621      1.2921    
+   CPL_W3-W3-Z3-ZX       =  0.32362E-01 0.45680     0.10948E-01  1.4080    
+   CPL_W0-W0-G0-GX       =  0.94955E-01
+   CPL_W0-W0-G1-GX       =  0.83134E-02 0.99681E-01
+   CPL_W0-W0-G2-GX       =  0.31037E-03 0.15173E-01 0.77971E-01
+   CPL_W1-W0-G0-GX       =   0.0000    
+   CPL_W1-W0-G1-GX       =  0.68443E-01 0.24794    
+   CPL_W1-W0-G2-GX       =  0.78500E-03 0.44362E-01 0.13342    
+   CPL_W1-W1-G0-GX       =  0.94955E-01
+   CPL_W1-W1-G1-GX       =  0.35117      1.4967    
+   CPL_W1-W1-G2-GX       =  0.10740     0.35535     0.64643    
+   CPL_W2-W0-G0-GX       =   0.0000    
+   CPL_W2-W0-G1-GX       =  0.37146E-01 0.29685E-01
+   CPL_W2-W0-G2-GX       =  0.30504E-01 0.31010E-01 0.10232    
+   CPL_W2-W1-G0-GX       =   0.0000    
+   CPL_W2-W1-G1-GX       =  0.20256E-02 0.51709    
+   CPL_W2-W1-G2-GX       =  0.25955E-01 0.73501E-01 0.84593E-02
+   CPL_W2-W2-G0-GX       =  0.94955E-01
+   CPL_W2-W2-G1-GX       =  0.24745     0.99741    
+   CPL_W2-W2-G2-GX       =  0.13682     0.18529     0.60770    
+   CPL_W3-W0-G0-GX       =   0.0000    
+   CPL_W3-W0-G1-GX       =  0.17637E-03 0.95491E-01
+   CPL_W3-W0-G2-GX       =  0.68509E-01 0.11071     0.87929E-01
+   CPL_W3-W1-G0-GX       =   0.0000    
+   CPL_W3-W1-G1-GX       =  0.11787     0.86265    
+   CPL_W3-W1-G2-GX       =  0.24336     0.42134     0.15727    
+   CPL_W3-W2-G0-GX       =   0.0000    
+   CPL_W3-W2-G1-GX       =  0.14437E-03 0.71572    
+   CPL_W3-W2-G2-GX       =  0.19777E-02 0.13325     0.23827    
+   CPL_W3-W3-G0-GX       =  0.94955E-01
+   CPL_W3-W3-G1-GX       =  0.23482     0.18079    
+   CPL_W3-W3-G2-GX       =  0.42686E-01 0.12263     0.72465    
+   CPL_W0-W0-G0-ZX       =  0.18060     0.10460E-01 0.53580E-05 0.39027E-03
+   CPL_W0-W0-G1-ZX       =  0.27021E-01 0.11380     0.62668E-01 0.44075E-01
+   CPL_W0-W0-G2-ZX       =  0.11176E-02 0.95762E-02 0.63193E-01 0.64502E-01
+   CPL_W1-W0-G0-ZX       =  0.15507E-01 0.77662E-01 0.51338E-01 0.35468E-03
+   CPL_W1-W0-G1-ZX       =  0.67358E-01 0.28131     0.15538     0.51004E-02
+   CPL_W1-W0-G2-ZX       =  0.22416E-01 0.10006     0.27792E-01 0.10409    
+   CPL_W1-W1-G0-ZX       =  0.65770E-01 0.41073     0.27043E-01 0.13094    
+   CPL_W1-W1-G1-ZX       =  0.19632      1.7330     0.19925     0.76901E-02
+   CPL_W1-W1-G2-ZX       =  0.50451E-01 0.78922     0.27872     0.32897    
+   CPL_W2-W0-G0-ZX       =  0.83477E-04 0.38781E-01 0.10569     0.37959E-01
+   CPL_W2-W0-G1-ZX       =  0.69461E-01 0.22494E-01 0.27642     0.15624E-01
+   CPL_W2-W0-G2-ZX       =  0.61772E-01 0.92742E-01 0.13943     0.17381    
+   CPL_W2-W1-G0-ZX       =  0.59626E-01 0.19629E-01 0.38929     0.94309E-02
+   CPL_W2-W1-G1-ZX       =  0.14619     0.66447      1.2621     0.52870    
+   CPL_W2-W1-G2-ZX       =  0.51217E-01 0.39957     0.31528     0.48003    
+   CPL_W2-W2-G0-ZX       =  0.68987E-01 0.29667     0.11694E-01 0.15199    
+   CPL_W2-W2-G1-ZX       =  0.18677      1.1708     0.99177E-01 0.33390    
+   CPL_W2-W2-G2-ZX       =  0.10580     0.10071     0.75856E-01 0.49648    
+   CPL_W3-W0-G0-ZX       =  0.58184E-03 0.64742E-03 0.50287E-01 0.78250E-01
+   CPL_W3-W0-G1-ZX       =  0.29565E-01 0.11371     0.15314E-01 0.19505    
+   CPL_W3-W0-G2-ZX       =  0.84579E-01 0.48238E-01 0.17391     0.34098E-01
+   CPL_W3-W1-G0-ZX       =  0.60311E-03 0.12765     0.12247E-01 0.28035    
+   CPL_W3-W1-G1-ZX       =  0.12360E-01  1.0539     0.81488      1.0355    
+   CPL_W3-W1-G2-ZX       =  0.11620     0.11210     0.13256     0.39940    
+   CPL_W3-W2-G0-ZX       =  0.56179E-01 0.17457E-01 0.20090     0.61658E-03
+   CPL_W3-W2-G1-ZX       =  0.42512E-01 0.88359     0.88110     0.33911E-01
+   CPL_W3-W2-G2-ZX       =  0.16547     0.26219     0.92117     0.27072E-01
+   CPL_W3-W3-G0-ZX       =  0.66600E-01 0.28299     0.16376E-02 0.49564E-01
+   CPL_W3-W3-G1-ZX       =  0.11939     0.21009     0.25287     0.43439    
+   CPL_W3-W3-G2-ZX       =  0.10367     0.68512     0.31569      1.2199    
+ Higgs mass squared is set to    489620.03764644510       for phasespace generator.
+ Higgs width*mass information set to    95536.015115623755       for phasespace generator.
+ 
+          information on cut parameters
+ -----------------------------------------------
+ 
+ minimum jet pt        (PT_JET_MIN):     20.00    20.00    20.00   
+ maximum jet rapidity                 (Y_JET_MAX):    4.5000000000000000     
+ maximum parton pseudorapidity          (Y_P_MAX):    5.0000000000000000     
+ minimum jet-jet R-separation           (RJJ_MIN):   0.80000000000000004     
+ minimum number of jets                (NJET_MIN):            2
+ single jet from hadronic decay (SINGLE_DECAYJET):            0
+ exponent of generalised kT algorithm (PGENKTJET):    1.0000000000000000     
+ minimum lepton-lepton R-separation     (RLL_MIN):    0.0000000000000000     
+ maximum lepton-lepton R-separation     (RLL_MAX):    50.000000000000000     
+ minimum jet-lepton R-separation        (RJL_MIN):    0.0000000000000000     
+ minimum jet-photon R-separation        (RJG_MIN):    0.0000000000000000     
+ minimum lepton-photon R-separation     (RLG_MIN):    0.0000000000000000     
+ minimum photon-photon R-separation     (RGG_MIN):    0.0000000000000000     
+ maximum photon-photon R-separation     (RGG_MAX):    50.000000000000000     
+ maximum lepton rapidity                (Y_L_MAX):    2.5000000000000000     
+ minimum lepton pt       (PT_L_MIN):     10.00    10.00   
+ minimum invariant dilepton mass        (MLL_MIN):    15.000000000000000     
+ maximum invariant dilepton mass        (MLL_MAX):    14000.000000000000     
+ m_ll cuts only on opposite-sign l   (MLL_OSONLY):  T
+ maximum photon rapidity                (Y_G_MAX):    1.5000000000000000     
+ minimum photon pt       (PT_G_MIN):    
+ photon isolation cut                 (PHISOLCUT):   0.69999999999999996     
+ efficiency of photon isolation cut   (EFISOLCUT):    1.0000000000000000     
+ minimum invariant lepton-photon mass   (MLG_MIN):    0.0000000000000000     
+ maximum invariant lepton-photon mass   (MLG_MAX):    1.0000000000000000E+020
+ minimal missing transverse momentum (PTMISS_MIN):    0.0000000000000000     
+ minimum jet rapidity separation      (ETAJJ_MIN):    4.0000000000000000     
+ tagging jets in opposite hemispheres     (YSIGN):    T
+ leptons fall inside rapidity gap     (LRAPIDGAP):    T
+ min leptons y-dist from tagging jets   (DELY_JL):    0.0000000000000000     
+ photons fall inside rapidity gap     (GRAPIDGAP):    T
+ min photons y-dist from tagging jets   (DELY_JG):    0.0000000000000000     
+ dijet min mass cut on tag jets        (MDIJ_MIN):    600.00000000000000     
+ dijet max mass cut on tag jets        (MDIJ_MAX):    14000.000000000000     
+ veto criteria for jets                   (JVETO):    F
+ minimum veto-tag y-dist             (DELY_JVETO):    0.0000000000000000     
+ maximum |y| for veto jet             (YMAX_VETO):    5.0000000000000000     
+ minimum pT for veto jet             (PTMIN_VETO):    10.000000000000000     
+ 
+ 
+          information on technical cuts
+ -----------------------------------------------
+  
+ Photon exchange with virtuality Q^2 <        4.0 GeV^2 is eliminated. 
+  Recover by calculating  q gamma ---> q g V (V)   etc.
+  
+
+        phase space generator information  
+ -----------------------------------------------
+
+ boson -6 has mass   160.80 GeV and width   500.0000 GeV
+ integration range for boson -6 =      0.032  to     9899.495 GeV
+ boson  3 has mass    80.40 GeV and width     2.0977 GeV
+ integration range for boson  3 =      0.032  to     9899.495 GeV
+ boson  4 has mass    80.40 GeV and width     2.0977 GeV
+ integration range for boson  4 =      0.032  to     9899.495 GeV
+
+ machine energy =    14000.0  GeV
+ Minimal mom.transfer or mass for parton pair:   100.00 MeV
+
+ -----------------------------------------------
+
+  Random number generator initialized with seed =            0
+ 
+          information on histogram config
+ -----------------------------------------------
+ 
+ SMEARING           =      T
+ SMEAR_VALUE        =       0.10000000000000001     
+ CALC_ERROR_GNUPLOT =      F
+ CALC_ERROR_ROOT    =      F
+ CALC_ERROR_1D      =      T
+ CALC_ERROR_2D      =      F
+ 
+HIST_ID1      =      0.00    250.00  # dS/dpT_j (fb/GeV)
+HIST_ID2      =      0.00    500.00  # dS/dpTmax_j (fb/GeV)
+HIST_ID3      =      0.00    200.00  # dS/dpTmin_j (fb/GeV)
+HIST_ID4      =     -5.00      5.00  # dS/dy_j (fb)
+HIST_ID5      =     -5.00      5.00  # dS/dy_j1 (fb)
+HIST_ID6      =     -5.00      5.00  # dS/dy_j2 (fb)
+HIST_ID7      =      0.00    500.00  # dS/dpTmax_l (fb/GeV)
+HIST_ID8      =      0.00    200.00  # dS/dpTmin_l (fb/GeV)
+HIST_ID9      =      0.00      5.00  # dS/d|eta|max_l (fb)
+HIST_ID10     =      0.00      5.00  # dS/d|eta|min_l (fb)
+HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
+2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/dy_jj dm_jj (fb/GeV)
+ 
+ -----------------------------------------------
+ 
+ 
+ 
+Starttime: 2017-01-11T10:56:13+0100
+
+ MONACO input parameters:
+ ndim = 15,  ncall =       2M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+  
+ W+W- jj amplitude square information:
+ -----------------------------------------------
+  
+  v(v) to WW tensors initialized to  (  0.0000000000000000     ,  0.0000000000000000     )
+  External b-quark contributions are excluded
+
+ iteration  1:
+ integral =  2.573327E+00,  sigma = 1.900E-01
+ efficacy = 1.628E-05,  raw efficacy = 1.628E-05
+ f_positive = 1.083E-2,  f_zero = 9.892E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  2.573327E+00,  sigma = 1.900E-01,  chi^2/iteration = 2.842E-14
+
+ MONACO:  grid written to file grid2_1.out.1
+
+ MONACO input parameters:
+ ndim = 15,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  2:
+ integral =  2.679380E+00,  sigma = 1.908E-02
+ efficacy = 3.002E-04,  raw efficacy = 5.915E-07
+ f_positive = 1.094E-1,  f_zero = 8.906E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  2.678322E+00,  sigma = 1.898E-02,  chi^2/iteration = 3.084E+05
+
+ MONACO:  grid written to file grid2_1.out.2
+
+ MONACO input parameters:
+ ndim = 15,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  3:
+ integral =  2.691411E+00,  sigma = 5.359E-03
+ efficacy = 8.376E-04,  raw efficacy = 3.920E-07
+ f_positive = 2.513E-1,  f_zero = 7.487E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  2.690445E+00,  sigma = 5.157E-03,  chi^2/iteration = 7.488E-01
+
+ MONACO:  grid written to file grid2_1.out.3
+
+ MONACO input parameters:
+ ndim = 15,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  4:
+ integral =  2.688243E+00,  sigma = 2.700E-03
+ efficacy = 2.112E-04,  raw efficacy = 1.881E-07
+ f_positive = 3.352E-1,  f_zero = 6.648E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  2.688717E+00,  sigma = 2.392E-03,  chi^2/iteration = 4.459E-01
+
+ MONACO:  grid written to file grid2_1.out.4
+
+ MONACO input parameters:
+ ndim = 15,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  5:
+ integral =  2.688870E+00,  sigma = 1.641E-03
+ efficacy = 5.342E-04,  raw efficacy = 2.180E-07
+ f_positive = 3.705E-1,  f_zero = 6.295E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  2.688821E+00,  sigma = 1.353E-03,  chi^2/iteration = 2.982E-01
+
+ MONACO:  grid written to file grid2_1.out.5
+
+ MONACO input parameters:
+ ndim = 15,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  6:
+ integral =  2.690538E+00,  sigma = 1.111E-03
+ efficacy = 3.196E-04,  raw efficacy = 1.537E-07
+ f_positive = 3.912E-1,  f_zero = 6.088E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  2.689847E+00,  sigma = 8.586E-04,  chi^2/iteration = 4.641E-01
+
+ MONACO:  grid written to file grid2_1.out.6
+ 
+  result (LO):    2.6898468607214778       +-    8.5858148360054424E-004  fb     3.1919344410939930E-002 %
+ 
+   
+ Initialising FF ..
+   
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
+ Initializing PDF set CT10
+
+ MONACO input parameters:
+ ndim = 15,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_1.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  2.300171E+00,  sigma = 9.155E-04
+ efficacy = 4.212E-04,  raw efficacy = 1.397E-07
+ f_positive = 4.007E-1,  f_zero = 5.993E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  2.300171E+00,  sigma = 9.155E-04,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.vout.1
+  
+  result for virtual contribution, no.            1
+  sigma =    2.3001707564108123       +-    9.1545278511461869E-004  fb  
+  
+ total result for virtual contns so far 
+  sigma =    2.3001707564108123       +-    9.1545278511461869E-004  fb
+  
+
+ MONACO input parameters:
+ ndim = 15,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_1.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  1.166588E-02,  sigma = 1.654E-04
+ efficacy = 6.355E-05,  raw efficacy = 1.721E-08
+ f_positive = 2.211E-1,  f_zero = 5.991E-1,  f_negative = 1.798E-1
+ accumulated statistics:
+ integral =  1.166588E-02,  sigma = 1.654E-04,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.vout.2
+  
+  result for virtual contribution, no.            2
+  sigma =    1.1665876071149184E-002  +-    1.6535638085054139E-004  fb  
+  
+ total result for virtual contns so far 
+  sigma =    2.3118366324819615       +-    9.3026691570865909E-004  fb
+  
+
+ MONACO input parameters:
+ ndim = 15,  ncall =     512k,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_1.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  1.255983E-03,  sigma = 2.594E-04
+ efficacy = 4.780E-05,  raw efficacy = 5.284E-08
+ f_positive = 1.953E-1,  f_zero = 5.995E-1,  f_negative = 2.052E-1
+ accumulated statistics:
+ integral =  1.255983E-03,  sigma = 2.594E-04,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.vout.3
+  
+  result for virtual contribution, no.            3
+  sigma =    1.2559834360925967E-003  +-    2.5943601358911794E-004  fb  
+  
+ total result for virtual contns so far 
+  sigma =    2.3130926159180540       +-    9.6576579956483984E-004  fb
+  
+   
+ Summary for FF ..
+   
+ 
+total number of errors and warnings
+===================================
+vbffferr: no errors
+the warning system has been disabled
+ 
+
+ MONACO input parameters:
+ ndim = 18,  ncall =       2M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+  
+ W+W- jjj amplitude square information:
+ -----------------------------------------------
+  
+  v(v) to WW tensors initialized to  (  0.0000000000000000     ,  0.0000000000000000     )
+  External b-quark contributions are excluded
+  
+  creal =   -4.0797362673929065       cvirtual =   -3.7101318663035472     
+  virt factor for alphas = 0.12 is   0.81104453988909386     
+
+ iteration  1:
+ integral =  3.525704E-01,  sigma = 1.028E-01
+ efficacy = 2.408E-06,  raw efficacy = 2.408E-06
+ f_positive = 1.650E-2,  f_zero = 9.719E-1,  f_negative = 1.156E-2
+ accumulated statistics:
+ integral =  3.525704E-01,  sigma = 1.028E-01,  chi^2/iteration = 3.553E-15
+
+ MONACO:  grid written to file grid3_1.out.1
+
+ MONACO input parameters:
+ ndim = 18,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  2:
+ integral =  4.963272E-01,  sigma = 3.810E-02
+ efficacy = 4.574E-06,  raw efficacy = 1.500E-07
+ f_positive = 5.783E-2,  f_zero = 9.146E-1,  f_negative = 2.759E-2
+ accumulated statistics:
+ integral =  4.789741E-01,  sigma = 3.572E-02,  chi^2/iteration = 1.719E+06
+
+ MONACO:  grid written to file grid3_1.out.2
+
+ MONACO input parameters:
+ ndim = 18,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  3:
+ integral =  5.059172E-01,  sigma = 1.143E-02
+ efficacy = 1.227E-05,  raw efficacy = 1.381E-08
+ f_positive = 1.299E-1,  f_zero = 8.193E-1,  f_negative = 5.082E-2
+ accumulated statistics:
+ integral =  5.034148E-01,  sigma = 1.089E-02,  chi^2/iteration = 2.235E+00
+
+ MONACO:  grid written to file grid3_1.out.3
+
+ MONACO input parameters:
+ ndim = 18,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  4:
+ integral =  5.202011E-01,  sigma = 2.907E-02
+ efficacy = 1.115E-06,  raw efficacy = 5.131E-09
+ f_positive = 1.785E-1,  f_zero = 7.545E-1,  f_negative = 6.707E-2
+ accumulated statistics:
+ integral =  5.054797E-01,  sigma = 1.020E-02,  chi^2/iteration = 1.264E+00
+
+ MONACO:  grid written to file grid3_1.out.4
+
+ MONACO input parameters:
+ ndim = 18,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  5:
+ integral =  5.011794E-01,  sigma = 5.756E-03
+ efficacy = 7.898E-06,  raw efficacy = 6.831E-10
+ f_positive = 1.973E-1,  f_zero = 7.280E-1,  f_negative = 7.469E-2
+ accumulated statistics:
+ integral =  5.022187E-01,  sigma = 5.012E-03,  chi^2/iteration = 8.874E-01
+
+ MONACO:  grid written to file grid3_1.out.5
+
+ MONACO input parameters:
+ ndim = 18,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  6:
+ integral =  5.010186E-01,  sigma = 2.891E-03
+ efficacy = 6.979E-06,  raw efficacy = 4.409E-10
+ f_positive = 2.121E-1,  f_zero = 7.078E-1,  f_negative = 8.018E-2
+ accumulated statistics:
+ integral =  5.013183E-01,  sigma = 2.505E-03,  chi^2/iteration = 6.763E-01
+
+ MONACO:  grid written to file grid3_1.out.6
+ 
+  result for real emissions 
+  sigma =   0.50131829900958824       +-    2.5045592600646807E-003  fb
+  
+ 
+total number of errors and warnings
+===================================
+fferr: no errors
+ 
+  
+  final result at NLO 
+  sigma =    2.8144109149276422       +-    2.6843100913986921E-003  fb   9.5377333748995388E-002 %
+ 
+   
+ TOTAL VIRTUAL CONTRIBUTIONS:
+ TOTAL borntype:
+   2.3001707564108123        9.1545278511461869E-004   3.9799340225640106E-002  %
+ TOTAL boxes:
+   1.1665876071149184E-002   1.6535638085054139E-004   1.4174364603399430       %
+ TOTAL pentagons:
+   1.2559834360925967E-003   2.5943601358911794E-004   20.656005973791451       %
+  
+  
+  
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   
+  PROCESS:          200   :   p p -->  W+ W- jj -->  ve e+ ve~ e- jj
+    running in Kaluza-Klein mode
+   
+  TOTAL result (LO):          2.6898468607214778       +-    8.5858148360054424E-004  fb     3.1919344410939930E-002 %
+  NLO virtual result:         2.3130926159180540       +-    9.6576579956483984E-004  fb     4.1752145716894805E-002 %
+  QCD real emission:         0.50131829900958824       +-    2.5045592600646807E-003  fb    0.49959462182264736      %
+  TOTAL result (NLO):         2.8144109149276422       +-    2.6843100913986921E-003  fb     9.5377333748995388E-002 %
+  K-Factor:                   1.0463089761819204     
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+  
+  Endtime: 2017-01-12T23:51:43+0100
+  Runtime: 36:55:30 (132930 seconds)

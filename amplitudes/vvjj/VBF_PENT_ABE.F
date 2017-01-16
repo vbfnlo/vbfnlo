@@ -7,12 +7,12 @@ C     the purpose of this routine is to compute the needed pieces for all
 C     triangle and box diagrams
 
       implicit none
-      logical IsV1aWtemp,IsV2aWtemp
+
       integer divMax
-      logical Ward1,Ward2,WardTest,doWardTest1,doWardTest2
+      logical Ward1,WardTest
       integer isig1max,isig3max 
       double precision scale
-      integer isig1,isig2,isig3,div,comp,gluon_hel,i
+      integer isig1,isig2,isig3,div,comp
       double precision p1(0:3),p2(0:3),pbos1(0:3),pbos2(0:3),pjext(0:3)
       double complex PSI1(2,-1:1),PSI2(2,-1:1),extbos1(6),extbos2(6)
       double complex mat21(8,-1:1,-1:1,6,0:2), 
@@ -21,11 +21,10 @@ C     triangle and box diagrams
      $     mat21b(-1:1,-1:1,6,0:2)
       double complex jext(0:3,-1:1)
        real*8 dotrr
-      real*8 mans
+
       external theta,dotrr
       real*8 theta,pi
       parameter( pi = 3.141592653589793d0)
-      complex*16 ratioFact,lns,cteEps1
 
 
       Ward1=.false.
@@ -47,7 +46,6 @@ c$$$
 c$$$      do isig1 = -1,1,2
 c$$$         print*,(jext(i,isig1),i=0,3)
 c$$$      enddo
-  
 
 
 c     V1 V2 j
@@ -282,28 +280,21 @@ c                  print*, 'Div',Div
 c-----------------------------------------------------------------------------
 
       subroutine SetPentMeToZero(mat21,mat21g,mat21gb,mat21b,divmax)
+         implicit none
 
       double complex mat21(8,-1:1,-1:1,2,0:2), 
      $     mat21g(3,-1:1,-1:1,2,0:2), 
      $     mat21gb(3,-1:1,-1:1,2,0:2), 
      $     mat21b(-1:1,-1:1,2,0:2)
-      integer i,div, isig1, isig3, divmax
+      integer isig1, isig3, divmax
 
-      do div = 0,divmax
-         do i=1,2
-            do isig1=-1,1,2
-               do isig3 = -1,1,2
-                  do j=1,8
-                     mat21(j,isig1,isig3,i,div)=0
-                  enddo
-                  do j=1,3
-                     mat21g(j,isig1,isig3,i,div)=0
-                     mat21gb(j,isig1,isig3,i,div)=0
-                  enddo
-                  mat21b(isig1,isig3,i,div)=0
-               enddo            !isig3
-            enddo               !isig1
-         enddo                  !i
-      enddo    
+      do isig1=-1,1,2
+         do isig3 = -1,1,2
+            mat21(1:8,isig1,isig3,1:2,0:divmax)=0
+            mat21g(1:3,isig1,isig3,1:2,0:divmax)=0
+            mat21gb(1:3,isig1,isig3,1:2,0:divmax)=0
+            mat21b(isig1,isig3,1:2,0:divmax)=0
+         enddo            !isig3
+      enddo               !isig1
 
       end

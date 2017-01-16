@@ -3,7 +3,7 @@
       implicit none
       complex*16 D0
       real*8 DijR(13,3),DijI(13,3)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_D(3)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_D(1)=13
@@ -23,7 +23,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       implicit none
       complex*16 C0
       real*8  CijR(4,2),CijI(4,2)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_C(2)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_C(1)=2
@@ -38,13 +38,10 @@ c      common/indexes/indx_C,indx_D,indx_E
       end
 
 
-
-
-
       subroutine print_Cij_QUAD(C0,Cij)
       implicit none
       complex*32 C0,Cij(4,2)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_C(2)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_C(1)=2
@@ -61,7 +58,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       implicit none
       complex*32 C0
       real*16  CijR(4,2),CijI(4,2)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_C(2)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_C(1)=2
@@ -81,7 +78,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       complex*16 C0
       real*16  CijR_QUAD(4,2),CijI_QUAD(4,2)
       real*8  CijR(4,2),CijI(4,2)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_C(2)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_C(1)=2
@@ -100,7 +97,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       subroutine print_Dij_QUAD(D0,Dij)
       implicit none
       complex*32 D0,Dij(13,3)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_D(3)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_D(1)=13
@@ -118,7 +115,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       implicit none
       complex*32 D0
       real*16 DijR(13,3),DijI(13,3)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_D(3)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_D(1)=13
@@ -140,7 +137,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       complex*16 D0
       real*16  DijR_QUAD(13,3),DijI_QUAD(13,3)
       real*8  DijR(13,3),DijI(13,3)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_D(3)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_D(1)=13
@@ -159,7 +156,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       subroutine print_Eij_QUAD(E0,Eij)
       implicit none
       complex*32 E0,Eij(46,4)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_E(4)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_E(1)=4
@@ -181,7 +178,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       complex*16 E0
       real*16  EijR_QUAD(46,4),EijI_QUAD(46,4)
       real*8  EijR(46,4),EijI(46,4)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_E(4)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_E(1)=4
@@ -203,7 +200,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       implicit none
       complex*16 E0
       real*8 EijR(46,4),EijI(46,4)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_E(4)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_E(1)=4
@@ -221,12 +218,11 @@ c      common/indexes/indx_C,indx_D,indx_E
       end
 
 
-
       subroutine print_EijR_QUAD(E0,EijR,EijI)
       implicit none
       complex*32 E0
       real*16 EijR(46,4),EijI(46,4)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_E(4)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_E(1)=4
@@ -312,8 +308,6 @@ c      common/indexes/indx_C,indx_D,indx_E
       end
 
 
-
-
       subroutine From_EijR_QUAD_to_Dbl(E0R,E0I,EijR,EijI,
      -                            E0R_QUAD,E0I_QUAD,EijR_QUAD,EijI_QUAD)
       implicit none
@@ -321,7 +315,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       real*8 E0R,E0I
       real*16  EijR_QUAD(46,4),EijI_QUAD(46,4)
       real*8  EijR(46,4),EijI(46,4)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_E(4)
       integer i1,i2
       indx_E(1)=4
       indx_E(2)=11
@@ -338,7 +332,6 @@ c      common/indexes/indx_C,indx_D,indx_E
       end
 
 
-
       subroutine From_DijR_QUAD_to_Dbl(D0R,D0I,DijR,DijI,
      -                      D0R_QUAD, D0I_QUAD,DijR_QUAD,DijI_QUAD)
       implicit none
@@ -346,7 +339,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       real*8 D0R,D0I
       real*16  DijR_QUAD(13,3),DijI_QUAD(13,3)
       real*8  DijR(13,3),DijI(13,3)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_D(3)
 
       integer i1,i2
       indx_D(1)=13
@@ -363,7 +356,6 @@ c      common/indexes/indx_C,indx_D,indx_E
       end
 
 
-
       subroutine From_CijR_QUAD_to_Dbl(C0R,C0I,CijR,CijI,
      -                         C0R_QUAD,C0I_QUAD,CijR_QUAD,CijI_QUAD)
       implicit none
@@ -371,7 +363,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       real*8 C0R,C0I
       real*16  CijR_QUAD(4,2),CijI_QUAD(4,2)
       real*8  CijR(4,2),CijI(4,2)
-      integer indx_C(2),indx_D(3),indx_E(4)
+      integer indx_C(2)
       integer i1,i2
       indx_C(1)=2
       indx_C(2)=4
@@ -386,8 +378,6 @@ c      common/indexes/indx_C,indx_D,indx_E
       end
 
 
-
-
       subroutine From_BijR_QUAD_to_Dbl(B0R,B0I,B0R_QUAD,B0I_QUAD)
       implicit none
       real*16 B0R_QUAD,B0I_QUAD
@@ -395,8 +385,6 @@ c      common/indexes/indx_C,indx_D,indx_E
       B0R=Dble(B0R_QUAD)
       B0I=Dble(B0I_QUAD)
       end
-
-
 
 
       subroutine From_FijR_QUAD_to_Dbl(F0R,F0I,FijR,FijI,
@@ -423,11 +411,6 @@ c      common/indexes/indx_C,indx_D,indx_E
          enddo
       enddo
       end
-
-
-
-
-
 
 
 

@@ -44,8 +44,8 @@ c*************************************************************************
       integer partInSameJet
       
       real*8 pt,y,phi
-      integer jrec, jdef
-      integer i,j,k,mu,icount
+      integer jrec
+      integer i,j,mu,icount
 
       logical IsJet
 
@@ -55,12 +55,10 @@ c*************************************************************************
       parameter (ldebug=.false.)
 
 
-
 **c common block for transferring information on parton content of jets
 **c parton inside jet identified by idef_part(jetID,partonID)
       integer idef_part(max_p+max_v-nx, max_p+max_v-nx)
       common /defpartkt/ idef_part
-
 
 
 c-----------------------------------------------------------
@@ -72,7 +70,6 @@ c-----------------------------------------------------------
          print*, particle_IDs
          print*, p(0:3,3,1)
       endif
-
 
 
       jrec = -1                 ! recombination scheme
@@ -182,7 +179,6 @@ c     sort out the jets, which are not inside the detector
       END
 
 
-
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C       k_T-scheme as defined in
 C       M.Seymour, Nucl.Phys.B513:269-300,1998 [hep-ph/9707338]
@@ -207,7 +203,7 @@ c declare input/output variables and cut parameters
 c
 #include "global.inc"
 c
-      integer njet,jrec,njetmin,L
+      integer njet,jrec,njetmin
       real*8 rjjmin, jetp, p_j(0:7,max_jets), p_ja(0:7,max_jets)
 c
       real*8 rjj,dij,dib, rsepf

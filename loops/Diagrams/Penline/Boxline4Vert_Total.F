@@ -5,16 +5,15 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16   mup2(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup4test(0:3),mup5test(0:3)
+
        Complex*16 barpsi_p3(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(3,3),result_color(3)
        real*8 resultgauge(2)
        Integer Div,Gauge
         musq=musqIn
-
 
 
        if(Div.eq.0) then
@@ -34,35 +33,20 @@
       end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
        subroutine NoAbe4vertBoxLineT(p1,p2,p3,p4,p5,barpsi_p3,psi_p1,m
      -   up2,mup4,mup5,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,gauge)
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16   mup2(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup4test(0:3),mup5test(0:3)
+       Complex*16   mup2test(0:3)
        Complex*16 barpsi_p3(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(3,3),result_color(3)
        real*8 resultgauge(2)
-       Integer Div,Gauge 
+       Integer Gauge 
 
        Complex*16 resulth(3,3),result_color_g(3)
        complex*16 resulttemp
@@ -108,19 +92,13 @@
         end
 
 
-
-
-
-
-
-  
        subroutine NoAbe4vertBoxLineDivT(p1,p2,p3,p4,p5,barpsi_p3,psi_p1,m
      -   up2,mup4,mup5,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,Div,gauge)
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16   mup2(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup4test(0:3),mup5test(0:3)
+       Complex*16   mup2test(0:3)
        Complex*16 barpsi_p3(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
@@ -179,9 +157,9 @@
 #include "VBFNLO/loops/Utilities/GaugeTest.inc"
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16   mup2(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup4test(0:3),mup5test(0:3)
+
        Complex*16 barpsi_p3(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(3,3),result_color(3)
@@ -190,12 +168,12 @@
 
        common/pengaugeValue/t
        real*8 t,tdble,tquad
-       logical Ward,ward_q
+
        Complex*16 result_graph_Q(3,3),result_color_Q(3)
        real*8 resultgauge_Q(2)
        integer jtemp,jtemp2
        logical gaugetrue
-       logical wardidtest_Q(0:8),wardpAbe(2)
+       logical wardpAbe(2)
        common/wardpenNoAbe/wardpAbe
 
         musq=musqIn
@@ -297,8 +275,7 @@ c to rescue Dble precision
        if (tquad.lt.tdble) then
          if(tquad.lt.GaugeAccuracyPenLnA) wardpAbe(2)=.true.
 
-    
-          
+
         do jtemp=1,3
            result_color(jtemp)=result_color_Q(jtemp)
            if(jtemp.le.2) then
@@ -322,8 +299,6 @@ c to rescue Dble precision
       end
 
 
-
-
 #ifdef WITH_QUAD
 
 
@@ -333,16 +308,15 @@ c to rescue Dble precision
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16   mup2(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup4test(0:3),mup5test(0:3)
+
        Complex*16 barpsi_p3(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(3,3),result_color(3)
        real*8 resultgauge(2)
        Integer Div,Gauge
         musq=musqIn
-
 
 
        if(Div.eq.0) then
@@ -368,14 +342,14 @@ c to rescue Dble precision
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16   mup2(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup4test(0:3),mup5test(0:3)
+       Complex*16   mup2test(0:3)
        Complex*16 barpsi_p3(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(3,3),result_color(3)
        real*8 resultgauge(2)
-       Integer Div,Gauge 
+       Integer Gauge 
 
        Complex*16 resulth(3,3),result_color_g(3)
        complex*16 resulttemp
@@ -419,13 +393,6 @@ c to rescue Dble precision
         
         
         end
-
-
-
-
-
-
-
 
 
 #endif

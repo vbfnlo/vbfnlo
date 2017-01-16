@@ -10,7 +10,7 @@ c ------------------------------------------------------------
       IMPLICIT NONE
       DOUBLE PRECISION P(0:3,2:7)
       COMPLEX*16 ZZZTENSOR(0:5)
-      integer lsign(2:7,8),ll,mu,nu,h,N
+      integer lsign(2:7,8),ll,h,N
       integer NW
 
       !possible lepton helicities
@@ -60,7 +60,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and Z/A polarization vectors
@@ -486,7 +486,6 @@ c considering anomalous couplings, we get 24 extra graphs with Higgs-couplings (
       CALL aah_anomal3(W(1,54  ),W(1,8   ),W(1,145 ),AMP(206 ))
 
 
-
       zzztensor(mu) =    -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   5)
      &             -AMP(   6)-AMP(   7)-AMP(   8)-AMP(   9)-AMP(  10)
      &             -AMP(  11)-AMP(  12)-AMP(  13)-AMP(  14)-AMP(  15)
@@ -547,7 +546,7 @@ c ----------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:7)
       COMPLEX*16 ZZZtensor(0:5)
-      INTEGER lsign(2:7,8),ll,mu,nu,h,N
+      INTEGER lsign(2:7,8),ll,h,N
       integer NW
 
       !possible lepton helicities
@@ -597,7 +596,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -1074,8 +1073,6 @@ c considering anomalous couplings, we get 21 extra graphs with Higgs-couplings (
       Call aah_anomal3(W(1,56  ),W(1,24  ),W(1,151 ),AMP(222 ))
 
 
-
-
       zzztensor(mu) =    -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   7)!non
      &             -AMP(   8)-AMP(   9)-AMP(  10)-AMP(  11)-AMP(  12)!resonant
      &             -AMP(  13)-AMP(  14)-AMP(  15)-AMP(  16)-AMP(  17)!
@@ -1139,7 +1136,7 @@ c ----------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:7)
       COMPLEX*16 ZZZtensor1(0:5),ZZZtensor2(0:5),ZZZtensor3(0:5)
-      INTEGER lsign(2:7,8),ll,mu,nu,h,N
+      INTEGER lsign(2:7,8),ll,h,N
       integer NW
 
       !possible lepton helicities
@@ -1191,7 +1188,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 

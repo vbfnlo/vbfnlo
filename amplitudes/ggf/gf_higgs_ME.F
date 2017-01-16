@@ -12,7 +12,7 @@ c... modified   : 30.01.2011
 
 c... Vertex functions
       complex*16 H2G_Loop,A2G_Loop,H2G_effective,A2G_effective
-      complex*16 H1G_SqLoop,H2G_SqLoop
+
 
       real*8  ALFAS,XMT,ALFA,XMZ,XMW,SIN2W,XMH,gf,alfas_lo
       real*8 clr, xm2, xmg, b, v, a
@@ -21,7 +21,7 @@ c... Vertex functions
 
       real*8 pbar(0:3,4),phbar(0:4),p(0:3,4),p21(0:4),p43(0:4),
      &       p41(0:4),p23(0:4)
-      real*8 q1q2,q1q2f
+
 
       complex*16 j21(0:3,-1:1),j43(0:3,-1:1),j41(0:3,-1:1),
      &     j23(0:3,-1:1),psi(2,-1:1,4) 
@@ -43,11 +43,11 @@ c... Vertex functions
      &           TbHjjSbottomA(2),TbHjjSbottomB(2)
 
 c... other local variables 
-      integer i,j,k,mu,isig,isig1,isig3,icall
+      integer i,mu,isig1,isig3,icall
       data icall /0/
 
 c... variables for the main part of the program
-      integer cpl,vsign(4),hsign
+      integer vsign(4),hsign
       real*8  res12, res14, resfi  
      
       complex*16 mm, mmf
@@ -392,7 +392,7 @@ c...                  rh(0) = rh(1)+rh(2)
 
 c... vertex functions      
       complex*16 H2G_Loop,A2G_Loop,H3G_Loop,A3G_Loop
-      complex*16 H1G_SqLoop,H2G_SqLoop,H3G_SqLoop
+
       complex*16 H2G_effective,A2G_effective,H3G_effective,A3G_effective,
      &           GGG_vertex
 
@@ -412,12 +412,12 @@ c$$$      COMMON  /AMPS/ amplit
       real*8 PBAR(0:3,NF),KBAR(0:3,NG),PHBAR(0:3)
       real*8 K(0:4,NG),P(0:4,NFPL1),PH(0:3),Q(0:4,NGPL1)
       real*8 K21(0:3),K_H(0:3,2)
-      real*8 x(0:3),y(0:3),q1q2,q1q3,q2q3,k1k2,k1q1,k2q1,k2q2
+      real*8 x(0:3),y(0:3),q1q2,k1k2,k1q1,k2q1
 
       complex*16 psi(2,-1:1,NF),j_21(0:3,-1:1),j21(0:3),Jgg(0:3)
-      complex*16 CHIF(2,NF),BRAKET(2,NF,NG)
+      complex*16 BRAKET(2,NF,NG)
       complex*16 epsg(0:3,2),epsh(0:3,2)
-      real*8 ep(0:3,2)
+
 
       real*8 vev,fac
 
@@ -433,15 +433,15 @@ c$$$      COMMON  /AMPS/ amplit
 
       real*8 pi
       parameter (pi=3.14159 26535 89793d0)
-      integer FSIGN(4), FPOL(NF), SIGMAF(NF), GSIGN(4), HSIGN, CPL
+      integer FSIGN(4), FPOL(NF), SIGMAF(NF), GSIGN(4), HSIGN
       real*8 rh(0:3) 
 *segorig      integer FSIGN(NF), FPOL(NF), SIGMAF(NF), GSIGN(NG), HSIGN, CPL
 *segorig      real*8 rh(0:2) 
 c... further local variables
-      integer mu, sigma, i1, i2, i, j, i1pol, i2pol
+      integer mu, sigma, i1, i, i1pol, i2pol
       real*8 res12, res21, resfi
       real*8 detx, detxt, dummy(0:4),srtdet
-      real*8 col11_22, col12_21, pa7
+      real*8 col11_22, col12_21
 
       logical ldebug
       integer npolg1, ienter
@@ -1470,7 +1470,7 @@ c-----------------------------------------------
       enddo
       
 c... multiply with color factors
- 456  rh(1)=res12*col11_22 * fac 
+      rh(1)=res12*col11_22 * fac 
       rh(2)=res21*col11_22 * fac 
       rh(0)=rh(1)+rh(2)+resfi*col12_21*fac 
    
@@ -1481,7 +1481,7 @@ c... multiply with color factors
       END
 
 ***********************************************************************
-      SUBROUTINE HiggsGG(Qphy,gpol,gsign,rh,amp,tri,box,pen)
+      SUBROUTINE HiggsGG(Qphyin,gpol,gsign,rh,amp,tri,box,pen)
 *----------------------------------------------------------------------
 c... modified by: Michael Kubocz     
 c... date       : 17.10.2007
@@ -1510,8 +1510,8 @@ c...  pen(3)   same for the graphs with a ggggh vertex
 #include "ggf_dotproducts.inc"
 
 c... input
-      real*8 Qphy(0:3,4)
-      integer gpol(4),gsign(4),cpl
+      real*8 Qphyin(0:3,4), Qphy(0:4,4)
+      integer gpol(4),gsign(4)
 c... output
       real*8 rh(0:3)
       complex*16 amp(3)
@@ -1550,9 +1550,9 @@ c... internal momenta, polarization, current and dot-product variables
 
 c... auxiliary variables
       integer i, mu,j
-      real*8 Qsqr,ampsqr,amp1sqr,amp2sqr,amp3sqr
+      real*8 ampsqr,amp1sqr,amp2sqr,amp3sqr
       real*8 epx(0:3,4)
-      complex*16 c0scale
+
 
 c... external dot-product functions and the m_i subamlitudes
       real*8 dotrr
@@ -1564,17 +1564,15 @@ c... debugging variables
       LOGICAL ldebug
       INTEGER gluonid
       PARAMETER (ldebug=.false.,gluonid=3)
-      complex*16  ci_tot(3),ci_tri(3),ci_box(3),ci_pent(3)
-      real*8 rhx(0:3)
 
-      real*8 pb(0:3),Qphyb(0:3,4)
+
+      real*8 pb(0:3),Qphyb(0:4,4)
       logical lboost
       parameter (lboost=.false.)
 
       real*8 eps, qi
       common /bh4g_mom_eps/ qi(0:3,4),eps(0:3,4)
 
-      real*8 x
 
 c... global factors
       vev = 2d0*xmw/(v(1,3)*dsqrt(8d0))
@@ -1582,6 +1580,10 @@ c... factor 2 --> c_i color factors
       fac = 2d0*(4d0*alfas**2/vev)
 
 c... gluon vectors (K)
+      qphy(0:3,:) = qphyin(0:3,:)
+      qphy(4,:) = 0
+      qphyb(4,:) = 0
+
       if (lboost) then
          pb(0) =  Qphy(0,1)+Qphy(0,2)
          pb(1) =-(Qphy(1,1)+Qphy(1,2))
@@ -1783,7 +1785,7 @@ c... sum up the amplitudes for 3 different color structures
       penAmp(3)=-(MMe(2,3,1,4)+MMe(3,1,4,2)+MMe(4,2,3,1)+MMe(3,2,4,1))
      &            /2d0
 
-789   amp(1)=(triAmp(1)+boxAmp(1)+penAmp(1))*fac
+      amp(1)=(triAmp(1)+boxAmp(1)+penAmp(1))*fac
       amp(2)=(triAmp(2)+boxAmp(2)+penAmp(2))*fac
       amp(3)=(triAmp(3)+boxAmp(3)+penAmp(3))*fac
 
@@ -2042,7 +2044,7 @@ c     p_i2 --<--*-->-- p_i4
       integer i1,i2,i3,i4,j
 
       complex*16 H2G_Loop,A2G_Loop,H2G_effective,A2G_effective
-      complex*16 H1G_SqLoop,H2G_SqLoop
+
 
 c$$$      EXTERNAL H2G_Loop,A2G_Loop,H2G_effective,A2G_effective,
 c$$$     &         H1G_SqLoop,H2G_SqLoop
@@ -2211,7 +2213,7 @@ c     p_i2 --<--*-->-- p_i4
       integer i1,i2,i3,i4,j
       
       complex*16 H3G_Loop,A3G_Loop,H3G_effective,A3G_effective
-      complex*16 H3G_SqLoop
+
 c$$$  EXTERNAL H3G_Loop,A3G_Loop,H3G_effective,A3G_effective,H3G_SqLoop
       EXTERNAL H3G_Loop,A3G_Loop,H3G_effective,A3G_effective
 
@@ -2583,8 +2585,8 @@ c        p_i2   H
       integer i1,i2,i3,i4,j
 
       complex*16 dotcc
-      complex*16 H4G_SqLoop,H4G_SqTriLoop,
-     &     H4G_SqBoxLoop,A4G_LoopDD
+      complex*16 
+     &     A4G_LoopDD
 
 c$$$      EXTERNAL dotcc,H4G_SqTriLoop,H4G_SqBoxLoop,
 c$$$     &     H4G_SqLoop,A4G_LoopDD

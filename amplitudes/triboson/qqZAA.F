@@ -55,17 +55,17 @@ c     electroweak couplings are taken from KOPPLN
       double precision  uuzaa, ddzaa, res(2),resv(2)
       double precision  p(0:3,3+n_v)
       double precision  fqa1(0:4,2), fqa2(0:4,2), fqze(0:4,2)
-      integer bos,fsign(2+n_v),sign(3+n_v),nlo,mu,i,j,k,isig,N,ps_number
+      integer bos,fsign(2+n_v),sign(3+n_v),nlo,mu,i,k,isig,N,ps_number
       integer ifl(2)
       double complex psize(2,-1:1,2), psiae(2,-1:1,2),
      1               psia1(2,-1:1,2),psia2(2,-1:1,2)
       double complex ja1(0:5,-1:1,2),ja2(0:5,-1:1,2)
-      double complex addnumber
+
       double complex temp, temp1
       double complex mat(2,-1:1,5)
       double complex madgr(5,-1:1,2)
       double complex mm(2,-1:1), mv(2,-1:1), zero
-      double complex ma, mz, m1, m2, m3, m4
+      double complex ma, mz, m1, m2
       double complex psi(2,-1:1,2), jqq(0:5,-1:1)
       double complex dotcc, s1c, dotrc
       double precision dotrr, psumsq
@@ -105,12 +105,11 @@ c   pentagons
       double complex j5pba1a2(-1:1,3,2),jbpba1a2(-1:1,3,2)
       double complex j5pba2a1(-1:1,3,2),jbpba2a1(-1:1,3,2)
       double complex result(-1:1,4,2),result_born(-1:1,4,2)
-      double complex mva, mvz, mv1, mv2, mv3, mv4
+      double complex mv1, mv2
       double complex  mv1m,mv2m
 
       double complex  matv(2,-1:1,5),matm(2,-1:1,5)
       double complex  matvbf(2,-1:1,3)
-
 
 
       double complex gaugebox1(2), gaugebox2(2), gaugebox3(2)
@@ -118,7 +117,6 @@ c   pentagons
       
       double complex gaugebox1_born(2), gaugebox2_born(2), gaugebox3_born(2)
       double complex gaugebox4_born(2)
-
 
 
       data linit /.true./
@@ -804,8 +802,6 @@ c   q qbar -> A A W
          matm(2,isig,1) =  mv1m * clr(4,1,isig)**3                 ! dd -> AAA
      1                  + mv2m * clr(4,2,isig) * clr(4,1,isig)**2  ! dd -> ZAA
 
- 
-
 
 c$$$         print*, "mv1m",mv1m
 c$$$         print*, "mv2m",mv2m
@@ -835,8 +831,7 @@ c Calculation of processes qq -> A V -> A A + l+neutriono ****************
       
 
       if (lbox) then
-         
-      
+
 
 !      if (.false.) then
          scale = -2d0*dotrr(p(0,1),p(0,2))
@@ -1238,7 +1233,6 @@ c   q qbar -> A A W
             mv2m=0d0
 
 
-
            do i1=1,3 
 c             mv1=mv1+ j5a1a2(i1,isig,2)+ j5a2a1(i1,isig,2)
              mv2=mv2+ j5a1a2(i1,isig,1)+ j5a2a1(i1,isig,1)
@@ -1396,8 +1390,6 @@ c             mv1m=mv1m+ jba1a2(i1,isig,2)+ jba2a1(i1,isig,2)
          matm(1,isig,1) =  mv2m * clr(3,2,isig) * clr(3,1,isig)**2  ! uu -> ZAA
          matm(2,isig,1) =  mv2m * clr(4,2,isig) * clr(4,1,isig)**2  ! dd -> ZAA
 
- 
-
 
 c$$$         print*, "mv1m",mv1m
 c$$$         print*, "mv2m",mv2m
@@ -1435,7 +1427,6 @@ c Calculation of processes qq -> A V -> A A + l+neutriono ****************
            enddo
        endif !lbox
 #endif
-
 
 
 c Calculation of processes qq -> Z/A -> A A Z ********************

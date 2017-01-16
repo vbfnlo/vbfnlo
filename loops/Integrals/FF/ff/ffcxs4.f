@@ -312,10 +312,10 @@ c
 *
 *	local variables:
 *
-	integer i,ieps,ipi12p(2),ier1,ier2,isign,inorm
+	integer i,ieps,ipi12p(2),ier1,ier2,inorm
 	logical again
 	DOUBLE PRECISION yy,yy1,zz,zz1,dyyzz,xx1,xx1n,term,tot,d2,d3,
-     +		d21,d31,d2n,d3n,d21n1,d31n1,dw,xlogy,x00(3)
+     +		d21,d31,d2n,d3n,d21n1,d31n1,dw,x00(3)
 	DOUBLE COMPLEX csum,csum1,csum2,cs3p(20),chulp
 	DOUBLE PRECISION vbfdfflo1
 *
@@ -627,7 +627,7 @@ c
 *
 *	local variables:
 *
-	integer i,ieps,ieps1,ieps2,ipi12p(2),ier1,ier2,isign,inorm,i2pi,
+	integer i,ieps,ieps1,ieps2,ipi12p(2),ier1,ier2,inorm,i2pi,
      +		vbfnffeta,vbfnffet1,n1,n2,n3,n4,n5,n6
 	logical ld2yyz
 	DOUBLE COMPLEX cyy,cyy1,czz,czz1,cdyyzz,chulp,vbfzfflo1,vbfzfflog,

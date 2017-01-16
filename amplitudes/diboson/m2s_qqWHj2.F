@@ -22,6 +22,9 @@ c ------------------------------------------------------------------------
      &      v,    !in:  momenta associated with gauge boson dec. fermions
      &      rn,    !in:  random number array
      &      NW )
+
+      use globalvars, only: ldoblha
+
       IMPLICIT NONE
 
 c declare global variables
@@ -31,6 +34,7 @@ c declare global variables
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "tensor.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
 c declare input/output variables
 
@@ -101,39 +105,34 @@ c ------------- BEGIN CODE -------------------
          write(6,*) " "
       endif
 
-      if ( init .eq. 0 ) then
+      if (bos == 36 .or. bos == 46) then
+         hashiggs = .true.
+      else
+         hashiggs = .false.
+      endif
 
+      if ( init .eq. 0 .and. .not. ldoblha) then
             write(6,*) " "
          if (bos.eq.36) then
             write(6,*) "W+Hj amplitude square information:"
-            hashiggs = .true.
          elseif (bos.eq.46) then
             write(6,*) "W-Hj amplitude square information:"
-            hashiggs = .true.
          elseif (bos.eq.3) then
             write(6,*) "W+j amplitude square information:"
-            hashiggs = .false.
          elseif (bos.eq.4) then
             write(6,*) "W-j amplitude square information:"
-            hashiggs = .false.
          endif
             write(6,*) "--------------------------------------------"
             write(6,*) " "
-         call wtowh_reset !implemented in m2s_qqWH
 
 
          call printnfl(.true.)
-c        h = 1
          init = 1
-         do i = 1,maxnumsubproc
-            res(i) = 0
-         enddo
       else
-         do i = 1,nmax
-            res(i) = 0
-         enddo
       endif
 
+      res(:) = 0
+      call wtowh_reset !implemented in m2s_qqWH
 
       if ( ldebug ) then
          write(6,*) " m2s_qqWHj2.F, part1 -------------------------- "
@@ -241,6 +240,26 @@ c20      format( " v(", i1, ") = ", 4(f10.3, 2x) )
          write(6,*) "mu_f =",sqrt(mufsq(1,1))
          write(6,*) "sub_number ", sub_number
       endif !ldebug
+
+
+      if (ldoblha) then
+         physToDiag(1:3)=blha_physdiagmap(1:3,blha_cursubproc,blha_curproc)
+         fsign(1:5) = blha_fsign(1:5,blha_cursubproc,blha_curproc)
+         gsign = fsign(3)
+
+         ! fsign(1) = 1          !incoming quark
+         ! fsign(2) = -1         !incoming antiquark
+         ! fsign(3) = 1          !outgoing ve
+         ! fsign(4) = -1         !outgoing ep
+         ! fsign(5) = 1          !outgoing H !TODO: not needed
+         ! gsign    = 1          !outgoing gluon
+
+         call qq_WHj2(xi,p,v,physToDiag,fsign,gsign,bos,nlo,
+     &              pdf,pdfckm,res,nmin,nmax)
+         return
+      endif
+
+
 c
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
@@ -398,6 +417,9 @@ c*****************************************************************
 
       subroutine qq_WHj2(xi,p,v,physToDiag,fsign,gsign,bos, nlo,
      1                  pdf,pdfckm,res,nmin,nmax)
+
+      use globalvars, only: ldoblha
+
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
@@ -540,6 +562,10 @@ c         print*, "xuz ", xuz
          call qqHWj(pbar,fsign,qbar,gsign,nlo,1,udwh,bos)
       elseif (bos.eq.4 .or. bos.eq.46) then
          call qqHWj(pbar,fsign,qbar,gsign,nlo,1,duwh,bos)
+      endif
+
+      if (ldoblha) then
+         return
       endif
 
       if (ldebug) then

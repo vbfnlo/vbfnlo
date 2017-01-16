@@ -176,9 +176,8 @@ c*******************************************************************************
        Real*8 D1234I_d(22,4),D1235I_d(22,4) 
        Real*8 D1245I_d(22,4) 
        Real*8 D1345I_d(22,4) 
-       Real*8 D2345I_d(22,4) 
+       Real*8 D2345I_d(22,4)
 
-    
 
        complex*32 A0finG_QUAD,B0finG_QUAD,C0finG_QUAD,D0finG_QUAD
 
@@ -191,7 +190,6 @@ c*******************************************************************************
        real*16 xpi(13)
        real*8 xpi_d(13)
        complex*16 D01234_dble
-
 
 
        PRINTb=.TRUE.
@@ -306,7 +304,6 @@ c
      & B034I,B014I,B013I,
      & B34I,B14I,B13I,
      & C0134,C0134R,C0134I,C134R,C134I)
-
 
 
 c
@@ -461,16 +458,12 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c           pause
 
 
-
        call print_DijR4(DCMPLX(D01234),D1234R_d,D1234I_d)
        endif
-
-
-
 
 
        return
        end
 
 
-    
+

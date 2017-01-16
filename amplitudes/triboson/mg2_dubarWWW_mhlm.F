@@ -30,18 +30,18 @@ C
       DOUBLE PRECISION T				!, P(0:3,NEXTERNAL)
       DOUBLE PRECISION DUBAR_WWW_mhlm
       INTEGER IHEL,IDEN(NCROSS)		!,IC(NEXTERNAL,NCROSS)
-      INTEGER IPROC,I			!,JC(NEXTERNAL), I
+      INTEGER IPROC			!,JC(NEXTERNAL)
       LOGICAL GOODHEL(NCOMB,NCROSS)
       INTEGER NGRAPHS
-      DOUBLE PRECISION hwgt, xtot, xtry, xrej, xr, yfrac(0:ncomb)
-      INTEGER idum, ngood, igood(ncomb), jhel, j, jj
+      DOUBLE PRECISION xtry, xrej
+      INTEGER idum, ngood
       LOGICAL warned
       REAL     xran1
       EXTERNAL xran1
 C  
 C GLOBAL VARIABLES
 C  
-      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      Double Precision jamp2(0:maxamps)
 
 
       character*79         hel_buff
@@ -60,7 +60,6 @@ C
 C      DATA warned, isum_hel/.false.,0/
       DATA WARNED /.FALSE./
 C      DATA multi_channel/.true./
-      SAVE yfrac, igood, jhel
       DATA NGRAPHS /   133/          
       DATA jamp2(0) /   1/          
       DATA GOODHEL/THEL*.FALSE./
@@ -372,7 +371,7 @@ C
       DOUBLE PRECISION DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
       DOUBLE COMPLEX AMP(NGRAPHS), JAMP(NCOLOR)
       DOUBLE COMPLEX W(18,NWAVEFUNCS)
-      DOUBLE COMPLEX SUBPROCESS(6)
+
 
       LOGICAL LDEBUGM
       PARAMETER (LDEBUGM = .false.)

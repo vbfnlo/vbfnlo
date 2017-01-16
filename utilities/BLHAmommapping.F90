@@ -36,7 +36,7 @@
       integer mapparton(5)
 
 ! local variables
-      integer i,j,k,l,nsp,gsign
+      integer i,j,k,l,nsp
       integer npairs, listpairs(5,2), nother
 ! inverse function to listpairs(:,i), BLHA->diag map
       integer invlistpairs(5)
@@ -188,7 +188,6 @@
       blha_numsubproc(blha_numproc) = nsp
 
 
-
       return
       end
       
@@ -322,6 +321,418 @@
 
 !*************************************************************************  
 
+      SUBROUTINE MomMapping_QCD5(pdgparton, mapparton)
+!*************************************************************************
+!     Momentum mapping for QCD+3j
+!*************************************************************************
+      implicit none
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
+      integer pdgparton(5)
+      integer mapparton(5)
+
+! local variables
+      integer i,j,k,l,nsp
+      integer npairs, listpairs(5,2), nother
+      integer tmp
+! inverse function to listpairs(:,i), BLHA->diag map
+      integer invlistpairs(5)
+      integer invmap(5)
+! external functions
+      integer findpairpartner
+      external findpairpartner
+
+      call makefermionpairs(5,pdgparton,.true.,npairs,listpairs,nother)
+
+      nsp=1
+
+! inverse listpairs
+      do j=1,5
+        invlistpairs(listpairs(j,1)) = j
+      enddo
+
+      if (nother.eq.3) then 
+! 2q 3g case
+
+! particlemap and fsign
+        do j=1,5
+          blha_particlemap(j,nsp,blha_numproc) = mapparton(j)
+        enddo
+! q -> 1
+        blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 1
+        blha_fsign(1,nsp,blha_numproc) = int(sign(1.,2.5-listpairs(1,1)))
+! qbar -> 3
+        blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 3
+        blha_fsign(3,nsp,blha_numproc) = int(sign(1.,listpairs(2,1)-2.5))
+! g -> 2,4,5
+        blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 2
+        blha_fsign(2,nsp,blha_numproc) = int(sign(1.,listpairs(3,1)-2.5))
+        blha_physdiagmap(listpairs(4,1),nsp,blha_numproc) = 4
+        blha_fsign(4,nsp,blha_numproc) = int(sign(1.,listpairs(4,1)-2.5))
+        blha_physdiagmap(listpairs(5,1),nsp,blha_numproc) = 5
+        blha_fsign(5,nsp,blha_numproc) = int(sign(1.,listpairs(5,1)-2.5))
+
+        blha_idsubproc(nsp,blha_numproc) = 100
+
+      else if (nother.eq.1) then 
+! 4q1g case
+
+! particlemap and fsign
+        do j=1,5
+          blha_particlemap(j,nsp,blha_numproc) = mapparton(j)
+        enddo
+        blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 1
+        blha_fsign(1,nsp,blha_numproc) = sign(1,pdgparton(listpairs(1,1)))
+        blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 2
+        blha_fsign(2,nsp,blha_numproc) = sign(1,pdgparton(listpairs(3,1)))
+        blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 3
+        blha_fsign(3,nsp,blha_numproc) = sign(1,pdgparton(listpairs(2,1)))
+        blha_physdiagmap(listpairs(4,1),nsp,blha_numproc) = 4
+        blha_fsign(4,nsp,blha_numproc) = sign(1,pdgparton(listpairs(4,1)))
+        blha_physdiagmap(listpairs(5,1),nsp,blha_numproc) = 5
+        blha_fsign(5,nsp,blha_numproc) = int(sign(1.,listpairs(5,1)-2.5))
+
+! create inverse map
+        do j=1,5
+          do k=1,5
+            if (mapparton(k) .eq. blha_particlemap(j,nsp,blha_numproc)) then
+              invmap(blha_physdiagmap(j,nsp,blha_numproc)) = k
+            endif
+          enddo
+        enddo
+
+! choose right subproc
+        if (abs(pdgparton(invmap(1))).eq. &
+            abs(pdgparton(invmap(3)))) then ! upper-Z
+          if (abs(pdgparton(invmap(2))).eq. &
+              abs(pdgparton(invmap(4)))) then ! NC-ZZ
+            if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+              if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - uucc
+              else
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - uuss
+              endif
+            else
+              if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ddcc
+              else
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ddss
+              endif
+            endif
+          else ! CC-ZW
+! W line in W/WZ/WA must be 13
+! W on 24 line -> exchange
+            blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 1
+            blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 2
+            blha_physdiagmap(listpairs(4,1),nsp,blha_numproc) = 3
+            blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 4
+            tmp = blha_fsign(1,nsp,blha_numproc) 
+            blha_fsign(1,nsp,blha_numproc) = blha_fsign(2,nsp,blha_numproc)
+            blha_fsign(2,nsp,blha_numproc) = tmp
+            tmp = blha_fsign(3,nsp,blha_numproc) 
+            blha_fsign(3,nsp,blha_numproc) = blha_fsign(4,nsp,blha_numproc)
+            blha_fsign(4,nsp,blha_numproc) = tmp
+            if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+              blha_idsubproc(nsp,blha_numproc) = 232 - npairs ! uucs/uusc
+            else
+              blha_idsubproc(nsp,blha_numproc) = 242 - npairs ! ddcs/ddsc
+            endif
+          endif
+        else ! upper-W
+          if (abs(pdgparton(invmap(2))).eq. &
+              abs(pdgparton(invmap(4)))) then ! CC-WZ
+            if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+              blha_idsubproc(nsp,blha_numproc) = 232 - npairs ! udcc/ducc
+            else
+              blha_idsubproc(nsp,blha_numproc) = 242 - npairs ! udss/duss
+            endif
+          else ! NC-WW
+            if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+              blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - udsc
+            else
+              blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ducs
+            endif
+          endif
+        endif
+
+      endif
+
+      blha_numsubproc(blha_numproc) = nsp
+
+      return
+      end
+
+!*************************************************************************  
+      SUBROUTINE MomMapping_QCD(pdgparton, mapparton, np)
+!*************************************************************************
+!     Momentum mapping for QCD+0j, QCD+1j
+!     corresponds to MomMapping_QCD2 and MomMapping_QCD3         
+!*************************************************************************
+      implicit none
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
+      integer, intent(in) :: np ! number of partons
+      integer, dimension(np), intent(in) :: pdgparton
+      integer, dimension(np), intent(in) :: mapparton
+
+! local variables
+      integer i,j,k,l,nsp
+      integer npairs, listpairs(np,2), nother
+      integer tmp
+! inverse function to listpairs(:,i), BLHA->diag map
+      integer invlistpairs(np) 
+      integer invmap(np)
+! external functions
+      integer findpairpartner
+      external findpairpartner
+
+      call makefermionpairs(np,pdgparton,.true.,npairs,listpairs,nother)
+
+      nsp=1
+
+! inverse listpairs
+      do j=1,np
+        invlistpairs(listpairs(j,1)) = j
+      enddo
+
+      if (nother > np-2) then
+         print *, "wrong nother=", nother, ' for np=', np
+      endif
+
+! particlemap and fsign
+      do j=1,np
+        blha_particlemap(j,nsp,blha_numproc) = mapparton(j)
+      enddo
+
+! q -> 1
+      blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 1
+      blha_fsign(1,nsp,blha_numproc) = sign(1,pdgparton(listpairs(1,1)))
+! qbar -> 2
+      blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 2
+      blha_fsign(2,nsp,blha_numproc) = sign(1,pdgparton(listpairs(2,1)))
+
+      if (np == 3 .and. nother == 1) then
+         blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 3
+         blha_fsign(3,nsp,blha_numproc) = int(sign(1.,listpairs(3,1)-2.5))
+      endif
+      blha_idsubproc(nsp,blha_numproc) = 1
+
+! create inverse map
+      do j=1,np
+        do k=1,np
+          if (mapparton(k) .eq. blha_particlemap(j,nsp,blha_numproc)) then
+            invmap(blha_physdiagmap(j,nsp,blha_numproc)) = k
+          endif
+        enddo
+      enddo
+
+! choose right subproc
+       ! TODO: add here for ZZ, Z, ...
+        ! if (abs(pdgparton(invmap(1))).eq.
+       ! &      abs(pdgparton(invmap(3)))) then ! upper-Z
+        !   if (abs(pdgparton(invmap(2))).eq.
+       ! &        abs(pdgparton(invmap(4)))) then ! NC-ZZ
+        !     if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+        !       if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+        !         blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - uucc
+        !       else
+        !         blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - uuss
+        !       endif
+        !     else
+        !       if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+        !         blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ddcc
+        !       else
+        !         blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ddss
+        !       endif
+        !     endif
+        !   else ! CC-ZW
+! c W line in W/WZ/WA must be 13
+! c W on 24 line -> exchange
+        !     blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 1
+        !     blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 2
+        !     blha_physdiagmap(listpairs(4,1),nsp,blha_numproc) = 3
+        !     blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 4
+        !     tmp = blha_fsign(1,nsp,blha_numproc) 
+        !     blha_fsign(1,nsp,blha_numproc) = blha_fsign(2,nsp,blha_numproc)
+        !     blha_fsign(2,nsp,blha_numproc) = tmp
+        !     tmp = blha_fsign(3,nsp,blha_numproc) 
+        !     blha_fsign(3,nsp,blha_numproc) = blha_fsign(4,nsp,blha_numproc)
+        !     blha_fsign(4,nsp,blha_numproc) = tmp
+        !     if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+        !       blha_idsubproc(nsp,blha_numproc) = 232 - npairs ! uucs/uusc
+        !     else
+        !       blha_idsubproc(nsp,blha_numproc) = 242 - npairs ! ddcs/ddsc
+        !     endif
+        !   endif
+        ! else ! upper-W
+        !   if (abs(pdgparton(invmap(2))).eq.
+        ! &        abs(pdgparton(invmap(4)))) then ! CC-WZ
+        !     if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+        !       blha_idsubproc(nsp,blha_numproc) = 232 - npairs ! udcc/ducc
+        !     else
+        !       blha_idsubproc(nsp,blha_numproc) = 242 - npairs ! udss/duss
+        !     endif
+        !   else ! NC-WW
+        !     if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+        !       blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - udsc
+        !     else
+        !       blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ducs
+        !     endif
+        !   endif
+        ! endif
+
+      blha_numsubproc(blha_numproc) = nsp
+
+      return
+      end
+
+
+      SUBROUTINE MomMapping_QCD4(pdgparton, mapparton)
+!*************************************************************************
+!     Momentum mapping for QCD+2j
+!*************************************************************************
+      implicit none
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
+      integer pdgparton(4)
+      integer mapparton(4)
+
+! local variables
+      integer i,j,k,l,nsp
+      integer npairs, listpairs(4,2), nother
+      integer tmp
+! inverse function to listpairs(:,i), BLHA->diag map
+      integer invlistpairs(4)
+      integer invmap(4)
+! external functions
+      integer findpairpartner
+      external findpairpartner
+
+      call makefermionpairs(4,pdgparton,.true.,npairs,listpairs,nother)
+
+      nsp=1
+
+! inverse listpairs
+      do j=1,4
+        invlistpairs(listpairs(j,1)) = j
+      enddo
+
+      if (nother.eq.2) then 
+! 2q 2g case
+
+! particlemap and fsign
+        do j=1,4
+          blha_particlemap(j,nsp,blha_numproc) = mapparton(j)
+        enddo
+! q -> 1
+        blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 1
+        blha_fsign(1,nsp,blha_numproc) = int(sign(1.,2.5-listpairs(1,1))) 
+        ! equivalent: sign(1,pdgparton(listpairs(1,1)))
+! qbar -> 3
+        blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 3
+        blha_fsign(3,nsp,blha_numproc) = int(sign(1.,listpairs(2,1)-2.5))
+! g -> 2,4
+        blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 2
+        blha_fsign(2,nsp,blha_numproc) = int(sign(1.,listpairs(3,1)-2.5))
+        blha_physdiagmap(listpairs(4,1),nsp,blha_numproc) = 4
+        blha_fsign(4,nsp,blha_numproc) = int(sign(1.,listpairs(4,1)-2.5))
+
+        blha_idsubproc(nsp,blha_numproc) = 100
+
+      else if (nother.eq.0) then 
+! 4q case
+
+! particlemap and fsign
+        do j=1,4
+          blha_particlemap(j,nsp,blha_numproc) = mapparton(j)
+        enddo
+        blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 1
+        blha_fsign(1,nsp,blha_numproc) = sign(1,pdgparton(listpairs(1,1)))
+        blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 2
+        blha_fsign(2,nsp,blha_numproc) = sign(1,pdgparton(listpairs(3,1)))
+        blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 3
+        blha_fsign(3,nsp,blha_numproc) = sign(1,pdgparton(listpairs(2,1)))
+        blha_physdiagmap(listpairs(4,1),nsp,blha_numproc) = 4
+        blha_fsign(4,nsp,blha_numproc) = sign(1,pdgparton(listpairs(4,1)))
+
+! create inverse map
+        do j=1,4
+          do k=1,4
+            if (mapparton(k) .eq. blha_particlemap(j,nsp,blha_numproc)) then
+              invmap(blha_physdiagmap(j,nsp,blha_numproc)) = k
+            endif
+          enddo
+        enddo
+
+! choose right subproc
+        if (abs(pdgparton(invmap(1))).eq. &
+            abs(pdgparton(invmap(3)))) then ! upper-Z
+          if (abs(pdgparton(invmap(2))).eq. &
+              abs(pdgparton(invmap(4)))) then ! NC-ZZ
+            if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+              if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - uucc
+              else
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - uuss
+              endif
+            else
+              if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ddcc
+              else
+                blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ddss
+              endif
+            endif
+          else ! CC-ZW
+! W line in W/WZ/WA must be 13
+! W on 24 line -> exchange
+            blha_physdiagmap(listpairs(3,1),nsp,blha_numproc) = 1
+            blha_physdiagmap(listpairs(1,1),nsp,blha_numproc) = 2
+            blha_physdiagmap(listpairs(4,1),nsp,blha_numproc) = 3
+            blha_physdiagmap(listpairs(2,1),nsp,blha_numproc) = 4
+            tmp = blha_fsign(1,nsp,blha_numproc) 
+            blha_fsign(1,nsp,blha_numproc) = blha_fsign(2,nsp,blha_numproc)
+            blha_fsign(2,nsp,blha_numproc) = tmp
+            tmp = blha_fsign(3,nsp,blha_numproc) 
+            blha_fsign(3,nsp,blha_numproc) = blha_fsign(4,nsp,blha_numproc)
+            blha_fsign(4,nsp,blha_numproc) = tmp
+            if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+              blha_idsubproc(nsp,blha_numproc) = 232 - npairs ! uucs/uusc
+            else
+              blha_idsubproc(nsp,blha_numproc) = 242 - npairs ! ddcs/ddsc
+            endif
+          endif
+        else ! upper-W
+          if (abs(pdgparton(invmap(2))).eq. &
+              abs(pdgparton(invmap(4)))) then ! CC-WZ
+            if (mod(abs(pdgparton(invmap(2))),2) .eq. 0) then
+              blha_idsubproc(nsp,blha_numproc) = 232 - npairs ! udcc/ducc
+            else
+              blha_idsubproc(nsp,blha_numproc) = 242 - npairs ! udss/duss
+            endif
+          else ! NC-WW
+            if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+              blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - udsc
+            else
+              blha_idsubproc(nsp,blha_numproc) = 0 ! XXX - ducs
+            endif
+          endif
+        endif
+
+      endif !qqgg
+
+      blha_numsubproc(blha_numproc) = nsp
+
+      return
+      end
+
+!*************************************************************************  
+
       SUBROUTINE MomMapping_EW(nparton,nelweak,pdgelweak,mapelweak, &
                                oQCD,oQED)
 !*************************************************************************
@@ -344,6 +755,17 @@
       integer nwp, nwm, nzl, nzn, nh, ngamma, nhel, nid
       logical lVBFlepdec, lVBFhaddec, lQCDlepdec
 
+      ! these ids are used to generate a process id
+      ! their value is only used in this function
+      ! the value is arbitray as long as the resulting ID is unique
+      integer IDwp, IDwm, IDzl, IDzn, IDh, IDgamma
+      parameter (IDwp   =100000)
+      parameter (IDwm   =10000)
+      parameter (IDzl   =1000)
+      parameter (IDzn   =100)
+      parameter (IDh    =10)
+      parameter (IDgamma=1)
+
       nsp = blha_numsubproc(blha_numproc)
       if (blha_numsubproc(blha_numproc) .le. 0) return
 
@@ -352,6 +774,7 @@
 
       lVBFlepdec = (oQCD .eq. nparton-4) .and. (oQED .eq. nelweak+2 )
       lVBFhaddec = (oQCD .eq. nparton-6) .and. (oQED .eq. nelweak+4 )
+      lQCDlepdec = (oQCD .eq. nparton-2) .and. (oQED .eq. nelweak )
 
       blha_alphasorder(blha_numproc) = oQCD
       blha_alphaorder(blha_numproc)  = oQED
@@ -392,17 +815,18 @@
             nhel = nhel * 2
           endif
         enddo
-        nid = nwp   *10**5 &
-             +nwm   *10**4 &
-             +nzl   *10**3 &
-             +nzn   *10**2 &
-             +nh    *10**1 &
-             +ngamma*10**0
+        ! create id to map out processes
+        nid = nwp   *IDwp    &
+             +nwm   *IDwm    &
+             +nzl   *IDzl    &
+             +nzn   *IDzn    &
+             +nh    *IDh     &
+             +ngamma*IDgamma
 
         blha_multsubproc((i-1)*nsp+1,blha_numproc) = nhel
 
         SELECT CASE (nid)
-        CASE(10) ! H
+        CASE(IDh) ! H
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_procsubproc((i-1)*nsp+1,blha_numproc) = Hjj
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -416,31 +840,47 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(100000) ! W+
+        CASE(IDwp) ! W+
           if (lVBFlepdec) then
             blha_procsubproc((i-1)*nsp+1,blha_numproc) = Wpjj
             if (nparton.eq.4) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+            else if (nparton.eq.5) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+            endif
+          else if (lQCDlepdec) then
+            if (nparton.eq.4) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWPjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
             else if (nparton.eq.5) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWPjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(10000) ! W-
+        CASE(IDWm) ! W-
           if (lVBFlepdec) then
             blha_procsubproc((i-1)*nsp+1,blha_numproc) = Wmjj
             if (nparton.eq.4) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+            else if (nparton.eq.5) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+            endif
+          else if (lQCDlepdec) then
+            if (nparton.eq.4) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWMjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
             else if (nparton.eq.5) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWMjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(1000) ! Z_l
+        CASE(IDzl) ! Z_l
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = Zjj_l
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -452,7 +892,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(100) ! Z_nu
+        CASE(IDzn) ! Z_nu
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = Zjj_nu
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -462,7 +902,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(1) ! gamma
+        CASE(IDgamma) ! gamma
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = Ajj
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -474,7 +914,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(20) ! HH
+        CASE(2*IDh) ! HH
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = HHjj
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -484,7 +924,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(11) ! H gamma
+        CASE(IDh + IDgamma) ! H gamma
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = HAjj
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -496,7 +936,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(110000) ! W+ W-
+        CASE(IDwp + IDwm) ! W+ W-
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = WpWmjj
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -506,7 +946,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(101000) ! W+ Z_l
+        CASE(IDWp + IDzl) ! W+ Z_l
           if (lVBFlepdec) then
             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WpZjj
             if (nparton.eq.4) then
@@ -514,23 +954,46 @@
             else if (nparton.eq.5) then
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
-          else 
-            blha_numsubproc(blha_numproc) = -1
-            return
-          endif
-        CASE(11000) ! W- Z_l
-          if (lVBFlepdec) then
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = WmZjj
+          else if (lQCDlepdec) then
+!            if (nparton.eq.2) then
+!              blha_procsubproc((i-1)*nsp+1,blha_numproc) = WPZ
+!              blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+!           else if (nparton.eq.3) then 
+!              blha_procsubproc((i-1)*nsp+1,blha_numproc) = WPZj
+!              blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+!           else if (nparton.eq.4) then
             if (nparton.eq.4) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWPZjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
             else if (nparton.eq.5) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWPZjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(2000) ! Z_l Z_l
+        CASE(IDwm + IDzl) ! W- Z_l
+          if (lVBFlepdec) then
+          blha_procsubproc((i-1)*nsp+1,blha_numproc) = WmZjj
+            if (nparton.eq.4) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+            else if (nparton.eq.5) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+            endif
+          else if (lQCDlepdec) then
+            if (nparton.eq.4) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWmZjj
+              blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+            else if (nparton.eq.5) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWmZjj
+              blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+            endif
+          else 
+            blha_numsubproc(blha_numproc) = -1
+            return
+          endif
+        CASE(2*IDzl) ! Z_l Z_l
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = ZZjj_ll
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -540,7 +1003,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(1100) ! Z_l Z_nu
+        CASE(IDzl + IDzn) ! Z_l Z_nu
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = ZZjj_lnu
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -550,31 +1013,47 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(100001) ! W+ A
+        CASE(IDwp + IDgamma) ! W+ A
           if (lVBFlepdec) then
-            blha_procsubproc((i-1)*nsp+1,blha_numproc) = WpAjj
+          blha_procsubproc((i-1)*nsp+1,blha_numproc) = WpAjj
             if (nparton.eq.4) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+            else if (nparton.eq.5) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+            endif
+          else if (lQCDlepdec) then
+            if (nparton.eq.4) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWPAjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
             else if (nparton.eq.5) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWPAjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(10001) ! W- A
+        CASE(IDwm + IDgamma) ! W- A
           if (lVBFlepdec) then
             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WmAjj
             if (nparton.eq.4) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+            else if (nparton.eq.5) then
+            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+            endif
+          else if (lQCDlepdec) then
+            if (nparton.eq.4) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWMAjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
             else if (nparton.eq.5) then
+              blha_procsubproc((i-1)*nsp+1,blha_numproc) = QCDWMAjj
               blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
             endif
           else 
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(1001) ! Z_l A
+        CASE(IDzl + IDgamma) ! Z_l A
           if (lVBFlepdec) then
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = ZAjj
             if (nparton.eq.4) then
@@ -586,7 +1065,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(101) ! Z_nu A
+        CASE(IDzn + IDgamma) ! Z_nu A
           if (lVBFlepdec) then
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = ZAjj_n
             if (nparton.eq.4) then
@@ -598,7 +1077,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(200000) ! W+ W+
+        CASE(2*IDwp) ! W+ W+
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = WpWpjj
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -608,7 +1087,7 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
-        CASE(20000) ! W- W-
+        CASE(2*IDwm) ! W- W-
           blha_procsubproc((i-1)*nsp+1,blha_numproc) = WmWmjj
           if ((nparton.eq.4).and.lVBFlepdec) then
             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
@@ -618,6 +1097,34 @@
             blha_numsubproc(blha_numproc) = -1
             return
           endif
+!       CASE(IDh + IDwp) !W+ H
+!          if (nparton.eq.2) then
+!             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WPH
+!             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+!          else if (nparton.eq.3) then 
+!             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WPHj
+!             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+!          else if (nparton.eq.4) then
+!             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WPHj
+!            blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+!          else 
+!            blha_procsubproc((i-1)*nsp+1,blha_numproc) = 0
+!            return
+!          endif
+!       CASE(IDh + IDwm) !W- H
+!          if (nparton.eq.2) then
+!             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WMH
+!             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+!          else if (nparton.eq.3) then 
+!             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WMHj
+!             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .false.
+!          else if (nparton.eq.4) then
+!             blha_procsubproc((i-1)*nsp+1,blha_numproc) = WMHj
+!             blha_lojsubproc((i-1)*nsp+1,blha_numproc) = .true.
+!          else
+!            blha_numsubproc(blha_numproc) = -1
+!            return
+!          endif
         CASE DEFAULT
 ! not yet supported
           blha_numsubproc(blha_numproc) = -1
@@ -630,34 +1137,46 @@
         call proc_assignment
         call lepton_assignment
         do j=1,nelweak-nother,2                      ! lepton pairs
-          k=1
-          l=0
-          do while (l.eq.0)                          ! found first match
-            if (listpairs(k,i).gt.0) then
-              l = pdgelweak(listpairs(k,i))
+          k=0
+          l=1
+          do while (k.eq.0)                          ! found first match
+            if (listpairs(l,i).gt.0) then
+              k = pdgelweak(listpairs(l,i))
             else
-              l = 0
+              k = 0
             endif
-            if (finallep(j) .ne. l) then 
-              k = k+1
-              l = 0
+            if (finallep(j) .ne. k) then
+              l = l+1
+              k = 0
+            else
+              if (mod(l,2).eq.0) then                ! get partner: next or previous
+                m = l-1
+              else
+                m = l+1
+              endif
+              if (finallep(j+1) .ne. pdgelweak(listpairs(m,i))) then  ! check pdg id of partner
+                l = l+1
+                k = 0
+              endif
             endif
           enddo
-          if (mod(k,2).eq.0) then                    ! get partner: next or previous
-            l = k-1
-          else 
-            l = k+1
-          endif
           blha_particlemap(nparton+j,(i-1)*nsp+1,blha_numproc) =  &
-            mapelweak(listpairs(k,i))
-          blha_fsign(nparton+j,(i-1)*nsp+1,blha_numproc)       =  &
-            sign(1,pdgelweak(listpairs(k,i)))
-          blha_particlemap(nparton+j+1,(i-1)*nsp+1,blha_numproc) = &
             mapelweak(listpairs(l,i))
-          blha_fsign(nparton+j+1,(i-1)*nsp+1,blha_numproc)       = &
+          blha_fsign(nparton+j,(i-1)*nsp+1,blha_numproc)       =  &
             sign(1,pdgelweak(listpairs(l,i)))
-          listpairs(k,i) = 0                         ! used: clear entries 
-          listpairs(l,i) = 0
+          blha_particlemap(nparton+j+1,(i-1)*nsp+1,blha_numproc) = &
+            mapelweak(listpairs(m,i))
+          blha_fsign(nparton+j+1,(i-1)*nsp+1,blha_numproc)       = &
+            sign(1,pdgelweak(listpairs(m,i)))
+          if ( abs(pdgelweak(listpairs(l,i))+ &
+                   pdgelweak(listpairs(m,i))) .eq. 0) then
+            blha_bosons((j+1)/2,(i-1)*nsp+1,blha_numproc) = 23
+          else if ( abs(pdgelweak(listpairs(l,i))+ &
+                         pdgelweak(listpairs(m,i))) .eq. 1) then
+            blha_bosons((j+1)/2,(i-1)*nsp+1,blha_numproc) = 24
+          endif
+          listpairs(l,i) = 0                         ! used: clear entries
+          listpairs(m,i) = 0
         enddo
         j=nelweak-nother+1
         do k=nelweak-nother+1,nelweak              ! now add all Higgs 
@@ -698,6 +1217,8 @@
               blha_particlemap(j,m,blha_numproc)
             blha_fsign(j,(i-1)*nsp+m,blha_numproc)       =  &
               blha_fsign(j,m,blha_numproc) 
+            blha_physdiagmap(j,(i-1)*nsp+m,blha_numproc) =  &
+              blha_physdiagmap(j,m,blha_numproc)
             blha_idsubproc((i-1)*nsp+m,blha_numproc)     =  &
               blha_idsubproc(m,blha_numproc) 
           enddo
@@ -712,6 +1233,8 @@
       enddo
 
       blha_numsubproc(blha_numproc) = nsp*npairs
+      blha_pssubstep(blha_numproc) = nsp
+      blha_numbosons(blha_numproc) = (nelweak-nother)/2
 
       return
       end
@@ -761,19 +1284,20 @@
 !*************************************************************************
       implicit none
 
-      integer nf !number of fermions
-      integer npairs,nother
-      integer listf(nf)
-      integer listpairs(nf,*)
-      logical lflip
+      integer, intent(in) :: nf !number of fermions
+      integer, intent(in) :: listf(nf)
+      logical, intent(in) :: lflip
+      integer, intent(out) :: npairs,nother
+      integer, intent(out) :: listpairs(nf,*)
 
 ! local variables
-      integer i,j
+      integer i,j,k
       integer mylistf(nf)
       integer nbra, listbra(nf)
       integer nket, listket(nf)
       integer listother(nf)
       integer nperm(nf)
+      integer temppair(2)
       logical lpairok, lperm
 ! functions
       logical permutations, samegen
@@ -841,6 +1365,35 @@
         lperm = permutations(nbra,nperm)
       enddo
 
+! reorder bra-ket pairs so that fermion pairs of the same type stay at the same position
+      do i=2,npairs
+        do j=1,nbra ! loop over fermion pairs in listpairs(:,1)
+          k=1
+          do while (k.le.nbra) ! loop over fermion pairs in listpairs(:,i)
+            if (k.eq.j) then
+              k=k+1
+              cycle
+            endif
+            if ( ( (mylistf(listpairs(2*k-1,i)).eq.mylistf(listpairs(2*j-1,1))) .and.    &
+                   (mylistf(listpairs(2*k  ,i)).eq.mylistf(listpairs(2*j  ,1))) )        &
+                 .and..not.                                            &
+                 ( (mylistf(listpairs(2*k-1,i)).eq.mylistf(listpairs(2*k-1,1))) .and.    &
+                   (mylistf(listpairs(2*k  ,i)).eq.mylistf(listpairs(2*k  ,1))) )        &
+               ) then
+               ! different-index pair matches but same-index one doesn't -> swap
+              temppair(1) = listpairs(2*k-1,i)
+              temppair(2) = listpairs(2*k  ,i)
+              listpairs(2*k-1,i) = listpairs(2*j-1,i)
+              listpairs(2*k  ,i) = listpairs(2*j  ,i)
+              listpairs(2*j-1,i) = temppair(1)
+              listpairs(2*j  ,i) = temppair(2)
+              k=0 ! restart
+            endif
+            k=k+1
+          enddo
+        enddo
+      enddo
+
       return
       end
 
@@ -856,7 +1409,7 @@
       implicit none
       integer nl
       integer list(nl)
-      logical linit
+
 ! local variables
       integer i,n,tmp
       logical lmobile

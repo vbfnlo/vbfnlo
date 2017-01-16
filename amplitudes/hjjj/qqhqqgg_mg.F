@@ -39,7 +39,7 @@ c     Local variables
       real*8 res(6,0:6)
       integer lfsign(4),lgsign(2)
       real*8 p65(0:4),p87(0:4),p(0:3,4+max_v),fac
-      real*8 p57,p68,den,betah,lamb
+
       integer mu,i,k
 
 

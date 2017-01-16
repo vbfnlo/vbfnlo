@@ -153,7 +153,7 @@ c
 *
 *	local variables
 *
-	integer i,j,k,is,ip(5),ii(10),jj(15),i54(10,6)
+	integer i,k,is,ip(5),ii(10),jj(15),i54(10,6)
 	logical lagain
 	DOUBLE PRECISION s(109),som,xmax,smax
 	DOUBLE PRECISION t10,t101,t104,t105,t108,t109,t112,t116,

@@ -33,7 +33,7 @@ c                   |Z
 c       p3 ---------------------------p4
 c
       double precision  fcpl(4,6) ! hzz,hww
-      double precision fcpl1(4,4),fcpl2(4,4),fcpl3(4,4) !hgg,hgz
+      double precision fcpl3(4,4) !hgg,hgz
       double complex fcpla(4,6,2) !hzz,hww 
       double complex fcpla1(4,4,2),fcpla2(4,4,2),fcpla3(4,4,2) !hgg,hgz
 *sophy: fcplLa contains the loop induced value of a1: hzz/ww, hzg, hgz, hgg
@@ -84,25 +84,20 @@ c alfas, scales etc
       parameter (c2=4d0/3d0, c2o2pi=c2/2d0/pi)
 c other local variables for QQBQQI
 c
-      integer  i,k,mu,v2,v3, isig,isig1,isig3
+      integer  i,k,v2,v3, isig,isig1,isig3
 c
 c variables for the main part of the program
 c
-      double precision  pbar(0:3,6),uucc,uuss,ddcc,ddss,udsc,ducs,res(6)
-      double precision  p(0:3,6), p21(0:4), p43(0:4), p65(0:4)
-      integer  sign(6), nlo
-      double complex  psi(2,-1:1,4), j21(0:3,-1:1), j43(0:3,-1:1)
+
+      double precision  p21(0:4), p43(0:4)
+
+      double complex  j21(0:3,-1:1), j43(0:3,-1:1)
       double complex  j21j43(-1:1,-1:1), zmm(6,4,2),zmm1(6,4,2),
      $     zmm0(6,4,2),zmm2(6,4,2),zmm3(6,4,2)
 
-c ---------    for check purpose only     
-      double complex meven, modd
-      common /check/ meven(6), modd(6)
-c---------------
-
       double complex j21j43a(-1:1,-1:1,2)
       double complex  prop21(1:4), prop43(1:4)
-      double precision  betah, lamb, fac
+
       integer ffac
       double precision m2ff, mff, psq
       double complex formfactor
@@ -524,9 +519,6 @@ c
 
       do k = 5,6
 
-c         meven(k)=fcpla(1,k,1)*j21j43a(-1,-1,1)*prop21(3)*prop43(3)
-c         modd(k)=fcpla(1,k,2)*j21j43a(-1,-1,2)* prop21(3)*prop43(3)
-
          zmm(k,1,i) = fcpla(1,k,1)*j21j43a(-1,-1,1)+
      $        fcpla(1,k,2)*j21j43a(-1,-1,2)
 *sophy: adding in anomalous (i.e. loop-induced) a1 term
@@ -563,7 +555,7 @@ C  needed in Feynman graphs a, ..., g which are stored in
 c      real*8 fcpl(4,6)
 c      double complex fcpla(4,6,2)
       double precision  fcpl(4,6) ! hzz,hww
-      double precision fcpl1(4,4),fcpl2(4,4),fcpl3(4,4) !hgg,hgz
+      double precision fcpl3(4,4) !hgg,hgz
       double complex fcpla(4,6,2) !hzz,hww
       double complex fcpla1(4,4,2),fcpla2(4,4,2),fcpla3(4,4,2) !hgg,hgz
 C  and which are calculated from output of KOPPLN
@@ -607,25 +599,25 @@ c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 
 C  Other local variables for QQBQQI
-      integer i,k,mu,v2,v3, isig,isig1,isig3
+      integer i,k,v2,v3, isig,isig1,isig3
 C
 C  Variables for the main part of the program
-      real*8 pbar(0:3,6),qbar(0:4),uucc,uuss,ddcc,ddss,udsc,ducs,
-     1       p(0:3,6),q(0:4),p21(0:4),p43(0:4),p65(0:4),eps(0:3,2),
-     2       p21g(0:4),p43g(0:4), res(6,2), l21, l43
-      real*8 uucc_c(3),uuss_c(3),ddcc_c(3),ddss_c(3),udsc_c(3),ducs_c(3)
-      integer sign(6), gsign
-      complex*16 psi(2,-1:1,4), braket(2,-1:1,4,2), 
-     1        j21(0:3,-1:1), j43(0:3,-1:1), j21e43(-1:1,-1:1,2),
-     2        jh1(0:3,-1:1), jh2(0:3,-1:1), e21(0:3,-1:1,2),
-     3        e43(0:3,-1:1,2), e21j43(-1:1,-1:1,2),
+      real*8 
+     1       p21(0:4),p43(0:4),
+     2       p21g(0:4),p43g(0:4)
+
+
+      complex*16 
+     1        j21(0:3,-1:1), j43(0:3,-1:1),
+     2        e21(0:3,-1:1,2),
+     3        e43(0:3,-1:1,2),
      4        mm21(6,4,2), mm43(6,4,2)
       complex*16 mm211(4,4,2), mm431(4,4,2), mm212(4,4,2), mm432(4,4,2),
      $      mm213(4,4,2), mm433(4,4,2)
       complex*16 j21e43a(-1:1,-1:1,2,2),e21j43a(-1:1,-1:1,2,2)
-      real*8 pk(0:4,4)
+
       complex*16 prop21(1:4), prop43(1:4), prop21g(1:4), prop43g(1:4)
-      real*8 betah, lamb, xmw, fac
+      real*8 xmw
       integer ffac
       double complex formfactor
       double precision mff, m2ff, psq
@@ -635,7 +627,7 @@ C  Variables for the main part of the program
       parameter ( czero = (0.0d0,0.0d0) )
       real*8 two
       parameter(two = 2.0d0)
-      logical lcol
+
 
       double complex I3point
       external I3point
@@ -758,7 +750,7 @@ c
                   else
                      write(*,*)"Please select ffac=1or2 in anom_HVV.dat"
                      stop
-                  endif    
+                  endif                   
                   e21j43a(isig1,isig3,i,2)=
      1                 e21j43a(isig1,isig3,i,2)*formfactor
                endif
@@ -786,7 +778,7 @@ c
                      psq = (p21g(0)+p43(0))**2-(p21g(1)+p43(1))**2
      &                    -(p21g(2)+p43(2))**2-(p21g(3)+p43(3))**2
                      formfactor = -2*m2ff*I3point(mff,p21g(4),p43(4),psq)
-                  endif
+                  endif                     
                   e21j43a(isig1,isig3,i,1) = 
      1                 formfactor*e21j43a(isig1,isig3,i,1)
                endif
@@ -800,7 +792,7 @@ c
                      psq = (p21(0)+p43g(0))**2-(p21(1)+p43g(1))**2
      &                    -(p21(2)+p43g(2))**2-(p21(3)+p43g(3))**2
                      formfactor = -2*m2ff*I3point(mff,p21(4),p43g(4),psq)
-                  endif
+                  endif     
                   j21e43a(isig1,isig3,i,1) = 
      1                 formfactor*j21e43a(isig1,isig3,i,1)
                endif

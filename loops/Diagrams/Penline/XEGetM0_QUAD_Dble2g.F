@@ -32,14 +32,14 @@ c*******************************************************************************
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
       Real*8 psq(6)
-        Real*8   p1sq, p1p2, p1p3, p1p4, p1p5
-       Real*8   p2sq, p2p3, p2p4, p2p5 
-       Real*8   p3sq, p3p4, p3p5 
-       Real*8   p4sq, p4p5 
+        Real*8   p1sq
+       Real*8   p2sq 
+       Real*8   p3sq 
+       Real*8   p4sq 
        Real*8   p5sq
-       Real*8   s12, s13, s14, s15
-       Real*8   s23, s24, s25
-       Real*8   s34, s35 
+       Real*8   s12, s15
+       Real*8   s23
+       Real*8   s34 
        Real*8   s45
        Complex*16  B012,B013,B014,B015
        Complex*16  B023,B024,B025
@@ -122,8 +122,8 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
        Real*16   p4sq_QUAD, p4p5_QUAD 
        Real*16   p5sq_QUAD 
        Real*16   s12_QUAD, s13_QUAD, s14_QUAD, s15_QUAD
-       Real*16   s23_QUAD, s24_QUAD, s25_QUAD
-       Real*16   s34_QUAD, s35_QUAD
+       Real*16   s23_QUAD
+       Real*16   s34_QUAD
        Real*16   s45_QUAD
 
        Complex*32  B012_QUAD,B013_QUAD,B014_QUAD,B015_QUAD
@@ -226,7 +226,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c       Complex*16 B0fin,C0fin,D0fin,E0fin
 c       EXTERNAL B0fin,C0fin,D0fin,E0fin
        Logical PrintB,PrintC,PrintD,PrintE
-       Integer comp  
+
        External dotrr_QUAD ,dotrr
       Complex*16 dotrc,dotcc
        Real*8 dotrr
@@ -319,7 +319,7 @@ c$$$       print*, 'Minus jtemp', jtemp
       endif
       enddo
       do i=0,3
-      ptemp(i,j)=0q0
+      ptemp(i,j)=0.0
       do jtemp=1,5
       if (jtemp.ne.j) then
       ptemp(i,j)=-ptemp(i,jtemp)+ptemp(i,j)
@@ -337,7 +337,6 @@ c$$$       print*, 'Minus jtemp', jtemp
       enddo 
       endif
 
- 
 
       do i=0,3 
       p1_QUAD(i)=ptemp(i,1)
@@ -555,7 +554,6 @@ c        print*, "here:Pen2g",j,comp
        C0235=DCMPLX(C0235R,C0235I)
 
 
-
        call C0fin_QUAD(p3sq_QUAD,p4sq_QUAD,s34_QUAD,musq_QUAD,C0345_QU
      -   AD)
        call tens_red3_new_Re_Com_QUAD(p3sq_QUAD,p4sq_QUAD,s34_QUAD,B04
@@ -565,9 +563,6 @@ c        print*, "here:Pen2g",j,comp
      -   AD,C0345I_QUAD,C345R_QUAD,C345I_QUAD)
        C0345=DCMPLX(C0345R,C0345I)
 
-
-
-   
 
        call C0fin_QUAD(s12_QUAD,p3sq_QUAD,s45_QUAD,musq_QUAD,C0134_QU
      -   AD)
@@ -588,7 +583,6 @@ c        print*, "here:Pen2g",j,comp
        C0135=DCMPLX(C0135R,C0135I)
 
 
-
        call C0fin_QUAD(s45_QUAD,p4sq_QUAD,p5sq_QUAD,musq_QUAD,C0145_QU
      -   AD)
        call tens_red3_new_Re_Com_QUAD(s45_QUAD,p4sq_QUAD,p5sq_QUAD,B04
@@ -599,7 +593,6 @@ c        print*, "here:Pen2g",j,comp
        C0145=DCMPLX(C0145R,C0145I)
 
 
-
        call C0fin_QUAD(s23_QUAD,p4sq_QUAD,s15_QUAD,musq_QUAD,C0245_QU
      -   AD)
        call tens_red3_new_Re_Com_QUAD(s23_QUAD,p4sq_QUAD,s15_QUAD,B04
@@ -608,7 +601,6 @@ c        print*, "here:Pen2g",j,comp
        call  From_CijR_QUAD_to_Dbl(C0245R,C0245I,C245R,C245I,C0245R_QU
      -   AD,C0245I_QUAD,C245R_QUAD,C245I_QUAD)
        C0245=DCMPLX(C0245R,C0245I)
-
 
 
        call D0fin_QUAD(s12_QUAD,s23_QUAD,p1sq_QUAD,p2sq_QUAD,p3sq_QUAD
@@ -636,7 +628,6 @@ c        print*, "here:Pen2g",j,comp
        D01235=DCMPLX(D01235R,D01235I)
 
 
-
        call D0fin_QUAD(s45_QUAD,s15_QUAD,p1sq_QUAD,s23_QUAD,p4sq_QUA
      -   D,p5sq_QUAD,musq_QUAD,D01245_QUAD)
        call tens_red4_new_Re_Com_QUAD(p1sq_QUAD,s23_QUAD,p4sq_QUAD,p1p
@@ -650,8 +641,6 @@ c        print*, "here:Pen2g",j,comp
        D01245=DCMPLX(D01245R,D01245I)
 
 
-  
-
        call D0fin_QUAD(s23_QUAD,s34_QUAD,p2sq_QUAD,p3sq_QUAD,p4sq_QUAD
      -   ,s15_QUAD,musq_QUAD,D02345_QUAD)
        call tens_red4_new_Re_Com_QUAD(p2sq_QUAD,p3sq_QUAD,p4sq_QUAD,p2
@@ -664,12 +653,7 @@ c        print*, "here:Pen2g",j,comp
      -   5R_QUAD,D02345I_QUAD,D2345R_QUAD,D2345I_QUAD)
        D02345=DCMPLX(D02345R,D02345I)
 
-      
 
-   
-
-  
- 
       call D0fin_QUAD(s45_QUAD,s34_QUAD,s12_QUAD,p3sq_QUAD,p4sq_QUAD
      -   ,p5sq_QUAD,musq_QUAD,D01345_QUAD)
        call tens_red4_new_Re_Com_QUAD(s12_QUAD,p3sq_QUAD,p4sq_QUAD,p1p
@@ -681,14 +665,6 @@ c        print*, "here:Pen2g",j,comp
        call  From_DijR_QUAD_to_Dbl(D01345R,D01345I,D1345R,D1345I,D0134
      -   5R_QUAD,D01345I_QUAD,D1345R_QUAD,D1345I_QUAD)
        D01345=DCMPLX(D01345R,D01345I)
-
-   
-
-     
-
-
-
-
 
 
        call E0fin_QUAD(p1sq_QUAD,p2sq_QUAD,p3sq_QUAD,p4sq_QUAD,p5sq_QUA

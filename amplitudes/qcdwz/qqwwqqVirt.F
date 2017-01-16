@@ -18,17 +18,17 @@ c 4q WW Amplitude
       complex*16 kdiac(0:3,2),momtempc(0:3)
       real*8 mompsiW(0:4,4,2)
       complex*16 psi(2,-1:1,4), psiW(2,4,2),psi4(4,4)
-      complex*16 psiTemp(2,-1:1),amp(2)
-      complex*16 ampv(2),ampb(2),amptemp(2),ampvcross1(2)
-      complex*16 gluWij(0:3,1:3,2:4,2),temp
-      complex*16 tempCurr(0:3,-1:1,4),temp4c(0:3)
-      complex*16 s1c, dotcc, dotrc
-      real*8 mass2,qjj2,dotrr,mjj2
-      real*8 squared(2,2), tempR, musq, IOp(0:2),logmuosij(4,4)
-      real*8 bornres(0:1)
+      complex*16 amp(2)
+      complex*16 ampv(2),ampb(2),ampvcross1(2)
+      complex*16 gluWij(0:3,1:3,2:4,2)
+      complex*16 tempCurr(0:3,-1:1,4)
+      complex*16 dotcc
+      real*8 mass2,qjj2,dotrr
+      real*8 squared(2,2), tempR, musq,logmuosij(4,4)
+
       
-      integer i,j,mu,nu,tempi4(4),cross,col(2),w1,w2,crosssign
-      integer minhel, maxhel, in,out,in2,out2,qid(4)
+      integer i,j,mu,tempi4(4),cross,col(2),w1,w2,crosssign
+      integer in,out,in2,out2
 
       complex*16 epsW
       real*8 momW
@@ -37,8 +37,8 @@ c 4q WW Amplitude
       real*8 deltaCVirt
       parameter (deltaCVIRT = 0d0)
 
-      complex*16 cte(2)
-      real*8 lm,ls,pi2,theta,ths
+
+      real*8 pi2,theta
       logical IsNaN
       external theta,IsNaN
       parameter (pi2 =9.86960440108935861883449099987615114d0)
@@ -46,9 +46,9 @@ c 4q WW Amplitude
       common /comRecalcPSpoint/ recalculatePSpoint
       
       logical lhex,lbox, lborn,lcsi, wardidtest(3)
-      complex*16 hexamp(9),hexres,hexborn,trash
+      complex*16 hexamp(9),hexres,hexborn
       complex*16 boxgauge(2,3),boxres(5,3),boxgaugeb(2,3),boxborn(3),nothing(3),checkg(5,3,2),checkgb(2,2),boxresRen(3)
-      complex*16 momGc(0:3),momWc(0:3),braket4(4)
+
       real*8 td,gaugeprecision
       real*8 CF,CA,CFCA,TR
       parameter( CF = 4d0/3d0, CA = 3d0, CFCA=-1d0/6d0, TR=0.5d0)
@@ -172,7 +172,6 @@ c calc amplitudes
 c---------------------------------
 c	VIRTUALS start here
 c---------------------------------
-
 
 
 c  change momentum convention-> all momenta flowing in
@@ -454,7 +453,6 @@ c add to ampvv
         boxcountsub_q(sub_number) = boxcountsub_q(sub_number) + 1
       endif
       ampb(col(1)) = ampb(col(1)) - (boxborn(1)+boxborn(2))*crosssign*G**2 ! this is only for testing; when calculating boxes for both quark lines -> add born twice
-	
 
 
 !       ampb(1) = (boxborn(1)+boxborn(2))*crosssign*G**2
@@ -561,15 +559,6 @@ c add to ampvv
       endif ! lbox
 
 
-
-
-
-
-
-
-
-
-      
       if(lhex) then
       
       psi4(1,1) = psi(1,-1,1)
@@ -845,7 +834,6 @@ c add up both crossing, before we can square the amplitude
 
       if(ldebug) then
 	print*,"res: ",res(0,0),res(0,1),res(0,2)
-	pause
       endif
       end       
 

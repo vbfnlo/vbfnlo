@@ -1,11 +1,12 @@
 SUBDIRS = include \
           helas \
           PDFsets \
-          loops \
           utilities \
+          loops \
           amplitudes \
           phasespace \
-          lib src
+		  regress \
+          lib src doc
 
 ACLOCAL_AMFLAGS = -I m4
 

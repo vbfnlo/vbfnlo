@@ -48,7 +48,7 @@ c variables for the main part of the program
       double precision  uuzaaj, ddzaaj, res(2)
       double precision  p(0:3,2+n_v)
 
-      integer  sign(2+n_v), gsign, mu, i, j, k, isig
+      integer  sign(2+n_v), gsign, mu, i, k, isig
       integer  ifl(2), lh, l, bos
 
       double precision fqze(0:4,2), fqa1(0:4,2), fqa2(0:4,2)
@@ -64,15 +64,15 @@ c variables for the main part of the program
       double complex braketgA1(2,-1:1,2,2), braketgA2(2,-1:1,2,2)
       double complex psiZeg(2,-1:1,2,2), psiAeg(2,-1:1,2,2)
       double complex psiA1g(2,-1:1,2,2), psiA2g(2,-1:1,2,2)
-      double complex jae(0:5,-1:1,4,2), ja1(0:5,-1:1,4,2),
-     1               jze(0:5,-1:1,4,2), ja2(0:5,-1:1,4,2)
+      double complex ja1(0:5,-1:1,4,2),
+     1               ja2(0:5,-1:1,4,2)
       double complex mat(2,-1:1,2,5), madgr(5,-1:1,-1:1,2)
       double complex matvbf(2,-1:1,2,3)
-      double complex matt(2,-1:1,2,5)
+
       double complex m1kb(2,-1:1,5), m2kb(2,-1:1,5), temp, temp1
       double complex mm(2,-1:1,2), zero
-      double complex ma, mz, m1, m2, m3, m4
-      double complex psi(2,-1:1,2), jqq(0:5,-1:1)
+      double complex ma, mz, m1, m2
+      double complex psi(2,-1:1,2)
       double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2)
       double complex jqqa(0:5,-1:1,2)
 

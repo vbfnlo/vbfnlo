@@ -45,7 +45,7 @@ c*******************************************************************************
 c************************************************************************************
        IMPLICIT NONE
       Complex*16 SMB(8),Fa(27),F(21)
-      Real*8 FI(21),FR(21)
+
 
       Complex*16 barpsi_p3(2),psi_p1(2)
        Real*8 P(3)
@@ -70,19 +70,17 @@ c*******************************************************************************
        Real*8 dotrr
        Complex*16 B0fin,C0fin,D0fin,E0fin
        EXTERNAL dotrr,B0fin,C0fin,D0fin,E0fin
-        Real*8   p1sq, p1p2, p1p3, p1p4, p1p5 
-       Real*8   p2sq, p2p3, p2p4, p2p5 
-       Real*8   p3sq, p3p4, p3p5 
-       Real*8   p4sq, p4p5 
+        Real*8   p1sq 
+       Real*8   p2sq 
+       Real*8   p3sq 
+       Real*8   p4sq 
        Real*8   p5sq 
-       Real*8   s12, s13, s14, s15 
-       Real*8   s23, s24, s25 
-       Real*8   s34, s35 
-       Real*8   s45 
-       Complex*16  B012,B013,B014,B015 
-       Complex*16  B023,B024,B025 
-       Complex*16  B034,B035 
-       Complex*16  B045 
+       Real*8   s12, s15 
+       Real*8   s23 
+       Real*8   s34 
+       Real*8   s45
+
+
        Real*8  B012R,B013R,B014R,B015R 
        Real*8  B023R,B024R,B025R 
        Real*8  B034R,B035R 
@@ -90,13 +88,9 @@ c*******************************************************************************
        Real*8  B012I,B013I,B014I,B015I 
        Real*8  B023I,B024I,B025I 
        Real*8  B034I,B035I 
-       Real*8  B045I 
-       Complex*16 C0123,C0124,C0125 
-       Complex*16 C0134,C0135 
-       Complex*16 C0145 
-       Complex*16 C0234,C0235 
-       Complex*16 C0245 
-       Complex*16 C0345 
+       Real*8  B045I
+
+
        Real*8 C0123R,C0124R,C0125R 
        Real*8 C0134R,C0135R 
        Real*8 C0145R 
@@ -120,11 +114,9 @@ c*******************************************************************************
        Real*8 Cij145I(4,2) 
        Real*8 Cij234I(4,2),Cij235I(4,2) 
        Real*8 Cij245I(4,2) 
-       Real*8 Cij345I(4,2) 
-       Complex*16  D01234,D01235 
-       Complex*16 D01245 
-       Complex*16 D01345 
-       Complex*16 D02345 
+       Real*8 Cij345I(4,2)
+
+
        Real*8 D01234R,D01235R 
        Real*8 D01245R 
        Real*8 D01345R 
@@ -141,7 +133,7 @@ c*******************************************************************************
        Real*8 Dij1245I(13,3) 
        Real*8 Dij1345I(13,3) 
        Real*8 Dij2345I(13,3) 
-       Complex*16 EE0 
+
        Real*8 EE0R 
        Real*8 EE0I 
        Real*8 EijR(46,4) 
@@ -172,7 +164,7 @@ c*******************************************************************************
        COMMON/NoAbe4vertBoxLineBVALFunctions/ B012R,B012I, B013R,B013I
      &   , B014R,B014I, B015R,B015I, B023R,B023I, B024R,B024I, B025R,
      &   B025I, B034R,B034I, B035R,B035I, B045R,B045I
-       Integer alpha,comp,ngluon, posgluon,Div
+       Integer alpha,comp,ngluon, posgluon
        real*8 musqin
        integer jtemp
 ccccccccccccccccc

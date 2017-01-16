@@ -41,12 +41,15 @@ c*********************************************************************
 
       subroutine qqHWj(pbar, fsign, qbar, gsign, nlo, N, final, sbos)
 
+      use globalvars, only: ldoblha
+
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
 #include "tensor.inc"
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
 c     electroweak couplings are taken from KOPPLN
 
@@ -171,12 +174,12 @@ C For adding Christoph factor from cancellation of 1/eps  divergences
       double complex epsgh(0:3,2) ! gluon coupling to quark line
       double complex epsext(0:3,2) ! gluon coupling to quark line
       ! those two are different if there is a top-loop radiating off a higgs
-      double precision qhg(0:4,2)
+
 
       double precision fq0(0:4,2)
       logical ltoploop
       double complex jqqw(0:5,-1:1)
-      double precision pqqw(0:4), minus_pqqw(0:4)
+      double precision pqqw(0:4)
       integer flgauge
       double complex psiw0(2,-1:1, 2)
       integer maxfloopmasses
@@ -188,17 +191,20 @@ C For adding Christoph factor from cancellation of 1/eps  divergences
       integer DivTop, PerformGaugeTop
 
       integer glupolchoice
-      double complex fakemadg(18,10)
+
 !      double complex jqqw1(0:5,-1:1)
 !      double complex jqqw2(0:5,-1:1)
 !      double precision pqqw1(0:4)
 !      double precision pqqw2(0:4)
 
 
-
 c for debugging purposes
-      double precision momsum(0:3), convfacttmp
+      double precision momsum(0:3)
       real*8 mass2
+
+      !BLHA interface
+      double precision tree(2) ! save tree amplitude
+      double precision lnmusqp1p2 ! running logs
               
 c -------------- BEGIN CODE --------------------------------
 
@@ -216,7 +222,7 @@ c      fpials(2) = fpi*alfas
 c---------------------------- BEGIN CODE -----------------------
 
       lnlo = NLO.ne.0       ! include some virtual stuff if T
-      lbox = (NLO.eq.-4) !.or.(NLO.eq.1)  only needed if mapping wrong
+      lbox = (NLO.eq.-4) ! only needed if mapping wrong
 
 !     lbox = (NLO.eq.-4).or.(NLO.eq.1).or.(NLO.eq.5).or.(NLO.eq.7).or.(NLO.eq.-7)  ! call boxline if T
 !      lpt = (NLO.eq.1).or.(NLO.eq.-5).or.(NLO.eq.7).or.(NLO.eq.-7)    ! true pentagon contribution
@@ -228,6 +234,12 @@ c---------------------------- BEGIN CODE -----------------------
 
       ltoploop = (NLO.eq.-5)
 !      ltoploop=.true.
+
+      if (ldoblha .and. lnlo) then
+        mursq(1,1) = blha_scale**2
+        lbox =  .true. 
+        ltoploop =  .true. 
+      endif
 
 !     sbos < 0 used to signal call from WHjj-part
       bos=abs(sbos)
@@ -266,7 +278,7 @@ c define the internal momenta
       enddo
 
       if (ldebug) then
-         print*, "____ enter qqWHj2.F _____"
+         print*, "____ enter __FILE__ _____"
         !print*, gsign
          print*, 'q', pbar(0:3,1)
          print*, 'q', pbar(0:3,2)
@@ -371,7 +383,6 @@ c
 c    Virtual contributions
 c
 c**************************************************************
-
 
 
 c**************************************************************
@@ -533,7 +544,6 @@ c Some factors
      &  (als(1,1)*CA*Log(-(mursq1/mmU))**2)/(4D0*Pi)
 
       factortoadd=factortoadd/2d0
-
 
 
 !     print*, 'fac, conv'
@@ -856,7 +866,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc
             endif ! Warditest
 
 
-
             If(wardidtest1) then
 
                If(Div.ne.0) then
@@ -1084,7 +1093,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
        ! equal formulation
        ! 2d0*sqrt(xm2(3))/(v(1,3)*dsqrt(8d0))
-
 
 
 !!! Check Gauge invariance
@@ -1316,7 +1324,7 @@ cc g-1-2
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       endif !ltoploop
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-#endif nlo
+#endif  
 !#endif dibosonjet
 ! end of with_nlo and dibosonjet
 
@@ -1486,7 +1494,7 @@ c#endif
             mv(k,-1,glupol) = als(1,1)*oneo4pi*(mv(k,-1,glupol))
          !   print*, 'mmb'*mmb(k,-1,glupol)
          !   print*, 'factortoadd', factortoadd
-         else if(nlo.lt.0) then
+         else if(nlo.lt.0 .or. nlo==1) then
 #ifdef WITH_NLO
             mv(k,-1,glupol) = als(1,1)*oneo4pi*(mv(k,-1,glupol))+factortoadd*mmb(k,-1,glupol)
 #endif
@@ -1507,15 +1515,74 @@ c#endif
 
       if (nlo.ge.0) then
           res(k) = (res(k)+resv(k))*4d0*fpials(2)  ! C_2*3 is the color factor
+          tree(k) = res(k)*4d0*fpials(2)
       else
          res(k) = resv(k)*4d0*fpials(2)           ! C_2*3 is the color factor
       endif  
       
       final = res(k)
+
       if(ldebug) then
          print*, 'mv', mv
          print*, 'res', res
          print*, 'final', final
+      endif
+
+      if (ldoblha) then
+         select case(blha_amptype(blha_curproc)) 
+         case(0) ! tree
+            ! blha_amp(1)=blha_amp(1)+
+            ! &      res(blha_idsubproc(blha_cursubproc,blha_curproc))
+            blha_amp(1)=blha_amp(1) + res(k)
+
+         case(1) ! loop
+            lnmusqp1p2 = log(blha_scale**2/(-2d0*dotrr(p(0,1),p(0,2)) )) 
+
+            ! eps**-2
+            blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       als(1,1)*(-1d0)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+            ! eps**-1
+            blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+            ! eps**0
+            ! idsubproc = 1 here
+            blha_amp(3)= blha_amp(3)+
+     &      resv(k)*blha_CA ! loop + I (no tree)
+     &      + (-(als(1,1))/2d0/pi*                        ! -I
+     &          ( ! cvirt not used here, =0 ? ! blha_CF*cvirtVV+  ! our cvirt contribution to I operator
+     &            2d0*(blha_KQuark+blha_gammaQuark+ ! K, gamma from CS (C.28)
+     &                 blha_tgammaQuark+ ! catani convention to I operator
+     &                  (pi**2/6d0-1)*blha_CF) ) ! difference 1/Gamma(1-e) vs. Gamma(1+e)
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+            ! tree
+            blha_amp(4)= blha_amp(4)+
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+            if(ldebug) then
+               print*, 'blha'
+               print*, blha_amp(1:4)
+               print*, tree, lnmusqp1p2
+               print*, matv(k,-1,1:2,1:3)
+            endif
+
+         case(2) ! cctree
+            ! 1-2
+            call BLHA_cctree(1,2,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+
+         case default 
+            call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+         end select
       endif
       
       return

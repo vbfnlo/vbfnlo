@@ -466,8 +466,6 @@ c qq -> Z(-> W W A)
      &               +AMP(50) + AMP(53) + AMP(54) + AMP(55)
 
 
-
-
       if (nhel(7).eq.1) then
          JAMP(   1) = 
      &        subprocess(1)+

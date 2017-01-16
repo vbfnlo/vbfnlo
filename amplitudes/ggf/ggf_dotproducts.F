@@ -15,8 +15,8 @@ c  modified, date        : 30.01.11
       common /bh4g_mom_eps/ qi(0:3,4),eps(0:3,4)
 
       complex*16 epvec(0:3,4)
-      real*8 pi(0:3),pj(0:3),qvec(0:4,4)
-      integer i,j,k,mu
+      real*8 qvec(0:4,4)
+      integer i,j,k
       real*8 tmp
 
       real*8 dotrr

@@ -6,13 +6,13 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p5(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
-       Complex*16 result(10),resultgt(10),resultg(3)
-       Complex*16 borntemp
+       Complex*16 result(10),resultg(3)
+
        Integer Div,Gauge
        Complex*16 F(6395)
        Real*8 P(7129)
@@ -37,7 +37,6 @@
       end
 
 
-
        subroutine HexLineNoAbe1gTotalQ(p1,p2,p3,p4,p5,p6,barpsi_p5,psi_p1,mup2,mup3,mup4,
      1  mup6,alpha,musqIn,ngluon,posgluon,comp,
      2 result,resultg,Div,Gauge)
@@ -46,13 +45,13 @@
 #include "VBFNLO/loops/Utilities/GaugeTest.inc"
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p5(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
-       Complex*16 result(10),resultgt(10),resultg(3)
-       Complex*16 borntemp
+       Complex*16 result(10),resultg(3)
+
        Integer Div,Gauge
        Complex*16 F(6395)
        Real*8 P(7129)
@@ -60,7 +59,7 @@
        Save/test_FhlFunctionsNoABE1g/
        COMMON/test_PFunctionsNoABE1g/P
 
-       Logical WardH,WardP
+       Logical WardH
        logical printGaugePrec
        parameter (printGaugePrec = .false.)
        real*8 comGaugePrec
@@ -74,7 +73,7 @@
        real*8 Accuracy
 
        logical gaugetrue
-       logical wardidtest_Q(0:8),wardpAbe(2)
+       logical wardpAbe(2)
        common/wardHexNoAbe/wardpAbe
 
         tdble=1d8
@@ -131,7 +130,6 @@ c       print*, "WardH Dble:1g", WardH
        if(tdble.gt.Accuracy) then
 
 
-  
        call HexLineNoAbe1gTotal_QUAD(p1,p2,p3,p4,p5,p6,
      &            barpsi_p5,psi_p1,mup2,mup3,mup4,mup6,
      &            alpha,musq,ngluon,posgluon,comp,
@@ -200,13 +198,13 @@ c       print*, "HexQ:1g", tquad
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p5(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
-       Complex*16 result(10),resultgt(10),resultg(3)
-       Complex*16 borntemp
+       Complex*16 result(10),resultg(3)
+
        Integer Div,Gauge
        Complex*16 F(6395)
        Real*8 P(7129)

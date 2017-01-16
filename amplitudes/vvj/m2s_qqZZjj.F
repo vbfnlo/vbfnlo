@@ -54,7 +54,6 @@ c declare external functions
 
 c alfas, scales etc
 
-      real*8 x1,x2
 
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
@@ -84,11 +83,10 @@ c               l: permutation in/out particles
 
 c declare variables for summation process
 
-      INTEGER ires, nmaxold, FSIGN(3+n_v), gsign
-      save nmaxold
+      INTEGER ires
 
-      integer physToDiag(4), nlo, nmin, nmax, nproc(8)
-      save nmin, nmax, nproc
+      integer nlo, nmax
+      save nmax
 
 c store contributions from subprocess ip in res(ip,ID) where
 c  ID = 1      : the real emission |M|^2 * pdf
@@ -119,7 +117,7 @@ c define program switches
 
       real*8 weight,rnumb,RandomNumber
 
-      double precision pbar(0:3,7), qbar(0:3), mg2res(2)
+
 
 c --------------------------------------------------------------
 

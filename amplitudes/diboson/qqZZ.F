@@ -52,16 +52,14 @@ c     electroweak couplings are taken from KOPPLN
       double precision  p(0:3,2+n_v)
       double precision  fqz1(0:4,2), fqz2(0:4,2)
       double precision  fqa1(0:4,2), fqa2(0:4,2)
-      integer  fsign(2+n_v), sign(2+n_v), nlo, mu, i, j, k, isig, N
+      integer  fsign(2+n_v), sign(2+n_v), nlo, mu, i, k, isig, N
       integer  ifl(2)
       double complex psiz1(2,-1:1,2),psiz2(2,-1:1,2)
       double complex psia1(2,-1:1,2),psia2(2,-1:1,2)
-      double complex ja1(0:5,-1:1,2),ja2(0:5,-1:1,2)
-      double complex addnumber
       double complex temp, temp1
       double complex mat(2,-1:1,2)
       double complex mm(2,-1:1), mv(2,-1:1), zero
-      double complex ma, mz, m1, m2, m3, m4
+      double complex m1, m2, m3
       double complex psi(2,-1:1,2), jqq(0:5,-1:1)
       double complex dotcc, s1c, dotrc
       double precision dotrr, psumsq
@@ -77,7 +75,7 @@ c variables for virtual corrections
       double precision scale
       double precision c2,c2o4pi
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi)
-      logical lnlo, lbox, lpq, lpt, lpent, ldebugm, linit
+      logical lnlo, lbox, ldebugm, linit
 
 
 c   pentagons 
@@ -92,14 +90,11 @@ c   pentagons
       double complex boxcontr3b(3), boxcontr4b(3)
       double complex boxcontr5b(3), boxcontr6b(3)
       double complex boxcontr7b(3), boxcontr8b(3)
-      double complex testg(3)
+
       Logical wardidtest1,wardidtest2
-      Logical wardidtest3,wardidtest4
-      Logical wardidtest5,wardidtest6
-      Logical wardidtest7,wardidtest8
 
 
-      real*8 p1(0:3),p2(0:3),minus_qa1(0:3),minus_qa2(0:3),minus_qz(0:3)
+      real*8 p1(0:3),p2(0:3),minus_qa1(0:3),minus_qa2(0:3)
       real*8 minus_qa1z(0:3),minus_qa2z(0:3)
 
 
@@ -111,23 +106,12 @@ c   pentagons
       double complex j5a2z1(3,-1:1,2),jba2z1(3,-1:1,2)
       double complex j5a1a2(3,-1:1,2),jba1a2(3,-1:1,2)
       double complex j5a2a1(3,-1:1,2),jba2a1(3,-1:1,2)
-      double complex j5pba1a2(-1:1,3,2),jbpba1a2(-1:1,3,2)
-      double complex j5pba2a1(-1:1,3,2),jbpba2a1(-1:1,3,2)
-      double complex result(-1:1,4,2),result_born(-1:1,4,2)
-      double complex mva, mvz, mv1, mv2, mv3, mv4
-      double complex  mv1m,mv2m,mv3m,mv4m
+
+
+      double complex mv1, mv2, mv3
+      double complex  mv1m,mv2m,mv3m
 
       double complex  matv(2,-1:1,5),matm(2,-1:1,5)
-      double complex  matvbf(2,-1:1,3)
-
-
-
-      double complex gaugebox1(2), gaugebox2(2), gaugebox3(2)
-      double complex gaugebox4(2)
-      
-      double complex gaugebox1_born(2), gaugebox2_born(2), gaugebox3_born(2)
-      double complex gaugebox4_born(2)
-
 
 
       data linit /.true./

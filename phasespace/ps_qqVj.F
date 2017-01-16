@@ -9,6 +9,7 @@ c                                  V1 --> l1 l2
 c
 
       subroutine def_ps_qqVj(bos)
+          use globalvars, only: ldoblha
 
 
       implicit none
@@ -64,7 +65,6 @@ c      ptjmin = 0.0d0
      1         "  to ",f12.3," GeV" )
  72   format ( " boson has mass ",f8.2," GeV and width ",
      1         f10.4," GeV" )
- 80   format ( " configuration ", i3 )
       if (.not.ldoblha) then
         write(6,*)
         write(6,*) "--------------------PHASE SPACE Vj------------------"
@@ -81,7 +81,6 @@ c      ptjmin = 0.0d0
       end
 
 
-
 C**********************  LIPSVj   ****************************************
 C
       SUBROUTINE LIPSVj(N,RD,RN,
@@ -94,7 +93,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=(1+3)*3, TPI=2D0*PI )
       real*8 RD(*),RN
-      real*8 K1(0:3),K2(0:3),V(0:3,max_v,max_kin),X1,X2,W,K(0:3)
+      real*8 K1(0:3),K2(0:3),V(0:3,max_v,max_kin),X1,X2,W
       real*8 PJET(0:3,N)
 
 C Phase space generator for production of 2 bosons + 1 jet at hadron colliders
@@ -136,7 +135,7 @@ C   PTJMIN         minimal PT values      REAL*8 Y,PT,PHI,PNJ
 
       INTEGER ihiggs
       DOUBLE PRECISION xm2h, xmgh, rm2minh, rm2maxh, xxm2, xxmwidth, 
-     &                 splitrh, splitvv, rm2mid
+     &                 splitrh, splitvv, rm2mid(2)
       COMMON /BLIPSIFLOOPS/ xm2h, xmgh, rm2minh, rm2maxh, rm2mid,
      &                      xxm2, xxmwidth, splitrh, splitvv, ihiggs
 
@@ -146,8 +145,8 @@ C  local variables
       INTEGER I,MU
 
       real*8 test
-      real*8 y, y_border, tau, q(0:4), y2
-      real*8 pX(0:4), sinthetaX
+      real*8 tau, q(0:4)
+
       double precision dotrr
       external dotrr
 

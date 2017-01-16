@@ -591,7 +591,7 @@
 	integer isoort(8),ipi12(8),i,j,k,ipi12t,ilogi(3),ier0,ieri(nerr)
 	DOUBLE COMPLEX cs3(80),cs,cs1,cs2,cslam,c,cel2,cel3,cel2s(3),
      +		cel3mi(3),clogi(3),calph(3),cblph(3),cetalm,cetami(6),
-     +		clamp,ceta,csdel2,celpsi(3)
+     +		csdel2,celpsi(3)
 	DOUBLE PRECISION xmax,absc,del2,qiDqj(6,6)
 *
 *	common blocks:

@@ -15,19 +15,6 @@ AC_MSG_RESULT([$enable_kk])
 AM_CONDITIONAL(WITH_KK,[test "x$enable_kk" = "xyes"])
 ])
 
-AC_DEFUN([VBFNLO_CHECK_SPIN2],
-[
-AC_MSG_CHECKING([whether Spin2 should be included])
-AC_ARG_ENABLE(spin2,
-        AC_HELP_STRING([--enable-spin2],[--enable-spin2 to enable simulation of Spin-2 resonances]),
-        [],
-        [enable_spin2=no]
-        )
-AC_MSG_RESULT([$enable_spin2])
-AM_CONDITIONAL(WITH_SPIN2,[test "x$enable_spin2" = "xyes"])
-
-])
-
 AC_DEFUN([VBFNLO_CHECK_NLO],
 [
 AC_MSG_CHECKING([whether NLO should be enabled])
@@ -38,6 +25,18 @@ AC_ARG_ENABLE(NLO,
         )
 AC_MSG_RESULT([$enable_NLO])
 AM_CONDITIONAL(WITH_NLO,[test "x$enable_NLO" = "xyes"])
+])
+
+AC_DEFUN([VBFNLO_CHECK_MPI],
+[
+AC_MSG_CHECKING([whether MPI should be enabled])
+AC_ARG_ENABLE(MPI,
+        AC_HELP_STRING([--enable-MPI],[--enable-MPI to use MPI parallelization]),
+        [],
+        [enable_MPI=no]
+        )
+AC_MSG_RESULT([$enable_MPI])
+AM_CONDITIONAL(WITH_MPI,[test "x$enable_MPI" = "xyes"])
 ])
 
 
@@ -117,7 +116,6 @@ for i in $enable_processes; do
 done
 IFS="$oldIFS"
 
-AM_CONDITIONAL(WITH_DY,[test "$dy" -o "$all" -o "$all_except_hexagons"])
 AM_CONDITIONAL(WITH_DIBOSON,[test "$diboson" -o "$all" -o "$all_except_hexagons"])
 AM_CONDITIONAL(WITH_GGF,[test "$ggf" -o "$all" -o "$all_except_hexagons"])
 AM_CONDITIONAL(WITH_QCDVV,[test "$qcdvvjj" -o "$all"])
@@ -127,7 +125,6 @@ AM_CONDITIONAL(WITH_QCDV,[test "$qcdvjj" -o "$qcdvvjj" -o "$all" ])
 AM_CONDITIONAL(WITH_VBF,[test "$vbf" -o "$all" -o "$all_except_hexagons"])
 AM_CONDITIONAL(WITH_HJJJ,[test "$hjjj" -o "$all" -o "$all_except_hexagons"])
 AM_CONDITIONAL(WITH_TRIBOSONJET,[test "$tribosonjet" -o "$all"])
-AM_CONDITIONAL(WITH_GGFLO,[test "$ggf" -o "$diboson" -o "$all" -o "$all_except_hexagons"])
 
 dnl do we need HexLine?
 AM_CONDITIONAL(WITH_HEXAGONS,[test "$tribosonjet" -o "$all" -o "$qcdvvjj"])
@@ -153,8 +150,6 @@ ROOTLIBS=""
 ROOTLDFLAGS=""
 ROOTINCLUDE=""
 
-AC_MSG_CHECKING([for ROOT])
-
 
 AC_ARG_WITH(root,
         AC_HELP_STRING([--with-root=DIR],[location of ROOT installation]),
@@ -162,66 +157,79 @@ AC_ARG_WITH(root,
         [with_root=no])
 
 if test "x$with_root" = "xno"; then
+  AC_MSG_CHECKING([for ROOT])
   AC_MSG_RESULT([not required])
+  HAS_ROOT="no"
 else
+  HAS_ROOT="yes"
 
   if test \( "x$with_root" = "xyes" \) -o \( "x$with_root" = "x" \); then
     with_root="$ROOTSYS"
   fi
+
   ROOTPATH="$with_root"
 
-  if test -f $ROOTPATH/bin/root-config; then
-
-    AC_MSG_RESULT([$ROOTPATH])
-
-    AC_MSG_CHECKING([for ROOTLIBS])
-    if test -z "$ROOTLIBS"; then
-      ROOTLIBS=`$ROOTPATH/bin/root-config --libs`
-      ROOTLIBPATH=`$ROOTPATH/bin/root-config --libdir`
-      ROOTLDFLAGS="-L$ROOTLIBPATH -Wl,-rpath,$ROOTLIBPATH"
-    fi
-    AC_MSG_RESULT([$ROOTLIBS])
-
-    AC_MSG_CHECKING([for ROOTINCLUDE])
-    if test -z "$ROOTINCLUDE"; then
-      ROOTINCLUDE="`$ROOTPATH/bin/root-config --cflags`"
-    fi
-    AC_MSG_RESULT([$ROOTINCLUDE])
-
-
-    oldLIBS="$LIBS"
-    oldLDFLAGS="$LDFLAGS"
-    oldCPPFLAGS="$CPPFLAGS"
-    LIBS="$LIBS $ROOTLIBS"
-    LDFLAGS="$LDFLAGS $ROOTLDFLAGS"
-    CPPFLAGS="$CPPFLAGS $ROOTINCLUDE"
-
-    AC_MSG_CHECKING([that ROOT works])
-    AC_LANG_PUSH([C++])
-    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <TCanvas.h>]],
-    	[[TCanvas c("c1", "");]])],[AC_MSG_RESULT([yes])],[AC_MSG_RESULT([no]) 
-     	AC_MSG_ERROR([Use '--with-root=' to set the path to your ROOT installation.\
-	If it doesn't work anyhow, you eventually have to set the ROOTSYS environment variable.])
-    ])
-    AC_LANG_POP([C++])
-
-    LIBS="$oldLIBS"
-    LDFLAGS="$oldLDFLAGS"
-    CPPFLAGS="$oldCPPFLAGS"
-
-    AC_SUBST(ROOTLIBS)
-    AC_SUBST(ROOTLIBPATH)
-    AC_SUBST(ROOTLDFLAGS)
-    AC_SUBST(ROOTPATH)
-    AC_SUBST(ROOTINCLUDE)
-
+  if test -z "$ROOTPATH"; then
+  	dnl assume root-config in system path
+  	AC_PATH_PROG(ROOTCONFIG, root-config)
   else
-    AC_MSG_ERROR([root-config not found...aborting])    
+  	AC_PATH_PROG(ROOTCONFIG, root-config, [""], ${ROOTPATH}/bin)
   fi
 
-fi
-AM_CONDITIONAL(WITH_ROOT, test ! x"$with_root" = "xno")
+  AC_MSG_CHECKING([for ROOT])
+  if test -z "${ROOTCONFIG}"; then
+    if test -f $ROOTPATH/bin/root-config; then
+        ROOTCONFIG=$ROOTPATH/bin/root-config
+        AC_MSG_RESULT([$ROOTCONFIG])
+    else
+        AC_MSG_ERROR([--with-root was given, got $ROOTPATH but did not find $ROOTPATH/bin/root-config])
+    fi
+  else
+    AC_MSG_RESULT([$ROOTCONFIG])
+  fi
 
+  AC_MSG_CHECKING([for ROOTLIBS])
+  if test -z "$ROOTLIBS"; then
+    ROOTLIBS=`$ROOTCONFIG --libs`
+    ROOTLIBPATH=`$ROOTCONFIG --libdir`
+    ROOTLDFLAGS="-L$ROOTLIBPATH -Wl,-rpath,$ROOTLIBPATH"
+  fi
+  AC_MSG_RESULT([$ROOTLIBS])
+
+  AC_MSG_CHECKING([for ROOTINCLUDE])
+  if test -z "$ROOTINCLUDE"; then
+    ROOTINCLUDE="`$ROOTCONFIG --cflags`"
+  fi
+  AC_MSG_RESULT([$ROOTINCLUDE])
+
+  oldLIBS="$LIBS"
+  oldLDFLAGS="$LDFLAGS"
+  oldCPPFLAGS="$CPPFLAGS"
+  LIBS="$LIBS $ROOTLIBS"
+  LDFLAGS="$LDFLAGS $ROOTLDFLAGS"
+  CPPFLAGS="$CPPFLAGS $ROOTINCLUDE"
+
+  AC_MSG_CHECKING([that ROOT works])
+  AC_LANG_PUSH([C++])
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <TCanvas.h>]],
+  	[[TCanvas c("c1", "");]])],[AC_MSG_RESULT([yes])],[AC_MSG_RESULT([no]) 
+   	AC_MSG_ERROR([Use '--with-root=' to set the path to your ROOT installation.\
+  If it doesn't work anyhow, you eventually have to set the ROOTSYS environment variable.])
+  ])
+  AC_LANG_POP([C++])
+
+  LIBS="$oldLIBS"
+  LDFLAGS="$oldLDFLAGS"
+  CPPFLAGS="$oldCPPFLAGS"
+
+  AC_SUBST(ROOTLIBS)
+  AC_SUBST(ROOTLIBPATH)
+  AC_SUBST(ROOTLDFLAGS)
+  AC_SUBST(ROOTPATH)
+  AC_SUBST(ROOTINCLUDE)
+
+fi
+AM_CONDITIONAL(WITH_ROOT, test x"$HAS_ROOT" = "xyes")
 ])
 
 dnl ###### GSL ######
@@ -590,27 +598,22 @@ AC_LINK_IFELSE(
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
     $as_echo "okay" >&6; }
 
- if test -n "$(fgrep 'FeynHiggs 2.6' $FEYNHIGGS_LIBDIR/libFH.a)"; then
-    FHVERSION="26"
- elif test -n "$(fgrep 'FeynHiggs 2.7' $FEYNHIGGS_LIBDIR/libFH.a)"; then
-    FHVERSION="27"
- elif test -n "$(fgrep 'FeynHiggs 2.8' $FEYNHIGGS_LIBDIR/libFH.a)"; then
-    FHVERSION="28"
- else
+ FHSTRING=$( LC_ALL=C grep --binary-files=text -oP 'FeynHiggs \d+.\d+.\d+' $FEYNHIGGS_LIBDIR/libFH.a  | sed -e 's/FeynHiggs //' )
+ FHVERSION=$( echo "$FHSTRING" | $AWK -F'.' '{print $[1]*10000+$[2]*100+$[3]}' )
+ dnl reconstruct string for verification
+ FHSTRING="$((FHVERSION/10000)).$((FHVERSION/100-FHVERSION/10000*100)).$((FHVERSION-FHVERSION/100*100))"
+
+ if test "x$FHSTRING" = "x"; then
   AC_MSG_ERROR(["Sorry, we don't recognise the version of FeynHiggs you are using."])
+ fi
+ if test $FHVERSION -lt 20600; then
+  AC_MSG_ERROR(["Sorry, your version of FeynHiggs is too old ($FHSTRING, at least 2.6.0 required)."])
  fi
 
  if test "${enable_shared}" != "no"; then
   if objdump --reloc $FEYNHIGGS_LIBDIR/libFH.a | grep -q R_X86_64_32S; then
    AC_MSG_ERROR(["The version of FeynHiggs you have linked to is statically linked.  Please re-run configure with the option '--enable-shared=no'."])
   fi
-  if test -n "$(fgrep 'FeynHiggs 2.8' $FEYNHIGGS_LIBDIR/libFH.a)"; then
-    FHSHARED="NO"
-  else
-    FHSHARED="YES"
-  fi 
- else
-  FHSHARED="NO"
  fi
 
 else
@@ -620,11 +623,7 @@ else
 fi
 
 
-AM_CONDITIONAL([FH26], [test "$FHVERSION" == "26"])
-AM_CONDITIONAL([FH27], [test "$FHVERSION" == "27"])
-AM_CONDITIONAL([FH28], [test "$FHVERSION" == "28"])
-AM_CONDITIONAL([FH_SHARED], [test "$FHSHARED" == "YES"])
-AM_CONDITIONAL([FH_28], [test "$FHSHARED" == "NO"])
+AC_SUBST(FHVERSION)
 AC_SUBST(FEYNHIGGS_DIR)
 AC_SUBST(FEYNHIGGS_LIBS)
 AC_SUBST(FEYNHIGGS_LDFLAGS)
@@ -632,21 +631,26 @@ AM_CONDITIONAL([WITH_FEYNHIGGS], [test "x$HAS_FEYNHIGGS" == "xyes"])
 ])
 
 
-
 dnl #### check, which fortran compiler we are using #####
 AC_DEFUN([VBFNLO_CHECK_FC],
 [
   AC_MSG_CHECKING([which Fortran compiler we are using])
 
+  dnl TODO: rewrite with the right autotools functions
   check_g77=`echo $FC | grep g77`
-  check_gfortran=`echo $FC | grep gfortran`
+  check_gfortran=`echo $FC | grep gfortran || echo $FC | grep mpifort`
   check_ifort=`echo $FC | grep ifort`
 
   if test -n "$check_g77" ; then
      AC_MSG_ERROR([g77 is no longer supported by VBFNLO. Please use gfortran or ifort!])
   elif test -n "$check_gfortran" ; then
+	 GFORTRAN_VERSION="`$FC -dumpversion`"
+	 AS_VERSION_COMPARE([${GFORTRAN_VERSION}], [4.2], 
+		 AC_MSG_ERROR("You need gfortran at version at least 4.2 to compile VBFNLO. Please update gfortran or use ifort.")
+	 , [], [])
+
      VBFFC="gfortran"
-     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none -ffree-line-length-none"
+     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none -ffree-line-length-none -fimplicit-none -fbacktrace"
      GFORTRAN_48_FIX_LOOPS="-fautomatic"
      GFORTRAN_48_FIX_GGF="-O1"
   elif test -n "$check_ifort" ; then
@@ -654,12 +658,13 @@ AC_DEFUN([VBFNLO_CHECK_FC],
      dnl for ifort the line length for free-format source files (.F90/.f90) is per default unlimited.
      dnl -extend_source allows line lengths in fixed-form files (.F/.f) of 132 chars.
      dnl in ifort: max. 511 continuation lines for fixed-form, 255 continuation lines for free-form
-     AM_FCFLAGS="$AM_FCFLAGS -save -extend_source"
+     AM_FCFLAGS="$AM_FCFLAGS -save -extend_source -traceback"
      GFORTRAN_48_FIX_LOOPS="-auto"
      GFORTRAN_48_FIX_GGF="-O1"
   else
      VBFFC="unrecognized, assuming gfortran behaviour"
-     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none -ffree-line-length-none"
+     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none -ffree-line-length-none -fimplicit-none -fbacktrace"
+
      GFORTRAN_48_FIX_LOOPS="-fautomatic"
      GFORTRAN_48_FIX_GGF="-O1"
   fi
@@ -691,55 +696,21 @@ AC_MSG_RESULT([$enable_madgraph])
 AM_CONDITIONAL(WITH_MADGRAPH,[test "x$enable_madgraph" = "xyes"])
 ])
 
-dnl check for svnversion
+dnl check for git checkout
 
 AC_DEFUN([VBFNLO_VERSIONSTRING],
 [
-if test -d $srcdir/.svn -o -d $srcdir/.git; then
-        AC_CHECK_PROG(have_svnversion,[svnversion],[yes],[no])
-fi
-AM_CONDITIONAL(USE_SVNVERSION,[test "x$have_svnversion" = "xyes"])
-])
-
-dnl check for debugging mode and set compiler flags
-
-AC_DEFUN([VBFNLO_SET_FLAGS],
-[
-AC_MSG_CHECKING([for debugging mode])
-AC_ARG_ENABLE(debug,
-        AC_HELP_STRING([--enable-debug],[--enable-debug to compile with debug symbols]),
-        [],
-        [enable_debug=no]
-        )
-AC_MSG_RESULT([$enable_debug])
-AM_CONDITIONAL(VBFNLO_DEBUG,[test "x$enable_debug" = "xyes"])
-
-
-if test "x$enable_debug" == "xyes" ; then
-  AM_FCFLAGS="$AM_FCFLAGS -g -I\$(top_builddir)/include -O2"
-  AM_CPPFLAGS="$AM_CPPFLAGS -I\$(top_builddir)/include"
-  AM_CXXFLAGS="$AM_CXXFLAGS -g -fno-inline"
+AC_CHECK_PROG(have_git,[git],[yes],[no])
+AC_MSG_CHECKING([whether a git version string is available])
+if test -e $srcdir/.git; then
+    if test x"$have_git" != x"yes" ; then
+        AC_MSG_ERROR([Need git installed if working with a git checkout (.git is present).])
+    fi
 else
-  AM_FCFLAGS="$AM_FCFLAGS -I\$(top_builddir)/include -O2"
-  AM_CPPFLAGS="$AM_CPPFLAGS -I\$(top_builddir)/include -DNDEBUG" 
+    have_git="no"
 fi
-  AM_LDFLAGS="$AM_LDFLAGS $LDFLAGS $ROOTLDFLAGS $GSLLDFLAGS $LHAPDF_LDFLAGS $HEPMCLDFLAGS $LOOPTOOLS_LDFLAGS $FEYNHIGGS_LDFLAGS" 
-
-  AC_SUBST(AM_CPPFLAGS)
-  AC_SUBST(AM_CXXFLAGS)
-  AC_SUBST(AM_FCFLAGS)
-  AC_SUBST(AM_LDFLAGS)
-
-  F77=$FC
-  AM_FFLAGS=$AM_FCFLAGS
-  AC_SUBST(F77)
-  AC_SUBST(FFLAGS)
-  AC_SUBST(AM_FFLAGS)
-
-  AM_CONDITIONAL(WITH_LOOPS,[test "x$enable_NLO" == "xyes" -o "$ggf" -o "$diboson" -o "$all" -o "$all_except_hexagons"])
-
+AC_MSG_RESULT([$have_git])
 ])
-
 
 dnl set naming conventions for Fortran-C linking
 
@@ -755,6 +726,61 @@ AC_DEFUN([VBFNLO_CFORTRANLINK],
   FCFLAGS=$oldfcflags
 ])
 
+dnl check for debugging mode and set compiler flags
+
+AC_DEFUN([VBFNLO_SET_FLAGS],
+[
+
+  if (test "x$VBFFC" = "xgfortran"); then
+    AM_FCFLAGS="$AM_FCFLAGS -J\$(top_builddir)/include"
+  elif (test "x$VBFFC" = "xifort"); then
+    AM_FCFLAGS="$AM_FCFLAGS -Wc,-module,\$(top_builddir)/include"
+  fi
+
+AC_MSG_CHECKING([for debugging mode])
+AC_ARG_ENABLE(debug,
+        AC_HELP_STRING([--enable-debug],[--enable-debug to enable more compile warnings]),
+        [],
+        [enable_debug=no]
+        )
+AC_MSG_RESULT([$enable_debug])
+AM_CONDITIONAL(VBFNLO_DEBUG,[test "x$enable_debug" = "xyes"])
+
+
+if test "x$enable_debug" == "xyes" ; then
+  AM_FCFLAGS="$AM_FCFLAGS -Wall -Wextra"
+  AM_CPPFLAGS="$AM_CPPFLAGS -Wall -Wextra"
+  AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wextra"
+fi
+  AM_FCFLAGS="$AM_FCFLAGS -g -I\$(top_builddir)/include -O2"
+  AM_CPPFLAGS="$AM_CPPFLAGS -g -I\$(top_builddir)/include"
+  AM_CXXFLAGS="$AM_CXXFLAGS -g"
+  AM_LDFLAGS="$AM_LDFLAGS $LDFLAGS $ROOTLDFLAGS $GSLLDFLAGS $LHAPDF_LDFLAGS $HEPMCLDFLAGS $LOOPTOOLS_LDFLAGS $FEYNHIGGS_LDFLAGS" 
+
+  AC_SUBST(AM_CPPFLAGS)
+  AC_SUBST(AM_CXXFLAGS)
+  AC_SUBST(AM_FCFLAGS)
+  AC_SUBST(AM_LDFLAGS)
+
+  AC_SUBST([F77],[$FC])
+  AC_SUBST([FFLAGS],[$FCFLAGS])
+  AC_SUBST([AM_FFLAGS],[$AM_FCFLAGS])
+
+  AM_CONDITIONAL(WITH_LOOPS,[test "x$enable_NLO" == "xyes" -o "$ggf" -o "$diboson" -o "$all" -o "$all_except_hexagons"])
+])
+
+
+dnl check for presence of pdflatex for Manual
+
+AC_DEFUN([VBFNLO_CHECK_LATEX],
+[
+  AC_CHECK_PROG(PDFLATEX, pdflatex, pdflatex)
+  if test -z "$PDFLATEX"; then
+    AC_MSG_WARN([Unable to create PDF version of the user manual.])
+  fi
+  AM_CONDITIONAL([HAVE_PDFLATEX], test -n "$PDFLATEX")
+])
+
 
 AC_DEFUN([VBFNLO_SUMMARY],
 [
@@ -765,7 +791,9 @@ if test "x$with_LOOPTOOLS" == "x" ; then
   with_LOOPTOOLS="no"
 fi
 if test "x$with_FEYNHIGGS" == "x" ; then
-  with_FEYNHIGGS="no"
+  with_FEYNHIGGSversion="no"
+else
+  with_FEYNHIGGSversion="$with_FEYNHIGGS (version $FHSTRING)"
 fi
 if test "x$with_hepmc" == "x" ; then
   with_hepmc="no"
@@ -780,16 +808,16 @@ echo "  $enable_processes"
 echo ""
 echo "  NLO QCD           $enable_NLO"
 echo "  KK resonances     $enable_kk"
-echo "  Spin2 resonances  $enable_spin2"
-echo "  Debug symbols     $enable_debug"
+echo "  Compile warnings  $enable_debug"
 echo "  Quad precision    $enable_quad"
 if test "x$enable_madgraph" = "xyes" ; then
 echo "  MadGraph code     included"
 fi
+echo "  MPI               $enable_MPI"
 echo ""
 echo "  LHAPDF            $with_LHAPDF"
 echo "  LOOPTOOLS         $with_LOOPTOOLS"
-echo "  FEYNHIGGS         $with_FEYNHIGGS"
+echo "  FEYNHIGGS         $with_FEYNHIGGSversion"
 echo "  ROOT              $with_root"
 echo "  GSL               $with_gsl"
 echo "  HEPMC             $with_hepmc"

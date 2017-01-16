@@ -59,7 +59,7 @@
 *
 *	local variables
 *
-	integer i,j,k,ier0,ier1,ier2,inx43(6,4),sgn43(6,4),i2p(5:8,5:8),
+	integer i,j,k,ier0,ier1,inx43(6,4),sgn43(6,4),i2p(5:8,5:8),
      +		isgnsa,ii4(6)
 	logical lsave1,lsave2
 	DOUBLE PRECISION a,xpi3(6),xlosn,dl3qi(7),xmax,vgl,xnul

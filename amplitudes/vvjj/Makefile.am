@@ -3,7 +3,6 @@ libvbf_la_SOURCES = \
 toza.F \
 toza_anomal.F \
 qqzaqq.F\
-tozz_temp.F \
 m2s_qqwqq.F   \
 qqwpzqq.F   \
 qqzzqqj.F        \
@@ -52,7 +51,6 @@ qqwmaqqj.F \
 towa.F \
 towa_anomal.F
 
-if WITH_SPIN2 
 libvbf_la_SOURCES += \
 toww_spin2.F \
 towz_spin2.F \
@@ -67,8 +65,6 @@ qqsp2zzqq.F  \
 qqsp2zzqqj.F \
 toww_Hres.F \
 tozz_Hres.F
-endif
-
 
 if WITH_NLO
 libvbf_la_SOURCES += \
@@ -124,10 +120,6 @@ endif
 
 if WITH_NLO
 libvbf_la_FFLAGS += -DWITH_NLO
-endif
-
-if WITH_SPIN2
-libvbf_la_FFLAGS += -DWITH_SPIN2
 endif
 
 if WITH_MADGRAPH

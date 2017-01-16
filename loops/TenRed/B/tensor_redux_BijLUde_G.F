@@ -133,7 +133,6 @@ c m1 or m2 = 0
      &                         -12d0*m0m1*(m0sq+m1sq)*DerB1R+1d0)
 
 
-
           BijR(1,2)= Dble(B12(1,2))
           BijR(2,2)= Dble(B12(2,2))
 
@@ -142,9 +141,7 @@ c m1 or m2 = 0
           BijI(2,2)= DImag(B12(2,2))
 
 
-
          endif
-       
 
 
        endif

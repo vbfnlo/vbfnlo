@@ -126,7 +126,6 @@ c      with upper and lower indices:
       p1p2 = p1(1)*p2(1)-p1(2)*p2(2)-p1(3)*p2(3)-p1(4)*p2(4)
 
 
-
       do i = 1,4
          do j = 1,4
             do k = 1,4

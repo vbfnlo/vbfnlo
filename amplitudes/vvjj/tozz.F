@@ -11,7 +11,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
       logical debug
       parameter (debug=.false.)
 
@@ -62,7 +62,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER I,MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c
@@ -250,7 +250,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
       
 
 	! possible lepton helicities:
@@ -293,7 +293,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER I,MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -467,9 +467,8 @@ c ------------------------------------------------------------
 
 	
 	call WWtoLL1(idb,idl,Q,v,lsign(1,i),wll(0,0))
-	
-	
-		
+
+
 	end
 		
 c ------------------------------------------------------------	
@@ -508,7 +507,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, MU, NU
+      INTEGER I, MU, NU
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -629,7 +628,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, MU, NU
+      INTEGER I, MU, NU
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -688,9 +687,8 @@ C ----------
       CALL IOVXXX(W(1,4   ),W(1,3   ),W(1,6   ),GZN ,AMP(2   ))            
       
       wll(mu,nu) = -AMP(   1)-AMP(   2)
-      
-      
-        
+
+
 	 enddo !nu
       enddo !mu
 
@@ -709,7 +707,7 @@ c ------------------------------------------------------------
       complex*16 az(0:3,0:3)
       complex*16 za(0:3,0:3)
       complex*16 zz(0:3,0:3)
-      integer lsign(3:6,4),h,ll,mu,nu
+      integer lsign(3:6,4),h,ll
       
 
 	! possible lepton helicities:
@@ -754,7 +752,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu,nu
+      INTEGER I, mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -929,7 +927,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -1102,7 +1100,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -1283,7 +1281,7 @@ c ------------------------------------------------------------
       complex*16 az(0:3,0:3)
       complex*16 za(0:3,0:3)
       complex*16 zz(0:3,0:3)
-      integer lsign(3:6,4),h,ll,mu,nu
+      integer lsign(3:6,4),h,ll
       
 
 	! possible lepton helicities:
@@ -1329,7 +1327,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu,nu
+      INTEGER I, mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -1436,7 +1434,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -1553,7 +1551,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -1701,7 +1699,7 @@ c ------------------------------------------------------------
         complex*16 za(0:3,0:3)
 c        complex*16 zan(0:3,0:3)
         complex*16 zz(0:3,0:3)
-	integer lsign(2,2),i,ll,mu,nu
+	integer lsign(2,2),i,ll,nu
       
 c	data (lsign(ll,1),ll=1,2) /  1,  1/
 c	data (lsign(ll,2),ll=1,2) / -1, -1/
@@ -1762,7 +1760,7 @@ C
 C    
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -1882,7 +1880,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -2001,7 +1999,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -2084,7 +2082,6 @@ C ----------
       end
 
 
-
 c ------------------------------------------------------------	
        
       subroutine ZZtoLL1(idb,idl,Q,v,lsign,zz)
@@ -2121,7 +2118,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -2258,7 +2255,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -2332,7 +2329,7 @@ c ------------------------------------------------------------
 
       REAL*8 P(0:3,2:5)
       complex*16 a4l(0:5),z4l(0:5)
-      integer lsign(2:5,4),h,ll,mu   
+      integer lsign(2:5,4),h,ll   
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=2,5) / -1, -1, -1, -1/  !h=1
@@ -2376,7 +2373,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -2472,7 +2469,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -2554,7 +2551,7 @@ c ------------------------------------------------------------
 
       REAL*8 P(0:3,2:5)
       complex*16 a4l(0:5),z4l(0:5)
-      integer lsign(2:5,4),h,ll,mu   
+      integer lsign(2:5,4),h,ll   
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=2,5) / -1, -1, -1, -1/  !h=1 
@@ -2598,7 +2595,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -2692,7 +2689,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -2748,7 +2745,6 @@ C ----------
 
       return
       END
-      
 
 
 

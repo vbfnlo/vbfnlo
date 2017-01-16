@@ -15,7 +15,7 @@ c*******************************************************************************
       real*8 eps
       parameter (eps=1d-7)
       real*8 m,musq
-      complex*16 rslt(0:2)
+
       logical UseAVH, UseFF
       integer ier
       parameter (UseAVH=.false.)
@@ -54,7 +54,7 @@ c*******************************************************************************
       real*8 eps
       parameter (eps=1d-7)
       real*8 m,musq
-      complex*16 rslt(0:2)
+
       integer id
       logical UseAVH, UseFF
       integer ier
@@ -89,7 +89,6 @@ c*******************************************************************************
       end
 
 
-
       function B0finG(m0,m1,p1sq,musq)
       implicit none
       complex*16 B0finG,B0fin
@@ -99,7 +98,7 @@ c*******************************************************************************
       External B0finG4,B0finG5,B0finG6,B2i1e,B1i1e,B1i0e,B0t1
       real*8 m0,m1,p1sq,musq
       real*8 eps
-      complex*16 rslt(0:2)
+
       parameter (eps=1d-7)
       logical NotAVH
       parameter (NotAVH=.true.)
@@ -218,7 +217,6 @@ c            endif
       end
 
 
-
       function B0finGDiv(m0,m1,p1sq,musq,id)
       implicit none
       complex*16 B0finGDiv,B0finDiv
@@ -228,7 +226,7 @@ c            endif
       External B0finG4Div,B0finG5Div,B0finG6Div,B2i1e,B1i1e,B1i0e,B0t1Div
       real*8 m0,m1,p1sq,musq
       real*8 eps
-      complex*16 rslt(0:2)
+
       parameter (eps=1d-7)
       integer id
       logical NotAVH
@@ -354,7 +352,7 @@ c            endif
       complex*16 C0fin,C0finG1M,C0finG1MPrime,C0finG21,C0finG2M,I3point
       External C0fin,C0finG1M,C0finG1MPrime,C0finG21,C0finG2M,I3point
       real*8 eps
-      complex*16 rslt(0:2)
+
       parameter (eps=1d-7)
       logical UseAVH, UseFF
       real*8 xpi(6)
@@ -451,8 +449,6 @@ c                   0, 0, 0
       end
 
 
-
-
       function  C0finGDiv(m0,m1,m2,s1,s2,s3,musq,id)
       IMPLICIT NONE
       complex*16 C0finGDiv
@@ -462,7 +458,7 @@ c                   0, 0, 0
       External C0finDiv,C0finG1MDiv,C0finG1MPrimeDiv
       External C0finG2Div,C0finG2MDiv
       real*8 eps
-      complex*16 rslt(0:3)
+
       parameter (eps=1d-7)
       integer id
       logical NotAVH
@@ -546,12 +542,12 @@ c                   0, 0, 0
       real*8 m0s,m1s,m2s,m3s
       complex*16 D0fin,D0t1,D0t2,D0t3,D04
       External D0fin,D0t1,D0t2,D0t3,D04
-      complex*16 rslt(0:2)
+
       real*8 eps
       parameter (eps=1d-6)
       logical UseAVH, UseFF
       real*8 xpi(13)
-      integer i,ier
+      integer ier
       parameter (UseAVH=.false.)
       parameter (UseFF=.true.)
 c MISSING THIS ONE!
@@ -813,11 +809,7 @@ cFC                 print*,p1,p2,p3,p4,s12,s23,m0s,m1s,m2s,m3s,musq
                endif
            endif
          endif
-       endif  
-
-   
-
-
+       endif
 
 
       return
@@ -825,10 +817,6 @@ cFC                 print*,p1,p2,p3,p4,s12,s23,m0s,m1s,m2s,m3s,musq
 
       return
       end
-
-
-
-
 
 
       function D0finGDiv(m0,m1,m2,m3,s12,s23,p1,p2,p3,p4,musq,id)
@@ -839,7 +827,7 @@ cFC                 print*,p1,p2,p3,p4,s12,s23,m0s,m1s,m2s,m3s,musq
       complex*16 D0finDiv,D0t1,D0t2,D0t3,D04
       External D0finDiv,D0t1,D0t2,D0t3,D04
       real*8 eps
-      complex*16 rslt(0:2)
+
       parameter (eps=1d-6)
       integer id
       logical NotAVH
@@ -1086,11 +1074,8 @@ c                 print*,p1,p2,p3,p4,s12,s23,m0s,m1s,m2s,m3s,musq
       endif
 
 
-
-
       return
       end
-
 
 
 c
@@ -1118,8 +1103,6 @@ c --------------------------------------
       end
 
 
-
-
 c --------------------------------------
 c   A0finG1=A0finG(0,musq)                                 
 c --------------------------------------
@@ -1129,7 +1112,6 @@ c --------------------------------------
       integer id
       A0finG1Div = (0.d0,0.d0)
       end
-
 
 
 c --------------------------------------
@@ -1156,8 +1138,6 @@ c --------------------------------------
       end
 
 
-
-
 c --------------------------------------
 c   B0finG5=B0finG(M1,M2,s,musq)                                 
 c --------------------------------------
@@ -1182,8 +1162,6 @@ c --------------------------------------
       end
 
 
-
-
 c --------------------------------------
 c   B0finG5=B0finG(M1,M2,s,musq)                                 
 c --------------------------------------
@@ -1197,9 +1175,6 @@ c --------------------------------------
       B0finG5Div = 0d0
       endif
       end
-
-
-
 
 
 c --------------------------------------
@@ -1223,8 +1198,6 @@ c --------------------------------------
      &        + (g1*Log((g1-1.d0)/g1)-Log(g1-1))
      &        + (g2*Log((g2-1.d0)/g2)-Log(g2-1)) + 2.d0 
       end
-
-
 
 
 c --------------------------------------
@@ -1251,11 +1224,10 @@ c --------------------------------------
       complex*16 Ipi, Ieps 
       parameter(pi=3.14159265358979324d0,
      & Ipi=(0d0,3.14159265358979324d0),Ieps=(0d0,1d-38))
-      double precision M1,s,musq,msq
+      double precision M1,musq,msq
       msq = M1*M1
       B0finG6 = -dLog(msq/musq)
       end
-
 
 
 c --------------------------------------
@@ -1285,7 +1257,6 @@ c --------------------------------------
       B0finG2Div = 0d0
       endif 
       end
-
 
 
 c --------------------------------------
@@ -1367,19 +1338,6 @@ c                     0,0,0
       
   
           end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 c --------------------------------------
@@ -1464,10 +1422,6 @@ c                     0,0,0
           end
 
 
-
-
-
-
 c --------------------------------------
 c   C0finG1M=C0finG(0d0,0d0,m2,s1,s2,s3,musq)                                 
 c --------------------------------------
@@ -1547,9 +1501,7 @@ c              0,0,M; 0,0,0
                   endif   
                endif 
 
-          end     
-
-
+          end
 
 
 c --------------------------------------
@@ -1632,11 +1584,7 @@ c              0,0,M; 0,0,0
                   endif   
                endif 
 
-          end     
-
-
-
-
+          end
 
 
 c --------------------------------------
@@ -1704,10 +1652,6 @@ c              0,M1,0; 0,0,0
                endif 
 
           end
-
-
-
-
 
 
 c --------------------------------------
@@ -1921,13 +1865,12 @@ ccccc COMPLEX MASSES CCCCCCCCCCCCCCCCCCCCCCCCCCCc
       end
 
 
-
       function B0finG_c(m0,m1,p1,musq)
       implicit none
       complex*16 B0finG_c
       complex*16 m0,m1 ! mass squared
       real*8 eps,musq,p1
-      complex*16 p1c
+
       complex*16 rslt(0:2)
       parameter (eps=1d-7)
       logical NotAVH
@@ -1952,13 +1895,12 @@ ccccc COMPLEX MASSES CCCCCCCCCCCCCCCCCCCCCCCCCCCc
       end
 
 
-
       function B0finGDiv_c(m0,m1,p1,musq,id)
       implicit none
       complex*16 B0finGDiv_c
       complex*16 m0,m1 ! mass squared
       real*8 eps,musq,p1
-      complex*16 p1c
+
       complex*16 rslt(0:2)
       parameter (eps=1d-7)
       integer id
@@ -2018,8 +1960,6 @@ ccccc COMPLEX MASSES CCCCCCCCCCCCCCCCCCCCCCCCCCCc
       end
 
 
-
-
       function  C0finGDiv_c(m0,m1,m2,s1,s2,s3,musq,id)
       IMPLICIT NONE
       complex*16 C0finGDiv_c
@@ -2069,7 +2009,6 @@ ccccc COMPLEX MASSES CCCCCCCCCCCCCCCCCCCCCCCCCCCc
       parameter (NotAVH=.true.)
 
 
-
       if(NotAVH) then
          Print*, "Not program"        
       else
@@ -2095,10 +2034,6 @@ ccccc COMPLEX MASSES CCCCCCCCCCCCCCCCCCCCCCCCCCCc
       end
 
 
-
-
-
-
       function D0finGDiv_c(m0,m1,m2,m3,s12,s23,p1,p2,p3,p4,musq,id)
       IMPLICIT NONE
       complex*16 D0finGDiv_c
@@ -2112,7 +2047,6 @@ ccccc COMPLEX MASSES CCCCCCCCCCCCCCCCCCCCCCCCCCCc
       integer id
       logical NotAVH
       parameter (NotAVH=.true.)
-
 
 
       if(NotAVH) then
@@ -2139,8 +2073,6 @@ ccccc COMPLEX MASSES CCCCCCCCCCCCCCCCCCCCCCCCCCCc
          D0finGDiv_c = rslt(id) 
          
       endif
-
-
 
 
       return

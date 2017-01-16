@@ -92,7 +92,6 @@ c*******************************************************************************
      -           B24R,B24I, B34R, B34I
 
 
-
 ccccccccccccccccccccc For QUAD precission ccccccccccccccccccccccccc
        Real*16 musq_QUAD, dotrr_QUAD 
        External dotrr_QUAD 
@@ -326,9 +325,6 @@ cMK             enddo
 cMK
        endif
 
-          
-
-
 
 c      do i=0,3
 c      if(abs(ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)).gt.1d-14) then
@@ -387,9 +383,7 @@ c            stop
        s14_QUAD = (p1sq_QUAD +p4sq_QUAD+ 2*p1p4_QUAD) 
        s23_QUAD = (p2sq_QUAD +p3sq_QUAD+ 2*p2p3_QUAD) 
        s24_QUAD = (p2sq_QUAD +p4sq_QUAD+ 2*p2p4_QUAD) 
-       s34_QUAD = (p3sq_QUAD +p4sq_QUAD+ 2*p3p4_QUAD) 
-      
-
+       s34_QUAD = (p3sq_QUAD +p4sq_QUAD+ 2*p3p4_QUAD)
 
 
        p1sq=p1sq_QUAD 
@@ -407,11 +401,7 @@ c            stop
        s14=s14_QUAD 
        s23=s23_QUAD 
        s24=s24_QUAD 
-       s34=s34_QUAD 
-
-
-  
-
+       s34=s34_QUAD
 
 
         do i=0,3
@@ -422,7 +412,6 @@ c            stop
            enddo
 
 
-
           If(abs(musq-s12).lt.10d-7) then
           musq_QUAD=s12_QUAD
           elseIf(abs(musq-s23).lt.10d-7) then
@@ -430,9 +419,6 @@ c            stop
           else
           musq_QUAD=musq
           endif
-
-
-
 
 
 cfc       p1sq = dotrr(p1,p1)
@@ -3484,13 +3470,6 @@ c*******************************************************************************
       print*,mup3mup4
 
 
-
-
-
-
-
-
-
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************
@@ -3608,8 +3587,6 @@ c*******************************************************************************
 
        print*, "ABS resultn(2)",resultn(2)
        endif
-
-
 
 
        resultn(2) = mup2mup4*p2mup3*F(136)+p1mup4*p2mup2*p2mup3*F(137)

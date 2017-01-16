@@ -1,5 +1,6 @@
 ***********************************************************************
-      SUBROUTINE init_gluonfusion()
+      SUBROUTINE init_gluonfusion
+          use readinput
 *----------------------------------------------------------------------
 c... author   : Michael Kubocz
 c... modified : 03.03.2011
@@ -53,7 +54,7 @@ c... Mixing between different Higgs bosons
       cos_Alpha = CAtree
 ***********************************************************************
 
- 1    write(6,*)'--------- PROCESS PARAMETERS IN GLUON FUSION ---------'
+      write(6,*)'--------- PROCESS PARAMETERS IN GLUON FUSION ---------'
       write(6,*)''
       if (abs(xmh-2d0*m_top) .le. 1d0) then
         write(6,*)' -->                  ATTENTION                  <--'
@@ -360,5 +361,5 @@ c... Mixing between different Higgs bosons
       write(6,*) '-----------------------------------------------------'
 
      
- 2    END
+      END
 

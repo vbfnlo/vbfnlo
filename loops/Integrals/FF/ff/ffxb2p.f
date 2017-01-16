@@ -80,7 +80,7 @@
 	DOUBLE PRECISION xmax,absc,xlam,slam,alp,bet,xmxp,vbfdfflo3,xlo3,
      +		xmxsav,xnoe,xnoe2,xlogmm,vbfdfflo1,rloss,
      +		qiDqj(3,3)
-	DOUBLE COMPLEX cs(16),cc,csom,clo2,clo3,vbfzfflo2,vbfzfflo3
+	DOUBLE COMPLEX cs(16),cc,csom,clo3,vbfzfflo3
 *
 *	common blocks
 *
@@ -300,7 +300,7 @@
 		if ( lwarn ) then
 		    call vbfffwarn(226,ier1,absc(cb2i(2)),xmax)
 		endif
-  110		continue
+     		continue
 		if ( lwrite ) print *,'cb2i(2)+= ',cb2i(2)
 	    endif
 	    cb2i(1) = DBLE(1/(3*xp)) * cb2i(1)

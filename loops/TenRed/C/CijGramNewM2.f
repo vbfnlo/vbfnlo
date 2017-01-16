@@ -11,7 +11,7 @@ c*******************************************************************************
       Implicit none
       integer k,l,jj
       Real*8 p1sq,p2sq,s12,p1p2,p1sq2,p1sq3,p2sq2,p2sq3,s122
-      Real*8 m0,m1,m2,m0sq,m1sq,m2sq
+      Real*8 m0,m0sq,m1sq,m2sq
       real*8 ZMax,TX1,TX2,det3
       Complex*16 C30,Cij(30,9)
       Complex*16 S2000000
@@ -39,7 +39,7 @@ c*******************************************************************************
       Complex*16 S200,S21(2),S2001(2)
       Complex*16 S2h001(2)
       Complex*16 S20000,S200001(2)
-      Complex*16 S2h0000,S2h00001(2)
+      Complex*16 S2h00001(2)
       Complex*16 S2h0000001(2),S20000001(2)
       Complex*16 auxC30,tempC30
       Complex*16 auxC300,tempC300
@@ -3136,7 +3136,6 @@ c          if(accuracyC(4,ac).lt.1d-16) goto 500
            Cij(9,4)=tempC30000
 
 
-
        if(order.eq.8) goto 500
 c                Iteration9
 c                Step1
@@ -4137,7 +4136,6 @@ c          if(accuracyC(4,ac).lt.1d-16) goto 500
            Cij(7,4)=temp002(2,2)
            Cij(8,4)=temp002(2,1)
            Cij(9,4)=tempC30000
-
 
 
        if(order.eq.9) goto 500
@@ -7400,7 +7398,5 @@ c FC %           Cij(48,12)=temp00000000002(2,1)
 c FC %           Cij(49,12)=tempC3000000000000
 
 
-
-           
       return
       End

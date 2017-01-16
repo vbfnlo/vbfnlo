@@ -67,7 +67,6 @@ c or 2*hel1 + hel2 -> 3,1,-1,-3
         end
 
 
-
        subroutine PenBox67T(p1,p2,p3,p4,p5,barpsi_p1,psi_p5,barpsi_p2,p
      &   si_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,resultbo
      &   rn,Div)
@@ -94,8 +93,6 @@ c or 2*hel1 + hel2 -> 3,1,-1,-3
 
         endif
         end
-
-
 
 
        subroutine PenBox76T(p1,p2,p3,p4,p5,barpsi_p1,psi_p5,barpsi_p2,p

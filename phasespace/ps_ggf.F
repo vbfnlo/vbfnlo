@@ -28,7 +28,7 @@ C           P(*,N)    4-vectors for the N jets, assumed massless
 C
 C  OUTPUT:  kn, qn, pn  = new 4-vectors with azimuthal angle difference
 c                     of pn(*,1) and pn(*,2) determined by R
-      REAL*8 PT(2),PHI(2),PNJ(0:4), pcm(0:3)
+      REAL*8 PT(2),PHI(2), pcm(0:3)
       INTEGER MU
 
 C set first jet momentum  = p(*,1)

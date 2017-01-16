@@ -78,10 +78,10 @@ c$$$      end if
       path=GetPdfsetsPath()
       if (mstw_nlo .eq. 0) then
          datafile = 'mstw2008lo'
-         prefix = path(1:len_trim(path))//"/"//datafile
+         prefix = trim(path)//"/"//datafile
       else if (mstw_nlo .eq. 1) then
          datafile = 'mstw2008nlo'
-         prefix = path(1:len_trim(path))//"/"//datafile
+         prefix = trim(path)//"/"//datafile
       end if
 
 

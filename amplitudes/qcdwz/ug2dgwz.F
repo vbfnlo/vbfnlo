@@ -13,11 +13,15 @@ c    ug2dgwzBorn
 c       Amplitude as needed for Born process
 c       res(0:2): amplitude for specified hel, index 1 and 2 for colstr for LHA output
       SUBROUTINE ug2dgwzCSNew(P,kin,id,fsign,nbos,lephel, usePreCalc,resDiag) ! sum over glu hel if ghel ==0
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "common.inc"
 #include "brakets.inc"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
       real*8 P(0:3,max_p,max_kin), resDiag(0:2,0:2,0:2), res(0:2)
       integer kin, id(4),fsign(4),nbos,lephel, ikin
       logical lnlo,usePreCalc,lusePreCalc
@@ -30,12 +34,14 @@ c       res(0:2): amplitude for specified hel, index 1 and 2 for colstr for LHA 
       real*8 momV(0:4,7),momW(0:4,7),momWV(0:4,7)
       common /qcdwznew/ epsW, epsWV, epsV,epsA,epsZ,momV,momW,momWV
 
+      complex*16 scres(0:2,2), amph(2,-1:1,-1:1), im
+      parameter (im = (0d0,1d0))
       complex*16  amp(2,2,2),psitemp(2,-1:1)
-      complex*16 s1c, dotcc, dotrc,s1r
-      real*8 mass2,dotrr,mjj2
+      complex*16 s1c,s1r
+      real*8 dotrr,mjj2
       
-      integer i,j,h,mu,nu, pol1,pol2,pol(2), tempi2(2), lepkin,colstr,qtype(2),idg1,idg2
-      integer minhel, maxhel, glu1,glu2
+      integer i,j,h,mu, pol1,pol2,pol(2), tempi2(2), lepkin,qtype(2),idg1,idg2
+      integer glu1,glu2
       lnlo = .true.
       ikin = kin
       lusePreCalc = usePreCalc
@@ -215,12 +221,27 @@ c multiply coupl. const. and get |amp|^2
         amp(2,pol1,pol2) = amp(2,pol1,pol2)*GG(1)**2
 !       print*,amp(1,pol1,pol2),amp(2,pol1,pol2)
         if (lnlo) then
-          resDiag(0,pol1,pol2) = dble(16d0*(amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))+amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
-     &                              -4d0*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))/3d0
-          resDiag(1,pol1,pol2) = dble(amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))-8d0*amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2))
-     &                              +2d0*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
-          resDiag(2,pol1,pol2) = dble(-amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))-amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2))
-     &                              -20d0*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))/9d0
+          if (ldoblha) then
+            resDiag(0,pol1,pol2) = dble(
+     &        blha_CF**2*blha_CA*                  (amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))
+     &                                             +amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
+     &       -blha_CF*blha_CA*(blha_CA-2d0*blha_CF)*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
+            resDiag(1,pol1,pol2) = dble(
+     &        blha_CF*blha_CA**2*(blha_CA-2d0*blha_CF)/4d0*amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))
+     &       -blha_CF**2*blha_CA**2/2d0*                   amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2))
+     &       +blha_CF*blha_CA**2*(blha_CA-2d0*blha_CF)/2d0*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
+            resDiag(2,pol1,pol2) = dble(
+     &       -blha_CF*(blha_CA-2d0*blha_CF)/4d0*                     (amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))
+     &                                                               +amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
+     &       -blha_CF*blha_CA*(blha_CA-blha_CF)*(blha_CA-2d0*blha_CF)*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
+          else
+            resDiag(0,pol1,pol2) = dble(16d0*(amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))+amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
+     &                                -4d0*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))/3d0
+            resDiag(1,pol1,pol2) = dble(amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))-8d0*amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2))
+     &                                +2d0*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))
+            resDiag(2,pol1,pol2) = dble(-amp(1,pol1,pol2)*dconjg(amp(1,pol1,pol2))-amp(2,pol1,pol2)*dconjg(amp(2,pol1,pol2))
+     &                                -20d0*amp(1,pol1,pol2)*dconjg(amp(2,pol1,pol2)))/9d0
+          endif
           resDiag(0,0,0)=resDiag(0,0,0)+resDiag(0,pol1,pol2)
           resDiag(1,0,0)=resDiag(1,0,0)+resDiag(1,pol1,pol2)
           resDiag(2,0,0)=resDiag(2,0,0)+resDiag(2,pol1,pol2)
@@ -233,40 +254,177 @@ c multiply coupl. const. and get |amp|^2
       enddo; enddo ! pol summation
       ! return <1|Tij|2>+<2|Tij|1>, pol1 fixed
       if (lnlo) then
-        do pol1 = 1,2
-          resDiag(0,pol1,0) = 2d0*dble(16d0*(amp(1,pol1,1)*dconjg(amp(1,pol1,2))+amp(2,pol1,1)*dconjg(amp(2,pol1,2)))
-     &                              -2d0*amp(1,pol1,1)*dconjg(amp(2,pol1,2))-2d0*amp(2,pol1,1)*dconjg(amp(1,pol1,2)))/3d0
-          resDiag(1,pol1,0) = 2d0*dble(amp(1,pol1,1)*dconjg(amp(1,pol1,2))-8d0*amp(2,pol1,1)*dconjg(amp(2,pol1,2))
-     &                              +amp(1,pol1,1)*dconjg(amp(2,pol1,2))+amp(2,pol1,1)*dconjg(amp(1,pol1,2)))
-          resDiag(2,pol1,0) = 2d0*dble(-amp(1,pol1,1)*dconjg(amp(1,pol1,2))-amp(2,pol1,1)*dconjg(amp(2,pol1,2))
-     &                              -10d0*amp(1,pol1,1)*dconjg(amp(2,pol1,2))-10d0*amp(2,pol1,1)*dconjg(amp(1,pol1,2)))/9d0
-          resDiag(0,0,pol1) = 2d0*dble(16d0*(amp(1,1,pol1)*dconjg(amp(1,2,pol1))+amp(2,1,pol1)*dconjg(amp(2,2,pol1)))
-     &                              -2d0*amp(1,1,pol1)*dconjg(amp(2,2,pol1))-2d0*amp(2,1,pol1)*dconjg(amp(1,2,pol1)))/3d0
-          resDiag(1,0,pol1) = 2d0*dble(amp(1,1,pol1)*dconjg(amp(1,2,pol1))-8d0*amp(2,1,pol1)*dconjg(amp(2,2,pol1))
-     &                              +amp(1,1,pol1)*dconjg(amp(2,2,pol1))+amp(2,1,pol1)*dconjg(amp(1,2,pol1)))
-          resDiag(2,0,pol1) = 2d0*dble(-amp(1,1,pol1)*dconjg(amp(1,2,pol1))-amp(2,1,pol1)*dconjg(amp(2,2,pol1))
-     &                              -10d0*amp(1,1,pol1)*dconjg(amp(2,2,pol1))-10d0*amp(2,1,pol1)*dconjg(amp(1,2,pol1)))/9d0
-        enddo
+        if (ldoblha) then ! <M,i-|Tij|M,i+>
+c convert cartesian to helicity basis
+          do glu1=1,2
+            amph(glu1,+1,+1) = 
+     &        ( +                     amp(glu1,1,1)
+     &          -im*fsign(2)         *amp(glu1,2,1)
+     &          -im*         fsign(4)*amp(glu1,1,2)
+     &          -   fsign(2)*fsign(4)*amp(glu1,2,2) )/2d0
+            amph(glu1,-1,+1) = 
+     &        ( +                     amp(glu1,1,1)
+     &          +im*fsign(2)*         amp(glu1,2,1)
+     &          -im*         fsign(4)*amp(glu1,1,2)
+     &          +   fsign(2)*fsign(4)*amp(glu1,2,2) )/2d0
+            amph(glu1,+1,-1) = 
+     &        ( +                     amp(glu1,1,1)
+     &          -im*fsign(2)*         amp(glu1,2,1)
+     &          +im*         fsign(4)*amp(glu1,1,2)
+     &          +   fsign(2)*fsign(4)*amp(glu1,2,2) )/2d0
+            amph(glu1,-1,-1) = 
+     &        ( +                     amp(glu1,1,1)
+     &          +im*fsign(2)*         amp(glu1,2,1)
+     &          +im*         fsign(4)*amp(glu1,1,2)
+     &          -   fsign(2)*fsign(4)*amp(glu1,2,2) )/2d0
+          enddo
+
+          scres(:,:) = 0d0
+          do pol1 = -1,1,2
+            scres(0,1) = scres(0,1) 
+     &        + blha_CF**2*blha_CA*(amph(1,+1,pol1)*dconjg(amph(1,-1,pol1))
+     &                             +amph(2,+1,pol1)*dconjg(amph(2,-1,pol1)))
+     &        - blha_CF/2d0       *(amph(1,+1,pol1)*dconjg(amph(2,-1,pol1))
+     &                             +amph(2,+1,pol1)*dconjg(amph(1,-1,pol1)))
+            scres(1,1) = scres(1,1) 
+     &        + blha_CF*blha_CA/4d0*       amph(1,+1,pol1)*dconjg(amph(1,-1,pol1))
+     &        - blha_CF**2*blha_CA**2/2d0* amph(2,+1,pol1)*dconjg(amph(2,-1,pol1))
+     &        + blha_CF*blha_CA/4d0*      (amph(1,+1,pol1)*dconjg(amph(2,-1,pol1))
+     &                                    +amph(2,+1,pol1)*dconjg(amph(1,-1,pol1)))
+            scres(2,1) = scres(2,1) 
+     &        - blha_CF/blha_CA/4d0*          (amph(1,+1,pol1)*dconjg(amph(1,-1,pol1))
+     &                                        +amph(2,+1,pol1)*dconjg(amph(2,-1,pol1)))
+     &        - blha_CF*(blha_CA-blha_CF)/2d0*(amph(1,+1,pol1)*dconjg(amph(2,-1,pol1))
+     &                                        +amph(2,+1,pol1)*dconjg(amph(1,-1,pol1)))
+            scres(0,2) = scres(0,2) 
+     &        + blha_CF**2*blha_CA*(amph(1,pol1,+1)*dconjg(amph(1,pol1,-1))
+     &                             +amph(2,pol1,+1)*dconjg(amph(2,pol1,-1)))
+     &        - blha_CF/2d0       *(amph(1,pol1,+1)*dconjg(amph(2,pol1,-1))
+     &                             +amph(2,pol1,+1)*dconjg(amph(1,pol1,-1)))
+            scres(1,2) = scres(1,2) 
+     &        + blha_CF*blha_CA/4d0*       amph(1,pol1,+1)*dconjg(amph(1,pol1,-1))
+     &        - blha_CF**2*blha_CA**2/2d0* amph(2,pol1,+1)*dconjg(amph(2,pol1,-1))
+     &        + blha_CF*blha_CA/4d0*      (amph(1,pol1,+1)*dconjg(amph(2,pol1,-1))
+     &                                    +amph(2,pol1,+1)*dconjg(amph(1,pol1,-1)))
+            scres(2,2) = scres(2,2) 
+     &        - blha_CF/blha_CA/4d0*          (amph(1,pol1,+1)*dconjg(amph(1,pol1,-1))
+     &                                        +amph(2,pol1,+1)*dconjg(amph(2,pol1,-1)))
+     &        - blha_CF*(blha_CA-blha_CF)/2d0*(amph(1,pol1,+1)*dconjg(amph(2,pol1,-1))
+     &                                        +amph(2,pol1,+1)*dconjg(amph(1,pol1,-1)))
+          enddo 
+        else
+          do pol1 = 1,2
+            resDiag(0,pol1,0) = 2d0*dble(16d0*(amp(1,pol1,1)*dconjg(amp(1,pol1,2))+amp(2,pol1,1)*dconjg(amp(2,pol1,2)))
+     &                                -2d0*amp(1,pol1,1)*dconjg(amp(2,pol1,2))-2d0*amp(2,pol1,1)*dconjg(amp(1,pol1,2)))/3d0
+            resDiag(1,pol1,0) = 2d0*dble(amp(1,pol1,1)*dconjg(amp(1,pol1,2))-8d0*amp(2,pol1,1)*dconjg(amp(2,pol1,2))
+     &                                +amp(1,pol1,1)*dconjg(amp(2,pol1,2))+amp(2,pol1,1)*dconjg(amp(1,pol1,2)))
+            resDiag(2,pol1,0) = 2d0*dble(-amp(1,pol1,1)*dconjg(amp(1,pol1,2))-amp(2,pol1,1)*dconjg(amp(2,pol1,2))
+     &                                -10d0*amp(1,pol1,1)*dconjg(amp(2,pol1,2))-10d0*amp(2,pol1,1)*dconjg(amp(1,pol1,2)))/9d0
+            resDiag(0,0,pol1) = 2d0*dble(16d0*(amp(1,1,pol1)*dconjg(amp(1,2,pol1))+amp(2,1,pol1)*dconjg(amp(2,2,pol1)))
+     &                                -2d0*amp(1,1,pol1)*dconjg(amp(2,2,pol1))-2d0*amp(2,1,pol1)*dconjg(amp(1,2,pol1)))/3d0
+            resDiag(1,0,pol1) = 2d0*dble(amp(1,1,pol1)*dconjg(amp(1,2,pol1))-8d0*amp(2,1,pol1)*dconjg(amp(2,2,pol1))
+     &                                +amp(1,1,pol1)*dconjg(amp(2,2,pol1))+amp(2,1,pol1)*dconjg(amp(1,2,pol1)))
+            resDiag(2,0,pol1) = 2d0*dble(-amp(1,1,pol1)*dconjg(amp(1,2,pol1))-amp(2,1,pol1)*dconjg(amp(2,2,pol1))
+     &                                -10d0*amp(1,1,pol1)*dconjg(amp(2,2,pol1))-10d0*amp(2,1,pol1)*dconjg(amp(1,2,pol1)))/9d0
+          enddo
+        endif
       else
         res(1) = res(1)/(res(1)+res(2))*res(0)
         res(2) = res(0)-res(1)
       endif
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      resDiag(0,0,0)
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      + resDiag(1,0,0)
+     &    )
+          ! 1-3
+          call BLHA_cctree(1,3,
+     &      + resDiag(2,0,0)
+     &    )
+          ! 1-4 = -(CF<> + <12> + <13>)
+          call BLHA_cctree(1,4,
+     &      - ( blha_CF*resDiag(0,0,0)
+     &          + resDiag(1,0,0)
+     &          + resDiag(2,0,0) )
+     &    )
+          ! 2-3 = -(CF<> + <12> + <13>)
+          call BLHA_cctree(2,3,
+     &      - ( blha_CF*resDiag(0,0,0)
+     &          + resDiag(1,0,0)
+     &          + resDiag(2,0,0) )
+     &    )
+          ! 2-4 = (CF-CA)<>+<13>
+          call BLHA_cctree(2,4,
+     &      ( + (blha_CF-blha_CA)*resDiag(0,0,0)
+     &        + resDiag(2,0,0) )
+     &    )
+          ! 3-4 = <12>
+          call BLHA_cctree(3,4,
+     &      + resDiag(1,0,0)
+     &    )
+        else if (blha_amptype(blha_curproc).eq.3) then ! sctree
+          ! 2-1 = <2|12|2>
+          call BLHA_sctree(2,1,
+     &      scres(1,1)
+     &    )
+          ! 2-2 = CA<2|2>
+          call BLHA_sctree(2,2,
+     &      blha_CA*scres(0,1)
+     &    )
+          ! 2-3 = -(CF<2|2> + <2|12|2> + <2|13|2>)
+          call BLHA_sctree(2,3,
+     &      - ( blha_CF*scres(0,1)
+     &          + scres(1,1)
+     &          + scres(2,1) )
+     &    )
+          ! 2-4 = (CF-CA)<2|2> + <2|13|2>
+          call BLHA_sctree(2,4,
+     &      ( + (blha_CF-blha_CA)*scres(0,1)
+     &        + scres(2,1) )
+     &    )
+          ! 4-1 = -(CF<4|4> + <4|12|4> + <4|13|4>)
+          call BLHA_sctree(4,1,
+     &      - ( blha_CF*scres(0,2)
+     &          + scres(1,2)
+     &          + scres(2,2) )
+     &    )
+          ! 4-2 = (CF-CA)<4|4> + <4|13|4>
+          call BLHA_sctree(4,2,
+     &      ( + (blha_CF-blha_CA)*scres(0,2)
+     &        + scres(2,2) )
+     &    )
+          ! 4-3 = <4|12|4>
+          call BLHA_sctree(4,3,
+     &      scres(1,2)
+     &    )
+          ! 4-4 = CA<4|4>
+          call BLHA_sctree(4,4,
+     &      blha_CA*scres(0,2)
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
       end
 
 
-
-
-
-   
-
       SUBROUTINE ug2dggwzOwnAllHelNew(P,id,fsign,nbos,lephel, res) ! sum over glu hel if ghel ==0
+
+      use globalvars, only: ldoblha
+
       implicit none 
 #include "common.inc"
 #include "brakets.inc"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
       real*8 P(0:3,max_p,max_kin), res(0:6)
-      integer kin, id(5),fsign(5),nbos,lephel,ghel2 ,ghel4,ghel5
+      integer id(5),fsign(5),nbos,lephel 
 
       complex*16 epsW(0:3,7),epsWV(0:3,-1:1,7) 
       complex*16 epsV(0:3,-1:1,3:4,-1:1,7) ! ( , mu-hel, u/d , quark-hel), coupl. const to quarks included
@@ -281,12 +439,13 @@ c multiply coupl. const. and get |amp|^2
       real*8 triD(0:4,3,2,2,2),triV(0:4,3,2,2,2) ! 3-gluon polarications (see Nucl Phys B313 560, (5.13-14) indices: triD(mu,i) with j<k, triV(j)
       complex*16 PsiVVG(2,2,3,2),PsiVG(2,2,3,2)
       complex*16 PsiTemp(2,-1:1), amp(6)
-      complex*16 s1c,s1r, dotcc, dotrc, dotcr,temp
+      complex*16 s1r,temp
       real*8 eps3G(0:3,4:6,0:2,0:2,0:2),epsTemp(0:3)
-      real*8 mass2, colsumsq,dotrr,mass2Q
-      integer denom(6),CF(6,6),idg(3)
+      real*8 mass2, colsumsq,dotrr
+      integer denom(6),idg(3)
+      double precision CF(6,6)
       
-      integer i,j,mu,nu, tempi2(2), lepkin,qtype(2),ggsign(3:5),hel,pol1,pol2,pol3,pol0,pol(0:3)
+      integer i,j,mu, lepkin,qtype(2),ggsign(3:5),pol1,pol2,pol3,pol(0:3)
       integer ig(3),perm, permutations(3,6)
 
 c permutations convenient with Madgraph u g -> e+ ve d g mu+ mu- g  
@@ -488,6 +647,19 @@ c g(g1,g2,g3) amplitudes
         amp(perm) = amp(perm) * G**3
       enddo ! perm
 
+c BLHA colour factors
+      if (ldoblha) then
+        denom(:) = 1d0
+        do i=1,6
+          CF(i,i            ) =  blha_CA*blha_CF**3
+          CF(i,mod(i+ 1,6)+1) =  blha_CF*(blha_CA-2d0*blha_CF)/4d0
+          CF(i,mod(i+ 3,6)+1) =  blha_CF*(blha_CA-2d0*blha_CF)/4d0
+          CF(i,mod( 8-i,6)+1) = -blha_CA*blha_CF**2*(blha_CA-2d0*blha_CF)/2d0
+          CF(i,mod(10-i,6)+1) = -blha_CA*blha_CF**2*(blha_CA-2d0*blha_CF)/2d0
+          CF(i,7-i          ) =  blha_CA*blha_CF*(blha_CA-2d0*blha_CF)*(blha_CA-blha_CF)/2d0
+        enddo
+      endif
+
 c square amp
       DO I = 1, 6
           TEMP = (0.D0,0.D0)
@@ -506,6 +678,15 @@ c square amp
       DO i=1,6
          res(i)=res(i)/colsumsq*res(0)
       ENDDO
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      res(0)
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
 
       end
 

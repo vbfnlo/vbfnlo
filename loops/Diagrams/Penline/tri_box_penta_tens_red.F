@@ -59,7 +59,7 @@ c
       double precision psq, qsq, lsq, tsq,
      &     pq, pl, pt, ql, qt, lt, ppp, ppq, ppl
       double precision pq_sq,pql_sq,pqlt_sq,ql_sq,qlt_sq,lt_sq
-      double complex D04m_fin,D03m_fin,D02m_fin,C0fin,B0fin
+      double complex C0fin,B0fin
       double complex E02
       double complex B0_12,B0_13,B0_14,B0_15,B0_23,B0_24,B0_25,B0_34,
      &     B0_35,B0_45
@@ -83,9 +83,6 @@ c
       common/B_functions/B0_13,B0_14,B0_24,B0_34,B0_23,B0_45,B0_35
       integer compon
       double complex tri_box,virt_tri_box,pent,virt_pent
-
-      double complex test1, test2, test3, test4, test5
-      double precision test, temp
 
 
       logical debug
@@ -642,7 +639,6 @@ c      parameter (debug=.true.)
      &        gp_mu1,gp_l_q_mu1,gp_mu3_q_mu1,gp_l_mu2_mu1
       endif
       end
-
 
 
 

@@ -38,8 +38,9 @@ c*************************************************************************
 c*************************************************************************
 c     Set up histograms
 c*************************************************************************
-
-      use hist_stor
+          use globalvars, only: lglobalprint
+          use readinput
+          use hist_stor
 
       implicit none
 
@@ -47,7 +48,7 @@ c*************************************************************************
 #include "global.inc"
 #include "lha.inc"
 
-      integer id, j, k
+      integer id
       real*8 hwid
       character*5 ext
 
@@ -61,65 +62,59 @@ c*************************************************************************
 c
 c reset histogram contents to zero     
 c 
-      do id = 1,HISTMAX
-         nbin(ID) = 100
-         hlo(ID) = 0d0
-         hup(ID) = 1d0
-         htitles(ID) = ""
-         hstored(ID) = .false.
-      enddo
+      nbin(1:histmax) = 100
+      hlo(1:histmax) = 0d0
+      hup(1:histmax) = 1d0
+      htitles(1:histmax) = ""
+      hstored(1:histmax) = .false.
 
 c
 c do the same for the two-dimensional histograms
 c
-      do id = 1, HIST2dMAX
-         nbinX(ID) = 100
-         nbinY(ID) = 100
-         hloX(ID) = 0d0
-         hloY(ID) = 0d0
-         hupX(ID) = 1d0
-         hupY(ID) = 1d0
-         h2dtitles(ID) = ""
-         xlabels(ID) = ""
-         ylabels(ID) = ""
-         h2dstored(ID) = .false.
-      enddo
+      nbinX(1:hist2dmax) = 100
+      nbinY(1:hist2dmax) = 100
+      hloX(1:hist2dmax) = 0d0
+      hloY(1:hist2dmax) = 0d0
+      hupX(1:hist2dmax) = 1d0
+      hupY(1:hist2dmax) = 1d0
+      h2dtitles(1:hist2dmax) = ""
+      xlabels(1:hist2dmax) = ""
+      ylabels(1:hist2dmax) = ""
+      h2dstored(1:hist2dmax) = .false.
 
 ****************************
-****************************
-**                        **
 **    HISTOGRAM SETUP     **
-**                        **
-****************************
 ****************************
 
 c     loadfile has to be called before all CreateHist calls
-      print *,""
-      print *,"         information on histogram config"
-      print *,"-----------------------------------------------"
-      print *,""
+      if (lglobalprint) then
+         print *,""
+         print *,"         information on histogram config"
+         print *,"-----------------------------------------------"
+         print *,""
+      endif
       call loadfile("histograms.dat",.false.)
-      call read_logical("SMEARING",smearbins,.false.)
-      write(*,*) "SMEARING           =     ", smearbins
+      call read_logical("SMEARING",smearbins,.true.)
+      if (lglobalprint) write(*,*) "SMEARING           =     ", smearbins
       if (smearbins) then
-        call read_Real("SMEAR_VALUE",smearamount,0.49d0)
+        call read_Real("SMEAR_VALUE",smearamount,0.1d0)
         if (smearamount.gt.0.499 .or. smearamount.lt.1d-6) then
            print*, "SMEAR_VALUE is outside of allowed range"//
      &          " (10^-6 to 0.499)!"
-           print*, "Default is used."
-           smearamount = 0.49
+           print*, "Default (0.1) is used."
+           smearamount = 0.1
         endif
         write(*,*) "SMEAR_VALUE        =     ", smearamount
       endif
       call read_logical("CALC_ERROR_GNUPLOT",calcerrorGnuplot,.false.)
-      write(*,*) "CALC_ERROR_GNUPLOT =     ", calcerrorGnuplot
+      if (lglobalprint) write(*,*) "CALC_ERROR_GNUPLOT =     ", calcerrorGnuplot
       call read_logical("CALC_ERROR_ROOT",calcerrorRoot,.false.)
-      write(*,*) "CALC_ERROR_ROOT    =     ", calcerrorRoot
+      if (lglobalprint) write(*,*) "CALC_ERROR_ROOT    =     ", calcerrorRoot
       call read_logical("CALC_ERROR_1D",calcerror1d,.true.)
-      write(*,*) "CALC_ERROR_1D      =     ", calcerror1d
+      if (lglobalprint) write(*,*) "CALC_ERROR_1D      =     ", calcerror1d
       call read_logical("CALC_ERROR_2D",calcerror2d,.false.)
-      write(*,*) "CALC_ERROR_2D      =     ", calcerror2d
-      print *,""
+      if (lglobalprint) write(*,*) "CALC_ERROR_2D      =     ", calcerror2d
+      if (lglobalprint) print *,""
 
 *     call CreateHist(ID, title, #bins, min, max)
       call CreateHist(1, "dS/dpT_j (fb/GeV)",100,0d0,250d0)    !pT of tagging jets
@@ -157,11 +152,13 @@ c     (ID, title, x-axis label, y-axis label, x #bins, y #bins, xmin, xmax, ymin
 c     closefile has to be called after all CreateHist calls
       call closefile
 
+      if (lglobalprint) then
       print *,""
       print *,"-----------------------------------------------"
       print *,""
       print *,""
       print *,""
+      endif
 
 ***********************************************************************
 c     
@@ -244,12 +241,12 @@ c
          ext = ".dir"
          call selectfile(datafile,ext)
       else
-        xsecfile= xsecfile(1:len_trim(xsecfile))//".out"
-        rootfile= rootfile(1:len_trim(rootfile))//".root"
+        xsecfile= trim(xsecfile)//".out"
+        rootfile= trim(rootfile)//".root"
 *        pawfile= pawfile(1:index(pawfile," ")-1)//".paw"
-        topfile= topfile(1:len_trim(topfile))//".top"        
-        gnufile= gnufile(1:len_trim(gnufile))//".gp"        
-        datafile= datafile(1:len_trim(datafile))//".dir"        
+        topfile= trim(topfile)//".top"        
+        gnufile= trim(gnufile)//".gp"        
+        datafile= trim(datafile)//".dir"        
       endif
 #ifndef WITH_ROOT
       if (writeROOT) then
@@ -303,7 +300,7 @@ c*************************************************************************
 
       real*8 weight, dsig, dps
       integer NLO 
-      real*8 p(0:3,max_p), v(0:3,max_v), x(nx),inv(0:3)
+      real*8 p(0:3,max_p), v(0:3,max_v), x(nx)
       real*8 rand(max_PS_dim)
       real*8 jets(0:7,max_jets), leptons(0:8,max_v), photons(0:7,max_v)
       real*8 invisible(0:8,max_v)
@@ -311,7 +308,7 @@ c*************************************************************************
       real*8 pTmaxlep, pTminlep, ymaxlep, yminlep
 
       real*8 dw
-      real*8 deltaR, deltaY, deltaPhi, mjj2, mjj,minv
+      real*8 deltaY, deltaPhi, mjj2, mjj
 
       double precision RSEPS
 
@@ -343,7 +340,6 @@ c getting the IDs of the tagging jets
       if (vbfprocess .or. semilepAlwaysVBFCuts) call DefineTaggingJets(jets, n_jets)
 
       dw = dsig * weight
-
 
 
 c fill histograms
@@ -567,20 +563,16 @@ C            elseif( (xbin-bin).lt.1.0 ) then   ! x in high part of bin
       endif
 
       if (bin.eq.0) then
-        if (nlo .ge. -1) then 
-         call inc(hist(hist_in)%hsum(BINL), YL)
-         call inc(hist(hist_in)%hsum(BINH), YH)
-        endif
         if (calcerror1d.or.calcerrorGnuplot.or.calcerrorRoot) then
-         if (nlo .le. 0) then 
-          call inc(hist(hist_in)%hSUMM(BINL), YL)
+         if (nlo .le. 0) then  ! LO + virt
+          call inc(hist(hist_in)%hsum(BINL), YL)
+          call inc(hist(hist_in)%hsum(BINH), YH)
           call inc(hist(hist_in)%hSQUARE(BINL), YL*YL)
           call inc(hist(hist_in)%hCOUNT(BINL), 1d0)
-          call inc(hist(hist_in)%hSUMM(BINH), YH)
           call inc(hist(hist_in)%hSQUARE(BINH), YH*YH)
           call inc(hist(hist_in)%hCOUNT(BINH), 1d0)
          endif
-         if (nlo .ge. 1) then
+         if (nlo .ge. 1) then ! reals
            mem_L=0
            mem_H=0
            do i=1,2*(nlo-1)
@@ -598,14 +590,14 @@ C            elseif( (xbin-bin).lt.1.0 ) then   ! x in high part of bin
            call inc(hsave(HIST_in)%SAVE_Y(mem_L,hsave(HIST_in)%HIST_CALLS), YL)
            call inc(hsave(HIST_in)%SAVE_Y(mem_H,hsave(HIST_in)%HIST_CALLS), YH)
          endif
+        else ! no error calculation needed
+            call inc(hist(hist_in)%hsum(BINL), YL)
+            call inc(hist(hist_in)%hsum(BINH), YH)
         endif
       else
-        if (nlo .ge. -1) then 
-         call inc(hist(hist_in)%hSUM(BIN), Y)
-        endif
         if (calcerror1d.or.calcerrorGnuplot.or.calcerrorRoot) then
          if (nlo .le. 0) then 
-           call inc(hist(hist_in)%hSUMM(BIN), Y)
+           call inc(hist(hist_in)%hSUM(BIN), Y)
            call inc(hist(hist_in)%hSQUARE(BIN), Y*Y)
            call inc(hist(hist_in)%hCOUNT(BIN), 1d0)
          endif
@@ -620,6 +612,8 @@ C            elseif( (xbin-bin).lt.1.0 ) then   ! x in high part of bin
            endif
            call inc(hsave(HIST_in)%SAVE_Y(mem,hsave(HIST_in)%HIST_CALLS), Y)
          endif
+        else
+           call inc(hist(hist_in)%hSUM(BIN), Y)
         endif
       endif
       
@@ -764,27 +758,21 @@ c     Y-direction
 
       if (binx.eq.0) then
          if (biny.eq.0) then
-           if (nlo .ge. -1) then 
-            call inc(hist2d(HIST_IN)%hSUM(BINLX,BINLY), WLL)
-            call inc(hist2d(HIST_IN)%hSUM(BINHX,BINLY), WHL)
-            call inc(hist2d(HIST_IN)%hSUM(BINLX,BINHY), WLH)
-            call inc(hist2d(HIST_IN)%hSUM(BINHX,BINHY), WHH)
-           endif
            if (calcerror2d.or.calcerrorRoot) then
             if (nlo .le. 0) then 
-             call inc(hist2d(HIST_IN)%hSUMM(BINLX,BINLY), WLL)
+             call inc(hist2d(HIST_IN)%hSUM(BINLX,BINLY), WLL)
              call inc(hist2d(HIST_in)%hSQUARE(BINLX,BINLY), WLL*WLL)
              call inc(hist2d(HIST_in)%hCOUNT(BINLX,BINLY), 1d0)
 
-             call inc(hist2d(HIST_IN)%hSUMM(BINHX,BINLY), WHL)
+             call inc(hist2d(HIST_IN)%hSUM(BINHX,BINLY), WHL)
              call inc(hist2d(HIST_in)%hSQUARE(BINHX,BINLY), WHL*WHL)
              call inc(hist2d(HIST_in)%hCOUNT(BINHX,BINLY), 1d0)
 
-             call inc(hist2d(HIST_IN)%hSUMM(BINLX,BINHY), WLH)
+             call inc(hist2d(HIST_IN)%hSUM(BINLX,BINHY), WLH)
              call inc(hist2d(HIST_in)%hSQUARE(BINLX,BINHY), WLH*WLH)
              call inc(hist2d(HIST_in)%hCOUNT(BINLX,BINHY), 1d0)
 
-             call inc(hist2d(HIST_IN)%hSUMM(BINHX,BINHY), WHH)
+             call inc(hist2d(HIST_IN)%hSUM(BINHX,BINHY), WHH)
              call inc(hist2d(HIST_in)%hSQUARE(BINHX,BINHY), WHH*WHH)
              call inc(hist2d(HIST_in)%hCOUNT(BINHX,BINHY), 1d0)
             endif
@@ -822,19 +810,20 @@ c     Y-direction
               call inc(hsave2d(HIST_in)%save_y(mem_x_H,mem_y_L,hsave2d(HIST_in)%hist_calls), WHL)
               call inc(hsave2d(HIST_in)%save_y(mem_x_H,mem_y_H,hsave2d(HIST_in)%hist_calls), WHH)
             endif
+           else
+            call inc(hist2d(HIST_IN)%hSUM(BINLX,BINLY), WLL)
+            call inc(hist2d(HIST_IN)%hSUM(BINHX,BINLY), WHL)
+            call inc(hist2d(HIST_IN)%hSUM(BINLX,BINHY), WLH)
+            call inc(hist2d(HIST_IN)%hSUM(BINHX,BINHY), WHH)
            endif
          else
-           if (nlo .ge. -1) then 
-            call inc(hist2d(HIST_IN)%hSUM(BINLX,BINY), WL)
-            call inc(hist2d(HIST_IN)%hSUM(BINHX,BINY), WH)
-           endif
            if (calcerror2d.or.calcerrorRoot) then
             if (nlo .le. 0) then 
-             call inc(hist2d(HIST_IN)%hSUMM(BINLX,BINY), WL)
+             call inc(hist2d(HIST_IN)%hSUM(BINLX,BINY), WL)
              call inc(hist2d(HIST_in)%hSQUARE(BINLX,BINY), WL*WL)
              call inc(hist2d(HIST_in)%hCOUNT(BINLX,BINY), 1d0)
 
-             call inc(hist2d(HIST_IN)%hSUMM(BINHX,BINY), WH)
+             call inc(hist2d(HIST_IN)%hSUM(BINHX,BINY), WH)
              call inc(hist2d(HIST_in)%hSQUARE(BINHX,BINY), WH*WH)
              call inc(hist2d(HIST_in)%hCOUNT(BINHX,BINY), 1d0)
             endif
@@ -864,21 +853,20 @@ c     Y-direction
               call inc(hsave2d(HIST_in)%save_y(mem_x_L,mem_y,hsave2d(HIST_in)%hist_calls), WL)
               call inc(hsave2d(HIST_in)%save_y(mem_x_H,mem_y,hsave2d(HIST_in)%hist_calls), WH)
             endif
+        else
+            call inc(hist2d(HIST_IN)%hSUM(BINLX,BINY), WL)
+            call inc(hist2d(HIST_IN)%hSUM(BINHX,BINY), WH)
            endif
          endif
       else
          if (biny.eq.0) then
-           if (nlo .ge. -1) then 
-            call inc(hist2d(HIST_IN)%hSUM(BINX,BINLY), W_L)
-            call inc(hist2d(HIST_IN)%hSUM(BINX,BINHY), W_H)
-           endif
            if (calcerror2d.or.calcerrorRoot) then
             if (nlo .le. 0) then 
-             call inc(hist2d(HIST_IN)%hSUMM(BINX,BINLY), W_L)
+             call inc(hist2d(HIST_IN)%hSUM(BINX,BINLY), W_L)
              call inc(hist2d(HIST_in)%hSQUARE(BINX,BINLY), W_L*W_L)
              call inc(hist2d(HIST_in)%hCOUNT(BINX,BINLY), 1d0)
 
-             call inc(hist2d(HIST_IN)%hSUMM(BINX,BINHY), W_H)
+             call inc(hist2d(HIST_IN)%hSUM(BINX,BINHY), W_H)
              call inc(hist2d(HIST_in)%hSQUARE(BINX,BINHY), W_H*W_H)
              call inc(hist2d(HIST_in)%hCOUNT(BINX,BINHY), 1d0)
             endif
@@ -908,14 +896,14 @@ c     Y-direction
               call inc(hsave2d(HIST_in)%save_y(mem_x,mem_y_L,hsave2d(HIST_in)%hist_calls), W_L)
               call inc(hsave2d(HIST_in)%save_y(mem_x,mem_y_H,hsave2d(HIST_in)%hist_calls), W_H)
             endif
+        else
+            call inc(hist2d(HIST_IN)%hSUM(BINX,BINLY), W_L)
+            call inc(hist2d(HIST_IN)%hSUM(BINX,BINHY), W_H)
            endif
          else
-           if (nlo .ge. -1) then 
-            call inc(hist2d(HIST_IN)%hSUM(BINX,BINY), W)
-           endif
            if (calcerror2d.or.calcerrorRoot) then
             if (nlo .le. 0) then 
-              call inc(hist2d(HIST_IN)%hSUMM(BINX,BINY), W)
+              call inc(hist2d(HIST_IN)%hSUM(BINX,BINY), W)
               call inc(hist2d(HIST_in)%hSQUARE(BINX,BINY), W*W)
               call inc(hist2d(HIST_in)%hCOUNT(BINX,BINY), 1d0)
             endif
@@ -938,13 +926,14 @@ c     Y-direction
               endif
               call inc(hsave2d(HIST_in)%save_y(mem_x,mem_y,hsave2d(HIST_in)%hist_calls), W)
             endif
+        else
+              call inc(hist2d(HIST_IN)%hSUM(BINX,BINY), W)
            endif
          endif
       endif
 
       RETURN
       END
-
 
 
       SUBROUTINE InitRealHist(kinematics)
@@ -973,7 +962,7 @@ c     Y-direction
 
       do id = 1, NLOoffset
          if (hstored(id)) then
-            do i = 0, 2
+            do i = 0,1
                if (.not.allocated(hsave(id+i*NLOoffset)%save_y))   allocate(hsave(id+i*NLOoffset)%save_y(2*max_kin,max_calls))
                if (.not.allocated(hsave(id+i*NLOoffset)%save_bin)) allocate(hsave(id+i*NLOoffset)%save_bin(2*max_kin,max_calls))
                hsave(id+i*NLOoffset)%save_y = 0
@@ -987,7 +976,7 @@ c     Y-direction
 
       do id = 1, NLOoffset2d
          if (h2dstored(id)) then
-            do i = 0, 2
+            do i = 0,1
                if (.not.allocated(hsave2d(id+i*NLOoffset2d)%save_y)) 
      &                     allocate(hsave2d(id+i*NLOoffset2d)%save_y(2*max_kin,2*max_kin,max_calls))
                if (.not.allocated(hsave2d(id+i*NLOoffset2d)%save_bin_x)) 
@@ -1008,7 +997,6 @@ c     Y-direction
       END
 
 
-
       SUBROUTINE SaveRealHist()
          use hist_stor
 
@@ -1018,67 +1006,57 @@ c     Y-direction
 #include "global.inc"
 #include "hist_real.inc"
 
-      integer calls,HIST_in,i,j
+      integer calls,HID,i,j
 
       if (calcerror1d.or.calcerrorGnuplot.or.calcerrorRoot) then
 
-      do HIST_in = NLOoffset+1,2*NLOoffset
-        if (hstored(HIST_in)) then
-          do calls=1,hsave(HIST_in)%HIST_CALLS_MAX
+      do HID = NLOoffset+1,2*NLOoffset
+        if (hstored(HID)) then
+          do calls=1,hsave(HID)%HIST_CALLS_MAX
             do i=1,2*real_kinematics
-              if (hsave(HIST_in)%SAVE_BIN(i,calls).ne.0 .and. hsave(HIST_in)%SAVE_Y(i,calls).ne.0.d0) then
-                call inc(hist(HIST_IN)%hSUMM(hsave(HIST_in)%SAVE_BIN(i,calls)), hsave(HIST_in)%SAVE_Y(i,calls))
-                call inc(hist(HIST_in)%hSQUARE(hsave(HIST_in)%SAVE_BIN(i,calls)), hsave(HIST_in)%SAVE_Y(i,calls)**2)
-                call inc(hist(HIST_in)%hCOUNT(hsave(HIST_in)%SAVE_BIN(i,calls)), 1d0)
+              if (hsave(HID)%SAVE_BIN(i,calls).ne.0 .and. hsave(HID)%SAVE_Y(i,calls).ne.0.d0) then
+                call inc(hist(HID)%hSUM(hsave(HID)%SAVE_BIN(i,calls)), hsave(HID)%SAVE_Y(i,calls))
+                call inc(hist(HID)%hSQUARE(hsave(HID)%SAVE_BIN(i,calls)), hsave(HID)%SAVE_Y(i,calls)**2)
+                call inc(hist(HID)%hCOUNT(hsave(HID)%SAVE_BIN(i,calls)), 1d0)
               endif
-              hsave(HIST_in)%SAVE_BIN(i,calls)=0
-              hsave(HIST_in)%SAVE_Y(i,calls)=0.
+              hsave(HID)%SAVE_BIN(i,calls)=0
+              hsave(HID)%SAVE_Y(i,calls)=0.
             enddo
           enddo
         endif
-        hsave(HIST_in)%HIST_CALLS=0
-        hsave(HIST_in)%HIST_CALLS_MAX=0
+        hsave(HID)%HIST_CALLS=0
+        hsave(HID)%HIST_CALLS_MAX=0
       enddo
 
       endif
 
       if (calcerror2d.or.calcerrorRoot) then
 
-      do HIST_in = NLOoffset2d+1,2*NLOoffset2d
-        if (h2dstored(HIST_in)) then
-          do calls=1,hsave2d(HIST_in)%hist_calls_MAX
+      do HID = NLOoffset2d+1,2*NLOoffset2d
+        if (h2dstored(HID)) then
+          do calls=1,hsave2d(HID)%hist_calls_MAX
             do i=1,2*real_kinematics
              do j=1,2*real_kinematics
-              if (hsave2d(HIST_in)%SAVE_BIN_X(i,calls).ne.0 .and. 
-     &               hsave2d(HIST_in)%SAVE_BIN_Y(j,calls).ne.0 .and. 
-     &               hsave2d(HIST_in)%save_y(i,j,calls).ne.0.d0) then
-              ! TODO: improve using inc
-                        hist2d(HIST_IN)%hSUMM(hsave2d(HIST_in)%SAVE_BIN_X(i,calls),
-     &                hsave2d(HIST_in)%SAVE_BIN_Y(j,calls)) 
-     &                = hist2d(HIST_IN)%hSUMM(hsave2d(HIST_in)%SAVE_BIN_X(i,calls),
-     &                hsave2d(HIST_in)%SAVE_BIN_Y(j,calls)) + 
-     &                hsave2d(HIST_in)%save_y(i,j,calls)
-                 hist2d(HIST_in)%hSQUARE(hsave2d(HIST_in)%SAVE_BIN_X(i,calls),
-     &                hsave2d(HIST_in)%SAVE_BIN_Y(j,calls)) 
-     &                = hist2d(HIST_in)%hSQUARE(hsave2d(HIST_in)%SAVE_BIN_X(i,calls),
-     &                hsave2d(HIST_in)%SAVE_BIN_Y(j,calls)) + 
-     &                hsave2d(HIST_in)%save_y(i,j,calls)**2
-                 hist2d(HIST_in)%hCOUNT(hsave2d(HIST_in)%SAVE_BIN_X(i,calls),
-     &                hsave2d(HIST_in)%SAVE_BIN_Y(j,calls)) 
-     &                = hist2d(HIST_in)%hCOUNT(hsave2d(HIST_in)%SAVE_BIN_X(i,calls),
-     &                hsave2d(HIST_in)%SAVE_BIN_Y(j,calls)) + 1
+              if (hsave2d(HID)%SAVE_BIN_X(i,calls).ne.0 .and. 
+     &               hsave2d(HID)%SAVE_BIN_Y(j,calls).ne.0 .and. 
+     &               hsave2d(HID)%save_y(i,j,calls).ne.0.d0) then
+                  call inc(hist2d(HID)%hSUM(hsave2d(HID)%SAVE_BIN_X(i,calls),hsave2d(HID)%SAVE_BIN_Y(j,calls)),
+     &             hsave2d(HID)%save_y(i,j,calls))
+                  call inc(hist2d(HID)%hSQUARE(hsave2d(HID)%SAVE_BIN_X(i,calls),hsave2d(HID)%SAVE_BIN_Y(j,calls)),
+     &             hsave2d(HID)%save_y(i,j,calls)**2)
+                  call inc(hist2d(HID)%hCOUNT(hsave2d(HID)%SAVE_BIN_X(i,calls),hsave2d(HID)%SAVE_BIN_Y(j,calls)), 1d0)
               endif
-              hsave2d(HIST_in)%save_y(i,j,calls)=0.
+              hsave2d(HID)%save_y(i,j,calls)=0.
              enddo
-             hsave2d(HIST_in)%SAVE_BIN_X(i,calls)=0
+             hsave2d(HID)%SAVE_BIN_X(i,calls)=0
             enddo
             do j=1,2*real_kinematics
-             hsave2d(HIST_in)%SAVE_BIN_Y(j,calls)=0
+             hsave2d(HID)%SAVE_BIN_Y(j,calls)=0
             enddo
           enddo
         endif
-        hsave2d(HIST_in)%hist_calls=0
-        hsave2d(HIST_in)%hist_calls_MAX=0
+        hsave2d(HID)%hist_calls=0
+        hsave2d(HID)%hist_calls_MAX=0
       enddo
 
       endif
@@ -1087,12 +1065,13 @@ c     Y-direction
       END
 
 
-
 c*************************************************************************
       SUBROUTINE CreateHist(ID, title, bins, min, max)
 c*************************************************************************
 c     Set up the histogram for the internal representation.
 c*************************************************************************
+       use globalvars, only: lglobalprint
+       use readinput, only: read_HistList
       use hist_stor
 
       implicit none
@@ -1116,7 +1095,7 @@ c*************************************************************************
       histconfdefault(2) = max
 
       write( idstringnr, '(i3)' )  ID
-      idstringnr = myadjustl(idstringnr(1:len_trim(idstringnr)))
+      idstringnr = myadjustl(trim(idstringnr))
       idstring = "HIST_ID"//idstringnr
 
       
@@ -1135,21 +1114,17 @@ c check if internal arrays are large enough
 
 ** Reading in user-defined histogram limits
       call read_HistList(idstring,histconf,histconfdefault)
-      write(*,'(2A,2F10.2,2A)'),idstring, "=", histconf, "  # ", title
+      if (lglobalprint) write(*,'(2A,2F10.2,2A)') idstring, "=", histconf, "  # ", title
       
       htitles(ID) = trim(title)
       write(htitles(ID+NLOoffset),*) title," (NLO)"
       write(htitles(ID+2*NLOoffset),*) title," (K)"
 
 
-      ! TODO: this is unnecessary for i=2,
-      ! data for k-fac not explicitly stored
-      do i=0,2
+      do i=0,1
          ! check for reallocation: the user might have called CreateHist twice with the same histogram ID
          if (allocated(hist(id+i*NLOoffset)%hsum))    deallocate(hist(id+i*NLOoffset)%hsum)
          allocate(hist(id+i*NLOoffset)%hsum(bins+2))
-         if (allocated(hist(id+i*NLOoffset)%hsumm))   deallocate(hist(id+i*NLOoffset)%hsumm)
-         allocate(hist(id+i*NLOoffset)%hsumm(bins+2))
          if (allocated(hist(id+i*NLOoffset)%hsquare)) deallocate(hist(id+i*NLOoffset)%hsquare)
          allocate(hist(id+i*NLOoffset)%hsquare(bins+2))
          if (allocated(hist(id+i*NLOoffset)%hcount))  deallocate(hist(id+i*NLOoffset)%hcount)
@@ -1158,10 +1133,11 @@ c check if internal arrays are large enough
          ! stat=allocatestatus
    !      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
          hist(id+i*NLOoffset)%hsum = 0
-         hist(id+i*NLOoffset)%hsumm = 0
          hist(id+i*NLOoffset)%hsquare = 0
          hist(id+i*NLOoffset)%hcount = 0
+      enddo
 
+      do i=0,2
          nbin(ID+i*NLOoffset) = bins
          hlo(ID+i*NLOoffset) = histconf(1)!min
          hup(ID+i*NLOoffset) = histconf(2)!max
@@ -1170,7 +1146,6 @@ c check if internal arrays are large enough
 
       hstored(ID) = .true.
      
-      RETURN
       END
 
 
@@ -1180,6 +1155,8 @@ c*************************************************************************
 c*************************************************************************
 c     Set up a 2d-histogram for the internal representation.
 c*************************************************************************
+       use globalvars, only: lglobalprint
+       use readinput, only: read_Hist2dList
          use hist_stor
 
       implicit none
@@ -1206,7 +1183,7 @@ c*************************************************************************
       histconfdefault(4) = ymax
       
       write( idstringnr, '(i3)' )  ID
-      idstringnr = myadjustl(idstringnr(1:len_trim(idstringnr)))
+      idstringnr = myadjustl(trim(idstringnr))
       idstring = "2DHIST_ID"//idstringnr
       
 c check if internal arrays are large enough
@@ -1228,7 +1205,7 @@ c check if internal arrays are large enough
 
 ** Reading in user-defined axis limits
       call read_Hist2dList(idstring,histconf,histconfdefault)
-      write(*,'(2A,4F10.2,2A)'),idstring, "=", histconf, "  # ", title
+      if (lglobalprint) write(*,'(2A,4F10.2,2A)') idstring, "=", histconf, "  # ", title
       
       h2dtitles(ID) = title
       write(h2dtitles(ID+NLOoffset2d),*) title," (NLO)"
@@ -1244,12 +1221,13 @@ c check if internal arrays are large enough
          nbinY(ID+i*NLOoffset2d) = ybins
          hloY(ID+i*NLOoffset2d) = histconf(3) !ymin
          hupY(ID+i*NLOoffset2d) = histconf(4) !ymax      
+      enddo
+
+      do i=0,1 ! loop over LO, NLO
 
          ! check for reallocation: the user might have called CreateHist twice with the same histogram ID
          if (allocated(hist2d(id+i*NLOoffset2d)%hsum))    deallocate(hist2d(id+i*NLOoffset2d)%hsum)
          allocate(hist2d(id+i*NLOoffset2d)%hsum(xbins+2,ybins+2))
-         if (allocated(hist2d(id+i*NLOoffset2d)%hsumm))   deallocate(hist2d(id+i*NLOoffset2d)%hsumm)
-         allocate(hist2d(id+i*NLOoffset2d)%hsumm(xbins+2,ybins+2))
          if (allocated(hist2d(id+i*NLOoffset2d)%hsquare)) deallocate(hist2d(id+i*NLOoffset2d)%hsquare)
          allocate(hist2d(id+i*NLOoffset2d)%hsquare(xbins+2,ybins+2))
          if (allocated(hist2d(id+i*NLOoffset2d)%hcount))  deallocate(hist2d(id+i*NLOoffset2d)%hcount)
@@ -1258,7 +1236,6 @@ c check if internal arrays are large enough
          ! stat=allocatestatus
    !      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
          hist2d(id+i*NLOoffset2d)%hsum = 0
-         hist2d(id+i*NLOoffset2d)%hsumm = 0
          hist2d(id+i*NLOoffset2d)%hsquare = 0
          hist2d(id+i*NLOoffset2d)%hcount =0
       enddo
@@ -1339,7 +1316,7 @@ c*************************************************************************
                     x = hlo(ID) + dbin(ID)*(bin-1.5d0)
                     y = hist(histdp)%hsum(bin)
                     if (calcerrorRoot .and. hist(histdp)%hcount(bin) .gt. 0d0) then
-                      error = sqrt(hist(histdp)%hsquare(bin) - hist(histdp)%hsumm(bin)**2/hist(histdp)%hcount(bin))
+                      error = sqrt(hist(histdp)%hsquare(bin) - hist(histdp)%hsum(bin)**2/hist(histdp)%hcount(bin))
                     else
                       error = 0d0
                     endif
@@ -1372,7 +1349,7 @@ c*************************************************************************
                        z = hist2d(histdp)%hsum(binx,biny)
                        if (calcerrorRoot .and. hist2d(histdp)%hcount(binx,biny) .gt. 0d0) then
                          error = sqrt(hist2d(histdp)%hsquare(binx,biny) 
-     &                         - hist2d(histdp)%hsumm(binx,biny)**2/hist2d(histdp)%hcount(binx,biny))
+     &                         - hist2d(histdp)%hsum(binx,biny)**2/hist2d(histdp)%hcount(binx,biny))
                        else
                          error = 0d0
                        endif
@@ -1392,49 +1369,6 @@ c*************************************************************************
 #endif
 
 
-c$$$#ifdef WITH_CERN
-c$$$c*************************************************************************
-c$$$      SUBROUTINE WritePawHists
-c$$$c*************************************************************************
-c$$$c     Transfers the histogram data to the HBOOK format
-c$$$c*************************************************************************
-c$$$      implicit none
-c$$$#include "hist.inc"
-c$$$      integer ID,histdp,bin
-c$$$      real*4 x,y, lo, up
-c$$$      integer  nhmem
-c$$$      parameter( nhmem=262144 )
-c$$$      real  hmem(nhmem)
-c$$$      common /pawc/ hmem
-c$$$
-c$$$      call hlimit( nhmem )
-c$$$
-c$$$      DO ID = 1,HISTMAX
-c$$$         IF (hstored(ID)) THEN
-c$$$            lo = hlo(id)
-c$$$            up = hup(id)
-c$$$            call hbook1( ID,htitles(ID), nbin(id), lo, up, 0.0)
-c$$$            call hidopt( ID, "inte" )
-c$$$            histdp = ID 
-c$$$            do bin = 1,nbin(ID)+2
-c$$$               if (count(histdp,bin).gt.1d-3) then
-c$$$                  x = lo + dbin(ID)*(real(bin)-1.5)
-c$$$                  y = sum(histdp,bin)
-c$$$                  call hf1(ID,x,y)
-c$$$               endif
-c$$$            enddo
-c$$$         ENDIF
-c$$$      ENDDO
-c$$$
-c$$$      call hrput( 0, pawfile, "N" )
-c$$$       print *," created paw file for histograms : ", pawfile
-c$$$       
-c$$$
-c$$$      RETURN
-c$$$      END
-c$$$#endif      
-
-
 c*************************************************************************
       SUBROUTINE WriteTopHists
 c*************************************************************************
@@ -1446,8 +1380,8 @@ c*************************************************************************
 
 #include "hist.inc"
 
-      integer ID,histdp,bin, ibin, i1
-      double precision x,y
+      integer ID, ibin, i1
+
       double precision delx,xres(0:BINMAX+2,2), xmin,xmax,ymin,ymax,ymaxK,yminK
 
       OPEN(UNIT=20,FILE=topfile,STATUS="REPLACE")
@@ -1476,11 +1410,20 @@ c*************************************************************************
             ymax = -1d33
             yminK = 0
             ymaxK = 2
-            do ibin = 0,nbin(id)+1  !ibin=nbin+1 for overflow
-               xres(ibin,2) = hist(id)%hsum(ibin+1)               
-               ymin = min( ymin, xres(ibin,2) )
-               ymax = max( ymax, xres(ibin,2) )              
-            enddo
+            if (id .le. 2*NLOoffset) then
+                do ibin = 0,nbin(id)+1  !ibin=nbin+1 for overflow
+                   xres(ibin,2) = hist(id)%hsum(ibin+1)               
+                enddo
+                ymin = minval(xres(0:nbin(id)+1, 2))
+                ymax = maxval(xres(0:nbin(id)+1, 2))
+            else !kfac
+                do ibin = 0,nbin(id)+1  !ibin=nbin+1 for overflow
+                   xres(ibin,2) = 
+     &               hist(id-NLOoffset)%hsum(ibin+1)/hist(id-2*NLOoffset)%hsum(ibin+1)
+                enddo
+                ymin = minval(xres(0:nbin(id)+1, 2))
+                ymax = maxval(xres(0:nbin(id)+1, 2))
+            endif
             do i1 = 0,nbin(id)+1
                if (xres(i1,2).eq.0.) xres(i1,2) = 1e-20
             end do
@@ -1489,7 +1432,6 @@ c*************************************************************************
             write (20,"(A)") " set window  x 1.2 to 5.2 y 3 to 7.0 "
             write (20,202) " set limits x ",xmin," to ",xmax,
      1                             " y ",ymin," to ",ymax
- 201        format(2(a,f8.2),2(a,f12.2))
  202        format(2(a,f8.2),2(a,f12.5)) 
             write(20,*) " ( "
             DO  IBIN = 1,NBIN(ID)
@@ -1519,10 +1461,9 @@ c*************************************************************************
 
 #include "hist.inc"
 
-      integer ID,histdp,bin, ibin, i1, jbin
-      double precision x,y
-      double precision delx,xres(0:BINMAX+2,3)
-      real*8 dely
+      integer ID, ibin, jbin
+
+      double precision xres(1:BINMAX+2,3)
       real*8, dimension(:,:) :: xres2d(1:BINMAXX+2,1:BINMAXY+2)
 
       OPEN(UNIT=20,FILE=gnufile,STATUS="REPLACE")
@@ -1548,42 +1489,40 @@ c     the 1d-histograms
               write (20,"(A)") 'plot "-" '
             endif
             
-            delx = (hup(id)-hlo(id))/(real(nbin(id))+1e-10)
-            XRES(0,1) = hlo(id) - DELX/2. ! stores underflow
-            DO  IBIN = 1,nbin(id)+1
-               XRES(IBIN,1) = XRES(IBIN-1,1) + DELX
+            DO  IBIN = 1,nbin(id)+2
+               XRES(IBIN,1) = hlo(id) + dbin(id)*(IBIN-1.5d0)
             END DO
 
             if (id .le. 2*NLOoffset) then
 c LO and NLO
-              do ibin = 0,nbin(id)+1  !ibin=nbin+1 for overflow
-                 xres(ibin,2) = hist(id)%hsum(ibin+1)               
-                 if (calcerrorGnuplot .and. hist(id)%hcount(ibin+1) .gt. 0d0) then
-                   xres(ibin,3) = hist(id)%hsquare(ibin+1) - 
-     &                             hist(id)%hsumm(ibin+1)**2/hist(id)%hcount(ibin+1)
+              do ibin = 1,nbin(id)+2  !ibin=nbin+2 for overflow
+                 xres(ibin,2) = hist(id)%hsum(ibin)               
+                 if (calcerrorGnuplot .and. hist(id)%hcount(ibin) .gt. 0d0) then
+                   xres(ibin,3) = hist(id)%hsquare(ibin) - 
+     &                             hist(id)%hsum(ibin)**2/hist(id)%hcount(ibin)
                  else
                    xres(ibin,3) = 0d0
                  endif
               enddo
             else
 c K-factor
-              do ibin = 0,nbin(id)+1  !ibin=nbin+1 for overflow
-                 if (hist(id-2*NLOoffset)%hsum(ibin+1).ne.0) then
+              do ibin = 1,nbin(id)+2  !ibin=nbin+2 for overflow
+                 if (hist(id-2*NLOoffset)%hsum(ibin).ne.0) then
                    xres(ibin,2) = 
-     &               hist(id-NLOoffset)%hsum(ibin+1)/hist(id-2*NLOoffset)%hsum(ibin+1)
-                   if (calcerrorGnuplot .and. hist(id-2*NLOoffset)%hsumm(ibin+1).ne.0) then
+     &               hist(id-NLOoffset)%hsum(ibin)/hist(id-2*NLOoffset)%hsum(ibin)
+                   if (calcerrorGnuplot .and. hist(id-2*NLOoffset)%hsum(ibin).ne.0) then
                      xres(ibin,3) = 
-     &                hist(id-2*NLOoffset)%hsquare(ibin+1)
-     &                /hist(id-2*NLOoffset)%hsumm(ibin+1)**2 
-     &                - 1d0/hist(id-2*NLOoffset)%hcount(ibin+1)
+     &                hist(id-2*NLOoffset)%hsquare(ibin)
+     &                /hist(id-2*NLOoffset)%hsum(ibin)**2 
+     &                - 1d0/hist(id-2*NLOoffset)%hcount(ibin)
                    else
                      xres(ibin,3) = 0
                    endif
-                   if (calcerrorGnuplot .and. hist(id-NLOoffset)%hsumm(ibin+1).ne.0) then
+                   if (calcerrorGnuplot .and. hist(id-NLOoffset)%hsum(ibin).ne.0) then
                      xres(ibin,3) = xres(ibin,3) + 
-     &                  hist(id-NLOoffset)%hsquare(ibin+1)
-     &                  /hist(id-NLOoffset)%hsumm(ibin+1)**2 
-     &                  - 1d0/hist(id-NLOoffset)%hcount(ibin+1)
+     &                  hist(id-NLOoffset)%hsquare(ibin)
+     &                  /hist(id-NLOoffset)%hsum(ibin)**2 
+     &                  - 1d0/hist(id-NLOoffset)%hcount(ibin)
                    endif
                    xres(ibin,3) = xres(ibin,3) * xres(ibin,2)**2 
                  else
@@ -1593,12 +1532,12 @@ c K-factor
               enddo
             endif
 
-            DO  IBIN = 1,NBIN(ID)
+            DO  IBIN = 2,NBIN(ID)+1    ! without under-/overflow bins
                WRITE (20,"(2g20.6)")  XRES(ibin,1), xres(ibin,2)
             END DO
             write (20,"(A)") "e"
             if (calcerrorGnuplot) then
-              DO  IBIN = 1,NBIN(ID)
+              DO  IBIN = 2,NBIN(ID)+1
                  WRITE (20,"(3g20.6)")  XRES(ibin,1), xres(ibin,2), sqrt(xres(ibin,3))
               END DO
               write (20,"(A)") "e"
@@ -1630,9 +1569,7 @@ c            write (20,"(A)") "set palette rgbformulae 7, 5, 15 negative"
 
             write (20,"(A)") 'splot "-" '
             
-            delx = (hupx(id)-hlox(id))/(real(nbinx(id))+1e-10)
-            dely = (hupy(id)-hloy(id))/(real(nbiny(id))+1e-10)
-            
+            xres2d = 0      ! overflow bins should be 0 for proper colour scaling
             if (id .le. 2*NLOoffset2d) then
               DO IBIN = 1, NBINX(ID)+1
                  DO JBIN = 1, NBINY(ID)+1
@@ -1652,10 +1589,10 @@ c            write (20,"(A)") "set palette rgbformulae 7, 5, 15 negative"
               ENDDO
             endif
                   
-            DO IBIN = 1, NBINX(ID)+1
-               DO JBIN = 1, NBINY(ID)+1
-                 WRITE (20,"(3g20.6)")  hlox(id)+delx*(IBIN-1d0), 
-     &                  hloy(id)+dely*(JBIN-1d0), xres2d(ibin,jbin)
+            DO IBIN = 2, NBINX(ID)+2       ! corners2color c1 is usually lower left corner -> write this out here
+               DO JBIN = 2, NBINY(ID)+2    ! gnuplot needs overflow bin as well
+                 WRITE (20,"(3g20.6)")  hlox(id)+dbinx(ID)*(IBIN-2d0), 
+     &                  hloy(id)+dbiny(ID)*(JBIN-2d0), xres2d(ibin,jbin)
                ENDDO
                write (20,"(A)") " "
             ENDDO
@@ -1686,10 +1623,10 @@ c*************************************************************************
       character*50 myadjustl
       external myadjustl
 
-      write(tmpstr,*) 'mkdir -p '//datafile(1:len_trim(datafile))
+      write(tmpstr,*) 'mkdir -p '//trim(datafile)
       CALL system(tmpstr)
 
-      write(tmpstr,'(A)') datafile(1:len_trim(datafile))//"/hist_noerror.gp"
+      write(tmpstr,'(A)') trim(datafile)//"/hist_noerror.gp"
       OPEN(UNIT=20,FILE=tmpstr,STATUS="REPLACE")
 
       write (20,"(A)") 'set output "hist_noerror.ps"'
@@ -1699,7 +1636,7 @@ c*************************************************************************
       write (20,"(A)") "set key off"
 
       if (calcerror1d) then
-         write(tmpstr,'(A)') datafile(1:len_trim(datafile))//"/hist_witherror_1d.gp"
+         write(tmpstr,'(A)') trim(datafile)//"/hist_witherror_1d.gp"
          OPEN(UNIT=21,FILE=tmpstr,STATUS="REPLACE")
          write (21,"(A)") 'set output "hist_witherror_1d.ps"'
          write (21,"(A)") "set terminal postscript color"
@@ -1714,35 +1651,37 @@ c     the 1d-histograms
             write (20,*)
             write (20,*) "#",ID,": ", htitles(id)(1:len_trim(htitles(id)))
             write (20,"(A)") 'set title "'//htitles(id)(1:len_trim(htitles(id)))//'"'
+            write (20,*) "set xrange [",hlo(id),":",hup(id),"]"
             if (calcerror1d) then
                write (21,*)
                write (21,*) "#",ID,": ", htitles(id)(1:len_trim(htitles(id)))
                write (21,"(A)") 'set title "'//htitles(id)(1:len_trim(htitles(id)))//'"'
+               write (21,*) "set xrange [",hlo(id),":",hup(id),"]"
             endif
             if (id .le. NLOoffset) then
                ! LO
                write(charid,*) ID
                charid = myadjustl(charid)
-               write (20,"(A)") 'plot "LO/hist.'//charid(1:len_trim(charid))//'.dat" '
+               write (20,"(A)") 'plot "LO/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3'
                if (calcerror1d)
-     &            write (21,"(A)") 'plot "LO/hist.'//charid(1:len_trim(charid))//'.dat", '//
-     &                                  '"LO/hist.'//charid(1:len_trim(charid))//'.dat" with yerrorbars lt 1 pt 0'
+     &            write (21,"(A)") 'plot "LO/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3, '//
+     &                                  '"LO/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3:4 with yerrorbars lt 1 pt 0'
             elseif (id .le. 2*NLOoffset) then
                ! NLO
                write(charid,*) ID-NLOoffset
                charid = myadjustl(charid)
-               write (20,"(A)") 'plot "NLO/hist.'//charid(1:len_trim(charid))//'.dat" '
+               write (20,"(A)") 'plot "NLO/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3'
                if (calcerror1d)
-     &            write (21,"(A)") 'plot "NLO/hist.'//charid(1:len_trim(charid))//'.dat", '//
-     &                                  '"NLO/hist.'//charid(1:len_trim(charid))//'.dat" with yerrorbars lt 1 pt 0'
+     &            write (21,"(A)") 'plot "NLO/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3, '//
+     &                                  '"NLO/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3:4 with yerrorbars lt 1 pt 0'
             else
                ! K-factor
                write(charid,*) ID-2*NLOoffset
                charid = myadjustl(charid)
-               write (20,"(A)") 'plot "Kfac/hist.'//charid(1:len_trim(charid))//'.dat" '
+               write (20,"(A)") 'plot "Kfac/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3'
                if (calcerror1d)
-     &            write (21,"(A)") 'plot "Kfac/hist.'//charid(1:len_trim(charid))//'.dat", '//
-     &                                  '"Kfac/hist.'//charid(1:len_trim(charid))//'.dat" with yerrorbars lt 1 pt 0'
+     &            write (21,"(A)") 'plot "Kfac/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3, '//
+     &                                  '"Kfac/hist.'//trim(charid)//'.dat" using (($1+$2)/2):3:4 with yerrorbars lt 1 pt 0'
             endif
           ENDIF
       ENDDO
@@ -1764,21 +1703,23 @@ c     the 2d-histograms
             write (20,"(A)") 'set xlabel "'//xlabels(id)(1:len_trim(xlabels(id)))//'"'
             write (20,"(A)") 'set ylabel "'//ylabels(id)(1:len_trim(ylabels(id)))//'"'
             write (20,"(A)") "set palette rgbformulae 30,31,32 negative"
+            write (20,*) "set xrange [",hlox(id),":",hupx(id),"]"
+            write (20,*) "set yrange [",hloy(id),":",hupy(id),"]"
             if (id .le. NLOoffset2d) then
                ! LO
                write(charid,*) ID
                charid = myadjustl(charid)
-               write (20,"(A)") 'splot "LO/hist2.'//charid(1:len_trim(charid))//'.dat" '
+               write (20,"(A)") 'splot "LO/hist2.'//trim(charid)//'.dat" using 1:3:5'
             elseif (id .le. 2*NLOoffset2d) then
                ! NLO
                write(charid,*) ID-NLOoffset2d
                charid = myadjustl(charid)
-               write (20,"(A)") 'splot "NLO/hist2.'//charid(1:len_trim(charid))//'.dat" '
+               write (20,"(A)") 'splot "NLO/hist2.'//trim(charid)//'.dat" using 1:3:5'
             else
                ! K-factor
                write(charid,*) ID-2*NLOoffset2d
                charid = myadjustl(charid)
-               write (20,"(A)") 'splot "Kfac/hist2.'//charid(1:len_trim(charid))//'.dat" '
+               write (20,"(A)") 'splot "Kfac/hist2.'//trim(charid)//'.dat" using 1:3:5'
             endif
          ENDIF
       ENDDO
@@ -1802,22 +1743,22 @@ c*************************************************************************
 
 #include "hist.inc"
 
-      integer ID,histdp,bin, ibin, i1, jbin
-      double precision x,y
-      double precision delx
+      integer ID, ibin, jbin
+
+
       real*8, dimension(:,:) :: xres(0:BINMAX+2,3) 
-      double precision dely
+
       real*8, dimension(:,:,:) :: xres2d(0:BINMAXX+2,0:BINMAXY+2,3) 
       character*255 tmpstr
       character*50  charid
       character*50 myadjustl
       external myadjustl
 
-      write(tmpstr,*) 'mkdir -p '//datafile(1:len_trim(datafile))//"/LO"
+      write(tmpstr,*) 'mkdir -p '//trim(datafile)//"/LO"
       CALL system(tmpstr)
-      write(tmpstr,*) 'mkdir -p '//datafile(1:len_trim(datafile))//"/NLO"
+      write(tmpstr,*) 'mkdir -p '//trim(datafile)//"/NLO"
       CALL system(tmpstr)
-      write(tmpstr,*) 'mkdir -p '//datafile(1:len_trim(datafile))//"/Kfac"
+      write(tmpstr,*) 'mkdir -p '//trim(datafile)//"/Kfac"
       CALL system(tmpstr)
 
 c     the 1d-histograms
@@ -1827,62 +1768,60 @@ c     the 1d-histograms
             if (id .le. NLOoffset) then
                write(charid,*) ID
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') datafile(1:len_trim(datafile))//
+               write(tmpstr,'(A)') trim(datafile)//
      &                             "/LO/hist."//
-     &                             charid(1:len_trim(charid))//".dat"
+     &                             trim(charid)//".dat"
             else if (id .le. 2*NLOoffset) then
                write(charid,*) ID-NLOoffset
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') datafile(1:len_trim(datafile))//
+               write(tmpstr,'(A)') trim(datafile)//
      &                             "/NLO/hist."//
-     &                             charid(1:len_trim(charid))//".dat"
+     &                             trim(charid)//".dat"
             else
                write(charid,*) ID-2*NLOoffset
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') datafile(1:len_trim(datafile))//
+               write(tmpstr,'(A)') trim(datafile)//
      &                             "/Kfac/hist."//
-     &                             charid(1:len_trim(charid))//".dat"
+     &                             trim(charid)//".dat"
             endif
             OPEN(UNIT=20,FILE=tmpstr,STATUS="REPLACE")
             write (20,*) "#",ID,": ",
      &           htitles(id)(1:len_trim(htitles(id)))
 
-            delx = (hup(id)-hlo(id))/(real(nbin(id))+1e-10)
-            XRES(0,1) = hlo(id) - DELX/2. ! stores underflow
-            DO  IBIN = 1,nbin(id)+1
-               XRES(IBIN,1) = XRES(IBIN-1,1) + DELX
+            DO  IBIN = 1,nbin(id)+2
+               XRES(IBIN,1) = hlo(id) + dbin(id)*(IBIN-1.5d0)
             END DO
 
             if (id .le. 2*NLOoffset) then
 c LO and NLO
-              do ibin = 0,nbin(id)+1  !ibin=nbin+1 for overflow
-                 xres(ibin,2) = hist(id)%hsum(ibin+1)               
-                 if (calcerror1d .and. hist(id)%hcount(ibin+1) .gt. 0d0) then
-                   xres(ibin,3) = hist(id)%hsquare(ibin+1) - 
-     &                             hist(id)%hsumm(ibin+1)**2/hist(id)%hcount(ibin+1)
+              do ibin = 1,nbin(id)+2  !ibin=nbin+2 for overflow
+                 xres(ibin,2) = hist(id)%hsum(ibin)               
+                 if (calcerrorGnuplot .and. hist(id)%hcount(ibin) .gt. 0d0) then
+                   xres(ibin,3) = hist(id)%hsquare(ibin) - 
+     &                             hist(id)%hsum(ibin)**2/hist(id)%hcount(ibin)
                  else
                    xres(ibin,3) = 0d0
                  endif
               enddo
             else
 c K-factor
-              do ibin = 0,nbin(id)+1  !ibin=nbin+1 for overflow
-                 if (hist(id-2*NLOoffset)%hsum(ibin+1).ne.0) then
+              do ibin = 1,nbin(id)+2  !ibin=nbin+2 for overflow
+                 if (hist(id-2*NLOoffset)%hsum(ibin).ne.0) then
                    xres(ibin,2) = 
-     &               hist(id-NLOoffset)%hsum(ibin+1)/hist(id-2*NLOoffset)%hsum(ibin+1)
-                   if (calcerror1d .and. hist(id-2*NLOoffset)%hsumm(ibin+1).ne.0) then
+     &               hist(id-NLOoffset)%hsum(ibin)/hist(id-2*NLOoffset)%hsum(ibin)
+                   if (calcerrorGnuplot .and. hist(id-2*NLOoffset)%hsum(ibin).ne.0) then
                      xres(ibin,3) = 
-     &                hist(id-2*NLOoffset)%hsquare(ibin+1)
-     &                /hist(id-2*NLOoffset)%hsumm(ibin+1)**2 
-     &                - 1d0/hist(id-2*NLOoffset)%hcount(ibin+1)
+     &                hist(id-2*NLOoffset)%hsquare(ibin)
+     &                /hist(id-2*NLOoffset)%hsum(ibin)**2 
+     &                - 1d0/hist(id-2*NLOoffset)%hcount(ibin)
                    else
                      xres(ibin,3) = 0
                    endif
-                   if (calcerror1d .and. hist(id-NLOoffset)%hsumm(ibin+1).ne.0) then
+                   if (calcerrorGnuplot .and. hist(id-NLOoffset)%hsum(ibin).ne.0) then
                      xres(ibin,3) = xres(ibin,3) + 
-     &                  hist(id-NLOoffset)%hsquare(ibin+1)
-     &                  /hist(id-NLOoffset)%hsumm(ibin+1)**2 
-     &                  - 1d0/hist(id-NLOoffset)%hcount(ibin+1)
+     &                  hist(id-NLOoffset)%hsquare(ibin)
+     &                  /hist(id-NLOoffset)%hsum(ibin)**2 
+     &                  - 1d0/hist(id-NLOoffset)%hcount(ibin)
                    endif
                    xres(ibin,3) = xres(ibin,3) * xres(ibin,2)**2 
                  else
@@ -1891,17 +1830,21 @@ c K-factor
                  endif
               enddo
             endif
-            do ibin = 0,nbin(id)+1
+            do ibin = 1,nbin(id)+2
                if (xres(ibin,3).lt.0d0) xres(ibin,3) = 0d0
             end do
 
             if (calcerror1d) then
-              DO  IBIN = 1,NBIN(ID)
-                 WRITE (20,"(3g20.6)")  XRES(ibin,1), xres(ibin,2), sqrt(xres(ibin,3))
+              DO  IBIN = 1,NBIN(ID)+2
+                 WRITE (20,"(4g20.6)")  hlo(id)+dbin(id)*(IBIN-2), 
+     &                                  hlo(id)+dbin(id)*(IBIN-1), 
+     &                                  xres(ibin,2), sqrt(xres(ibin,3))
               END DO
             else
-              DO  IBIN = 1,NBIN(ID)
-                 WRITE (20,"(2g20.6)")  XRES(ibin,1), xres(ibin,2)
+              DO  IBIN = 1,NBIN(ID)+2
+                 WRITE (20,"(3g20.6)")  hlo(id)+dbin(id)*(IBIN-2), 
+     &                                  hlo(id)+dbin(id)*(IBIN-1), 
+     &                                  xres(ibin,2)
               END DO
             endif
 
@@ -1916,60 +1859,57 @@ c     the 2d-histograms
             if (id .le. NLOoffset2d) then
                write(charid,*) ID
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') datafile(1:len_trim(datafile))//
+               write(tmpstr,'(A)') trim(datafile)//
      &                             "/LO/hist2."//
-     &                             charid(1:len_trim(charid))//".dat"
+     &                             trim(charid)//".dat"
             else if (id .le. 2*NLOoffset2d) then
                write(charid,*) ID-NLOoffset2d
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') datafile(1:len_trim(datafile))//
+               write(tmpstr,'(A)') trim(datafile)//
      &                             "/NLO/hist2."//
-     &                             charid(1:len_trim(charid))//".dat"
+     &                             trim(charid)//".dat"
             else
                write(charid,*) ID-2*NLOoffset2d
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') datafile(1:len_trim(datafile))//
+               write(tmpstr,'(A)') trim(datafile)//
      &                             "/Kfac/hist2."//
-     &                             charid(1:len_trim(charid))//".dat"
+     &                             trim(charid)//".dat"
             endif
             OPEN(UNIT=20,FILE=tmpstr,STATUS="REPLACE")
             write (20,*) "#",ID,": ",
      &           h2dtitles(id)(1:len_trim(h2dtitles(id)))
             
-            delx = (hupx(id)-hlox(id))/(real(nbinx(id))+1e-10)
-            dely = (hupy(id)-hloy(id))/(real(nbiny(id))+1e-10)
-            
             if (id .le. 2*NLOoffset2d) then
-              DO IBIN = 1, NBINX(ID)+1
-                 DO JBIN = 1, NBINY(ID)+1
+              DO IBIN = 1, NBINX(ID)+2
+                 DO JBIN = 1, NBINY(ID)+2
                    xres2d(ibin,jbin,2) = hist2d(id)%hsum(ibin,jbin)
                    if (calcerror2d .and. hist2d(id)%hcount(ibin,jbin) .gt. 0d0) then
                      xres2d(ibin,jbin,3) = 
      &                 hist2d(id)%hsquare(ibin,jbin) - 
-     &                 hist2d(id)%hsumm(ibin,jbin)**2/hist2d(id)%hcount(ibin,jbin)
+     &                 hist2d(id)%hsum(ibin,jbin)**2/hist2d(id)%hcount(ibin,jbin)
                    else
                      xres2d(ibin,jbin,3) = 0d0
                    endif
                  ENDDO
               ENDDO
             else
-              DO IBIN = 1, NBINX(ID)+1
-                 DO JBIN = 1, NBINY(ID)+1
+              DO IBIN = 1, NBINX(ID)+2
+                 DO JBIN = 1, NBINY(ID)+2
                   if (hist2d(id-2*NLOoffset2d)%hsum(ibin,jbin).ne.0) then
                     xres2d(ibin,jbin,2) = 
      &        hist2d(id-NLOoffset2d)%hsum(ibin,jbin)/hist2d(id-2*NLOoffset2d)%hsum(ibin,jbin)
-                    if (calcerror2d .and. hist2d(id-2*NLOoffset2d)%hsumm(ibin,jbin).ne.0) then
+                    if (calcerror2d .and. hist2d(id-2*NLOoffset2d)%hsum(ibin,jbin).ne.0) then
                       xres2d(ibin,jbin,3) = 
      &                  hist2d(id-2*NLOoffset2d)%hsquare(ibin,jbin)
-     &                  /hist2d(id-2*NLOoffset2d)%hsumm(ibin,jbin)**2
+     &                  /hist2d(id-2*NLOoffset2d)%hsum(ibin,jbin)**2
      &                  - 1d0/hist2d(id-2*NLOoffset2d)%hcount(ibin,jbin)
                     else
                       xres2d(ibin,jbin,3) = 0
                     endif
-                    if (calcerror2d .and. hist2d(id-NLOoffset2d)%hsumm(ibin,jbin).ne.0) then
+                    if (calcerror2d .and. hist2d(id-NLOoffset2d)%hsum(ibin,jbin).ne.0) then
                       xres2d(ibin,jbin,3) = xres2d(ibin,jbin,3) + 
      &                  hist2d(id-NLOoffset2d)%hsquare(ibin,jbin)
-     &                  /hist2d(id-NLOoffset2d)%hsumm(ibin,jbin)**2
+     &                  /hist2d(id-NLOoffset2d)%hsum(ibin,jbin)**2
      &                  - 1d0/hist2d(id-NLOoffset2d)%hcount(ibin,jbin)
                     endif
                     xres2d(ibin,jbin,3) = xres2d(ibin,jbin,3) * 
@@ -1981,26 +1921,34 @@ c     the 2d-histograms
                  ENDDO
               ENDDO
             endif
-            do ibin = 0,nbinx(id)+1
-              do jbin = 0,nbiny(id)+1
+            do ibin = 1,nbinx(id)+2
+              do jbin = 1,nbiny(id)+2
                if (xres2d(ibin,jbin,3).lt.0d0) xres2d(ibin,jbin,3) = 0d0
               end do
             end do
                   
             if (calcerror2d) then
-              DO IBIN = 1, NBINX(ID)+1
-                 DO JBIN = 1, NBINY(ID)+1
-                   WRITE (20,"(4g20.6)")  hlox(id)+delx*(IBIN-1d0), 
-     &                    hloy(id)+dely*(JBIN-1d0), xres2d(ibin,jbin,2),
-     &                    sqrt(xres2d(ibin,jbin,3))
+              DO IBIN = 1, NBINX(ID)+2
+                 DO JBIN = 1, NBINY(ID)+2
+                   WRITE (20,"(6g20.6)")  
+     &               hlox(id)+dbinx(ID)*(IBIN-2d0), 
+     &               hlox(id)+dbinx(ID)*(IBIN-1d0), 
+     &               hloy(id)+dbiny(ID)*(JBIN-2d0), 
+     &               hloy(id)+dbiny(ID)*(JBIN-1d0), 
+     &               xres2d(ibin,jbin,2),
+     &               sqrt(xres2d(ibin,jbin,3))
                  ENDDO
                  write (20,"(A)") " "
               ENDDO
             else
-              DO IBIN = 1, NBINX(ID)+1
-                 DO JBIN = 1, NBINY(ID)+1
-                   WRITE (20,"(3g20.6)")  hlox(id)+delx*(IBIN-1d0), 
-     &                    hloy(id)+dely*(JBIN-1d0), xres2d(ibin,jbin,2)
+              DO IBIN = 1, NBINX(ID)+2
+                 DO JBIN = 1, NBINY(ID)+2
+                   WRITE (20,"(5g20.6)")  
+     &               hlox(id)+dbinx(ID)*(IBIN-2d0), 
+     &               hlox(id)+dbinx(ID)*(IBIN-1d0), 
+     &               hloy(id)+dbiny(ID)*(JBIN-2d0), 
+     &               hloy(id)+dbiny(ID)*(JBIN-1d0), 
+     &               xres2d(ibin,jbin,2)
                  ENDDO
                  write (20,"(A)") " "
               ENDDO
@@ -2039,7 +1987,7 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
          if((ii.ge.1).and.(ii.le.9)) then
             
             lname = 
-     &           lname1(1:len_trim(lname1))//"."//DIGIT(ii)//extens
+     &           trim(lname1)//"."//DIGIT(ii)//extens
             inquire(file=lname,exist=FileAlreadyExists)
             if(FileAlreadyExists) then
                goto 20
@@ -2050,18 +1998,18 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
          elseif(ii.gt.9) then
             i = (ii/10)
             j = mod(ii,10)
-            lname = lname1(1:len_trim(lname1))//"."//
+            lname = trim(lname1)//"."//
      &              DIGIT(i)//DIGIT(j)//extens
             inquire(file=lname,exist=FileAlreadyExists)
             if(FileAlreadyExists) then
                goto 20
             else
-               name = lname(1:len_trim(lname))
+               name = trim(lname)
                return
             endif
          endif
 
-         name = name(1:len_trim(name))
+         name = trim(name)
          
  20      continue
          write(*,*) "-------- fatal crash in SelectFile ----------"

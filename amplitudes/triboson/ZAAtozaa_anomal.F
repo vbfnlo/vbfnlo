@@ -6,7 +6,7 @@ c -----------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 zaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),ll,mu,h,N
       integer nA 
 
       ! possible lepton helicities:
@@ -63,7 +63,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -150,7 +150,7 @@ c -------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 zaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),ll,mu,h,N
       integer nA 
 
       ! possible lepton helicities:
@@ -207,7 +207,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -276,7 +276,6 @@ c considering anomalous couplings there are 2 extra graphs with neutral quartic-
       CALL aazz_anomal4(W(1,4   ),W(1,5   ),W(1,14  ),W(1,1   ),AMP(14  ))
 
 
-
       zaa(mu) = +AMP( 1)+AMP( 2)+AMP( 3)+AMP( 4)+AMP( 5)+AMP( 6)
      &          +AMP( 7)+AMP( 8)+AMP( 9)+AMP(10)+AMP(11)+AMP(12) !new graphs with Higgs
      &          +AMP(13)+AMP(14) !new graphs with neutral quartic-vector-boson-couplings
@@ -288,9 +287,6 @@ c considering anomalous couplings there are 2 extra graphs with neutral quartic-
       END
 
 
-
-
-
 c -----------------------------------------------------------------
 
       subroutine ZAA_ATOZnAA_anomal(v,N,h,zaa,nA)
@@ -299,7 +295,7 @@ c -----------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 zaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),ll,mu,h,N
       integer nA 
 
       ! possible lepton helicities:
@@ -357,7 +353,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -419,9 +415,6 @@ c considering anomalous couplings there is one extra graph with neutral quartic-
 c -------------------------------------------------------------------
 
 
-
-
-
 c -------------------------------------------------------------------
 
       subroutine ZAA_ZTOZnAA_anomal(v,N,h,zaa,nA)
@@ -430,7 +423,7 @@ c -------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 zaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),ll,mu,h,N
       integer nA 
 
       ! possible lepton helicities:
@@ -487,7 +480,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -534,7 +527,6 @@ c considering anomalous couplings there are 3 extra graphs with Higgs (AAH-, AZH
 
 c considering anomalous couplings there is one extra graph with neutral quartic-vector-boson-coupling
       CALL aazz_anomal4(W(1,4   ),W(1,5   ),W(1,14  ),W(1,1   ),AMP(14  ))
-
 
 
       zaa(mu) = +AMP( 8)+AMP(10)+AMP(12) !new graphs with Higgs

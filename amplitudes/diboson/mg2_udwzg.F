@@ -438,11 +438,6 @@ c comparison with hand made code
 c------------------------------------------------------------------
 
 
-
-
-
-
-
       UDWPZgL = 0.D0 
   
       DO I = 1, NCOLOR
@@ -461,8 +456,6 @@ c------------------------------------------------------------------
       Enddo
 C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN) 
       END
-       
-       
 
 
 

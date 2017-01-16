@@ -50,10 +50,10 @@ c variables for the main part of the program
       double precision  uuaaj, ddaaj, res(2)
       double precision  p(0:3,2+n_v)
 
-      integer  sign(2+n_v), gsign, mu, i, j, k, isig
+      integer  sign(2+n_v), gsign, mu, i, k, isig
       integer  ifl(2), lh, l, nlo, N, ps_number
 
-      double precision fqa1(0:4,2),fqa2(0:4,2),fqa3(0:4,2)
+      double precision fqa1(0:4,2),fqa2(0:4,2)
       double precision pq(0:4,2)
       double precision pgA1(0:4,2),pA1g(0:4,2)
       double precision pgA2(0:4,2),pA2g(0:4,2)
@@ -64,16 +64,15 @@ c variables for the main part of the program
       double complex braketgA2(2,-1:1,2,2)
       double complex psiA1g(2,-1:1,2,2)
       double complex psiA2g(2,-1:1,2,2)
-      double complex ja1(0:5,-1:1,4,2)
-      double complex ja2(0:5,-1:1,4,2)
+
+
       double complex mat(2,-1:1,2), madgr(-1:1,-1:1,2)
-      double complex matt(2,-1:1,2)
+
       double complex m1kb(2,-1:1), m2kb(2,-1:1), temp, temp1
       double complex mm(2,-1:1,2), zero
-      double complex ma, mz, m1, m2, m3, m4
-      double complex psi(2,-1:1,2), jqq(0:5,-1:1)
-      double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2)
-      double complex jqqa(0:5,-1:1,2)
+      double complex m1
+      double complex psi(2,-1:1,2)
+
 
       double complex im
       double complex dotcc, s1c, dotrc

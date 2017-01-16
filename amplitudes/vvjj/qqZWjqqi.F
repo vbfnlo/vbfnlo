@@ -2,6 +2,7 @@ C********************  qqVqqj ***********************************
 
       subroutine qqZqqj(pbar, fsign, qbar, gsign, 
      1                  uucc, uuss, ddcc, ddss, udsc, ducs)
+          use globalvars, only: ldoblha
       implicit none
       real*8 uucc,uuss,ddcc,ddss,
      1       udsc,ducs, pbar(0:3,6), qbar(0:4), 
@@ -344,7 +345,6 @@ C  correction factor for diagrams 5,6
       elseif (ibos.eq.1) then
 
 
-
          prop21(2) = 1/dcmplx(p21(4)-xm2(2),xmg(2))
          prop21(3) = 1/dcmplx(p21(4)-xm2(3),xmg(3))
          prop21(4) = prop21(3)
@@ -417,8 +417,12 @@ c     No V1, gluon radiation from the 3-4 line
 c      print*,"get spinors"
 C     Get the external spinors (including factor sqrt(2E) and sign
 c     factor)
-      call psi0m(6,pbar,fsign,psi) ! 6 external fermions with
+      if (ibos.eq.1) then 
+        call psi0m(4,pbar,fsign,psi) 
+      else
+        call psi0m(6,pbar,fsign,psi) ! 6 external fermions with
                                              ! phsical momenta pbar
+      endif
 c      print*,"got spinors"
       
 c     NOTE: psi(2,-1:1,6) is a two component spinor with helicity -1
@@ -948,9 +952,8 @@ c     processes 3 and 4 have V1 = W+, V2 = W-, V3 = Z/gamma
             mm2(k,isig) = 0.0d0
          enddo
       enddo
-                                                               
-      
-      
+
+
 c     Now sum the contributions from the seven Feynman graphs for
 c     all subprocesses
        

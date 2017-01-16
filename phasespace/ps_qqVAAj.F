@@ -22,6 +22,7 @@ c
 c****************************************************************************
 
       SUBROUTINE DEF_PS_QQVAAj(bos1,bos2,bos3)
+          use globalvars, only: ldoblha
 
       IMPLICIT NONE
 
@@ -30,8 +31,6 @@ c****************************************************************************
 
       INTEGER bos(3), i, bos1, bos2, bos3
       common /psvaabos/bos
-
-c set up variables in common block BLIPSI for call of LIPSVVVJ
 
       REAL*8 RM2, RMG, RM2MIN, RM2MAX, S, PTJMIN
       REAL*8 RM2MINX, RM2MAXX, M2MIN, RM2MINY, RM2MAXY
@@ -155,11 +154,6 @@ c           W          the weight of the phase space point
 c           NW         NW = 1 corresponds to Narrow Width Approximation,
 c                      NW = 0 means Full calculation
 c
-c
-c
-c  INPUT INFORMATION on the phase space region is transferred via the
-c    common block /BLIPSI/
-c
 c****************************************************************************
 
       SUBROUTINE LIPSVAAJ1(N,RD,RN,
@@ -174,7 +168,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=12, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:4)
+      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       REAL*8 Pjet(0:3,N)
       REAL*8 Pjets(0:3,N+2)
 
@@ -194,24 +188,14 @@ c
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER I, MU
 
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw, pmin, pmax
+      REAL*8 Y
+
+
+      REAL*8 test
+      REAL*8 tau, q(0:4,3)
+
 
       DOUBLE PRECISION dotrr
       EXTERNAL dotrr
@@ -379,7 +363,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=12, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:4)
+      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       REAL*8 Pjet(0:3,N)
       REAL*8 Pjets(0:3,N+1)
 
@@ -399,24 +383,14 @@ c
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER I, MU
 
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw
+      REAL*8 Y, Y2
+
+
+      REAL*8 test
+      REAL*8 tau, q(0:4,3)
+
 
       DOUBLE PRECISION dotrr
       EXTERNAL dotrr
@@ -596,7 +570,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=12, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:4)
+      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       REAL*8 Pjet(0:3,N)
       REAL*8 Pjets(0:3,N+1)
 
@@ -616,24 +590,14 @@ c
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER I, MU
 
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw
+      REAL*8 Y, Y2
+
+
+      REAL*8 test
+      REAL*8 tau, q(0:4,3)
+
 
       DOUBLE PRECISION dotrr
       EXTERNAL dotrr
@@ -815,11 +779,6 @@ c           W          the weight of the phase space point
 c           NW         NW = 1 corresponds to Narrow Width Approximation,
 c                      NW = 0 means Full calculation
 c
-c
-c
-c  INPUT INFORMATION on the phase space region is transferred via the
-c    common block /BLIPSI/
-c
 c****************************************************************************
 
       SUBROUTINE LIPSVAAJ4(N,RD,RN,
@@ -853,24 +812,16 @@ c
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER MU
 
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw, pmin, pmax
+      REAL*8 Y
+
+
+      REAL*8 test
+      REAL*8 y_border, tau, q(0:4,3)  
+      REAL*8 pX(0:4)
+      REAL*8 pY(0:4)
+
 
       DOUBLE PRECISION dotrr
       EXTERNAL dotrr
@@ -1057,7 +1008,6 @@ c
 c*****************************************************************************
 
 
-
 c*****************************************************************************
 c
 c    begin subroutine LIPSVAAJ5_anomal
@@ -1088,11 +1038,6 @@ c           W          the weight of the phase space point
 c           NW         NW = 1 corresponds to Narrow Width Approximation,
 c                      NW = 0 means Full calculation
 c
-c
-c
-c  INPUT INFORMATION on the phase space region is transferred via the
-c    common block /BLIPSI/
-c
 c****************************************************************************
 
       SUBROUTINE LIPSVAAJ5_anomal(N,RD,RN,
@@ -1107,9 +1052,9 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=15, TPI=2D0*PI )
       REAL*8 RD(nrandl),RN
-      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:4)
+      REAL*8 K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       REAL*8 Pjet(0:3,N)
-      REAL*8 Pjets(0:3,N+2)
+
 
       REAL*8 RM2, RMG, RM2MIN, RM2MAX, S, PTC
       REAL*8 RM2MINX, RM2MAXX, RM2MINY, RM2MAXY, M2MIN
@@ -1124,24 +1069,14 @@ c
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER MU
 
-      REAL*8 Y, Y2, PT, PHI
-      REAL*8 xmin1, xmax1, delx1, tanx1, xval1
-      REAL*8 xmin2, xmax2, delx2, tanx2, xval2
-      REAL*8 xmin3, xmax3, delx3, tanx3, xval3
-      REAL*8 xminx, xmaxx, delxx, tanxx, xvalx
-      REAL*8 xminy, xmaxy, delxy, tanxy, xvaly
-      REAL*8 coshy2, sinhy2, temp, test
-      REAL*8 y_border, tau, ql(0:4,2), q(0:4,3)  
-      REAL*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      REAL*8 pY(0:4), phiY, costhetaY, abs_pY, sinthetaY
-      REAL*8 phi2, costheta2, sintheta2
-      REAL*8 phi3, costheta3, sintheta3
-      REAL*8 phi4, costheta4, sintheta4
-      REAL*8 pTmax, pTmin, pL, y2_border, ET
-      REAL*8 abs_p, abs_p2, abs_p3, abs_p4
-      REAL*8 C, m2, mw, pmin, pmax, rm2minh, rm2maxh
+
+      REAL*8 q(0:4,3)  
+      REAL*8 pX(0:4)
+
+
+      REAL*8 rm2minh, rm2maxh
 
       DOUBLE PRECISION V1mg, xxwidth, xxm
       DOUBLE PRECISION dotrr
@@ -1157,8 +1092,6 @@ C  local variables
       LOGICAL NONRESONANCE, RESONANCE, TWOBODYDECAY, TWOTOJETSPLUSX
       EXTERNAL NONRESONANCE, RESONANCE, TWOBODYDECAY, TWOTOJETSPLUSX
 
-
-      double precision phirn, cosrn, sinrn, tmpx, tmpy
 
 c--------------------------------------------------------------------
 c---------------------------------------------------------------------

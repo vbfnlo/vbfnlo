@@ -250,7 +250,7 @@ c         if(mza_min.ge.250d0) PS_loops=1
          call def_ps_qqAAAj(1,1,1)
 
 #endif
-  
+
 #ifdef WITH_TRIBOSONJET
       CASE(WPAAj)
          call def_ps_qqVAAj(3,1,1)
@@ -292,6 +292,7 @@ c
 c     OUTPUT
 c     dps             : The jacobi factor of the phasespace point.
 c*************************************************************************
+          use globalvars, only: ldoblha
       implicit none
       
 #include "VBFNLO/utilities/global.inc"
@@ -302,20 +303,20 @@ c*************************************************************************
       real*8 rand(max_PS_dim)
       real*8 p(0:3,max_p,max_kin)
       real*8 v(0:3,max_v,max_kin)
-      real*8 dps, dps_dec
+      real*8 dps
 
       real*8 rn
-      real*8 Q(0:4), QV(0:4,2)
+      real*8 Q(0:4)
       integer i,L,mu, ps_number
       common/MB1/ rn
-      real*8 RandomNumber,rdec(1:5), mjj2
+      real*8 RandomNumber, mjj2
       external RandomNumber, mjj2
       double precision phirn, cosrn, sinrn, tmpx, tmpy
       real*8 TPI
       parameter (TPI=2D0*PI )
 
-      integer j,nsing,isub/0/
-      real*8 dotrr,m2
+      integer nsing/0/
+
       integer WWJJ_interf
       common /cWWJJ_interf/ WWJJ_interf
 
@@ -1034,6 +1035,6 @@ c Multiply with symmetry factor for identical leptons in the final state
 
       RETURN
       END
-      
+
 
 

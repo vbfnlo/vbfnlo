@@ -27,7 +27,7 @@ c variables for spin2 width:
       common /COUPL_GAUGE/ gal   , gad   , gau   , gwf   ,
      &     gzn   , gzl   , gzd   , gzu   ,
      &     gw, gwwa, gwwz
-      double complex       gg(2), msquaretest
+      double complex       gg(2)
       double precision     alpha_test,ee, sin2w_test,
      &     gfermi, alfas_test,g_test
       common /COUPL_BASIC/ gg, alpha_test,ee, sin2w_test, gfermi,
@@ -198,7 +198,7 @@ c calculation of sp2trippmwidth
      &     ))/(12.0d0*LAMBDA**2*msp2trippm**4)*1.0d0/5.0d0*4.0d0*PI
      &     *(msp2trippm**2-xmw**2)/(64.0d0*PI**2*msp2trippm**3)
       
-      if ((msp2trippm**2) .gt. (xmw**2+xmz**2)) then
+      if (msp2trippm .gt. (xmw+xmz)) then
          sp2trippmwidthwz = ((msp2trippm**2*xmw**2*(msp2trippm**2*xmz**2
      &        *(13.0d0*f6**2*gw**2*v1**4*(gw**2+gw1**2)+256.0d0*f7**2
      &        *xmw**2*xmz**2*sin2w)+1.0d0/4.0d0*(msp2trippm**2-xmw**2

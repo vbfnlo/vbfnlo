@@ -55,6 +55,7 @@
        integer blha_idsubproc(max_subproc,max_blhaproc)               ! internal sub-id for subprocess
        integer blha_multsubproc(max_subproc,max_blhaproc)             ! internal sub-id for subprocess
        integer blha_particlemap(max_p+max_v,max_subproc,max_blhaproc) ! momenta mapping MatchBox to phys
+       integer blha_invmap(max_p+max_v,max_subproc,max_blhaproc)      ! momenta mapping phys to MatchBox
        integer blha_physdiagmap(max_p+max_v,max_subproc,max_blhaproc) ! momenta mapping phys to diag
        integer blha_diagphysmap(max_p+max_v,max_subproc,max_blhaproc) ! momenta mapping diag to phys
        integer blha_fsign(max_p+max_v,max_subproc,max_blhaproc)       ! fsign mapping
@@ -66,11 +67,11 @@
        common/BLHA_procmap/ blha_amptype
        common/BLHA_procmap/ blha_procsubproc, blha_idsubproc
        common/BLHA_procmap/ blha_multsubproc
-       common/BLHA_procmap/ blha_particlemap
+       common/BLHA_procmap/ blha_particlemap, blha_invmap
        common/BLHA_procmap/ blha_physdiagmap, blha_diagphysmap
        common/BLHA_procmap/ blha_fsign
-       common/BLHA_procmap/ blha_lojsubproc
        common/BLHA_procmap/ blha_alphasorder, blha_alphaorder
+       common/BLHA_procmap/ blha_lojsubproc
 
 
        double precision blha_amp(2*(max_p+max_v)**2), blha_scale ! TODO: reduce array size
@@ -83,6 +84,13 @@
        common/BLHA_thisproc/ blha_helrand, blha_ranhelcomb
        common/BLHA_thisproc/ blha_curproc, blha_cursubproc, blha_lastprocID
        common/BLHA_thisproc/ blha_lastLOplusJet
+
+       integer blha_pssubproc(max_blhaproc)                           ! last used subproc for phasespace
+       integer blha_pssubstep(max_blhaproc)                           ! steps with different
+       integer blha_numbosons(max_blhaproc)                           ! number of fermion pairs
+       integer blha_bosons(3,max_subproc,max_blhaproc)                ! boson type of fermion pairs
+
+       common/BLHA_phasespace/ blha_pssubproc, blha_pssubstep, blha_numbosons, blha_bosons
 
        integer blha_lastPhaseSpace
 

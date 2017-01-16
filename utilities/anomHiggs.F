@@ -13,6 +13,8 @@ c
 c========================================================================
 c
       subroutine read_anomHVV
+          use globalvars, only: lglobalprint
+          use readinput
       implicit none
 
 #include "an_couplings.inc"
@@ -29,8 +31,8 @@ c
       real*8 m2ff,mff
       logical lff, switch1, switch2, switch3
       common/ formfacmass/ m2ff,mff,ffac,lff
-      integer i,j,k, hvv1, hvv2
-      character*50 gtext
+      integer i,j, hvv1, hvv2
+
 
       character*10 key
       double precision consistency, dum
@@ -250,16 +252,9 @@ c     Loopfactor and Treefactor
       if (lglobalprint) print *," "
 
 
- 800  format(a)
-
 ** Converting from alternative parameterisation
       if (.not. switch1) then
-         do i=1,4
-            do j=1,4
-               g5hvv(2,i,j) = 0.0d0
-               g5hvv(1,i,j) = 0.0d0
-            enddo
-         enddo
+          g5hvv(1:2,1:4,1:4) = 0d0
    
          dum = 0d0
          call anomH_convert(hvv1,hvv2,switch2,switch3,
@@ -309,12 +304,11 @@ c
       real*8 m2ff,mff
       logical lff
       common/ formfacmass/ m2ff,mff,ffac,lff
-      integer i,j,k,init
+      integer i,j,init
       complex*16 dum_hzg,dum_hgg !sm 1-loop contributions 
       common /hcoupl/ g5hvv, lambda5
       double complex ahvv(3,4,4), ahvvL(3,4,4)
       common/tensorhvv/ ahvv, ahvvL
-
 
       if(init.eq.1) then   ! initialze ahvv only
          do i = 1,4
@@ -398,15 +392,14 @@ c        SM + CP-even
       ahvv(2,1,2) = -(loopfac*dum_hzg + 2.0d0*g5hvv(1,1,2)/lambda5
      $     *(1.0d0,0.0d0))
       ahvv(2,2,1) = -(loopfac*dum_hzg + 2.0d0*g5hvv(1,2,1)/lambda5
-     $     *(1.0d0,0.0d0))
+     $     *(1.0d0,0.0d0))   
 c     CP-odd
       ahvv(3,1,2) = 2.0d0*g5hvv(2,1,2)/lambda5*(1.0d0,0.0d0)
-      ahvv(3,2,1) = 2.0d0*g5hvv(2,2,1)/lambda5*(1.0d0,0.0d0)
+      ahvv(3,2,1) = 2.0d0*g5hvv(2,2,1)/lambda5*(1.0d0,0.0d0)       
 
       return
 
       end
-
 
 
 ********************************************************************************
@@ -417,7 +410,7 @@ c     h -> Z/gamma Z/gamma -> f1 f1bar f3 f3bar for
 c     flav1,flav3
 c     Final state fermions are treated as non-identical particles.
 c
-      subroutine flavor_sum(width)
+      subroutine hzz_width_flavor_sum(width)
 c     only works for h->Z*Z* decay
 
       implicit none
@@ -482,7 +475,7 @@ c    setting mass
                end if
                i = flavor(k)
                j = flavor(l)
-               call hzgammawidth(mass(k),mass(l),i,j,matrix(k,l))
+               call hzz_width(mass(k),mass(l),i,j,matrix(k,l))
                dum = matrix(k,l)*Nc(i)*Nc(j)/factor + dum
             enddo
          enddo
@@ -491,7 +484,7 @@ c    setting mass
          factor = 2.0d0
          do i=1,4
             do j = 1,4         
-               call hzgammawidth(gm(i),gm(j),i,j,matrix1(i,j))
+               call hzz_width(gm(i),gm(j),i,j,matrix1(i,j))
                dum = matrix1(i,j)*Nc(i)*Nc(j)*Nf(i)*Nf(j)/factor + dum
             enddo
          enddo
@@ -509,46 +502,44 @@ c
 *** iflav1 and iflav3 are the fermion flavours 
 *** flavor_sum runs over all of the end-state fermions
 
-      subroutine hzgammawidth(mf1,mf3,iflav1,iflav3,width)
+      subroutine hzz_width(mf1,mf3,iflav1,iflav3,width)
 
       implicit none
 
-      real*8 width,mf1,mf3,mh,qsq1,qsq2,ss1,ss2
-      integer flav1,flav3
-      integer iflav1,iflav3      
+      real*8, intent(out) :: width
+      real*8, intent(in) :: mf1,mf3
+      integer, intent(in) :: iflav1,iflav3      
+
+      integer :: flav1,flav3
       common/flavors/flav1,flav3
-      real*8 mu1,mu3,x1,x2
+
+      real*8 mu1,mu3
       common/masses/mu1,mu3
-      DOUBLE PRECISION CLR,XM2,XMG,B,V,A
-      COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
-      integer id                !id = 3,4 W"s 2 is Z
-      common /partid/ id 
+
+      real*8 :: hzz_width_1d,gaus
+      external hzz_width_1d
+      external gaus
+      double precision relerr, abserr
          
-      id = 2                    !always -- i.e. Z
       flav1 = iflav1
       flav3 = iflav3
       
       mu1 = mf1
       mu3 = mf3
       
-
-      x1 = 0.0d0
-      x2 = 1.0d0
-
-      call quad2dim(x1,x2,ss2)
-      width = ss2 
-
-      return
+      relerr = 1d-6
+      abserr = 1d-10
+      width = gaus(hzz_width_1d,0.0d0,1.0d0,relerr,abserr)
       end
-c    
-c
+
+
 ********************************************************************************
 *** This is the function that's (eventually) called to calculate the 
 *** H -> ZZ -> 4f width
 *** It's (I think) the equivalent of the function 'fun' in koppln.F that's 
 *** used to calculated H -> ZZ in the SM
       
-      real*8 function dgam(xx,yy)
+      real*8 function hzz_width_amp(xx,yy)
 
       implicit none
 
@@ -566,7 +557,6 @@ c
       real*8 Jac2,Jac1
       real*8 lowq2(2),hiq2(2)
  
-      
 c     convention here is 2 is yy
 c     1 is xx 
 c      qsq1 = yy
@@ -575,13 +565,13 @@ c      qsq2 = xx
       hiq2(1) = xm2(6)
 c      print*,"xm2(6)=",xm2(6)
          
-      call com_Jq2(1,lowq2,hiq2,xx,qsq1,Jac1) !outer integral
+      call com_Jq2(1,lowq2,hiq2,xx,qsq1,Jac1,2) !outer integral
       
 c     compute bound on inner integration dy or 2
       lowq2(2) = 4.0d0*mu3**2
       hiq2(2) = (sqrt(xm2(6))-sqrt(qsq1))**2
 
-      call com_Jq2(2,lowq2,hiq2,yy,qsq2,Jac2) !inner integral
+      call com_Jq2(2,lowq2,hiq2,yy,qsq2,Jac2,2) !inner integral
 
 c      print*,"hiq2 in unit g(x,y)=",hiq2
 c      print*,"lowq2 in unit g(x,y)=",lowq2
@@ -613,93 +603,48 @@ c            print*,"flav11,flav3=",flav1,flav3
       lamb2 = qsq2/xm2(6)
       call lambda1(1.0d0,lamb1,lamb2,factor)
 c      print*,"dum=",dum
-      dgam = dum1*factor*(1.0d0/(8.0d0*pi))*
+      hzz_width_amp = dum1*factor*(1.0d0/(8.0d0*pi))*
      $     (1.0d0/(32.d0*pi**2))**2 
      $     *(1.d0/(2.0d0*pi))**2 * 1.d0/(2.0d0*sqrt(xm2(6)))
 
-      dgam = dgam*Jac1*Jac2     !mult by jacobians
+      hzz_width_amp = hzz_width_amp*Jac1*Jac2     !mult by jacobians
 
-      return
       end
-c      
-
-
-********************************************************************************
-c
-*** Function used in calculation of H -> ZZ -> 4f
-
-      real*8 function ddwidth(yy)
-      implicit none
-      real*8 yy,x,y,dgam
-      common/xy/ x,y
-      external dgam
-
-      y = yy
-      ddwidth = dgam(x,y)
-
-      return
-      end
-
-
-********************************************************************************
 
 *** Function used in calculation of H -> ZZ -> 4f
 
-      real*8 function dwidth(xx)
+      real*8 function h_zz_width_amp_call(y)
       implicit none
-      real*8 eps
-      parameter(eps = 1.0d-5)
-      real*8 xx,y1,y2,x,y
-      common /xy/ x,y
-      real*8 ss,gaus,ddwidth      
-      
-      DOUBLE PRECISION CLR,XM2,XMG,B,V,A
-      COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
-     
-      integer flav1,flav3      
-      common/flavors/flav1,flav3
-      
-     
-      external ddwidth
+      real*8 y,x,hzz_width_amp
+      common/x_hzz_amp/ x
+      external hzz_width_amp
+
+      h_zz_width_amp_call = hzz_width_amp(x,y)
+      end
+
+
+*** Function used in calculation of H -> ZZ -> 4f
+      real*8 function hzz_width_1d(xx)
+      implicit none
+      real*8, intent(in) :: xx
+
+      real*8 :: x
+      common /x_hzz_amp/ x
+
+      real*8 gaus,h_zz_width_amp_call      
+      external h_zz_width_amp_call
       external gaus     
-c
+
+      double precision relerr, abserr
+      relerr = 1d-6
+      abserr = 1d-10
+
       x = xx
-      
-      y1 = 0.0d0
-      y2 = 1.0d0
-      ss = gaus(ddwidth,y1,y2,eps)
-        
-      dwidth = ss
-      return
+      hzz_width_1d = gaus(h_zz_width_amp_call,0.0d0,1.0d0,relerr,abserr)
       end
 
-
-********************************************************************************
-
 *** Function used in calculation of H -> ZZ -> 4f
-
-      subroutine quad2dim(x1,x2,ss)
-      implicit none
-      integer i
-      real*8 eps
-      parameter(eps = -1.0d-2)
-      real*8 ss,x1,x2,dwidth,gaus2
-      external dwidth
-      external gaus2
-     
-      ss = gaus2(dwidth,x1,x2,eps)  
-
-      return
-      end
-
-
-
-********************************************************************************
-
-*** Function used in calculation of H -> ZZ -> 4f
-
       subroutine computeIs(qsq1,qsq2,arrayOFints)
-
       implicit none
 
       integer i,j
@@ -711,11 +656,7 @@ c
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
 
 c     initialize
-      do i=1,3
-         do j=1,3
-            arrayOFints(i,j) = 0.0d0
-         enddo
-      enddo
+      arrayOFints = 0.0d0
 c     compute q1.q2
       q1q2 = (xm2(6) - qsq1 - qsq2)/2.d0
 c
@@ -728,20 +669,15 @@ c      Fill arrayOFints
       arrayOFints(2,1) = arrayOFints(1,2)
       arrayOFints(2,2) = (64.d0/9.d0)*pi**2 *qsq1*qsq2 *
      1     (2.0d0*q1q2**2 + qsq1*qsq2)
-      return
       end
 
 
-********************************************************************************
-c
 c     compute jacobian and q2.  USed in H -> ZZ -> 4f and H -> Zgamma -> 2f gam
 
-      subroutine com_Jq2(ich,lowq2,hiq2,r,qsq,J)
-
+      subroutine com_Jq2(ich,lowq2,hiq2,r,qsq,J,id)
       implicit none
 
       integer id                !id = 3,4 W"s 2 is Z
-      common /partid/ id
       double precision XM2s(6),XMGs(6)
       COMMON /BKOPOUshort/ XM2s,XMGs
       real*8 r,qsq,J             ! J is the jacobian and r is the variable 
@@ -792,18 +728,15 @@ c         print*,"masses=",mu1,mu3
             rmidl = rmid
          endif
 c         print*,"rmid=",rmid
-         call calZ(c,xmin)
-         call calZ(b,xmax)
+         call calZ(c,xmin,id)
+         call calZ(b,xmax,id)
          x = xmin +(r - rmidl)/(1.0d0 - rmidl)*(xmax - xmin)
-         call calQ2(x,qsq)
+         call calQ2(x,qsq,id)
          
          J = (xmax - xmin)/(1.0d0 - rmidl) 
      $        * xmgs(id)*(dtan(x)**2 + 1.0d0)
       endif
-c      print*,J,q2
-      return
       end
-c
 
 
 ********************************************************************************
@@ -813,15 +746,18 @@ c
 *** It's called from width_hgamff (which sums over fermion type)
 *** idf is fermion type, mf is fermion mass
 
-      subroutine widthhgz(idf,mf,q2,width)
+      subroutine hzgamma_width_amp(idf,mf,q2,width)
       implicit none
-      integer idf,i,j               !1 for neutrino,2 for electron,3 for up, 4
+      integer, intent(in) :: idf               !1 for neutrino,2 for electron,3 for up, 4
                                     !for down
-      real*8 cc(3),width(4),ratio(3) !1 is gg* 2 is gz* and 3 is the 
+      integer i,j
+      real*8 cc(3) !1 is gg* 2 is gz* and 3 is the 
                                      ! interference term
+      real*8, intent(out) :: width(4)
       common/constants/cc
-      real*8 q2,FF2(3),psfactor ! q squared of decaying boson
-      real*8 delta,mg,mz,mh,mf,Pi,Lamb1,c1,c2,c3
+      real*8 FF2(3),psfactor ! q squared of decaying boson
+      real*8, intent(in) :: mf, q2
+      real*8 mg,mz,mh,Pi
       parameter(Pi= 3.141592653589793d0)
      
       double complex ahvv(3,4,4), ahvvL(3,4,4)
@@ -890,37 +826,27 @@ c         write(6,*)"dw/dq2 =",width(i),"for",i
 
 *** Function used in calculation of H -> gamma Z -> gamma ff
 
-      function dw(xx)  ! interface with subroutine dwidth
+      function hzgamma_width_amp_call(xx)  ! interface with subroutine dwidth
 
       implicit none
 
-      integer idf,iflav
+      integer idf
       common/flav/ idf
-      integer id                !id = 3,4 W"s 2 is Z
-      common /partid/ id
-      real*8 dw,xx,q2
+      real*8 hzgamma_width_amp_call,xx,q2
       integer jj
       common/choice/jj
       real*8 mass(2),mf
-* mass1 is set by the arguments of quad1d, mass(1) = mfermion, mass(2) = mhiggs
       common/mass1/mass
-      real*8 ss,gaus,dpw(4)
+      real*8 dpw(4)
       real*8 jac,lowq2(2),hiq2(2)
-      external gaus
       
-      id = 2
-c     
+
       lowq2(1) = 4.0d0*mass(1)**2
       hiq2(1) = mass(2)**2
-      call com_Jq2(1,lowq2,hiq2,xx,q2,Jac)
-      iflav = idf
-      mf = mass(1)
-      call widthhgz(iflav,mf,q2,dpw)
+      call com_Jq2(1,lowq2,hiq2,xx,q2,Jac,2)
+      call hzgamma_width_amp(idf,mass(1),q2,dpw)
 
-c      dw  = dpw(2)+dpw(3)+dpw(1)
-      dw = dpw(jj)*jac          !mult by jacobian
-
-      return
+      hzgamma_width_amp_call = dpw(jj)*jac          !mult by jacobian
       end
 
 
@@ -928,8 +854,7 @@ c      dw  = dpw(2)+dpw(3)+dpw(1)
 c
 ** USed in calculation of H -> Z gamma -> ff gamma
 
-      subroutine quad1d(ii,iflav,mf,hmass,ss)
- 
+      subroutine hzgamma_width_1d(ii,iflav,mf,hmass,ss)
       implicit none
 
       integer idf,iflav
@@ -938,23 +863,19 @@ c
       common/choice/jj
       real*8 mass(2),mf,hmass
       common/mass1/mass
-      real*8 eps
-      parameter(eps = 1.0d-7)
-      real*8 ss,x1,x2,dw,gaus
-      external dw
+      real*8 ss,x1,x2,hzgamma_width_amp_call,gaus
+      external hzgamma_width_amp_call
       external gaus
+
+      double precision relerr, abserr
 
       jj = ii
       idf = iflav
       mass(1) = mf
       mass(2) = hmass
-      x1 = 0.0d0
-      x2 = 1.0d0
-      ss = gaus(dw,x1,x2,eps)  
-c      write(6,*) ss
-
-      return
-
+      relerr = 1d-6
+      abserr = 1d-10
+      ss = gaus(hzgamma_width_amp_call,0.0d0,1.0d0,relerr,abserr)
       end
 
 
@@ -964,7 +885,7 @@ c      write(6,*) ss
 ***          h-> gamma/Z* gamma -> f fbar gamma
 *** for anomalous higgs-V couplings
 
-      subroutine width_hgamff(width)
+      subroutine hzgamma_width(width)
 
       implicit none
 
@@ -976,8 +897,8 @@ c      write(6,*) ss
       real*8 Nf(4)
 c     nu_e,e,nu_mu,mu,nu_tau,tau,u,d,c, s, b
 c     1    2   3   4    5    6   7 8 9 10 11
-      integer i,j,k,l,flavor(11)
-       real*8 pi,q2min,q2max
+      integer j,k,flavor(11)
+       real*8 pi
       parameter(pi=3.141592653589793d0)
       logical ldoALL
       data flavor/1,2,1,2,1,2,3,4,3,4,4/
@@ -1002,23 +923,20 @@ c     compute geometric means of masses
       gm(3) = (Mf(3,1)*Mf(3,2))**(1.0d0/2.d0)
       gm(4) = (Mf(4,1)*Mf(4,2)*Mf(4,3))**(1.0d0/3.d0)
 
-      dum =0.0d0
+      width =0.0d0
       if(ldoALL) then
           do k=1,11
              j = flavor(k)
-             call quad1d(4,j,gm(j),xmh,matrix(k))
-             dum = matrix(k)*Nc(j) + dum
+             call hzgamma_width_1d(4,j,gm(j),xmh,matrix(k))
+             width = matrix(k)*Nc(j) + width
           enddo
        else
           do j = 1,4
-             call quad1d(4,j,gm(j),xmh,matrix1(j))
-             dum = matrix1(j)*Nc(j)*Nf(j) + dum
+             call hzgamma_width_1d(4,j,gm(j),xmh,matrix1(j))
+             width = matrix1(j)*Nc(j)*Nf(j) + width
           enddo
        endif
        
-      width = dum
-
-      return
       end
 
 
@@ -1060,8 +978,6 @@ c     elektroweak parameters used here:
       double precision d, dodd, dB, dBo, dg1Z, dkgam, kgamo
       double precision fWW, fWWo, fBB, fBBo, fW, fB, fBo
       double precision fBW, fBWo, fWo, fPHI
-
-      integer i, j, k
 
 
       g = Sqrt(4*pi*AlfaQED)/SW

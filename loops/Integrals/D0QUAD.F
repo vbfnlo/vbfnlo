@@ -2,20 +2,20 @@
       IMPLICIT NONE
       complex*32 D0finG_QUAD
       real*16 m0,m1,m2,m3,p1,p2,p3,p4,s12,s23,musq
-      real*16 m0s,m1s,m2s,m3s
+
       complex*32 D04QUAD1 !D0fin!,D0t1,D0t2,D0t3,D04
       External D04QUAD1   !D0fin!,D0t1,D0t2,D0t3,D04
 c      complex*32 rslt(0:2)
       real*16 eps
       parameter (eps=1d-6)
-      logical UseAVH, UseFF
+      logical UseFF
       real*16 xpi(13)
-      integer i,ier
+      integer ier
 c      parameter (UseAVH=.false.)
       parameter (UseFF=.true.)
       
       real*8 m0_D,m1_D,m2_d,m3_D,s12_D,s23_D,p1_D,p2_D,p3_D,p4_D,musq_D
-      real*8 xpi_d(13)
+
       external D04
       complex*16 D04, D0finG_dble
 
@@ -139,7 +139,6 @@ c           pause
         end function
 
 
-
 c      function D0fin_QUAD(s,t,p1sq,p2sq,p3sq,p4sq,musq)
        subroutine D0fin_QUAD(s,t,p1sq,p2sq,p3sq,p4sq,musq,D0_fin_QUAD)
        implicit none
@@ -254,14 +253,6 @@ c  D(s,t,p1sq,p2sq,p3sq,p4sq)
          end subroutine
 
 
-
-
-
-
-
-
-
-
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -269,8 +260,6 @@ CCCCCCCCCCC                SCALAR INTEGRALS                CCCCCCCCCC
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-
-
 
 
 c    ***********   D00m_fin_QUAD(s,t,musq)   *************
@@ -298,11 +287,11 @@ c      complex*32 function D00m_fin_QUAD(s,t,musq)
       subroutine  D00mfin_QUAD(s,t,musq,D00m_fin_QUAD)
       implicit none
       complex*32 D00m_fin_QUAD
-      real*16  s,t,m4sq,musq
-      real*16  ms,mt,mm4sq
-      complex*32 lnms,lnmt,lnmm4sq,lnsot
-      complex*32 li2arg1,li2arg2
-      real*16  arg1,arg2
+      real*16  s,t,musq
+      real*16  ms,mt
+      complex*32 lnms,lnmt,lnsot
+
+
       complex*32 ipi
       parameter (ipi=(0q0,3.14159265358979323846264338327950288q0))
       real*16  pi,pi2, pi2o3t5
@@ -421,13 +410,6 @@ c     #   -pi2o3t2
       D01m_fin_QUAD = prefactor * ris
       return
       end
-
-
-
-
-
-
-
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -673,8 +655,6 @@ c      write(*,*) "ris", ris
       end
 
 
-
-
 c    ***********   D03m_fin_QUAD(s,t,m2sq,m3sq,m4sq,musq)   *************
 c
 c Scalar box with MASSLESS PROPAGATORS and with external kinematics: 
@@ -709,8 +689,6 @@ c      D03m_fin_QUAD = D03m_fin_QUAD_DN(s,t,m2sq,m3sq,m4sq,musq)
 c      write(*,*)" here 2 D03m_fin_QUAD",D03m_fin_QUAD
       return
       end
-
-
 
 
 c      function D03m_fin_QUAD_BDK(s,t,m2sq,m3sq,m4sq,musq)
@@ -802,7 +780,6 @@ C QCD looptools
       li2arg3 = li2arg3  + 2*ipi*eta3_QUAD(im_a,im_b,im_ab)*lnarg3
 
 
-  
       ris = (lnms*lnms+lnmt*lnmt-lnmm2sq*lnmm2sq-lnmm4sq*lnmm4sq)/2q0
      #     +lnmm2sq*lnmm3sq
      #     -(lnmm3sq+lnmm2sq-lnmt)*lnmt+lnmm3sq*lnmm4sq
@@ -816,15 +793,10 @@ C QCD looptools
 c      D03m_fin_QUAD_BDK =QCMPLX(real(D03m_fin_QUAD_BDK),imag(D03m_fin_QUAD_BDK))
 
 
- 
-
       return
     
 
       end
-
-
-
 
 
 c    ***********   D04m_fin_QUAD(s,t,m1sq,m2sq,m3sq,m4sq,musq)   *************
@@ -886,7 +858,7 @@ c      complex*32 function D04m_fin_QUAD(s,t,m1sq,m2sq,m3sq,m4sq,musq)
       complex*32 eta_k34ok13(2),eta_k24ok12(2)
       complex*32 lik34ok13(2), logk34ok13(2)
       complex*32 lik24ok12(2), logk24ok12(2)
-      complex*32 D04m_fin_QUAD_real
+
       real*16 delta,Ia2
       External dilog_QUAD
       m2 = 1q0                  ! > 0 ALWAYS!
@@ -985,7 +957,6 @@ c     complex dilog_QUAD
       enddo
 
 
-
 c      write(*,*) '=========>', 
 c     #     (lnk12+lnk13-lnk14-lnk23)*(-ln_mx(1)+ln_mx(2))
 
@@ -1001,9 +972,6 @@ c     #     (lnk12+lnk13-lnk14-lnk23)*(-ln_mx(1)+ln_mx(2))
       D04m_fin_QUAD = total/a/m2**2/(x(1)-x(2))
       return
       end
-
-
-
 
 
 cfc************************************************************************
@@ -1548,20 +1516,6 @@ cfc
 cfc	END
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ***********************************************************************
         FUNCTION ETA_QUAD(C1,C2)                                            
 ***********************************************************************
@@ -1635,12 +1589,7 @@ cfc	END
 	   SQE_QUAD=X2
 	ENDIF
 
-        END  
-
-
-
-
-
+        END
 
 
       real*16 function eta3_QUAD(im_a,im_b,im_ab)
@@ -1673,8 +1622,6 @@ c      real*16  sgn_QUAD
          sgn_QUAD = -1q0
       endif
       end
-
-
 
 
       real*16 function im_part_QUAD(a,b)

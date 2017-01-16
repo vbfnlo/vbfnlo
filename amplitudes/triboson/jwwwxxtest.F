@@ -35,7 +35,7 @@ c
       double complex cm2        ! mass**2- I Gamma mass (Fabio)
       double precision gwwa,gwwz,wmass,wwidth
       double precision p1(0:3),p2(0:3),p3(0:3),q(0:3)
-      double precision dgwwa2,dgwwz2,dgw2,dmw,dww,mw2,q2
+      double precision dgw2,dmw,dww,mw2,q2
 
       double precision rZero, rOne, rTwo
       parameter( rZero = 0.0d0, rOne = 1.0d0, rTwo = 2.0d0 )

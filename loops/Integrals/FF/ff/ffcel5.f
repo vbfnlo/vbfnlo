@@ -546,14 +546,14 @@
 		print *,'      jnow,jj = ',jnow,jj
 	    endif
 	    if ( absc(dl4r) .ge. xloss**2*xmax ) goto 120
-   99	    continue
+     	    continue
 *	    increase with something that is relative prime to 125 so that
 *	    eventually we cover all possibilities, but with a good
 *	    scatter.
 	    jnow = jnow + 49
 	    if ( jnow .gt. 125 ) jnow = jnow - 125
   100	continue
-  109	continue
+     	continue
 *	again, a number relative prime to 125 and a few times smaller
 	inow = inow + 49
 	if ( inow .gt. 125 ) inow = inow - 125
@@ -562,7 +562,7 @@
   120	continue
 *  #] calculations:
 *  #[ into memory:
-  800	continue
+     	continue
 	memind = memind + 1
 	if ( memind .gt. mem ) memind = 1
 	memarr(memind,1) = id

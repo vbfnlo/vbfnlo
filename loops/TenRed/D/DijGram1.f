@@ -391,7 +391,6 @@ c       return
            endif
       endif
 
-       
 
        kinit=k
        linit=l
@@ -405,7 +404,6 @@ c       jj=3
 c       k=kinit
 c       l=linit
 c       Zmax=Z(k,l)
-
 
 
 c       if(jj.eq.1)  IX=1/TX1
@@ -888,7 +886,6 @@ cFC        print*, 'tempjj',tempjj
 cFC        print*, 'jjtemp',jjtemp
 cFC        print*, "F(5)",F(5)
 c FC %
-
 
 
        tempkl1=abs(det4*temp2(1,1)/(Z(1,1)*4d0))

@@ -1,5 +1,6 @@
 c
       subroutine qqwppqqj(pbar,sign,qbar,gsign,bos,ucds)
+          use globalvars, only: ldoblha
 
       implicit none
 c
@@ -59,14 +60,14 @@ c
       parameter (fpi=4d0*pi)
 
       double precision  pbar(0:3,4+n_v),qbar(0:4)
-      double precision ucds(3),res(2:3),resv(3)
+      double precision ucds(3),res(2:3)
       double precision  p(0:3,4+n_v),q(0:4), p21(0:4,2:3), p43(0:4,2:3),
      1                  pq(0:4,4),pew(0:4),puw(0:4),pww(0:4),
      2			qee(0:4,2:3),quu(0:4,2:3)
  
       integer  sign(4+n_v),gsign, bos
       integer  mu, i, j, isig, is
-      integer  ifl(4), js1, js3 
+      integer  ifl(4) 
       integer  l   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
       integer jmin, jmax
       logical jlog2,jlog3
@@ -133,6 +134,13 @@ c
       data linit /.true./, lerror /.true./, ldebug /.false./
 c      data linit /.true./, lerror /.true./, ldebug /.true./
       
+      logical vvdebug,bbdebug,vbdebug,pdebug
+      parameter (vvdebug = .false.,bbdebug = .false.,
+     &  	 pdebug = .false.,vbdebug = .false.) 
+c      parameter (vvdebug = .false.,vbdebug = .false.,
+c     &  	 pdebug = .true.,bbdebug = .false.) 
+c      parameter (vvdebug = .true.,vbdebug = .true.,
+c     &  	 pdebug = .true.,bbdebug = .true.) 
 c
 c  ---------------------------------------------------------------------
 c 
@@ -413,6 +421,94 @@ c
            endif
         enddo                   ! l-loop
      
+c ----------------------------------------------------------------    
+c
+c check result against madgraph output:
+
+        if (vvdebug) then
+           do lh = -1,1,2	! gluon pol. in hel. basis
+              
+	! need to distingiush between j=2,3 for gsign = -1
+              m1hj(lh,2) = 0    ! g to upper line (j=2)
+              m1hj(lh,3) = 0    ! g to lower line (j=3)	     
+              temp = m1hj(lh,2)
+              
+c compute reference result from individual madgraph diagrams tamwpr(i,...):
+ 
+              do i = 261,320
+                 m = 0
+                 do n = 1,30
+                    if (i.eq.list1(n)) then ! g from upper line
+                       temp = m1hj(lh,2) + tamwpr(i,-1,-1,lh)
+                       m = m+1
+                    endif    
+                 enddo          !n
+                 m1hj(lh,2) = temp	
+                 if(m.eq.0) then ! g from lower line
+                    m1hj(lh,3) = m1hj(lh,3) + tamwpr(i,-1,-1,lh) 
+                 endif
+              enddo             !i
+              
+              do i = 351,386
+                 m = 0
+                 do n = 1,18
+                    if (i.eq.list2(n)) then
+                       temp = m1hj(lh,2) + tamwpr(i,-1,-1,lh)
+                       m = m+1
+                    endif    
+                 enddo          !n
+                 m1hj(lh,2) = temp	
+                 if(m.eq.0) then
+                    m1hj(lh,3) = m1hj(lh,3) + tamwpr(i,-1,-1,lh) 
+                 endif
+              enddo             !i	  
+              do i = 417,452
+                 m = 0
+                 do n = 1,18
+                    if (i.eq.list3(n)) then
+                       temp = m1hj(lh,2) + tamwpr(i,-1,-1,lh)
+                       m = m+1
+                    endif    
+                 enddo          !n
+                 m1hj(lh,2) = temp	
+                 if(m.eq.0) then
+                    m1hj(lh,3) = m1hj(lh,3) + tamwpr(i,-1,-1,lh) 
+                 endif
+              enddo             !i	  
+              
+              if(.not.jlog2) m1hj(lh,2) = 0d0
+              if(.not.jlog3) m1hj(lh,3) = 0d0
+              
+           enddo                ! end of lh loop 
+           
+! compute m1 in kartesian basis:
+           do j = 2,3
+              m1kj(1,j) = (m1hj(-1,j)-m1hj(1,j))/sqrt(2d0)
+              m1kj(2,j) = -im*(m1hj(-1,j)+m1hj(1,j))/sqrt(2d0)
+           enddo    	  
+		    
+		    
+c print results from checks:
+
+           print*,'signs:',sign	
+           print*,'gign:',gsign	    
+           print*,' vv results  '
+           
+           do l = 1,2
+              print*,'ratio for l=',l
+              print*,
+     -             (mat(2,l,1))/(m1kj(l,2)),
+     -             (mat(3,l,1))/(m1kj(l,3))
+c    	    print*,'qq results for l=',l
+c	    print*,
+c     -	    	(mat(2,l,1)),(mat(3,l,1))
+c    	    print*,'mg results for l=',l
+c	    print*,
+c     -	    	(m1kj(l,2)),(m1kj(l,3))
+           enddo                !l	  
+           print*	
+            
+        endif                   ! end of debugging block vdebug
       
 c -----------------------------------------------------------------------
 c -----------------------------------------------------------------------
@@ -712,6 +808,98 @@ c$$$                    write(*,*)'j,l,mzue =', j,l,mzue(j,l)
         enddo                   !j
 *        stop
       
+c ----------------------------------------------------------------    
+c
+c debugging:
+c
+c check result as obtained above against madgraph output 
+c		(sum up relevant mg amplitudes in the following):
+
+        if(bbdebug) then
+c		(sum up relevant mg amplitudes in the following):
+	
+           do lh = -1,1,2	! gluon pol. in hel. basis
+ 	    
+	! need to distingiush between j=2,3
+		
+c compute reference result from individual madgraph diagrams tamwpr(i,...):
+	
+              do j = 2,3
+                 m1haj(lh,j) = 0d0 ! graphs with A exchange
+                 m1hzj(lh,j) = 0d0 !		 Z exchange
+              enddo  
+              
+		
+              do m = 1,24       ! g from upper line
+                 i = listab2(m)
+                 m1haj(lh,2) = m1haj(lh,2) + tamwpr(i,-1,-1,lh) 
+              enddo
+              
+              do m = 1,24       ! g from lower line
+                 i = listab3(m)
+                 m1haj(lh,3) = m1haj(lh,3) + tamwpr(i,-1,-1,lh) 
+              enddo
+              
+              do m = 1,24       ! g from upper line
+                 i = listzb2(m)
+                 m1hzj(lh,2) = m1hzj(lh,2) + tamwpr(i,-1,-1,lh) 
+              enddo
+              
+              do m = 1,24       ! g from lower line
+                 i = listzb3(m)
+                 m1hzj(lh,3) = m1hzj(lh,3) + tamwpr(i,-1,-1,lh) 
+              enddo
+              
+	    ! for incoming g: no g emission from other line
+              if(.not.jlog2) m1haj(lh,2) = 0d0
+              if(.not.jlog3) m1haj(lh,3) = 0d0
+              if(.not.jlog2) m1hzj(lh,2) = 0d0
+              if(.not.jlog3) m1hzj(lh,3) = 0d0
+              
+           enddo                ! end of lh loop 	  
+           
+	  		    
+    ! compute m1 in kartesian basis:
+	    
+           do l = 1,2
+	      do j = 2,3
+                 m1kaj(l,j) = 0d0
+                 m1kzj(l,j) = 0d0
+	      enddo
+           enddo  	    
+           
+           do j = 2,3
+              m1kaj(1,j) =     (m1haj(-1,j)-m1haj(1,j))/sqrt(2d0)
+              m1kaj(2,j) = -im*(m1haj(-1,j)+m1haj(1,j))/sqrt(2d0)
+              m1kzj(1,j) =     (m1hzj(-1,j)-m1hzj(1,j))/sqrt(2d0)
+              m1kzj(2,j) = -im*(m1hzj(-1,j)+m1hzj(1,j))/sqrt(2d0)
+           enddo    	
+           
+           
+c     ---------------------------------		 
+
+           do l = 1,2 
+              
+              print*,'box-box contributions:'
+c     print*,'signs:',sign	
+c     print*,'gign:',gsign	    
+              print*,' l = ',l     
+              
+              do j = jmin,jmax	    
+                 
+                 print*,' j = ',j	  
+                 print*,'mg:',m1kaj(l,j)+m1kzj(l,j)
+                 print*,'mat = ',mat(j,l,6)
+                 print*,'ratio = ',(m1kaj(l,j)+m1kzj(l,j))/mat(j,l,6)
+                 print*
+                 
+              enddo             !j
+              
+           enddo                !l
+           
+          
+        endif                   ! debugging  
+
 
 c --------------------------------------------------------------------------
 c --------------------------------------------------------------------------
@@ -975,6 +1163,86 @@ c gauge boson from lower quark line:
         enddo                   !l 
  	   
 
+c ----------------------------------------------------------------    
+c
+c check result against madgraph output 
+c		(sum up relevant mg amplitudes in the following):
+
+        
+        if (vbdebug) then
+
+	
+	  do lh = -1,1,2	! gluon pol. in hel. basis
+ 	    
+	! need to distingiush between j=2,3
+		
+c compute reference result from individual madgraph diagrams tampr(i,...):
+	
+	    do j = 2,3
+	    	m1haj(lh,j) = 0d0  ! graphs with A exchange
+	    	m1hzj(lh,j) = 0d0  !		 Z exchange
+           enddo  
+	   
+		
+	  do m = 1,40
+	      i = listba2(m)
+	      m1haj(lh,2) = m1haj(lh,2) + tamwpr(i,-1,-1,lh) 
+	  enddo
+	  	     
+	 do m = 1,40
+	     i = listba3(m)
+	     m1haj(lh,3) = m1haj(lh,3) + tamwpr(i,-1,-1,lh) 
+	 enddo
+	  
+	   do m = 1,60
+	       i = listbz2(m)
+	       m1hzj(lh,2) = m1hzj(lh,2) + tamwpr(i,-1,-1,lh) 
+	   enddo
+c       
+	   do m = 1,60
+	       i = listbz3(m)
+	       m1hzj(lh,3) = m1hzj(lh,3) + tamwpr(i,-1,-1,lh) 
+	   enddo
+     
+ 	! for incoming g: no g emission from other line
+       	     if(.not.jlog2) m1haj(lh,2) = 0d0
+       	     if(.not.jlog3) m1haj(lh,3) = 0d0
+       	     if(.not.jlog2) m1hzj(lh,2) = 0d0
+       	     if(.not.jlog3) m1hzj(lh,3) = 0d0
+	  
+	  enddo ! end of lh loop 	  	    
+		    
+    ! compute m1 in kartesian basis:
+     		    
+	    do l = 1,2
+	      do j = 2,3
+	    	m1kaj(l,j) = 0d0
+	    	m1kzj(l,j) = 0d0
+	      enddo
+	    enddo  	    
+	    
+	  do j = 2,3
+	    m1kaj(1,j) =     (m1haj(-1,j)-m1haj(1,j))/sqrt(2d0)
+	    m1kaj(2,j) = -im*(m1haj(-1,j)+m1haj(1,j))/sqrt(2d0)
+	    m1kzj(1,j) =     (m1hzj(-1,j)-m1hzj(1,j))/sqrt(2d0)
+	    m1kzj(2,j) = -im*(m1hzj(-1,j)+m1hzj(1,j))/sqrt(2d0)
+	  enddo    	
+
+
+	print*,'compare vertex-box graphs'
+	do j = jmin,jmax
+	   do l = 1,2	
+	      print*,'j,l=',j,l
+       	      print*,'mg  = ',m1kaj(l,j)+m1kzj(l,j)
+       	      print*,'mat = ',mat(j,l,2)+mat(j,l,3)
+       	      print*,'ratio = ',(m1kaj(l,j)+m1kzj(l,j))/
+     % 	        		(mat(j,l,2)+mat(j,l,3))
+     	      print*			      
+	   enddo !l
+	enddo !j
+
+          
+      endif ! debugging
 c	
 c --------------------------------------------------------------------
 c --------------------------------------------------------------------
@@ -1020,7 +1288,6 @@ c  eps1=W,eps2=j_upper,eps3=W'
       endif !jmin
 
 
-
       if(jlog3) then
 c pentagon on upper line:
 c  eps1=v,eps2=j_lower,eps3=v'
@@ -1057,7 +1324,68 @@ c  eps1=v,eps2=j_upper,eps3=v'
       
       
       enddo                     !l
+c
+c ----------------------------------------------------------------    
+c
+c check result against madgraph output 
+c		(sum up relevant mg amplitudes in the following):
 
+
+      if (pdebug) then
+	
+	  do lh = -1,1,2	! gluon pol. in hel. basis
+ 	    
+c compute reference result from individual madgraph diagrams tampr(i,...):
+	
+	   do j = 2,3
+	    	m1hj(lh,j) = 0d0  
+           enddo  
+	   
+	   do m = 1,12
+	      i = listp3(m)
+	      m1hj(lh,3) = m1hj(lh,3) + tamwpr(i,-1,-1,lh) 
+	   enddo
+	  
+	   do m = 1,12
+	      i = listp2(m)
+	      m1hj(lh,2) = m1hj(lh,2) + tamwpr(i,-1,-1,lh) 
+	   enddo
+ 
+     
+ 	! for incoming g: no g emission from other line
+       	     if(.not.jlog2) m1hj(lh,2) = 0d0
+       	     if(.not.jlog3) m1hj(lh,3) = 0d0
+	  
+	  enddo ! end of lh loop 	  	    
+		    
+    ! compute m1 in kartesian basis:
+     		    
+	    do l = 1,2
+	      do j = 2,3
+	    	m1kj(l,j) = 0d0
+	      enddo
+	    enddo  	    
+	    
+	  do j = 2,3
+	    m1kj(1,j) =     (m1hj(-1,j)-m1hj(1,j))/sqrt(2d0)
+	    m1kj(2,j) = -im*(m1hj(-1,j)+m1hj(1,j))/sqrt(2d0)
+	  enddo    	
+
+
+	print*,'compare pentagon graphs'
+	do j = jmin,jmax
+	   do l = 1,2	
+	      print*,'j,l=',j,l
+       	      print*,'mg  = ',m1kj(l,j)
+       	      print*,'mat = ',mat(j,l,7)+mat(j,l,8)
+       	      print*,'ratio = ',(m1kj(l,j))/
+     % 	        		(mat(j,l,7)+mat(j,l,8))
+     	      print*			      
+	   enddo !l
+	enddo !j
+
+          
+      endif ! debugging
 c --------------------------------------------------------------------------
 c --------------------------------------------------------------------------
 
@@ -1088,12 +1416,14 @@ c$$$         write(*,*)'j, res =', j, res(j)
 	enddo 
  	print*,'sum j = 2,3:'
         print*,'ucds(2+3):',ucds(1),(res(2)+res(3))/ucds(1)
+      endif
 
-        if (((res(2)+res(3))/ucds(1)-1).gt.1d-6) then
-           print*,'gsign=',gsign
-           print*,' qq,mg',':',(res(2)+res(3)),ucds(1)
-           print*,' res-ratio',':',(res(2)+res(3))/ucds(1)-1
-        endif
+      if (ldebug) then
+            if (((res(2)+res(3))/ucds(1)-1).gt.1d-6) then
+	    	  print*,'gsign=',gsign
+                  print*,' qq,mg',':',(res(2)+res(3)),ucds(1)
+                  print*,' res-ratio',':',(res(2)+res(3))/ucds(1)-1
+            endif
       endif ! ldebug
 
       if (ldoblha) then

@@ -95,7 +95,6 @@ c 4-6
       end
 
 
-
       subroutine prod_mat_col2(M,col,res)
       implicit none
       real * 8 M(1:2,1:2)

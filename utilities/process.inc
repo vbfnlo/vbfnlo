@@ -3,7 +3,6 @@
 !!! CONTINUATION LINES ARE NOT ALLOWED, COMMENTS HAVE TO START WITH AN !
 
 
-
       INTEGER lepgens
       LOGICAL alllep_flag
       common /alllep/ lepgens, alllep_flag
@@ -249,7 +248,6 @@
       PARAMETER( WMjLOb       = 91340  )
 
 
-
       INTEGER GFWW, GFZZ, GFZA, GFAA
       INTEGER GFWPhadWMlep, GFWPlepWMhad
       INTEGER GFZZhad
@@ -483,8 +481,8 @@
       INTEGER QCDZZjj_ll,QCDZZjj_lnu,QCDZZjjjLO_ll,QCDZZjjjLO_lnu
       INTEGER QCDWPAjj, QCDWMAjj, QCDWPAjjjLO, QCDWMAjjjLO
       INTEGER QCDZAjj_l,  QCDZAjjjLO_l, QCDAAjj, QCDAAjjjLO
-      INTEGER QCDZAjj_n,  QCDZAjjjLO_n, QCDWPWMjj
-      PARAMETER( QCDWPWMjj     =  3200 )
+      INTEGER QCDZAjj_n,  QCDZAjjjLO_n
+      !PARAMETER( QCDWPWMjj     =  3200 )
       PARAMETER( QCDZZjj_ll    =  3210 )
       PARAMETER( QCDZZjj_lnu   =  3211 )
       PARAMETER( QCDZZjjjLO_ll = 93210 )

@@ -132,7 +132,6 @@ c      dz = rOne/dcmplx( q2-zm2, zmw )
 c      ddif = dcmplx( -zm2, zmw )*da*dz
 
 
-
       cw = rOne/sqrt(rOne+(gzf(2)/gaf(2))**2)
       sw = sqrt((rOne-cw)*(rOne+cw))
       gn = gaf(2)*sw

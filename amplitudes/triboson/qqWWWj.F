@@ -19,10 +19,6 @@ c-------------------------------------------------------------------------------
 c-------------------------------------------------------------------------------
 
 
-
-
-
-
 c****************subroutine QQWWWpJ ********************************************
 C
 C  QQWWWpj calculates the matrix elements**2 for 
@@ -72,9 +68,9 @@ c variables for the main part of the program
       double precision res, qqbarWWWj
       double precision p(0:3,2+n_v)
 
-      integer  sign(2+n_v), gsign, mu, i, j, k, isig
+      integer  sign(2+n_v), gsign, mu, i
       integer  NW
-      integer  ifl(2), lh, l
+      integer  lh, l
 
 c internal variables
 
@@ -102,8 +98,7 @@ c matrix variables
       double complex mat(2,6), madgr(6,-1:1)
       double complex mm(2)
       double complex m1kb(6), m2kb(6), temp, temp1
-      double complex m1(3,2), m2(3,2), m3(3,2), m4(3,2)
-      double complex ma, mz
+      double complex m1(3,2)
 
 
       double complex im
@@ -111,7 +106,6 @@ c matrix variables
       double precision dotrr
       double complex czero 
       external dotcc, s1c, dotrc, dotrr
-      save ifl
       parameter (im = (0d0,1d0))
       parameter (czero = (0d0,0d0) )
 
@@ -436,10 +430,6 @@ c  end of subroutine qqWWWpj
 c*******************************************************************************
 
 
-
-
-
-
 c****************subroutine QQWWWmJ ********************************************
 C
 C  QQWWWpj calculates the matrix elements**2 for 
@@ -487,9 +477,9 @@ c variables for the main part of the program
       double precision res, qqbarWWWj
       double precision p(0:3,2+n_v)
 
-      integer  sign(2+n_v), gsign, mu, i, j, k, isig
+      integer  sign(2+n_v), gsign, mu, i
       integer  NW
-      integer  ifl(2), lh, l
+      integer  lh, l
 
 c internal variables
 
@@ -517,15 +507,14 @@ c matrix variables
       double complex mat(2,6), madgr(6,-1:1)
       double complex mm(2)
       double complex m1kb(6), m2kb(6), temp, temp1
-      double complex m1(3,2), m2(3,2), m3(3,2), m4(3,2)
-      double complex ma, mz
+      double complex m1(3,2)
+
 
       double complex im
       double complex dotcc, s1c, dotrc
       double precision dotrr
       double complex czero 
       external dotcc, s1c, dotrc, dotrr
-      save ifl
       parameter (im = (0d0,1d0))
       parameter (czero = (0d0,0d0) )
 

@@ -10,7 +10,7 @@ c*******************************************************************************
 c************************************************************************************
         Implicit none
         Real*8 p1sq,m0,m1,m0sq,m1sq,musq
-        Complex*16 B012,A2,A1,A202,A402,A602,A802,A1002,A1202
+        Complex*16 B012,A2,A1,A202,A402,A602,A802,A1002
         Complex*16 B12(6,11)
         Real*8 Inv2,Inv3,Inv5,Inv6,Inv8,Inv12,Inv18,Inv20,Inv24,Inv36
      &         ,Inv48,Inv60
@@ -30,7 +30,7 @@ c*******************************************************************************
         real*8 Inv22680,Inv25200,Inv304920,Inv332640,Inv560,Inv980
 c-------the size of eps1 should still be checked!
         Parameter(eps1=1d-7)
-        integer index(11),i1,i2,I
+        integer I
 
 c 	------ variables for numeric Calculation of B12 -----
         complex*16 x1,x2,f_n,epsilon
@@ -56,7 +56,6 @@ c FC %       index(11)=6
        Inv304920  =1D0/304920d0
        Inv22680=1d0/22680d0 
        Inv332640    =    1d0/332640d0
-
 
 
         Inv2=1d0/2d0
@@ -464,7 +463,6 @@ c FC %       enddo
 !       Endif
        return
        End
-
 
 
 c     ---------------------------------------------------------------

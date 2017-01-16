@@ -12,10 +12,9 @@ c
 
 
       return 
-      end       
+      end
 
 
-        
       function ten2ccAbs(T1,T2)
 c Author: Francisco Campanario
 c Contraction of T^munu T^munu

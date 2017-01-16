@@ -1,4 +1,5 @@
       subroutine HAjj_ME(pbar,pAbar,sign,nlo,uucc,uuss,ddcc,ddss,udsc,ducs)
+          use globalvars, only: ldoblha
 
       IMPLICIT NONE
 
@@ -10,7 +11,7 @@
       integer sign(4+n_v),nlo,iisig(3,4),i,k,iflavF1,iflavF3,isigA,
      $     isigF,iinsA,iflav,isigF1,isigF3,iflavF2,iflavF4,mu,ibos
       double precision uucc,uuss,ddcc,ddss,udsc,ducs, res(6),
-     $     ph(0:4),den,fac,p57,p68,p87,pbar(0:3,4+n_v-1),pAbar(0:3),
+     $     fac,pbar(0:3,4+n_v-1),pAbar(0:3),
      $     p(0:3,4+n_v-1),pA(0:4),scale(2),pIntBosu(0:4),pIntBosl(0:4),
      $     resvirt(6),fac1,fac2,alsUpperc2o4pi,alsLowerc2o4pi,alsULcvirtc2o4pi
       double precision tree(6)
@@ -28,9 +29,9 @@
      $     SubAmpTBVl(3:4,3:4,4,-1:1),BoxL(4,3:4,3:4,-1:1,-1:1,-1:1,2:3),
      $     VirtUpper(3:4,3:4,4,-1:1,2:3),
      $     VirtLower(3:4,3:4,4,-1:1,2:3),
-     $     VirtUpper2(3:4,3:4,-1:1,-1:1,-1:1,2:3),
-     $     VirtLower2(3:4,3:4,-1:1,-1:1,-1:1,2:3),
-     $     resultgauge(2,4),resultgaugeb(2,4),resultb,
+     $     
+     $     
+     $     resultgauge(2,4),resultgaugeb(2,4),
      $     BornCheck(4,3:4,3:4,-1:1,-1:1,-1:1,2:3), cte
 
       logical passcheck(4,3:4,3:4,-1:1,-1:1,-1:1,2:3)
@@ -594,11 +595,9 @@ c$$$  $                          BornCheck(4,iflavF1,iflavF3,isigF1,isigF3,isigA
 c$$$  BornCheck(4,iflavF1,iflavF3,isigF1,isigF3,isigA,3)=
 c$$$  $                 BornCheck(4,iflavF1,iflavF3,isigF1,isigF3,isigA,3)*GBF((isigF3+3)/2,1,iflavF4)*GBF((isigF3+3)/2,3,iflavF3)
             enddo
-         enddo 
+         enddo
 
 
-
-         
          i=1
          do isigA=-1,1,2  
             do isigF=1,4
@@ -1830,7 +1829,7 @@ c but should work for other VBF processes as well
 #include "VBFNLO/utilities/coupl.inc"
 
       integer sign(4+n_v),iisig(3,4),i,iflavF1,iflavF3,isigA,
-     $     isigF,iinsA,iflav,isigF1,isigF3,iflavF2,iflavF4,mu,kin
+     $     isigF,iinsA,kin
       double precision uucc,uuss,ddcc,ddss,udsc,ducs, res(6),fac
       
       double complex Higgs(6),Curr12(6,2:3,3:4,-1:1,2:3),

@@ -16,6 +16,9 @@ c ******************************************************************************
      &                   rn,
      &                   m2s
      &                        )
+
+      use globalvars, only: ldoblha
+
       implicit none
 c 
 c declare input/output variables
@@ -23,6 +26,7 @@ c
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "common.inc"
       integer nbos
       real*8 xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), m2s(0:max_kin)
@@ -38,7 +42,7 @@ c declare local variables
 c
       real*8 q_sf
 
-      integer init/0/, I, J, k, l, m,n, mu, nu
+      integer init/0/, I, J, k
       save init
 c
 c declare variables for summation process
@@ -61,7 +65,7 @@ c local varriables
       logical FLskip(2)
       logical ldebug,lallsub
 !       parameter (ldebug=.false.)
-      real*8 dotrr, mjj2
+      real*8 mjj2
       integer qcdVVjjkin
 
       double precision  clr, xm2, xmg, b
@@ -69,11 +73,11 @@ c local varriables
       
       integer helswitch
       common/helswitchTemp/ helswitch
-      real*8 pMG(0:3,9)
+
 
       ldebug = .false.
 
-      if ( init .eq. 0 ) then
+      if ( (init .eq. 0) .and. (.not. ldoblha) ) then
         if(nbos .eq. 32) then
          write(6,*) "QCD W+Z jjj amplitude square information:"
         elseif(nbos.eq.42) then
@@ -95,6 +99,8 @@ c local varriables
          write(6,*) "alpha parameter of dipoles: ",alphaDip
          write(6,*) "-----------------------------------------------"
 !         call CSGeneralSetAlpha(alphaDip)
+      else if ( (init .eq. 0) .and. ldoblha ) then
+        init = 1
       endif
 
       if ( ldebug ) then
@@ -134,6 +140,7 @@ c
       enddo
       
       
+      if (.not.ldoblha) then
 c     
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
@@ -171,6 +178,8 @@ c
 	enddo
       endif
       
+      endif !ldoblha 
+
 
       call calcEWpartsNew(v,lokt,nbos,rn(1))
 
@@ -277,6 +286,27 @@ c
 c reset cache of born amplitudes
       call CSColAmpGNewReset()
       call CSColAmpQNewReset()
+
+       if (ldoblha) then
+c id is diagtoPhys in standard VBFNLO terminology
+         id(blha_physdiagmap(1,blha_cursubproc,blha_curproc))=1
+         id(blha_physdiagmap(2,blha_cursubproc,blha_curproc))=2
+         id(blha_physdiagmap(3,blha_cursubproc,blha_curproc))=3
+         id(blha_physdiagmap(4,blha_cursubproc,blha_curproc))=4
+         id(blha_physdiagmap(5,blha_cursubproc,blha_curproc))=5
+         fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+         fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+         fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+         fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+         fsign(5) = blha_fsign(5,blha_cursubproc,blha_curproc)
+
+         if ((blha_idsubproc(blha_cursubproc,blha_curproc)/100) .eq. 1) then
+           call getRes2Q3GWZ(p,id,fsign,pdf,nbos,lnlo,lokt,xyuz,res)
+         else if ((blha_idsubproc(blha_cursubproc,blha_curproc)/100) .eq. 2) then
+           call getRes4Q1GWZ(p,id,fsign,FLskip,pdf,nbos,lnlo,lokt,xyuz,res)
+         endif
+         return
+       endif
 
 C--------begin subprocess evaluation-----------------------------------
 C begin 2Q 3G Processes
@@ -722,12 +752,14 @@ c
       endif
       m2s = m2s
       print*,m2s(1),m2s(0)-m2s(1),m2s(0)
-      pause
 #endif
 
       end
 
       subroutine getRes2Q3GWZ(p,id,fsign,pdf,Nbos,lnlo,lokt,xyuz, res)
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
@@ -737,19 +769,19 @@ c
       logical lnlo, lokt(16)
       
       real*8 amp(0:6)
-      real*8 dotrr, mjj2
+
       integer family, flav(5), k, colstr
       integer FL5QCDWZ
-      real*8 polcol(2000), qcdVVjjDipole2q3g, dip(4,5,5),dipSum(16)
+      real*8 polcol(2000), dip(4,5,5),dipSum(16)
       common / polcolz / polcol
       integer qcdVVjjKin
-      integer emit1, emit2, spect, kin, i,j,in,spectB,buff,emitB
-      integer emiO1, emiO2
+      integer emit1, emit2, spect, kin, i,j,spectB,emitB
+
       
       logical ldebug
       parameter (ldebug = .false.)
       external CScolAmpGNewUsePrecalc
-      integer di,fisgnB
+      integer di
 
       double precision  alphas, xmt, alfa, xmz, xmw,s2w, xmh
       common /bkopin/   alphas, xmt, alfa, xmz, xmw, s2w, xmh
@@ -779,6 +811,9 @@ c get 3 jet amplitude
 	endif
       else
 	  amp(0) = 0d0
+      endif
+      if (ldoblha) then
+        return
       endif
 #ifdef WITH_NLO
       if(lnlo) then
@@ -909,8 +944,10 @@ c reduce process counter for next helicity configuration
       end
 
 
-
       subroutine getRes4Q1GWZ(p,id,fsign,SkipIdFl,pdf,Nbos,lnlo,lokt,xyuz,res)
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/global.inc"
@@ -924,7 +961,7 @@ c reduce process counter for next helicity configuration
       integer diffFamily,idB(4),emitB,spectB
       integer nbos
 
-      integer FL5qcdWZ, di,in
+      integer FL5qcdWZ, di
 
       double precision  alphas, xmt, alfa, xmz, xmw,s2w, xmh
       common /bkopin/   alphas, xmt, alfa, xmz, xmw, s2w, xmh
@@ -939,7 +976,7 @@ c reduce process counter for next helicity configuration
       external CScolAmpGNewUsePrecalc,CScolAmpQNew
 
       double precision polcol(2000)
-      real*8 temp(3:4,0:3),mjj2
+
       common /polcolz/ polcol
 
       if(ldebug) then
@@ -964,6 +1001,9 @@ c precalc amplitude and dipoles
           amp(i,j,0) = 0d0
           amp(i,j,1) = 0d0
         enddo; enddo
+      endif
+      if (ldoblha) then
+        return
       endif
 
 #ifdef WITH_NLO
@@ -1159,7 +1199,7 @@ c
 c     common block for the number of colored processes
       double precision polcol(2000)
       common /polcolz/ polcol
-      integer i,flav(5),colstr
+      integer flav(5),colstr
       integer listp
       save listp
       integer numresets
@@ -1211,7 +1251,7 @@ c          COMMOM BLOCK FOR DIAGRAMMATIC LABELS
       integer id(5)
       integer i,if(5),flav(5),colstr,listp
       integer ngluon,listp1
-      integer iflav(5),pi(1:3)
+      integer pi(1:3)
       integer col(1:4)
       
       if(colstr.le.0) return
@@ -1477,7 +1517,7 @@ ccccccc begin subroutine calpolcol ccccccccccc
       integer flavor(n_p)        ! in: flavors
       real*8 factor             ! out: polcol
 c local variables
-      integer idfl(n_p),i,j,nglu
+      integer idfl(n_p),i,j
       real*8 lfactor
       logical ldebug
       parameter (ldebug=.false.)

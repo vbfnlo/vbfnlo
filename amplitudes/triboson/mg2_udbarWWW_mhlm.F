@@ -30,18 +30,18 @@ C
       DOUBLE PRECISION T     !, P(0:3,NEXTERNAL)                     !CHANGED
       DOUBLE PRECISION UDBAR_WWW_mhlm                                     !CHANGED
       INTEGER IHEL,IDEN(NCROSS)     !,IC(NEXTERNAL,NCROSS) !CHANGED
-      INTEGER IPROC,I     !,JC(NEXTERNAL), I                 !CHANGED
+      INTEGER IPROC     !,JC(NEXTERNAL)                 !CHANGED
       LOGICAL GOODHEL(NCOMB,NCROSS)
       INTEGER NGRAPHS
-      DOUBLE PRECISION hwgt, xtot, xtry, xrej, xr, yfrac(0:ncomb)
-      INTEGER idum, ngood, igood(ncomb), jhel, j, jj
+      DOUBLE PRECISION xtry, xrej
+      INTEGER idum, ngood
       LOGICAL warned
       REAL     xran1
       EXTERNAL xran1
 C  
 C GLOBAL VARIABLES
 C  
-      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      Double Precision jamp2(0:maxamps)
 
 
       character*79         hel_buff
@@ -60,7 +60,6 @@ C
 C      DATA warned, isum_hel/.false.,0/                    !CHANGED
       DATA WARNED /.FALSE./                                             !CHANGED
 C      DATA multi_channel/.true./                          !CHANGED
-      SAVE yfrac, igood, jhel
       DATA NGRAPHS /   133/          
       DATA jamp2(0) /   1/          
       DATA GOODHEL/THEL*.FALSE./
@@ -363,7 +362,7 @@ C
       DOUBLE PRECISION P(0:3,NEXTERNAL)
       INTEGER NHEL(NEXTERNAL)     !, IC(NEXTERNAL)         !CHANGED
       INTEGER FSIGN(8)                                           !CHANGED
-      INTEGER NW
+
 C  
 C LOCAL VARIABLES 
 C  

@@ -17,7 +17,7 @@ c   A0finG2=A0finG(M,musq)
 c --------------------------------------
       complex*16 function A0finDiv(M,i)
       implicit none
-      double precision M,musq
+      double precision M
       integer i
       if(i.eq.1) then
       A0finDiv = M*M

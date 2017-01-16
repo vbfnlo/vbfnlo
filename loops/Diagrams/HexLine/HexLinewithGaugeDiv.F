@@ -29,10 +29,7 @@
        call test_hexlineABEDiv(p1,p2,p3,p4,p5,p6,barpsi_p6,psi_p1,mup2,mup3,mup4,
      1 mup5,alpha,musq,ngluon,posgluon,comp,resultf,resultborn,Div)
 
- 
 
-
- 
 C************************************************8
 C**********  DBLE GAUGES *******************************8
 C************************************************8

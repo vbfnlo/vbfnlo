@@ -102,10 +102,10 @@ c*******************************************************************************
         Real*8 Dij1234R(13,3)
         Real*8 Dij1234I(13,3)
        Complex*16 SMB(4),SMG(4) ,Fa(6),F(27)
-      Real*8 FI(27),FR(27),FaI(6),FaR(6)
+      Real*8 FI(27),FR(27)
       Complex*16 SC1r,SC1c,SC3rcc,dotrc,dotcc,result(3)
        Complex*16 resultgauge(2) 
-       Real*8 musq,p4t,Is12,Is23,Is12s23,P(25) 
+       Real*8 musq,Is12,Is23,Is12s23,P(25) 
        EXTERNAL   dotrc,dotcc,SC1c,SC1r,SC3rcc
        Integer alpha,comp,gaugetest,ngluon
        common/FfunctionsNoAbemm/F
@@ -711,7 +711,7 @@ c************** Calling the Fa functions****************************************
        Complex*16 mup2mup4
         common/FfunctionsNoAbemm/F
       Complex*16 Fa(6),F(27)
-      Real*8 P(25) 
+
         Fa(1) = p1mup4*F(1)+p2mup4*F(2)+p3mup4*F(3)
        Fa(2) = p1mup2*F(4)+p2mup2*F(5)+p3mup2*F(6)
        Fa(3) = mup2mup4*F(8)+p1mup2*p1mup4*F(9)+p1mup4*p2mup2*F(10)+p1

@@ -30,6 +30,8 @@ c     				!     2=Z,6=H,34/43=WW,22=ZZ->4l,21=ZZ->2l 2v
      &                   xuz,   !in:  x, u, z for subtraction terms
      &                   m2s    !out: |M|^2*pdf1*pdf2 
      &                        )
+          use globalvars, only: ldoblha
+          use VBFNLO_HIGGSTO, only: VBFNLO_HIGGSTO_gridHt
       implicit none
 c
 c declare input/output variables
@@ -51,7 +53,7 @@ c
       logical lok(3)
 
 c  helicity selection
-      integer h,hh
+      integer h
       integer jsig, jsig1, jsig3, jsig5
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 c
@@ -74,8 +76,8 @@ c
 c declare local variables
 c
 c
-      real*8 q_sf, wtot(0:3)
-      real*8 qa3,qa5,q35, dotrr
+      real*8 q_sf
+      real*8 dotrr
       external dotrr
 
       integer init/0/, I, J, mu
@@ -83,9 +85,9 @@ c
 c
 c declare variables for summation process
 c
-      INTEGER LFLAVR(5:6), ires, nmaxold, FSIGN(4+max_v),
+      INTEGER ires, nmaxold, FSIGN(4+max_v),
      &        gsign, lsign(3:4)
-      save LFLAVR, nmaxold
+      save nmaxold
 
       integer physToDiag(5), nlo, nmin, nmax, nproc(8)
       save nmin, nmax, nproc
@@ -96,7 +98,7 @@ c     = 2,3: sutraction terms for emision off 12 or 34 line
 c     = 0  : subtracted result which drives integration, i.e
 c res(*,0) = res(*,1)-res(*,2)-res(*,3)
       real*8 res(maxnumsubproc,0:3)
-      integer sj
+
 c
 c declare parton distribution variables
 c
@@ -129,7 +131,10 @@ c CPS scheme
       double precision qgammaq
       common /VBFNLO_HIGGS_CPS/ qgammaq
 
-      integer a,b,c
+      logical upline, lowline, initial
+      common/uplow/ upline, lowline, initial  
+
+      integer a,b
 
       double complex aazz1(0:3,0:3,3), 
      1                azzz1(0:3,0:3,3), zazz1(0:3,0:3,3), 
@@ -224,7 +229,6 @@ c
             write(6,*) "-----------------------------------------------"
             write(6,*) " "
             call vtohh_reset
-#ifdef WITH_SPIN2
          elseif (bos.eq.11) then
             write(6,*) " "
             write(6,*) "VV jjj (-> spin-2) -> gamma gamma  amplitude"
@@ -232,7 +236,6 @@ c
             write(6,*) "-----------------------------------------------"
             write(6,*) " "
             call vtosp2aa_reset
-#endif
          elseif (bos.eq.734) then
            if (with_spin2) then  
             write(6,*) " "
@@ -429,7 +432,6 @@ C for WV --> mu- nu_mu
             enddo
 #endif
  
-#ifdef WITH_SPIN2
          elseif (with_spin2) then 
             call atoww(v,aww)
             call ztoww(v,zww)
@@ -460,8 +462,7 @@ C     for WV --> mu- nu_mu
      -              CCwmz(0,0,1,j)) !emit W+ on upper
                call WVtoWM(1,q12(0,j),v,CCwma(0,0,2,j),
      -              CCwmz(0,0,2,j)) !emit W+ on lower
-            enddo
-#endif
+            enddo           
          else                   ! SM
             call atoww(v,aww)
             call ztoww(v,zww)
@@ -596,7 +597,6 @@ c leptonic tensors:
             enddo               !j=2,3
 
 
-
          CASE DEFAULT
 
          
@@ -663,7 +663,6 @@ c CCl for CC (k=6)
             enddo               !j=2,3
 #endif
  
-#ifdef WITH_SPIN2
          elseif (with_spin2) then   
 c for V-> llll:	
             call vto4l(v,h,azz,zzztens)	
@@ -720,8 +719,7 @@ c CCl for CC (k=6)
                call WWtoll(2,2,h,q12(0,j),v,CCuu6(0,0,2,j))     !emit V on lower
 	 
 	 
-	    enddo !j=2,3
-#endif 
+        enddo !j=2,3
 
          elseif (with_anom) then ! anomalous gauge boson couplings
 c           using global form factor for all tensors of one phase space point
@@ -849,7 +847,6 @@ c CCl for CC (k=6)
 c-----------------------------
 c
 
-#ifdef WITH_SPIN2
 c for VV (-> spin-2) -> gamma gamma  precalculate leptonic tensors
       elseif (bos.eq.11) then
 
@@ -1130,7 +1127,6 @@ c leptonic tensors
 	     
          endif             
            enddo               !j = 2,3	
-#endif
 
 c for ZZ->2l 2v precalculate  leptonic tensors
       elseif (bos.eq.21) then
@@ -1236,7 +1232,6 @@ c CCl for CC (k=6)
             enddo               !j	
 #endif
  
-#ifdef WITH_SPIN2
 
          elseif (with_spin2) then   
             call vto4ln(v,h,azz,zzztens)	
@@ -1291,8 +1286,7 @@ c CCl for CC (k=6)
                call WWtolln(1,q34(0,j),v,CCuu6(0,0,1,j))     !emit V on upper
                call WWtolln(2,q12(0,j),v,CCuu6(0,0,2,j))     !emit V on lower
 	 
-	    enddo !j	
-#endif	
+        enddo !j	
 
 
          elseif (with_anom) then ! anomalous gauge boson couplings
@@ -2070,7 +2064,6 @@ c      if (ldebug) call resprint(nmin,nmax,res)
       if (init.eq.1) nproc(8) = nmax
 
 
-
 c**************  end of process evaluation part one ******************
 
 
@@ -2298,10 +2291,6 @@ c***  end of extra process evaluation for hadronic decay  ***
       end select
 
 
-
-
-
-
 c*****************  end of process evaluation  *********************
 
 
@@ -2342,7 +2331,6 @@ c*****************  end of process evaluation  *********************
         ENDDO
        enddo
       END SELECT
-
 
 
       if (init.eq.1) then
@@ -2476,6 +2464,7 @@ c*****************************************************************
       subroutine wbf_zh3j(xi,p,v,physToDiag,fsign,gsign,bos,
      1                    nlo,lok,xuz,
      1                    pdf,res,nmin,nmax)
+          use globalvars, only: ldoblha
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
@@ -2541,10 +2530,9 @@ c
      1       uussb(-1:1,-1:1,2:3), ddssb(-1:1,-1:1,2:3),
      2       udscb(-1:1,-1:1,2:3), ducsb(-1:1,-1:1,2:3),
      3       uucc(0:3), uuss(0:3), ddcc(0:3),
-     4       ddss(0:3), udsc(0:3), ducs(0:3),
-     5       uuccr(0:3), uussr(0:3), ddccr(0:3),
-     6       ddssr(0:3), udscr(0:3), ducsr(0:3)
-      real*8 pbar(0:3,4+max_v), qbar(0:4), y,q2,v2,q3,v3,sub(2:3), 
+     4       ddss(0:3), udsc(0:3), ducs(0:3)
+
+      real*8 pbar(0:3,4+max_v), qbar(0:4),q2,v2,q3,v3,sub(2:3), 
      1       e_in(2), dotrr, gs2(2:3), polcolq, polcolg
       real*8 xa
       double precision NCmatrixelt(0:1,0:1,3,2)
@@ -2564,7 +2552,7 @@ c
       parameter (ldebug=.false.)
       PARAMETER (lres=.false.)
 
-      double precision tree(6), temp
+      double precision tree(6)
 
 
       if (lres) then
@@ -2737,7 +2725,6 @@ c     &           uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1))
      &           uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1))
          endif !lok
          
-#ifdef WITH_SPIN2
       elseif (bos.eq.11) then         ! qq(-->spin-2)-->qq gamma gamma
          do mu = 0,3             
             pbar(mu,5) = v(mu,1) ! photon 1
@@ -2803,7 +2790,6 @@ c
             call qqsp2zzqqj(pbar,fsign,qbar,gsign,bos,
      &            uucc(1),uuss(1),ddcc(1),ddss(1),udsc(1),ducs(1)) 
          endif  !lok	
-#endif
 
       elseif (bos.eq.21) then         ! ZZ to 2 leptons 2 neutrinos
          do mu = 0,3            ! kinematics for H-->ZZ -->4 lepton decay
@@ -2957,7 +2943,6 @@ c     new routine for speed-up:
      1                    uucc(j),uuss(j),ddcc(j),ddss(j),
      2			  udsc(j),ducs(j))
 
-#ifdef WITH_SPIN2
                elseif ((bos.eq.11) .and. lok(j)) then
 
          	  call qqsp2aaqq(pbar,fsign, 0,j,bos,
@@ -2982,7 +2967,6 @@ c     new routine for speed-up:
          	  call qqsp2zzqq(pbar,fsign, 0,j,bos,
      1                    uucc(j),uuss(j),ddcc(j),ddss(j),
      2			  udsc(j),ducs(j))
-#endif
 
                elseif ((bos.eq.21) .and. lok(j)) then  ! ZZ -> 2l 2neutrinos
 c general qq->qqZZ (madgraph):
@@ -3202,13 +3186,13 @@ c debugging for collinear and soft divergences -----------------------
          end if
 
 
+         iflav(diagtophys(5)) = 0 ! Gluon is index 0 in pdf
          do if1=1,nflVBF             !(nfl/2)*2
+            iflav(diagToPhys(1)) = if1 * fsign(1)
+            iflav(diagToPhys(2)) = if1 * fsign(2)
             do if2=1,nflVBF          !(nfl/2)*2
-               iflav(j-1) = 0
-               iflav(4-j)=if1*fsign(physToDiag(4-j))
-               iflav(6-j)=if1*fsign(physToDiag(6-j))
-               iflav(j+1)=if2*fsign(physToDiag(j+1))
-               iflav(5)  =if2*fsign(physToDiag(5))
+               iflav(diagToPhys(3)) = if2 * fsign(3)
+               iflav(diagToPhys(4)) = if2 * fsign(4)
                k=FL_ZHg(iflav,j)
                if (lok(1)) then
                   res(k,1)=pdf(sign1*iflav(1),1,2*j-3) !1 for j=2;3 for j=3
@@ -3331,7 +3315,6 @@ c
 c   end subroutine wbf_zh3j
 c
 c*****************************************************************
-
 
 
 c******************************************************************

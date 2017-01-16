@@ -192,7 +192,7 @@ c
 	cc0 = -csum*DBLE(1/(2*sdel2))
 *  #] sum:
 *  #[ debug:
-  900	continue
+     	continue
 	if (lwrite) then
 	    print '(a)','cs(i) = '
 	    print '(i3,2g20.10,1x)',(i,cs(i),i=1,n)

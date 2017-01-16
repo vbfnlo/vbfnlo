@@ -298,7 +298,6 @@ C ----------
            DUWMAL=DUWMAL+ZTEMP*DCONJG(JAMP(I))/DENOM(I)   
       ENDDO
 
-          
 
       Do I = 1, NGRAPHS
           amp2(i)=amp2(i)+amp(i)*dconjg(amp(i))
@@ -310,8 +309,4 @@ C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN)
       END
 
 
-
-
-
-       
 

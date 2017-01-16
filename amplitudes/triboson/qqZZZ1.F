@@ -52,14 +52,14 @@ c     electroweak couplings are taken from KOPPLN
 
       double precision  pbar(0:3,2+n_v)
       double precision  uuzzz, ddzzz, res(2),resv(2)
-      double precision  p(0:3,2+n_v), fqze(0:4,2), fqzmu(0:4,2)
-      double precision  fqztau(0:4,2)
-      integer  sign(2+n_v), nlo, mu, i, j, k, isig, N
+      double precision  p(0:3,2+n_v)
+
+      integer  sign(2+n_v), nlo, mu, i, k, isig, N
       integer  ifl(2)
       double complex temp, temp1
       double complex mat(2,-1:1,3), matv(2,-1:1,3)
       double complex madgr(3,-1:1,2)
-      double complex mm(2,-1:1), mv(2,-1:1), zero
+      double complex mm(2,-1:1), zero
       double complex mz1, mz2, mz3
       double complex psi(2,-1:1,2), jqq(0:5,-1:1)
       double complex dotcc, s1c, dotrc
@@ -69,14 +69,12 @@ c     electroweak couplings are taken from KOPPLN
       parameter (zero = (0d0,0d0) )
 
 c variable for q_mu q_nu terms in the propagators of the massive vector bosons
-      double complex zm2i(2:3)
-      save zm2i
 
 c  helicity selection
       INTEGER h
       COMMON /hcount / h
 
-      double precision scale
+
       double precision c2,c2o4pi
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi)
       logical lnlo, lbox, lpq, lpt, lpent, ldebug, ldebugm, linit

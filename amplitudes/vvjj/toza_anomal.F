@@ -4,7 +4,7 @@
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=3,6) / -1, -1, -1, -1/  !h=1
@@ -175,7 +175,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
       
 
 	! possible lepton helicities:
@@ -307,9 +307,9 @@ c ------------------------------------------------------------
       complex*16 aa(0:3,0:3)
       complex*16 az(0:3,0:3)
       complex*16 za(0:3,0:3)
-      complex*16 za_o(0:3,0:3)
+
       complex*16 zz(0:3,0:3)
-      integer lsign(3:6,4),h,ll,mu,nu
+      integer lsign(3:6,4),h,ll
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=3,6) / -1, -1, -1, -1/
@@ -438,7 +438,6 @@ c     new Higgs contributions
       ENDDO
 
       END
-
 
 
       subroutine AZtoZA1_anomal(q1,q2,P,lsign,az)
@@ -667,8 +666,7 @@ c     new Higgs contributions
       
       zz(MU,NU)=+AMP(1)+AMP(2)+AMP(3)+AMP(4)+AMP(5)+AMP(6)+amp(7)+amp(8)
      $          +amp(9)+amp(10)+amp(11)+amp(12)+amp(13)+amp(14)
-      
-      
+
 
         ENDDO
       ENDDO
@@ -687,9 +685,9 @@ c ------------------------------------------------------------
       complex*16 aa(0:3,0:3)
       complex*16 az(0:3,0:3)
       complex*16 za(0:3,0:3)
-      complex*16 za_o(0:3,0:3)
+
       complex*16 zz(0:3,0:3)
-      integer lsign(3:6,4),h,ll,mu,nu
+      integer lsign(3:6,4),h,ll
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=3,6) / -1, -1, -1, -1/
@@ -786,7 +784,6 @@ c     Higgs contributions
       ENDDO
 
       END
-
 
 
       subroutine AZtoZAn_anomal(q1,q2,P,lsign,az)

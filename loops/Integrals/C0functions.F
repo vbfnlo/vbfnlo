@@ -38,7 +38,7 @@ c     ris(3) = coeff of 1/ep^2
       complex * 16 ipi
       parameter (ipi=(0,3.141592653589793238462643383279502884197D0))
       integer j,offshellleg,imax,ii
-      complex * 16 C03
+
       real * 8 r3,r2,detsq,det,x,y,max,lomx,lomy
       real * 8 tiny
       parameter (tiny=1d-7)
@@ -184,8 +184,7 @@ c         write(*,*) "x, y ==> ",x,y
             endif
          endif
 
-         
-         
+
          ris(1) = 1/qsq(1)*(1-x)*(1-y)/(1-x*y)*(2*dilog(x)+2*dilog(y)+
      #        (lomx+lomy)**2+2*lr2*lomy+2*lr3*lomx+lr3*lr2+Pi**2/3)
  
@@ -202,7 +201,6 @@ c TRIANGLE WITH ZERO EXTERNAL INVARIANTS
 
       C0fin = ris(1)
       end
-
 
 
 c------------- C(m,q1^2,q2^2,P^2)  3-point fuction ---------------------------
@@ -257,8 +255,6 @@ c      C0fin1M=-Dble(I3point(m,-q1sq,-Psq,-q2sq))+(0,1)*DIMAG(I3point(m,-q1sq,-P
       end
 
 
-
-
 c --------------------------------------
 c   C0finG2=C0finG full finite
 c   only s3 can be zero
@@ -305,13 +301,11 @@ c     ---
       ys(1,2) = (-(ce)-sqr)/(2.d0*b)
 
 
-  
       sqr = Sqrt((de)*(de)-4.d0*f*(abc))
       ys(2,1) = (-(de)+sqr)/(2.d0*(abc))
       ys(2,2) = (-(de)-sqr)/(2.d0*(abc))
-  
 
-      
+
       C0 = (0.d0,0.d0)
 
       if (abs((a*a)).gt.eps) then 
@@ -339,7 +333,6 @@ c     ---
       endif
       C0finG2 = C0/deno
       end
-
 
 
 

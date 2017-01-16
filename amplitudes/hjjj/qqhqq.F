@@ -2,6 +2,7 @@ c     Modified by Terrance Figy
 c     2 Oct 2008
 C
       subroutine init_qqhqqg_virt 
+          use globalvars, only: ldoblha
 c >0  includes matrix elements and coupl
       implicit none             !        for H -> xx (based on bbar)
 #include "VBFNLO/utilities/global.inc"
@@ -59,7 +60,7 @@ c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 #include "color.inc"
 C  Other local variables for QQBQQI
-      integer i,k,mu,nu,v2,v3, isig,isig1,isig3
+      integer i,k,mu,v2,v3, isig,isig1,isig3
       integer imin,nlo,nd
 C
 C  Variables for the main part of the program
@@ -81,10 +82,10 @@ C  Variables for the main part of the program
       complex*16 eps1(0:3,0:2)
       real*8 pk(0:4,4)
       complex*16 prop21(2:4), prop43(2:4), prop21g(2:4), prop43g(2:4)
-      real*8 betah, lamb, fac,colfac,ratio
-      real*8 den,p57,p68
+      real*8 fac,colfac,ratio
+
       real*8 qvec(0:3)          !q_mu from dips subr
-      real*8 gm(0:3,0:3)
+
       logical lcol
       logical lspcor            !controls spin correlation
       logical lborn,lbox,lbox21,lbox43,lvirt,ltri

@@ -35,7 +35,7 @@ c
 
       implicit none
       real * 8  p1sq, p2sq, s12
-      complex*16 B0_23, B0_13, B0_12, C0,ct
+      complex*16 C0,ct
       real*8 r1, r2r1, det,p1p2,r10,r21
 
       real*8 BijR_12(2,3),BijR_13(2,3),BijR_23(2,3)
@@ -50,7 +50,7 @@ c
       real*8 z11,z12,z21,z22,iz11,iz22
 
       real*8 Rr(2),RI(2),PRr(2),PRI(2)
-      REAL*8 Inv18,Inv36
+
       real*8 B21r_12,B21r_13,B21r_23
       real*8 B21I_12,B21I_13,B21I_23
       real*8 B22r_12,B22r_13,B22r_23
@@ -65,25 +65,18 @@ c New for Gram
       common/GramSwitch/GramCS,GramDS
       logical GramCS,GRAMDS
       Integer jjinit
-      real*8 para
+
       real*8 tempjj,tempkl,IX,Zmax
       Common/Decide/tempjj,tempkl,IX,ZMax,jjinit
       Save/Decide/
 c New variables to compare        
       real*8 musq
       Common/musqInv/musq
-      Complex*16 Cij(30,9),C0123
-      real*8 zz11,zz12,zz22
-      real*8 cijrtemp(9,4),cijitemp(9,4),C0ITEMP,C0RTEMP
-      complex*16 test2g,test2p1p2,ten2g, ten2g_Dble,ten2p1p2
-      complex*16 ten2p1p2_Dble,test2p1p2_dble
-      complex*16 test3gp2,ten3gp2,ten3gp2_dble
-      complex*16 test2g_dble,test3gp2_dble
-      integer j1,j2,index(4)
-      complex*16 A0finG,A02,A03
+
+      complex*16 A0finG
       external A0finG
       real*8 accuracyC(0:4,5),AccuracyD(0:5,4)
-      real*8 accuracyCR(9,0:4,5)
+
       Common/Accuracy/AccuracyC,AccuracyD
       real*8 ratio
        logical printmy
@@ -155,7 +148,6 @@ c         return
        B21I_23= BijI_23(1,2)
        B22I_23= BijI_23(2,2)
 
-  
 
       If(abs(p1sq).gt.abs(p1p2)) then
           z11=2d0*p1sq
@@ -315,8 +307,6 @@ c       CijI(1,1) = RI(1)
        CijI(2,3) = RI(2)
 
 
-
-
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c 0000
 
@@ -365,8 +355,6 @@ c      Cij(8,4)=Rr(1)
 c       Rr(1)=(Pr(1)-z12*Rr(2))*iz11 
 c      Cij(8,4)=Rr(1)
        CijI(7,4)=RI(2)
-
-
 
 
        return
@@ -524,7 +512,6 @@ c       RI(1)=(PRI(2)-z12*RI(2))*iz11
 
 c       CijI(1,1) = RI(1)
        CijI(2,3) = RI(2)
-
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

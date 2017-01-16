@@ -94,8 +94,6 @@ c
       B1I_12 = -B0I_12*0.5d0
       B1I_13 = -B0I_13*0.5d0
       B1I_23 = -B0I_23*0.5d0
-      
-
 
 
 c 1-2
@@ -162,10 +160,8 @@ c$$$      Cij(2,2)=DCMPLX(Cijr(2,2),CijI(2,2))
 c$$$      Cij(3,2)=DCMPLX(Cijr(3,2),CijI(3,2))
 c$$$      Cij(4,2)=DCMPLX(Cijr(4,2),CijI(4,2))
 
-      
 
       end
-
 
 
 

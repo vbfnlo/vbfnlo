@@ -37,12 +37,13 @@
 ** Note that t1_CplxApprox is set according to whether we're using complex 
 ** parameters in the MSSM
       integer mssmpart, fieldren, tanbren, p2approx
-      integer looplevel, t1_running_mt, t1_bot_resum, t1_CplxApprox
+      integer looplevel, loglevel, t1_running_mt, t1_bot_resum, t1_CplxApprox
       parameter (mssmpart = 4)
       parameter (fieldren = 0)
       parameter (tanbren = 0)
       parameter (p2approx = 0)
       parameter (looplevel = 2)
+      parameter (loglevel = 2)
       parameter (t1_running_mt = 1)
       parameter (t1_bot_resum = 1)
 
@@ -73,8 +74,13 @@
 
 
 * setting Flags: this is basically FH initialisation
+#if FHVERSION >= 21200
+      call FHSetFlags(error,mssmpart,fieldren,tanbren,higgsmix, 
+     -     p2approx,looplevel,loglevel,t1_running_mt,t1_bot_resum,t1_CplxApprox)
+#else
       call FHSetFlags(error,mssmpart,fieldren,tanbren,higgsmix, 
      -     p2approx,looplevel,t1_running_mt,t1_bot_resum,t1_CplxApprox)
+#endif
       if (error .ne. 0) then
          write(*,*)'Problem with FeynHiggs set flags'
          stop
@@ -88,6 +94,7 @@
       write(*,*)'higgsmix =', higgsmix
       write(*,*)'p2approx =', p2approx
       write(*,*)'looplevel =', looplevel
+      write(*,*)'loglevel =', loglevel
       write(*,*)'t1_running_mt =', t1_running_mt
       write(*,*)'t1_bot_resum =', t1_bot_resum
       write(*,*)'t1_CplxApprox =', t1_CplxApprox
@@ -102,7 +109,7 @@
             stop
          end if
 
-#ifdef WITH_FH28
+#if FHVERSION >= 20800
          call FHSetSLHA(error, slhadata)
 #else
          call FHSetSLHA(error, slhadata, scalefactor)
@@ -121,7 +128,7 @@
          
          invAlfa = 1D0/Alfa
 
-#ifdef WITH_FH28
+#if FHVERSION >= 20800
 
          call FHSetSMPara(error,
      &        invAlfa, AlfasMZ, GF,
@@ -171,7 +178,6 @@
       end
 
 
-
 *******************************************************************************
 *******************************************************************************
 
@@ -183,13 +189,17 @@
       implicit none
 
       integer nmfv
-      double precision MSf(2,4,3), MASf(6,4), MCha(2), MNeu(4)
-      double complex USf(2,2,4,3), UASf(6,6,4)
+      double precision MSf(2,4,3), MASf(6,5), MCha(2), MNeu(4)
+      double complex USf(2,2,4,3), UASf(6,6,5)
       double complex UCha(2,2), VCha(2,2), ZNeu(4,4)
       double complex DeltaMB
       double precision MGl
 
       double precision MHtree(4), SAtree
+#if FHVERSION >= 20905
+      double precision MrSf(2,5,3)
+      double complex UrSf(2,2,5,3)
+#endif
 
       integer error
 
@@ -197,16 +207,21 @@
       integer type, gen, sfe1, sfe2
 
 
-#ifdef WITH_FH28
-** For FeynHiggs versions 2.8.x
+#if FHVERSION >= 20700
+
+#if FHVERSION >= 20905
+** For FeynHiggs versions 2.9.5 and later
+      call FHGetPara(error, nmfv, MrSf, UrSf, MASf, UASf, MCha, UCha, VCha, MNeu, 
+     &     ZNeu, DeltaMB, MGl, MHtree, SAtree)
+#elif FHVERSION >= 20800
+** For FeynHiggs versions 2.8.x and 2.9.[0-4]
       call FHGetPara(error, nmfv, MASf, UASf, MCha, UCha, VCha, MNeu, 
      &     ZNeu, DeltaMB, MGl, MHtree, SAtree)
-#elif WITH_FH27
+#elif FHVERSION >= 20700
 ** For FeynHiggs versions 2.7.x
       call FHGetPara(error, nmfv, MASf, UASf, MCha, UCha, VCha, MNeu, 
      &     ZNeu, DeltaMB, MGl)
 #endif
-
 
 ** Setting sfermion masses and mixings from the extended squark masses and 
 ** mixings provided by FeynHiggs
@@ -221,10 +236,9 @@
             end do
          end do
       end do
-      write(*,*)' '
 
 
-#ifdef WITH_FH26
+#else
 ** For FeynHiggs versions 2.6.x, the following code must be used
       call FHGetPara(error, nmfv, MSf, USf, MASf, UASf, MCha, UCha, 
      &     VCha, MNeu, ZNeu, DeltaMB, MGl)
@@ -239,7 +253,6 @@
       end
 
 
-
 *******************************************************************************
 *******************************************************************************
 
@@ -250,8 +263,8 @@
       implicit none
 
       integer error
-      double precision MHiggs(4)
-      double complex SAeff, UHiggs(3,3), ZHiggs(3,3)
+      double precision MHiggs(4), SAeff
+      double complex cSAeff, UHiggs(3,3), ZHiggs(3,3)
 
 ** When prop = 1, the U matrix is used, when prop = 2, the Z matrix is used.
 ** The Z matrix is hard-wired
@@ -265,7 +278,8 @@
       double complex Hgs(3,3)
 
 
-      call FHHiggsCorr(error,MHiggs,SAeff,UHiggs,ZHiggs)
+      call FHHiggsCorr(error,MHiggs,cSAeff,UHiggs,ZHiggs)
+      SAeff = dble(cSAeff)
 
       if (error .ne. 0) then
          write(*,*)'Problem with FeynHiggs calculation of Higgs sector'
@@ -298,7 +312,6 @@
 
       
       end
-
 
 
 ********************************************************************************
@@ -349,33 +362,15 @@
 
 
 **clearing values of gammas
-      do i = 1, ngammas
-         gammas(i) = 0D0
-         gammasms(i) = 0D0
-      end do
+      gammas = 0D0
+      gammasms = 0D0
 
-
-#ifdef FH_SHRD
-
-      if (replace(BHZZ,0)) BHZZ = -999D0
-      if (replace(BHWW,0)) BHWW = -999D0
-      if (replace(BHBB,0)) BHBB = -999D0
-      if (replace(BHCC,0)) BHCC = -999D0
-      if (replace(BHTT,0)) BHTT = -999D0
-      if (replace(BHtau,0)) BHtau = -999D0
-      if (replace(BHmu,0)) BHmu = -999D0
-      if (replace(BHgam,0)) BHgam = -999D0
-      if (replace(BHgamZ,0)) BHgamZ = -999D0
-
-      if (replace(XGH,0)) XGH = -999D0
-
-#else
 
 ** Using FH to calculate the widths and branching ratios of the Higgs
 ** Only SM-type decays are included for now.  See notebook 10-1-11 for indices
 
 ** For versions of FeynHiggs 2.6.x
-#ifdef WITH_FH26
+#if FHVERSION >= 20600 && FHVERSION < 20700
       call FHCouplings(error,couplings,couplingsms,
      -     gammas,gammasms,excl)
 
@@ -461,11 +456,8 @@
          stop
       end if
 
-#endif
-
 
       end
-      
 
 
 ********************************************************************************

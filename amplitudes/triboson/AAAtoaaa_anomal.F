@@ -6,7 +6,7 @@ c -----------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 aaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),mu,h,N
       integer nA 
 
 
@@ -17,7 +17,6 @@ c -----------------------------------------------------------------
       enddo
 
       call AAA_ATOAAA1_anomal(P,N,lsign(2,h),aaa,nA)
-
 
 
       end
@@ -53,7 +52,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -104,7 +103,6 @@ c considering anomalous couplings there is one extra graph with neutral quartic-
       CALL aaaa_anomal4(W(1,1   ),W(1,2   ),W(1,3   ),W(1,4   ),AMP(4   ))
 
 
-      
       aaa(mu) = +AMP( 1)+AMP( 2)+AMP( 3)+AMP( 4)
 
 
@@ -122,7 +120,7 @@ c -------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 aaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),mu,h,N
       integer nA 
 
 
@@ -168,7 +166,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -213,8 +211,6 @@ c considering anomalous couplings there are 3 extra graphs with Higgs (AAH-, AZH
 
 c considering anomalous couplings there is one extra graph with neutral quartic-vector-boson-coupling
       CALL aaaz_anomal4(W(1,2   ),W(1,3   ),W(1,4   ),W(1,1   ),AMP(4   ))
-
-
 
 
       aaa(mu) = +AMP( 1)+AMP( 2)+AMP( 3)+AMP( 4)

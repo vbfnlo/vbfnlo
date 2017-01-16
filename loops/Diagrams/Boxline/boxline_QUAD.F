@@ -78,27 +78,27 @@ c********************************************************************
        IMPLICIT NONE
        DOUBLE PRECISION   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
        DOUBLE PRECISION   p1t(0:3),p2t(0:3),p3t(0:3),p4t(0:3)
-       DOUBLE PRECISION p1sq, p1p2, p1p3, p1p4, p2sq, p2p3, p2p4, p3sq, 
+       DOUBLE PRECISION p1sq, p1p2, p1p3, p2sq, p2p3, p2p4, p3sq, 
      -          p3p4, p4sq
-       DOUBLE PRECISION   s12, s13, s14, s23, s24, s34
+       DOUBLE PRECISION   s12, s23
        DOUBLE COMPLEX p1mup2, p1mup3, p2mup2, p2mup3, p3mup2, p3mup3, 
      -          p4mup2, p4mup3
        DOUBLE COMPLEX mup2mup3
        DOUBLE PRECISION dotrr
        DOUBLE COMPLEX dotrc,dotcc,B0fin,C0fin,D02m_fin,D0fin
        EXTERNAL dotrr,dotrc,dotcc,B0fin,C0fin,D02m_fin,D0fin
-       DOUBLE COMPLEX B012,B013,B014,B023,B024,B034
+
        DOUBLE PRECISION B012R,B013R,B014R,B023R,B024R,B034R
        DOUBLE PRECISION B012I,B013I,B014I,B023I,B024I,B034I
-       DOUBLE COMPLEX C0123,C0124,C0134,C0234
+
        DOUBLE PRECISION C0123R,C0124R,C0134R,C0234R
        DOUBLE PRECISION C0123I,C0124I,C0134I,C0234I
-       DOUBLE COMPLEX Cij123(4,2),Cij124(4,2),Cij134(4,2),Cij234(4,2)
+
        DOUBLE PRECISION Cij123R(4,2),Cij124R(4,2),Cij134R(4,2),Cij234R(4,2)
        DOUBLE PRECISION Cij123I(4,2),Cij124I(4,2),Cij134I(4,2),Cij234I(4,2)
-       DOUBLE COMPLEX D0
+
        DOUBLE PRECISION D0R,D0I
-       DOUBLE COMPLEX Dij(13,3)
+
        DOUBLE PRECISION DijR(13,3),DijI(13,3)
        DOUBLE COMPLEX SMB(4), SMG(4),F(16),Fa(3),K(1)
        DOUBLE PRECISION FR(16),FI(16),KR(1),KI(1)
@@ -340,9 +340,8 @@ c******************************************************************************
          p2p4=dotrr(p2,p4)
          p3p4=dotrr(p3,p4)
 
-       endif 
+       endif
 
-   
 
 c               PART THAT DEPENDS ON THE EXTERNAL CURRENT
 c******************************************************************************

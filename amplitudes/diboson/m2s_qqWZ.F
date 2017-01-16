@@ -15,6 +15,9 @@ c***************************************************************************
      &      v,    !in:  momenta associated with gauge boson dec. fermions
      &      rn    !in:  random number array
      &                        )
+
+      use globalvars, only: ldoblha
+
       implicit none
 c
 c declare input/output variables
@@ -25,6 +28,7 @@ c
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/coupl_haddecay.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "tensor.inc"
 
       integer bos, nlo
@@ -39,7 +43,7 @@ c  helicity selection
       INTEGER h, it 
       COMMON /hcount / h
 
-      complex*16 zero, z1
+      complex*16 zero
       parameter (zero=(0d0,0d0))
 
 c declare external functions
@@ -52,15 +56,15 @@ c declare external functions
 c declare local variables
 
       real*8 q_sf
-      integer init/0/, I, J, mu, nu, id
+      integer init/0/, I, mu
       save init
 
 c declare variables for summation process
 
       INTEGER ires
 
-      integer FSIGN(2+n_v), physToDiag(2), nmin, nmax, nproc(4)
-      save nmax, nproc
+      integer FSIGN(2+n_v), physToDiag(2), nmin, nmax
+      save nmax
 c
 c store contributions from subprocess ip in res(ip) where
       real*8 res(maxnumsubproc)
@@ -85,8 +89,7 @@ c variables for hadronic decays
       real*8 fac_Z_up, fac_Z_down
 
 
-
-      if ( init .eq. 0 ) then
+      if ( init .eq. 0  .and. (.not. ldoblha) ) then
          if(bos.eq.32) then
             write(6,*) " "
             write(6,*) "W+Z amplitude square information:"
@@ -109,13 +112,13 @@ c variables for hadronic decays
          do i = 1,maxnumsubproc
             res(i) = 0
          enddo
+      else if ( (init .eq. 0) .and. ldoblha ) then
+         init = 1
       else
          do i = 1,nmax
             res(i) = 0
          enddo
       endif
-
-   
 
 
 c...Les Houches interface
@@ -124,15 +127,19 @@ c lepton helicities for Z -> ta- ta+ not fixed
 c -> sum over all possible helicities in |M|**2
  
 c select helicity: h ... random number for lepton helicity combination (h=1:2)
-        h = mod(h,2) + 1
-	it = (-1)**(h+1)
+      if (ldoblha) then
+         h = blha_ranhelcomb
+      endif
 
-        if ((lha.or.hepmc) .and. (.not. doNLO)) then
-           helicity(1)=-1
-           helicity(2)= 1
-           helicity(3)=-it
-           helicity(4)= it
-        endif
+      h = mod(h,2) + 1
+      it = (-1)**(h+1)
+
+      if ((lha.or.hepmc) .and. (.not. doNLO)) then
+         helicity(1)=-1
+         helicity(2)= 1
+         helicity(3)=-it
+         helicity(4)= it
+      endif
 
 c for WW->4l precalculate A->WW,Z->WW,AZ->WW etc leptonic tensors
 
@@ -191,6 +198,18 @@ c leptonic tensors
       END SELECT
 
 
+      if (ldoblha) then
+         physToDiag(1:2)=blha_physdiagmap(1:2,blha_cursubproc,blha_curproc)
+         fsign(1:2) = blha_fsign(1:2,blha_cursubproc,blha_curproc)
+         ! fsign for leptions, TODO: check
+         fsign(3) = 1
+         fsign(4) = -1
+         fsign(5) = 1
+         fsign(6) = -1 
+
+         call qq_WZ(xi,p,v,physToDiag,fsign,bos,nlo,pdf,res,nmin,nmax) 
+         return
+      endif
 
 c if desired, print output information
 
@@ -417,10 +436,14 @@ c*****************************************************************
 
       subroutine qq_WZ(xi,p,v,physToDiag,fsign,bos, nlo,
      1                  pdf,res,nmin,nmax)
+
+      use globalvars, only: ldoblha
+
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       real*8 p(0:3,max_p-1), v(0:3,n_v), xi(nx)
       real*8 pdf(-6:6,2), res(maxnumsubproc)
@@ -460,11 +483,11 @@ c local variables
       integer iflav(4), diagToPhys(2), FL_VV
       external dotrr, FL_VV
 
-      logical ChargedCurrent, sametype, oneAntiparticle
+
       logical ldebug
       parameter (ldebug=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,icc1,j,k,mu
+      integer i,if1,k,mu
 
       udwz = 0d0
       udwz2 = 0d0
@@ -477,19 +500,15 @@ c local variables
 
       polcol = 1d0/(4d0*N**2*xi(1)*xi(2))
 
-      do mu = 0,3
-         do i = 1,2
-            pbar(mu,physToDiag(i))=p(mu,i)
-         enddo
+      do i = 1,2
+         pbar(0:3,physToDiag(i))=p(0:3,i)
       enddo
 
-
-         do mu = 0,3             ! kinematics for WZ --> 4 lepton decay
-            pbar(mu,3) = v(mu,1) ! ve
-            pbar(mu,4) = v(mu,2) ! e+
-            pbar(mu,5) = v(mu,3) ! mu-
-            pbar(mu,6) = v(mu,4) ! mu+
-         enddo
+      ! kinematics for WZ --> 4 lepton decay
+      pbar(0:3,3) = v(0:3,1) ! ve
+      pbar(0:3,4) = v(0:3,2) ! e+
+      pbar(0:3,5) = v(0:3,3) ! mu-
+      pbar(0:3,6) = v(0:3,4) ! mu+
 
 #ifdef WITH_MADGRAPH
          if(ldebug) then
@@ -515,11 +534,12 @@ c local variables
          endif
 #endif
 
-
+      if (ldoblha) then
+        return
+      endif
 
       NCmatrixelt(0,0)=udwz
-     
-    
+
 
       do if1=2,(nfl/2)*2,2
          if (bos.eq.32) then
@@ -557,15 +577,13 @@ c
 c*****************************************************************
 
 
-
-
       subroutine DIBOSwtowz_reset
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "tensor.inc"
       complex*16 zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,mu
 
       do mu = 0,3
          do j = 1,3

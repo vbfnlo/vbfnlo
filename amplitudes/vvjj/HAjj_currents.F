@@ -240,7 +240,6 @@ c
       end
 
 
-
       subroutine Get_HAjj_subtr_currents(pbar,vbar,kin)
 
 c     This subroutine is in principle the same as Get_HAjj_currents, but has an additional index in

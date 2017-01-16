@@ -35,7 +35,7 @@ c  helicity selection
       INTEGER h
       COMMON /hcount / h
 
-      complex*16 zero, z1, z2
+      complex*16 zero
       parameter (zero=(0d0,0d0))
 
 c declare external functions
@@ -48,7 +48,7 @@ c declare external functions
 c declare local variables
 
       real*8 q_sf
-      integer init/0/, I, J, mu, nu, id
+      integer init/0/, I, mu
       save init
 
 c declare variables for summation process
@@ -94,18 +94,19 @@ cmr
          do i = 1,maxnumsubproc
             res(i) = 0
          enddo
+
       else
          do i = 1,nmax
             res(i) = 0
          enddo
       endif
 
+
       do mu = 0,3
          qp(mu,1) = v(mu,1,1)+v(mu,2,1)   !Z/A_e
          qm(mu,1) = v(mu,3,1)+v(mu,4,1)   !Z/A_mu
          qaa(mu,1) = qp(mu,1)+qm(mu,1)    !Z_all
       enddo
-42      format( A,4(F32.16) )
       qp(4,1) = dotrr(qp(0,1),qp(0,1))
       qm(4,1) = dotrr(qm(0,1),qm(0,1))
       qaa(4,1) = dotrr(qaa(0,1),qaa(0,1))
@@ -350,16 +351,17 @@ c local variables
       real*8 uuzz, ddzz, uuzz2, ddzz2
       real*8 pbar(0:3,n_p+n_v), qbar(0:4), dotrr
       real*8 polcolq, polcolg, polcolgg
+
       double precision NCmatrixelt(0:1,0:1)
       double complex zero
       integer iflav(4), diagToPhys(3), FL_VVg
       external dotrr, FL_VVg
 
-      logical ChargedCurrent, sametype, oneAntiparticle
+
       logical ldebug
       parameter (ldebug=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,icc1,j,k,mu
+      integer i,if1,j,k,mu
 
       uuzz = 0d0
       uuzz2 = 0d0
@@ -397,6 +399,7 @@ c local variables
      &    (physToDiag(1).eq.1) .and. (physToDiag(2).eq.2)
      & ))) then
 c gluon-fusion loop contributions
+
 c instead of anti-fermion here initial/final
         fsign(2)=-fsign(2)
         call GGZZg(pbar,fsign,qbar,gsign,bos,nlo,1,uuzz)
@@ -419,6 +422,7 @@ c switch back for nlo.eq.1
           call sdd_zzg(pbar,fsign,ddzz2)
         endif
 #endif
+
       
         call QQZZj(pbar,fsign,qbar,gsign,nlo,1,uuzz,ddzz,ps_number)
 

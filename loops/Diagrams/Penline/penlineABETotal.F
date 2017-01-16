@@ -10,7 +10,7 @@ c Modified:30/7/2008
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16 barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-       Complex*16 result(8),resultg(8)
+       Complex*16 result(8)
        Complex*16 resultgauge(3),resultgaugeb(3),resultb 
        Real*8 musq,musqIn,P(554)
        Integer alpha,comp,gaugetest,ngluon,posgluon, Div
@@ -51,7 +51,7 @@ c Modified:30/7/2008
 #include "VBFNLO/loops/Utilities/GaugeTest.inc"
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16 barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-       Complex*16 result(8),resultg(8)
+       Complex*16 result(8)
        Complex*16 resultgauge(3),resultgaugeb(3),resultb 
        Real*8 musq,musqIn,P(554)
        Integer alpha,comp,gaugetest,ngluon,posgluon, Div
@@ -71,7 +71,7 @@ c Modified:30/7/2008
        Complex*16 resultgauge_Q(3),resultgaugeb_Q(3),resultb_Q
        integer jtemp
        logical gaugetrue
-       logical wardidtest_Q(0:8),wardpAbe(2)
+       logical wardpAbe(2)
        common/wardpenAbe/wardpAbe
       
        musq=musqIn
@@ -146,7 +146,6 @@ c to rescue Dble precision
        endif
 
 
-
        endif  ! tdble
 #endif
 
@@ -171,7 +170,7 @@ c Modified:30/7/2008
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
        Complex*16 barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-       Complex*16 result(8),resultg(8)
+       Complex*16 result(8)
        Complex*16 resultgauge(3),resultgaugeb(3),resultb 
        Real*8 musq,musqIn,P(554)
        Integer alpha,comp,gaugetest,ngluon,posgluon, Div

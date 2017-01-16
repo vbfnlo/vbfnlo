@@ -11,93 +11,82 @@ c*******************************************************************************
        Implicit none
        Real*16   p1sq, p1p2, p1p3!, p1p4
        Real*16   p2sq, p2p3!, p2p4
-       Real*16   p3sq, p3p4
+       Real*16   p3sq
        Real*16   p4sq
        Real*16   s12!, s13!, s14
        Real*16   s23!, s24
 !       Real*16   s34
        Real*16 M5,M1,M2,M3,M4,musq
-       complex*32 A01, A02,A03,A04,A05
-       Real*16      A01R, A02R,A03R,A04R,A05R
-       Real*16      A01I, A02I,A03I,A04I,A05I
-       complex*32  B012,B013,B014,B015 
-       complex*32  B023,B024,B025 
-       complex*32  B034,B035 
-       complex*32  B045 
-       Real*16  B012R,B013R,B014R,B015R 
-       Real*16  B023R,B024R,B025R 
-       Real*16  B034R,B035R 
-       Real*16  B045R 
-       Real*16  B012I,B013I,B014I,B015I 
-       Real*16  B023I,B024I,B025I 
-       Real*16  B034I,B035I 
-       Real*16  B045I 
-       Real*16  B12R(3,3),B13R(3,3),B14R(3,3),B15R(3,3) 
-       Real*16  B23R(3,3),B24R(3,3),B25R(3,3) 
-       Real*16  B34R(3,3),B35R(3,3) 
-       Real*16  B45R(3,3) 
-       Real*16  B12I(3,3),B13I(3,3),B14I(3,3),B15I(3,3) 
-       Real*16  B23I(3,3),B24I(3,3),B25I(3,3) 
-       Real*16  B34I(3,3),B35I(3,3) 
-       Real*16  B45I(3,3) 
+       complex*32 A01, A02,A03,A04
+       Real*16      A01R, A02R,A03R,A04R
+       Real*16      A01I, A02I,A03I,A04I
+       complex*32  B012,B013,B014 
+       complex*32  B023,B024 
+       complex*32  B034 
 
-       complex*32 C0123,C0124,C0125 
-       complex*32 C0134,C0135 
-       complex*32 C0145 
-       complex*32 C0234,C0235 
-       complex*32 C0245 
-       complex*32 C0345   
-       Real*16 C0123R,C0124R,C0125R 
-       Real*16 C0134R,C0135R 
-       Real*16 C0145R 
-       Real*16 C0234R,C0235R 
-       Real*16 C0245R 
-       Real*16 C0345R 
-       Real*16 C0123I,C0124I,C0125I 
-       Real*16 C0134I,C0135I 
-       Real*16 C0145I 
-       Real*16 C0234I,C0235I 
-       Real*16 C0245I 
-       Real*16 C0345I  
-       Real*16 C123R(9,4),C124R(9,4),C125R(9,4) 
-       Real*16 C134R(9,4),C135R(9,4) 
-       Real*16 C145R(9,4) 
-       Real*16 C234R(9,4),C235R(9,4) 
-       Real*16 C245R(9,4) 
-       Real*16 C345R(9,4) 
-       Real*16 C123I(9,4),C124I(9,4),C125I(9,4) 
-       Real*16 C134I(9,4),C135I(9,4) 
-       Real*16 C145I(9,4) 
-       Real*16 C234I(9,4),C235I(9,4) 
-       Real*16 C245I(9,4) 
-       Real*16 C345I(9,4) 
-       complex*32  D01234,D01235 
-       complex*32 D01245 
-       complex*32 D01345 
-       complex*32 D02345    
-       Real*16 D01234R,D01235R 
-       Real*16 D01245R 
-       Real*16 D01345R 
-       Real*16 D02345R  
-       Real*16 D01234I,D01235I 
-       Real*16 D01245I 
-       Real*16 D01345I 
-       Real*16 D02345I 
-       Real*16 D1234R(34,5),D1235R(34,5) 
-       Real*16 D1245R(34,5) 
-       Real*16 D1345R(34,5) 
-       Real*16 D2345R(34,5) 
-       Real*16 D1234I(34,5),D1235I(34,5) 
-       Real*16 D1245I(34,5) 
-       Real*16 D1345I(34,5) 
-       Real*16 D2345I(34,5) 
-       complex*32 E012345 
-       Real*16 E012345R 
-       Real*16 E012345I 
-       Real*16 E12345R(80,5) 
-       Real*16 E12345I(80,5) 
+       Real*16  B012R,B013R,B014R 
+       Real*16  B023R,B024R 
+       Real*16  B034R 
 
-       Logical PrintB,PrintC,PrintD,PrintE 
+       Real*16  B012I,B013I,B014I 
+       Real*16  B023I,B024I 
+       Real*16  B034I 
+
+       Real*16  B12R(3,3),B13R(3,3),B14R(3,3) 
+       Real*16  B23R(3,3),B24R(3,3) 
+       Real*16  B34R(3,3) 
+
+       Real*16  B12I(3,3),B13I(3,3),B14I(3,3) 
+       Real*16  B23I(3,3),B24I(3,3) 
+       Real*16  B34I(3,3) 
+
+
+       complex*32 C0123,C0124 
+       complex*32 C0134 
+
+       complex*32 C0234 
+
+
+       Real*16 C0123R,C0124R 
+       Real*16 C0134R 
+
+       Real*16 C0234R 
+
+
+       Real*16 C0123I,C0124I 
+       Real*16 C0134I 
+
+       Real*16 C0234I 
+
+
+       Real*16 C123R(9,4),C124R(9,4) 
+       Real*16 C134R(9,4) 
+
+       Real*16 C234R(9,4) 
+
+
+       Real*16 C123I(9,4),C124I(9,4) 
+       Real*16 C134I(9,4) 
+
+       Real*16 C234I(9,4) 
+
+
+       complex*32  D01234
+
+
+       Real*16 D01234R
+
+
+       Real*16 D01234I
+
+
+       Real*16 D1234R(34,5)
+
+
+       Real*16 D1234I(34,5)
+
+
+       Logical PrintB,PrintC,PrintD 
 
        COMMON/DVALFunctionsGSim/ D01234R_d,D1234R_d,D01234I_d,
      &                D1234I_d
@@ -118,67 +107,58 @@ c*******************************************************************************
      -           B34R_d, B34I_d
 
 
-       Real*8  B012R_d,B013R_d,B014R_d,B015R_d 
-       Real*8  B023R_d,B024R_d,B025R_d 
-       Real*8  B034R_d,B035R_d 
-       Real*8  B045R_d 
-       Real*8  B012I_d,B013I_d,B014I_d,B015I_d 
-       Real*8  B023I_d,B024I_d,B025I_d 
-       Real*8  B034I_d,B035I_d 
-       Real*8  B045I_d 
-       Real*8  B12R_d(2,2),B13R_d(2,2),B14R_d(2,2),B15R_d(2,2) 
-       Real*8  B23R_d(2,2),B24R_d(2,2),B25R_d(2,2) 
-       Real*8  B34R_d(2,2),B35R_d(2,2) 
-       Real*8  B45R_d(2,2) 
-       Real*8  B12I_d(2,2),B13I_d(2,2),B14I_d(2,2),B15I_d(2,2) 
-       Real*8  B23I_d(2,2),B24I_d(2,2),B25I_d(2,2) 
-       Real*8  B34I_d(2,2),B35I_d(2,2) 
-       Real*8  B45I_d(2,2) 
+       Real*8  B012R_d,B013R_d,B014R_d 
+       Real*8  B023R_d,B024R_d 
+       Real*8  B034R_d 
+
+       Real*8  B012I_d,B013I_d,B014I_d 
+       Real*8  B023I_d,B024I_d 
+       Real*8  B034I_d 
+
+       Real*8  B12R_d(2,2),B13R_d(2,2),B14R_d(2,2) 
+       Real*8  B23R_d(2,2),B24R_d(2,2) 
+       Real*8  B34R_d(2,2) 
+
+       Real*8  B12I_d(2,2),B13I_d(2,2),B14I_d(2,2) 
+       Real*8  B23I_d(2,2),B24I_d(2,2) 
+       Real*8  B34I_d(2,2)
 
 
-       Real*8 C0123R_d,C0124R_d,C0125R_d 
-       Real*8 C0134R_d,C0135R_d 
-       Real*8 C0145R_d 
-       Real*8 C0234R_d,C0235R_d 
-       Real*8 C0245R_d 
-       Real*8 C0345R_d 
-       Real*8 C0123I_d,C0124I_d,C0125I_d 
-       Real*8 C0134I_d,C0135I_d 
-       Real*8 C0145I_d 
-       Real*8 C0234I_d,C0235I_d 
-       Real*8 C0245I_d 
-       Real*8 C0345I_d  
-       Real*8 C123R_d(6,3),C124R_d(6,3),C125R_d(6,3) 
-       Real*8 C134R_d(6,3),C135R_d(6,3) 
-       Real*8 C145R_d(6,3) 
-       Real*8 C234R_d(6,3),C235R_d(6,3) 
-       Real*8 C245R_d(6,3) 
-       Real*8 C345R_d(6,3) 
-       Real*8 C123I_d(6,3),C124I_d(6,3),C125I_d(6,3) 
-       Real*8 C134I_d(6,3),C135I_d(6,3) 
-       Real*8 C145I_d(6,3) 
-       Real*8 C234I_d(6,3),C235I_d(6,3) 
-       Real*8 C245I_d(6,3) 
-       Real*8 C345I_d(6,3) 
+       Real*8 C0123R_d,C0124R_d 
+       Real*8 C0134R_d 
 
-       Real*8 D01234R_d,D01235R_d 
-       Real*8 D01245R_d 
-       Real*8 D01345R_d 
-       Real*8 D02345R_d  
-       Real*8 D01234I_d,D01235I_d 
-       Real*8 D01245I_d 
-       Real*8 D01345I_d 
-       Real*8 D02345I_d 
-       Real*8 D1234R_d(22,4),D1235R_d(22,4) 
-       Real*8 D1245R_d(22,4) 
-       Real*8 D1345R_d(22,4) 
-       Real*8 D2345R_d(22,4) 
-       Real*8 D1234I_d(22,4),D1235I_d(22,4) 
-       Real*8 D1245I_d(22,4) 
-       Real*8 D1345I_d(22,4) 
-       Real*8 D2345I_d(22,4) 
+       Real*8 C0234R_d 
 
-    
+
+       Real*8 C0123I_d,C0124I_d 
+       Real*8 C0134I_d 
+
+       Real*8 C0234I_d 
+
+
+       Real*8 C123R_d(6,3),C124R_d(6,3) 
+       Real*8 C134R_d(6,3) 
+
+       Real*8 C234R_d(6,3) 
+
+
+       Real*8 C123I_d(6,3),C124I_d(6,3) 
+       Real*8 C134I_d(6,3) 
+
+       Real*8 C234I_d(6,3)
+
+
+       Real*8 D01234R_d
+
+
+       Real*8 D01234I_d
+
+
+       Real*8 D1234R_d(22,4)
+
+
+       Real*8 D1234I_d(22,4)
+
 
        complex*32 A0finG_QUAD,B0finG_QUAD,C0finG_QUAD,D0finG_QUAD
 
@@ -299,7 +279,6 @@ c
      & C0134,C0134R,C0134I,C134R,C134I)
 
 
-
 c
 c       print*, "here_XGETEM1M3after C"
 c
@@ -413,16 +392,8 @@ cfc       call print_DijR4(DCMPLX(D01234),D1234R_d,D1234I_d)
 cfc       endif
 
 
-
-
-
        return
        end
-
-
-    
-
-
 
 
       subroutine R3_From_BijR_QUAD_to_DblR2(B0R,B0I,BijR,BijI,
@@ -445,7 +416,6 @@ ccccccccccccccccccccccccccccccccccccc
          enddo
       enddo
       end
-
 
 
       subroutine R4_From_CijR_QUAD_to_DblR3(C0R,C0I,CijR,CijI,
@@ -488,7 +458,6 @@ ccccccccccccccccccccccccccccccccccccc
       indx_D(5)=34
 
 
-
       D0R=D0R_QUAD
       D0I=D0I_QUAD
       do i1=1,4
@@ -500,12 +469,11 @@ ccccccccccccccccccccccccccccccccccccc
       end
 
 
-    
       subroutine print_CijR3(C0,CijR,CijI)
       implicit none
       complex*16 C0
       real*8  CijR(6,3),CijI(6,3)
-      integer indx_C(3),indx_D(3),indx_E(4)
+      integer indx_C(3)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_C(1)=2
@@ -521,12 +489,11 @@ c      common/indexes/indx_C,indx_D,indx_E
       end
 
 
-
       subroutine print_DijR4(D0,DijR,DijI)
       implicit none
       complex*16 D0
       real*8  DijR(22,4),DijI(22,4)
-      integer indx_D(5),indx_E(4)
+      integer indx_D(5)
 c      common/indexes/indx_C,indx_D,indx_E
       integer i1,i2
       indx_D(1)=13

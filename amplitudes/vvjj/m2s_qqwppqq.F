@@ -16,6 +16,7 @@ c
      &                   v,	!in:  momenta associated with Z/H dec. fermions
      &                   rn     !in:  random number array
      &                        )
+          use globalvars, only: ldoblha
       implicit none
 c
 c declare input/output variables
@@ -43,7 +44,7 @@ c  helicity selection
       integer jsig, jsig1, jsig3, jsig5
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 
-      complex*16 zero, z1
+      complex*16 zero
       parameter (zero=(0d0,0d0))
 c
 c declare external functions
@@ -55,18 +56,18 @@ c
 c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 
-      real*8 q12(0:4,3), q34(0:4,3), qvv(0:3)
+      real*8 q12(0:4,3), q34(0:4,3)
 c
 c declare local variables
 c
       real*8 q_sf, qq
 
-      integer init/0/, I, J, mu, nu, id
+      integer init/0/, I, J, mu
       save init
 c
 c declare variables for summation process
 c
-      INTEGER ires,lsign(3:4)
+      INTEGER ires
       integer FSIGN(4+max_v), physToDiag(4), nmin, nmax, nproc(4)
       save nmax, nproc
 c
@@ -481,6 +482,7 @@ c
 c*****************************************************************
       subroutine wbf_wpp(xi,p,v,physToDiag,fsign,bos, nlo,
      1                  pdf,res,nmin,nmax)
+          use globalvars, only: ldoblha
 
       implicit none
 
@@ -522,12 +524,12 @@ c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 
 c local variables
-      real*8 pbar(0:3,4+max_v), pA(0:3), dotrr, polcol
+      real*8 pbar(0:3,4+max_v), dotrr, polcol
       integer iflav(4), diagToPhys(4), FL_ZH
       external dotrr, FL_ZH
 
-      logical ldebug
-      integer i,if1,if2,icc1,j,k,mu
+
+      integer i,if1,if2,k,mu
 
 ** random number 
       real*8 rn(6)

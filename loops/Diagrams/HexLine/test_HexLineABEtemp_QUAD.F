@@ -43,24 +43,20 @@ c*******************************************************************************
      -          mup4mup5
        Real*8 dotrr
 
-        Real*8   p1sq, p1p2, p1p3, p1p4, p1p5,p1p6 
-       Real*8   p2sq, p2p3, p2p4, p2p5 
-       Real*8   p3sq, p3p4, p3p5 
-       Real*8   p4sq, p4p5 
-       Real*8   p5sq, p5p6 
+        Real*8   p1sq 
+       Real*8   p2sq 
+       Real*8   p3sq 
+       Real*8   p4sq 
+       Real*8   p5sq 
        Real*8   p6sq 
-       Real*8   s12, s13, s14, s15, s16 
-       Real*8   s23, s24, s25,s26 
-       Real*8   s34, s35,s36 
-       Real*8   s45,s46 
+       Real*8   s12, s16 
+       Real*8   s23 
+       Real*8   s34 
+       Real*8   s45 
        Real*8   s56 
-       Real*8   s123,s234,s345   
-       Real*8   p2p6,p3p6,p4p6  
-       Complex*16  B012,B013,B014,B015,B016 
-       Complex*16  B023,B024,B025,B026 
-       Complex*16  B034,B035,B036 
-       Complex*16  B045,B046 
-       Complex*16  B056   
+       Real*8   s123,s234,s345
+
+
        Real*8  B012R,B013R,B014R,B015R,B016R 
        Real*8  B023R,B024R,B025R,B026R 
        Real*8  B034R,B035R,B036R 
@@ -70,17 +66,9 @@ c*******************************************************************************
        Real*8  B023I,B024I,B025I,B026I 
        Real*8  B034I,B035I,B036I 
        Real*8  B045I,B046I 
-       Real*8  B056I   
-       Complex*16 C0123,C0124,C0125,C0126 
-       Complex*16 C0134,C0135,C0136 
-       Complex*16 C0145,C0146 
-       Complex*16 C0156 
-       Complex*16 C0234,C0235,C0236 
-       Complex*16 C0245,C0246 
-       Complex*16 C0256 
-       Complex*16 C0345,C0346 
-       Complex*16 C0356 
-       Complex*16 C0456   
+       Real*8  B056I
+
+
        Real*8 C0123R,C0124R,C0125R,C0126R 
        Real*8 C0134R,C0135R,C0136R 
        Real*8 C0145R,C0146R 
@@ -120,17 +108,9 @@ c*******************************************************************************
        Real*8 C256I(4,2) 
        Real*8 C345I(4,2),C346I(4,2) 
        Real*8 C356I(4,2) 
-       Real*8 C456I(4,2)  
-       Complex*16  D01234,D01235,D01236 
-       Complex*16 D01245,D01246 
-       Complex*16 D01256 
-       Complex*16 D01345,D01346 
-       Complex*16 D01356 
-       Complex*16 D01456 
-       Complex*16 D02345,D02346 
-       Complex*16 D02356 
-       Complex*16 D02456 
-       Complex*16 D03456    
+       Real*8 C456I(4,2)
+
+
        Real*8 D01234R,D01235R,D01236R 
        Real*8 D01245R,D01246R 
        Real*8 D01256R 
@@ -171,20 +151,20 @@ c*******************************************************************************
        Real*8 D2356I(13,3) 
        Real*8 D2456I(13,3) 
        Real*8 D3456I(13,3)   
-       Complex*16 E012345,E012346,E012356,E012456,E013456,E023456 
+
        Real*8 E012345R,E012346R,E012356R,E012456R,E013456R,E023456R 
        Real*8 E012345I,E012346I,E012356I,E012456I,E013456I,E023456I  
        Real*8 E12345R(46,4),E12346R(46,4),E12356R(46,4) 
        Real*8 E12456R(46,4),E13456R(46,4),E23456R(46,4)  
        Real*8 E12345I(46,4),E12346I(46,4),E12356I(46,4) 
        Real*8 E12456I(46,4),E13456I(46,4),E23456I(46,4)  
-       Complex*16 F0123456 
+
        Real*8 F0123456R 
        Real*8 F0123456I 
        Real*8 F123456R(166,5) 
        Real*8 F123456I(166,5) 
-       Complex*16 F123456(166,5) 
-       Logical PrintB,PrintC,PrintD,PrintE,PrintF 
+
+
        Integer comp 
       Complex*16 SMB(64),F(5930),Fa(445)
       Real*8 P(11674)
@@ -231,7 +211,7 @@ c*******************************************************************************
        External SC1c,SC1r,SC3ccc,SC3ccr,SC3crr,SC3rrr,SC5ccccr,SC5cccr
      -   r,SC5ccrrr,SC7ccccrrr
        Complex*16 barpsi_p6(2),psi_p1(2)
-       Integer ngluon, posgluon,i,j,jtemp
+       Integer ngluon, posgluon,jtemp
        Real*8 musqIn
        Common/musqInv/musq
        musq=musqIn

@@ -113,8 +113,6 @@ c
       endif
 
 
-
-
         if (sqrt(r2).gt.1q0) then     ! map z ---> 1/z
          fac = -fac
          ZLOG=Log(-z)
@@ -123,7 +121,6 @@ c
         zreal=QREAL(z)
         zimag=QIMAG(z)
       endif
-
 
 
       if (zreal.gt.I2) then     ! map new z ---> 1-z
@@ -154,9 +151,6 @@ c
       li2_QUAD = fac*ans + zext
       Return
       end
-
-
-
 
 
 

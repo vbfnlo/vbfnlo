@@ -11,7 +11,7 @@ C a spin-2 resonanance if spin2=false is set in vbfnlo.dat.
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
       
 
 	! possible lepton helicities:
@@ -55,7 +55,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER I,MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -141,7 +141,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
       
 
 	! possible lepton helicities:
@@ -184,7 +184,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER I,MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -266,7 +266,7 @@ c ------------------------------------------------------------
       complex*16 az(0:3,0:3)
       complex*16 za(0:3,0:3)
       complex*16 zz(0:3,0:3)
-      integer lsign(3:6,4),h,ll,mu,nu
+      integer lsign(3:6,4),h,ll
       
 
 	! possible lepton helicities:
@@ -296,7 +296,7 @@ C
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 aa(0:3,0:3)
       integer lsign(3:6) 
-      INTEGER I,J, mu,nu
+      INTEGER mu,nu
 #include "tensorz.inc"
 
       DO MU = 0,3
@@ -325,7 +325,7 @@ C
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 az(0:3,0:3)
       integer lsign(3:6)
-      INTEGER I,J,mu,nu
+      INTEGER mu,nu
 #include "tensorz.inc"
 
       DO MU = 0,3
@@ -368,7 +368,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -437,7 +437,7 @@ c ------------------------------------------------------------
       complex*16 az(0:3,0:3)
       complex*16 za(0:3,0:3)
       complex*16 zz(0:3,0:3)
-      integer lsign(3:6,4),h,ll,mu,nu
+      integer lsign(3:6,4),h,ll
       
 
 	! possible lepton helicities:
@@ -470,7 +470,7 @@ C
       complex*16 aa(0:3,0:3)
       integer lsign(3:6)
 
-      INTEGER I,J, mu,nu
+      INTEGER mu,nu
 
 #include "tensorz.inc"
    
@@ -502,7 +502,7 @@ C
       complex*16 az(0:3,0:3)
       integer lsign(3:6)
 
-      INTEGER I,J,mu,nu
+      INTEGER mu,nu
 
 #include "tensorz.inc"
 
@@ -546,7 +546,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  

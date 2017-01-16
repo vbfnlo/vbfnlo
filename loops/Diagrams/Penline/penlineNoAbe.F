@@ -118,8 +118,8 @@ c*******************************************************************************
         Real*8 Dij1234I(13,3),Dij1235I(13,3),Dij1245I(13,3),Dij1345I(13
      -   ,3),Dij2345I(13,3),EijI(46,4)
        Complex*16 SMB(16),SMG(16) ,Fa(14),F(280)
-      Real*8 FI(280),FR(280),FaI(14),FaR(14)
-      Complex*16 SC1c,SC3ccc,SC3rcc,SC3rrc,SC5rrccc,SC1r,SC3rrr,dotrc,dotcc,result
+      Real*8 FI(280),FR(280)
+      Complex*16 SC1c,SC3ccc,SC3rcc,SC3rrc,SC5rrccc,SC1r,dotrc,dotcc,result
        Complex*16 resultgauge(3) 
        Real*8 musq,p4t,Is12,Is34,Is15s34,Is45,P(685) 
        EXTERNAL   dotrc,dotcc,SC1c,SC1r,SC3ccc,SC3rcc,SC3rrc,SC5rrccc

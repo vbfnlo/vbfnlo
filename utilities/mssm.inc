@@ -149,7 +149,6 @@
       integer higgsmix
 
 
-
       common /susyparamsD/ AlfaQED, EL, AlfaQED2, gfermi, delAlfa
 
       common /susyparamsD/ SW, SW2, CW, CW2
@@ -227,5 +226,4 @@
       common /susyparamsFMd/ dgL3fm, dgL4fm, dgR3fm, dgR4fm
 
 
-   
 

@@ -419,7 +419,7 @@ c local variables, external functions etc.
       external dotrr, psumsq
       double precision pi,pi2o3
       parameter (pi=3.14159 26535 89793d0,pi2o3=pi**2/3d0)
-      double precision k1sq,k2sq
+
       double complex D0fin,C0fin,B0fin
       external D0fin,C0fin,B0fin
 c

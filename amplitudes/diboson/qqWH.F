@@ -28,12 +28,15 @@ c*********************************************************************
 
       subroutine qqWH(pbar, sign, nlo, N, udwh, bos)
 
+      use globalvars, only: ldoblha
+
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
 #include "tensor.inc"
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
 
 c     electroweak couplings are taken from KOPPLN
@@ -42,6 +45,11 @@ c     electroweak couplings are taken from KOPPLN
      1                  V(4,5),A(4,5)
       double precision  pbar(0:3,2+n_v)
       double precision  udwh, res(2),resv(2)
+
+      !BLHA interface
+      double precision tree(2) ! save tree amplitude
+      double precision lnmusqp1p2 ! running logs
+
       double precision  p(0:3,2+n_v) !n_v=5=2in + 3 out: l v h
       integer  sign(2+n_v), nlo, mu, i, k, isig 
       integer  N, bos
@@ -118,7 +126,6 @@ c       C  The helicity indices are  -1: lefthanded
 c       C                            +1: righthanded
 
 
-
 c-------  S-CHANNEL --------------------------------------!
 
 c get the f-fbar currents J21^mu=jqq(mu,*,1) 
@@ -178,6 +185,7 @@ c  of the pdfs (see also D(x) in m2s_qqVVj.f)
      1              conjg( mv(1,-1) ) )
 
       if (nlo.ge.0) then
+         tree(1) = res(1)*3d0
          res(1) = (res(1)+resv(1))*3d0      ! 3 is the color sum factor
       else
          res(1) = resv(1)*3d0               ! 3 is the color sum factor
@@ -185,5 +193,58 @@ c  of the pdfs (see also D(x) in m2s_qqVVj.f)
 
 
       udwh = res(1)
+
+      if (ldoblha) then
+         select case(blha_amptype(blha_curproc)) 
+         case(0) ! tree
+            ! blha_amp(1)=blha_amp(1)+
+            ! &      res(blha_idsubproc(blha_cursubproc,blha_curproc))
+            blha_amp(1)=blha_amp(1) + res(1)
+
+         case(1) ! loop
+            lnmusqp1p2 = log(blha_scale**2/(2d0*dotrr(p(0,1),p(0,2)) )) ! sign not used here
+
+            ! eps**-2
+            blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       als(1,1)*(-1d0)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+            ! eps**-1
+            blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+            ! eps**0
+            ! idsubproc = 1 here
+            blha_amp(3)= blha_amp(3)+
+     &      resv(1)*blha_CA ! loop + I (no tree)
+     &      + (-(als(1,1))/2d0/pi*                        ! -I
+     &          (blha_CF*cvirtVV+  ! our cvirt contribution to I operator
+     &            2d0*(blha_KQuark+blha_gammaQuark+ ! K, gamma from CS (C.28)
+     &                 blha_tgammaQuark+ ! catani convention to I operator
+     &                  (pi**2/6d0-1)*blha_CF) ) ! difference 1/Gamma(1-e) vs. Gamma(1+e)
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+            ! tree
+            blha_amp(4)= blha_amp(4)+
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+         case(2) ! cctree
+            ! 1-2
+            call BLHA_cctree(1,2,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+
+         case default 
+            call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+         end select
+      endif
+
+
+
       return
       end

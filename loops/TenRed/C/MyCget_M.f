@@ -22,7 +22,7 @@ c Returns C0 and Cij
       real*8 musq
       REAL*8 MUSQCP
       common/musqINv/musqcp
-      real*8 m0,m1,m2
+      real*8 m0
 
       MUSQCP=MUSQ
 

@@ -11,12 +11,12 @@
       integer procID
 
 ! switch to enable (default) or disable the calculation of toploops
-! so far only used in WHj@NLO      
+! so far only used in WHj@NLO
       logical dotoploops
       parameter (dotoploops = .true.)
 
 ! enables built-in ckm values for processes supporting CKM
-! so far only W, Wj, WH, WHj     
+! so far only W, Wj, WH, WHj
       logical luseckm
       parameter (luseckm = .false.)
 
@@ -27,10 +27,10 @@
 ! -1       : real emissions loop
 !  0       : LO loop
 !  1,2,... : the various virtual contributions
-      integer N_points(-1:5)	
+      integer N_points(-1:5)
 
 ! the center of mass energy of the collider
-      double precision ecm	
+      double precision ecm
 
 ! center of mass energy^2 in electroweak processes used for form factors and kmatrix unitarisation
       double precision ss
@@ -44,7 +44,7 @@
       integer max_PS_dim
       parameter (max_PS_dim = 30)
 
-! the maximum number of 4-momenta stored in 'partons' 
+! the maximum number of 4-momenta stored in 'partons'
 ! here, the partons are the incoming quarks/gluons + the 2 tagging jets
 ! + the real emission (for NLO only)
 
@@ -52,7 +52,7 @@
       parameter (max_p=6)
 
 ! the maximum number of additional particles like a higgs boson, or any decay products.
-! additional/decay particles means: everything which is not a parton involved in 
+! additional/decay particles means: everything which is not a parton involved in
 ! the basic QCD 2->2(+1)+X process.
 
       integer max_v
@@ -60,9 +60,9 @@
 
 ! number of internal x parameters
       integer nx
-      parameter( nx=2 )	
+      parameter( nx=2 )
 
-! the maximum number of jets 
+! the maximum number of jets
       integer max_jets
       parameter (max_jets=max_p+max_v-nx)
 
@@ -78,7 +78,7 @@
       integer max_nlo
       parameter (max_nlo = 6)
 
-! maximal number of resonances that can be put into one random number 
+! maximal number of resonances that can be put into one random number
 ! (see MultiResonances in phasespace/ps_tools.F)
       integer max_res, max_multires
       parameter (max_res=20, max_multires=10)
@@ -100,12 +100,9 @@
 !     The particle identification code according to the Monte Carlo particle numbering scheme.
 !     reminder :  e- =  11, nue    =  12, mu- =  13, numu    =  14, tau- =  15, nutau  =  16,
 !                 e+ = -11, nuebar = -12, mu+ = -13, numubar = -14, tau+ = -15, nutaub = -16,
-!             photon = 22,      Z0 = 23,   W+ = 24,       h0 = 25,    A0 = 36,      H+ = 37 
+!             photon = 22,      Z0 = 23,   W+ = 24,       h0 = 25,    A0 = 36,      H+ = 37
 !     in addition, we identify a general parton (quark/gluon) with id=93
       integer particle_IDs(max_v)
-! mass of the corresponding particle
-      double precision particle_mass(max_v)
-		
 ! file names for input and output of monaco grid information
       character*50 gridname1(1:max_ps), gridname2(1:max_ps), gridname3(1:max_ps), gridname4(1:max_ps)
 
@@ -121,22 +118,22 @@
 
 !* Flags, switches, parameters for running in SUSY and with ew
 !* corrections
-! switches: 
+! switches:
 !  loopSqr_switch = whether |M_{loop}|^{2} is calculated
 !  ewcor_switch = whether ew corns are included
 !  FeynH_switch =  whether FeynHiggs is used
 !  slha_switch = whether a SLHA file is used
       logical loopSqr_switch, ewcor_switch, FeynH_switch, slha_switch
       logical loopSqr_switchIN
-! flags: 
+! flags:
 !  model = SM (1) and MSSM (2)
 !  Higgs type  = SM (0), h0 (1), HH (2), A0 (3)
 !  ewapprox = which approximations the user has selected for the ew corns
 !             (0 = no approximations)
-!  sector = which particles are included in the ew corns  
-!  ewscheme = method by which LO em coupling is calculated       
+!  sector = which particles are included in the ew corns
+!  ewscheme = method by which LO em coupling is calculated
       integer model, HiggsType, ewapprox, sector, ewscheme, floops, MHloops
-     
+
 
 !     number of loops for different virtual contributions
       integer NLO_Loops
@@ -156,14 +153,14 @@
       common /cglobalI/ N_iterations1, N_iterations2, N_points, n_p, n_v
       common /cglobalI/ sign1, sign2, NLO_Loops, PS_dimension, particle_IDs
       common /cglobalI/ PS_Loops, sub_number,Loops_sub_LO,Loops_sub_NLO
-      common /cglobalL/ FeynH_switch, slha_switch, ewcor_switch 
+      common /cglobalL/ FeynH_switch, slha_switch, ewcor_switch
       common /cglobalL/ loopSqr_switch, loopSqr_switchIN
       common /cglobalL/ hasNLO, hasFLoops
       common /cglobalL/ doBorn, doVirtuals, doEmissions, doFLoops
       common /cglobalL/ inFLoops
       common /cglobalC/ gridname1, gridname2, gridname3, gridname4
 
-	
+
       common /cglobal2/ n_kin, n_qed
 
       common /kmatrix/ ss
@@ -183,7 +180,7 @@
       parameter (pi2o3m4=2d0*(pi**2/3d0-4d0))
       parameter (cvirtVV = 4/3d0*pi**2-8d0,crealVV = pi2o3m4-cvirtVV)
 
-! fix number of external quark flavors to sum over; for CC processes both 
+! fix number of external quark flavors to sum over; for CC processes both
 ! up- and down-type quarks of the highest generation need to be allowed
 ! (i.e. the largest even number less than or equal to nfl is used)
 ! For vbf processes that involve both CC and NC channels, by switching vbfNFLb
@@ -193,17 +190,15 @@
 !  no CC components
 ! Set nfl=4 to have no external bottom quarks anywhere
       integer nfl, nflVBF
-      parameter (nfl=5)
       logical vbfNFLb
-      parameter (vbfNFLb=.false.)
-      common /vbfNFL/ nflVBF
+      common /vbfNFL/ nfl, nflVBF, vbfnflb
 
 ! switch to enable external b bbar contributions
       logical lincludebb
       parameter (lincludebb=.true.)
 ! switch to enable external b bbar contributions only if they are final
 !   and recombined into one jet
-!   this is ignored if lincludebb is true      
+!   this is ignored if lincludebb is true
       logical lincludebbfinal
       parameter (lincludebbfinal=.true.)
 ! gets set by cuts routine to signal that final state particles
@@ -216,14 +211,14 @@
 
       common /cglobalL2/ lqqrecombined, lincludebbfinaldo
 
-! qsqAmin is the minimum virtuality for t-channel photon exchange. 
+! qsqAmin is the minimum virtuality for t-channel photon exchange.
 ! Subamplitudes will be set to zero if photon virtuality falls below
 ! qsqAmin
       double precision qsqAmin
       parameter (qsqAmin=4d0)
 !      common /photondivVBF/qsqAmin
 
- 
+
 ! qsqAmin_had is the minimum virtuality for a hadronically decaying photon
 ! in the semileptonic processes.
 ! Amplitude will be set to zero if Q^2_gamma < qsqAmin_had
@@ -240,21 +235,21 @@
       parameter (igauge=2)
 ! igauge allows to select different ways to insure EW gauge invariance
 ! in the face of finite W and Z width effects for EW W and Z production:
-!  
+!
 !   igauge = 1       overall factor scheme
 !            2       complex mass scheme, m**2-->m**2-i*m*Gamma
 !                    in all propagators
 !            3       for ibos=2 only: naive Z Breit Wigner
 !           -1       width = 0, for testing purposes only
 
-      logical with_anom 	
+      logical with_anom
       common /anom_switch/ with_anom
       logical with_anomHiggs
       common /anomHiggs/ with_anomHiggs
-      logical with_kk 	
+      logical with_kk
       common /kk_switch/ with_kk
       logical with_spin2
-      common /spin2_switch/ with_spin2 
+      common /spin2_switch/ with_spin2
 
 
       integer max_sub
@@ -295,6 +290,10 @@
       real*8 instab_error
       common /cinstab_error/ instab_error
 
+! data files
+      logical lreaddata, lwritedata
+      common /rwdata/ lreaddata, lwritedata
+
 ! store contributions split up in subproc, phase space and gnlo
 ! gnlo = -1: LO
 ! gnlo = NLO_Loops+1: RE
@@ -317,14 +316,7 @@
 ! hidden debug switches
       logical born_off, virtuals_off, emissions_off,reduceSubStat
       common /nlo_switch / born_off, virtuals_off, emissions_off,reduceSubStat
-      
-! VBFNLO version
-      integer vbfnloversionnumber
-      character*50 vbfnloversionstring
-      character*255 vbfnloreference(3)
-      common/vbfnloversion/ vbfnloversionnumber
-      common/vbfnloversion/ vbfnloreference, vbfnloversionstring
 
-! VBFNLO library
-      logical ldoscales, lglobalprint, ldoblha
-      common/vbfnlolib/ ldoscales, lglobalprint, ldoblha
+! flag to output timing information
+      logical showtiming
+      common/showtimingcom/ showtiming

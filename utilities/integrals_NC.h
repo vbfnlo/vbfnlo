@@ -13,18 +13,14 @@
 	common /loopintN/ iintQ13, iintQ14
 
 
-
 	integer*8 iintU1, iintU2, iintU3, iintU4, iintU5, iintU6, iintU7, iintU8
 	common /loopintN/ iintU1, iintU2, iintU3, iintU4, iintU5, iintU6
 	common /loopintN/ iintU7, iintU8
 
 
-
-
 	integer*8 iintL1, iintL2, iintL3, iintL4, iintL5, iintL6, iintL7, iintL8
 	common /loopintN/ iintL1, iintL2, iintL3, iintL4, iintL5, iintL6
 	common /loopintN/ iintL7, iintL8
-
 
 
 	integer*8 iintP1, iintP2, iintP3, iintP4, iintP5, iintP6, iintP7, iintP8

@@ -15,6 +15,7 @@ c       Initial version: January 2008
 c       Last modified: 
 
       SUBROUTINE DEF_PS_WWZ_kk(bos1,bos2,bos3)
+          use globalvars, only: ldoblha
 
       IMPLICIT NONE
 
@@ -22,8 +23,6 @@ c       Last modified:
 #include "VBFNLO/utilities/cuts.inc"
 
       INTEGER bos(3), i, bos1, bos2, bos3
-
-c set up variables in common block BLIPSI for call of LIPSVVVJ
 
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTJMIN
       DOUBLE PRECISION RM2MINX, RM2MAXX, M2MIN, RM2MINY, RM2MAXY
@@ -132,10 +131,6 @@ C                      Q3(*) = V(*,5) + V(*,6)
 C           W          the weight of the phase space point
 C
 
-
-C  INPUT INFORMATION on the phase space region is transferred via the
-C    common block /BLIPSI/
-
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTC
       DOUBLE PRECISION RM2MIN12, RM2MAX12, RM2MIN23, RM2MAX23, M2MIN
       DOUBLE PRECISION RM2MAX1, RM2MAX2
@@ -156,12 +151,12 @@ C   PTJMIN         minimal PT value of the jet
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER I, MU
 
       DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, rt
-      DOUBLE PRECISION xxwidth, xxm, xywidth, xym, mw, m2
-      DOUBLE PRECISION q1(0:3), q2(0:3), q3(0:3), K(0:4),pY(0:4), pX(0:4)
-      DOUBLE PRECISION tau, shat, y, y_border, tauc
+      DOUBLE PRECISION xxwidth, xxm, xywidth, xym
+      DOUBLE PRECISION q1(0:3), q2(0:3), q3(0:3), K(0:4),pY(0:4)
+      DOUBLE PRECISION tau, y, y_border
 
       DOUBLE PRECISION dotrr, test, vdummy(0:3,2)
 	Double precision vdump, phi, cosphi, sinphi
@@ -184,7 +179,7 @@ c NLO real emission parameter for WWZ invariant mass
 	external nonresonance, nonresonance_kk
 c symmetrisation of q1 and q3
       INTEGER symm
-      DOUBLE PRECISION QL1(0:3), QL3(0:3), msqlocal1, msqlocal3
+
       data symm /1/
       save symm    
 c DEBUG	
@@ -447,13 +442,12 @@ c to get all resonances, include:
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER MU
 
-      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, mw, m2
+      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq
       DOUBLE PRECISION P_in(0:4), q1_out(0:3), q2_out(0:3), q3_out(0:3)
 
-      DOUBLE PRECISION dotrr
-      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, A1, A2, D
+      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, D
       DOUBLE PRECISION alpha, gamma, cosa, cosb, cosg, sina, sinb, sing
 
       DOUBLE PRECISION R(7), RN
@@ -681,8 +675,6 @@ c to get all resonances, include:
 
       INTEGER bos(3), i, bos1, bos2, bos3
 
-c set up variables in common block BLIPSI for call of LIPSVVVJ
-
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTJMIN, x
       DOUBLE PRECISION RM2MINX, RM2MAXX, M2MIN, RM2MINY, RM2MAXY
       DOUBLE PRECISION RM2MAX1, RM2MAX2, RM2MAX3, RM2MAX4
@@ -820,10 +812,6 @@ C                      Q3(*) = V(*,5) + V(*,6)
 C           W          the weight of the phase space point
 C
 
-
-C  INPUT INFORMATION on the phase space region is transferred via the
-C    common block /BLIPSI/
-
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTC
       DOUBLE PRECISION RM2MIN12, RM2MAX12, RM2MIN23, RM2MAX23, M2MIN
       DOUBLE PRECISION RM2MAX1, RM2MAX2,RM2MAX3, RM2MAX4
@@ -845,15 +833,15 @@ C   PTJMIN         minimal PT value of the jet
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER I, MU
 
       DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, rt
-      DOUBLE PRECISION xxwidth, xxm, xywidth, xym, mw, m2
+      DOUBLE PRECISION xxwidth, xxm, xywidth, xym
       DOUBLE PRECISION xzwidth, xzm, xwwidth, xwm
-      DOUBLE PRECISION q1(0:3), q2(0:3), q3(0:3), K(0:4),pY(0:4), pX(0:4)
-      DOUBLE PRECISION tau, shat, y, y_border, tauc
+      DOUBLE PRECISION q1(0:3), q2(0:3), q3(0:3), K(0:4),pY(0:4)
+      DOUBLE PRECISION tau, y, y_border
 
-      DOUBLE PRECISION dotrr, test, vdummy(0:3,2)
+      DOUBLE PRECISION dotrr, test
 	Double precision vdump, phi, cosphi, sinphi
       DOUBLE PRECISION twopi
       PARAMETER (twopi = 2d0*3.141592653589793d0)
@@ -1121,13 +1109,12 @@ c to get all resonances, include:
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER MU
 
-      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, mw, m2
+      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq
       DOUBLE PRECISION P_in(0:4), q1_out(0:3), q2_out(0:3), q3_out(0:3)
 
-      DOUBLE PRECISION dotrr
-      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, A1, A2, D
+      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, D
       DOUBLE PRECISION alpha, gamma, cosa, cosb, cosg, sina, sinb, sing
 
       DOUBLE PRECISION R(7), RN
@@ -1188,7 +1175,6 @@ c m_12^2 = (q1 + q2)^2 out of R(1)
          W = 0.0d0
          return
       endif
-
 
 
 c m_23^2 = (q2 + q3)^2 out of r(2)
@@ -1357,8 +1343,6 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 #include "VBFNLO/utilities/cuts.inc"
       INTEGER bos(3), i, bos1, bos2, bos3
 
-c set up variables in common block BLIPSI for call of LIPSZZW_kk
-
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTJMIN
       DOUBLE PRECISION RM2MINX, RM2MAXX, M2MIN, RM2MINY, RM2MAXY
       DOUBLE PRECISION RM2MAX1, RM2MAX2
@@ -1431,7 +1415,6 @@ c coupling routine handles over 10 times width times mass
 	endif
 
 
-
 c cutoff for numerical purposes
 
       m2min = 0.01d0**2
@@ -1495,10 +1478,6 @@ C                      Q3(*) = V(*,5) + V(*,6)
 C           W          the weight of the phase space point
 C
 
-
-C  INPUT INFORMATION on the phase space region is transferred via the
-C    common block /BLIPSI/
-
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTC
       DOUBLE PRECISION RM2MIN12, RM2MAX12, RM2MIN23, RM2MAX23, M2MIN
       DOUBLE PRECISION RM2MAX1, RM2MAX2
@@ -1520,14 +1499,14 @@ C   PTJMIN         minimal PT value of the jet
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER I, MU
 
       DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq
-      DOUBLE PRECISION xxwidth, xxm, xywidth, xym, mw, m2, rt
-      DOUBLE PRECISION q1(0:3), q2(0:3), q3(0:3), K(0:4),pY(0:4), pX(0:4)
-      DOUBLE PRECISION tau, shat, y, y_border, tauc
+      DOUBLE PRECISION xxwidth, xxm, xywidth, xym, rt
+      DOUBLE PRECISION q1(0:3), q2(0:3), q3(0:3), K(0:4),pY(0:4)
+      DOUBLE PRECISION tau, y, y_border
 
-      DOUBLE PRECISION dotrr, test, vdummy(0:3,2)
+      DOUBLE PRECISION dotrr, vdummy(0:3,2)
 	Double precision vdump, phi, cosphi, sinphi
       DOUBLE PRECISION twopi
       PARAMETER (twopi = 2d0*3.141592653589793d0)
@@ -1548,7 +1527,7 @@ c NLO real emission parameter for WWZ invariant mass
 	external nonresonance, nonresonance_kk
 c symmetrisation of q1 and q3
       INTEGER symm
-      DOUBLE PRECISION QL1(0:3), QL3(0:3), msqlocal1, msqlocal3
+
       data symm /1/
       save symm    
 c DEBUG	
@@ -1756,13 +1735,13 @@ c to get all resonances, include:
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
 
-      INTEGER I, J, II, JJ, MU, ic,N
+      INTEGER MU,N
 
-      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, mw, m2
+      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq
       DOUBLE PRECISION P_in(0:4), q1_out(0:3), q2_out(0:3), q3_out(0:3)
 
-      DOUBLE PRECISION dotrr
-      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, A1, A2, D
+
+      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, D
       DOUBLE PRECISION alpha, gamma, cosa, cosb, cosg, sina, sinb, sing
 
       DOUBLE PRECISION R(7), RN

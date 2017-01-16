@@ -23,11 +23,11 @@ c understand the loss of precision in the other subroutine.
       IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p23(0:3),p34(0:3)
       Complex*16 barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-      Complex*16 emup2(0:3),emup3(0:3),emup4(0:3) 
+      Complex*16 emup3(0:3),emup4(0:3) 
       Real*8 musq,test1,test2
       Complex*16 x2,x3,x4,cte
-      Integer alpha,i,glupos,mu,nu
-      Complex*16 result,result1,result2,result3,result4,resulttmp(5,4),
+      Integer alpha,i,glupos
+      Complex*16 result,resulttmp(5,4),
      &           result1noab,result2noab,result3noab,result4noab
       Complex*16 resultb,resultb1,resultb2,resultb3,resultb4
       Complex*16 resultgauge(3),resultgaugeb(3),cfc,cfcac

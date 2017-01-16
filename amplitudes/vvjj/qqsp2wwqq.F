@@ -27,41 +27,27 @@ c alfas, scales etc
 c
 c variables for the main part of the program
 c
-      double precision  pbar(0:3,4+max_v), fac, musq
+      double precision  pbar(0:3,4+max_v)
       double precision uucc,uuss,ddcc,ddss,udsc,ducs,res(6),resv(6)
       double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), pwp(0:4),
      1                  pwm(0:4), pww(0:4)
-      integer  sign(4+max_v), fs(4+max_v), nlo, mu, i, j, jj, k, kk, id,
-     1         isig, isig1, isig3
+      integer  sign(4+max_v), nlo, mu, i, k,
+     1         isig1, isig3
       integer  ifl(4,6), js1, js3, L, Lold  !, is1, is3
-      double complex prop21(4), prop43(4), propwp(4)
+      double complex prop21(4), prop43(4)
       double complex mat(6,-1:1,-1:1,9), matv(6,-1:1,-1:1,9)
       double complex mm(6,-1:1,-1:1), 
      1               mv12(6,-1:1,-1:1), mv34(6,-1:1,-1:1)
       double complex maa, maz, mza, mzz, mww5, mww6
-      double complex  m1, m2, ma(2), mz(2), mpm(4), mmp(4), m5(3,3:4)
-      double complex mv1,mv2,mva(2),mvz(2), mv5(3,3:4)
-      double complex psi(2,-1:1,4), jqq(0:5,-1:1,2), eps(0:5)
-      double complex psiwp(2,4), psiwm(2,4), bkjqq(2,-1:1,-1:1,4),
-     1               jwp(0:5,-1:1,4), jwm(0:5,-1:1,4),
-     1               jvwp(0:5,-1:1,-1:1,4), jvwm(0:5,-1:1,-1:1,4),
-     2               qepswm(6), qepswp(6)
-      double complex ja(0:5,-1:1,-1:1,4), jz(0:5,-1:1,-1:1,4), 
-     1               jva(0:5,-1:1,-1:1,4), jvz(0:5,-1:1,-1:1,4),
-     2               psia(2,-1:1,-1:1,4), psiz(2,-1:1,-1:1,4),
-     3               mvpm(4,2), mvmp(4,2)
-      double complex j5pm(0:3,3,-1:1,2), j5mp(0:3,3,-1:1,2)
-      double complex j5pma(0:3,3,-1:1,2), j5mpa(0:3,3,-1:1,2)
-      double complex j5pmb(0:3,3,-1:1,2), j5mpb(0:3,3,-1:1,2)
-      double complex jbornp(0:5), jbornm(0:5)
-      double complex epsa(0:3), epsz(0:3), 
-     1               epsNCwp(0:5,-1:1,3:4,2), epsNCwm(0:5,-1:1,3:4,2),
-     2               epsCCwp(0:5,-1:1,3:4,2), epsCCwm(0:5,-1:1,3:4,2)
-      double precision fqp(0:4,4), fqm(0:4,4), fq(0:4,4),
-     1                 qpm(0:4), qmp(0:4), dummy(0:4)
-      double complex jj21m,jj21p,jj43m,jj43p, zpm, zmp, zm2i(2:4)
-      double complex z1,zp(4:5),zm(4:5), qepsCCwp(2), qepsCCwm(2)
-      double complex propt(-1:1,-1:1,6,2), prop_pm(3), prop_mp(3)
+
+
+      double complex psi(2,-1:1,4), jqq(0:5,-1:1,2)
+      double complex jvwp(0:5,-1:1,-1:1,4), jvwm(0:5,-1:1,-1:1,4)
+
+      double precision qpm(0:4), qmp(0:4), dummy(0:4)
+      double complex zm2i(2:4)
+
+      double complex prop_pm(3), prop_mp(3)
       double complex contract_Tjj, dotcc, dotrc, dotqj, s1c
       external contract_Tjj, dotcc, dotrc, dotqj, s1c
       logical ldebug, ldebugv, ldebugvf, linit,lerror,lgc(4)
@@ -69,15 +55,13 @@ c
       data lgc /4*.false./
       integer*8 icb1, icount1, icb2, icount2
       data icb1/0/,icount1/0/,icb2/0/,icount2/0/,Lold/1/
-      double precision xv1, xv2, xgc1, xgc2
+
       parameter (ldebugv=.false., ldebugvf=.false.)
       save ifl, Lold, zm2i, linit, lgc, icb1, icb2, icount1, icount2
-      save ja,jz,jva,jvz,psia,psiz,fq,j5pm,j5mp
-      double complex wpx(0:5), wmx(0:5), z2, zero
+      double complex zero
       parameter (zero = (0d0,0d0) )
       real*8 widthfactor
      
-      integer icountmax
 c
 c variables for virtual corrections
 c

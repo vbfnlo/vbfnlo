@@ -21,7 +21,7 @@ c.....ris(3) = coeff of 1/ep^2
       parameter (pi=3.141592653589793238462643383279502884197D0)
       complex * 16 ipi
       parameter (ipi=(0,3.141592653589793238462643383279502884197D0))
-      integer j,offshellleg
+
 
       real * 8 tiny
       parameter (tiny=1d-7)
@@ -50,13 +50,6 @@ c     #       " invariant equal to zero"
       ris(1) = 2-l1
       B0fin = ris(1)
       end
-
-
-
-
-
-
-
 
 
 c --------------------------------------
@@ -91,13 +84,12 @@ c --------------------------------------
       end
 
 
-
 c --------------------------------------
 c   B0finG3=B0finG(M1,M1,s,musq)                                 
 c --------------------------------------
       complex*16 function B0tMDiv(M1,s,i)
-       double precision M1,s,musq,msq
-      complex*16 b,g1,g2
+       double precision M1,s
+
       integer i
       if(i.eq.1) then
       B0tMDiv = 1.d0
@@ -158,9 +150,6 @@ c
       end
 
 
-
-
-
 c --------------------------------------
 c   B0finG1=B0finG(0,0,s,musq)                                 
 c --------------------------------------
@@ -170,7 +159,7 @@ c --------------------------------------
       complex*16 Ipi, Ieps 
       parameter(pi=3.14159265358979324d0,
      & Ipi=(0d0,3.14159265358979324d0),Ieps=(0d0,1d-38))
-      double precision s,musq,b,c
+      double precision s,musq
 
       if (s.gt.0.d0) then 
          B0finG1 = -(dLog(s/musq)-Ipi)+2.d0

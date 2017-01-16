@@ -21,7 +21,7 @@ C
 C  
 C ARGUMENTS 
 C  
-      REAL*8 P(0:3,2:5), Q(0:3), v(0:3,6), scale
+      REAL*8 P(0:3,2:5), Q(0:3), v(0:3,6)
       INTEGER N
       complex*16 atoza(0:5)
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
@@ -34,7 +34,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -105,7 +105,7 @@ C
       PARAMETER (NGRAPHS=  5) 
       INTEGER    NWAVEFUNCS
       PARAMETER (NWAVEFUNCS=   10) 
-      REAL*8     ZERO,scale
+      REAL*8     ZERO
       PARAMETER (ZERO=0D0)
 C  
 C ARGUMENTS 
@@ -123,7 +123,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -211,7 +211,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu, N
+      INTEGER I, mu, N
       DOUBLE COMPLEX AMP(NGRAPHS)
       DOUBLE COMPLEX W(6,NWAVEFUNCS)
 

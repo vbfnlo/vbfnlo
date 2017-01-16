@@ -19,16 +19,16 @@ c Returns C0 and Cij
        integer jjinit
        common/Decide/tempjj,tempkl,IX,Zmax,jjinit
        Save/Decide/
-       Real*8  CijR2(4,2),CijI2(4,2),C0R2,C0I2
+
        Real*8 zz11,zz12,zz22
        complex*16 ten2g,test2g,ten2p1p2,test2p1p2
        complex*16 ten2p1p2_Dble,ten2g_Dble
        real*8 r1, r2r1, p1p2
-       real*8 musq,C0R,C0I,Cijr(4,2),CijI(4,2)
+       real*8 musq,C0R,C0I
        integer jj,k,l,order
-       real*8 m0,m1,m2
+       real*8 m0
        real*8 accuracyC(0:4,5),AccuracyD(0:5,4)
-      real*8 accuracyCR(9,0:4,5)
+
       Common/Accuracy/AccuracyC,AccuracyD
        Common/musqInv/musqcp
       real*8 musqcp
@@ -126,10 +126,9 @@ c Check NAN
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc 
 	  
 	ten2g_dble=Max(abs(ten2g_dble),abs(ten2p1p2_Dble)) 
-	ten2g=Max(abs(ten2g),abs(ten2p1p2)) 
+	ten2g=Max(abs(ten2g),abs(ten2p1p2))
 
 
-	 
 cFC %        if(1d0*abs(ten2g).gt.abs(ten2g_Dble)) then
 cFC %	   call MyCget(p1sq,p2sq,s12,musq,C0123R,C0123I,Cij)
 cFC %           C0123=DCMPLX(C0123R,C0123I)

@@ -59,9 +59,9 @@ c declare external functions
 
 c alfas, scales etc
       double precision x1,x2
-      double precision q12(0:4,3), q34(0:4,3), lnQomu(2:3), omxi(2:3), 
+      double precision lnQomu(2:3), omxi(2:3), 
      &       Ax(2:3), Bx(2:3), Cx(2:3), Dxi(2:3), tgs2oqsq(2:3), 
-     &       ln1mxi, lnrat, z, lnz, qsq
+     &       ln1mxi, lnrat, z, lnz
 
 c declare local variables
       double precision q_sf
@@ -72,8 +72,7 @@ c declare local variables
       save init
 
 c declare variables for summation process
-      INTEGER ires, nmaxold, FSIGN(3+n_v), gsign
-      save nmaxold
+      INTEGER ires, FSIGN(3+n_v), gsign
 
       integer physToDiag(3), nlo, nmin, nmax
       save nmin, nmax
@@ -653,10 +652,10 @@ c 8*3 for an initial qg state and by 3*3 for an initial qq state.
       double precision udbarWWW, dubarWWW, udbarWWWg, dubarWWWg
       double precision udbarWWW2, dubarWWW2, udbarWWWg2, dubarWWWg2
 
-      double precision pbar(0:3,3+n_v), qbar(0:4), y,q2,v2,q3,v3,sub(2:3),
+      double precision pbar(0:3,3+n_v), qbar(0:4),q2,v2,sub(2:3),
      1       dotrr, gs2(2:3), polcolq, polcolg
       double precision NCmatrixelt(0:1,3,2), temp, temp2
-      double precision Matrixelt(0:1,0:1,4)
+
 
       integer iflav(3), FL_VVVg
       external dotrr, FL_VVVg
@@ -665,7 +664,7 @@ c 8*3 for an initial qg state and by 3*3 for an initial qq state.
       parameter (zero=(0d0,0d0))
 
       save gs2,polcolq,polcolg,udbarWWWb,dubarWWWb
-      integer i,if1,icc1,j,k,mu
+      integer i,if1,j,k,mu
 
       logical ldebug,ldebugs,ldebug_soco
       parameter (ldebug=.false.,ldebugs = .false.,ldebug_soco = .false.)

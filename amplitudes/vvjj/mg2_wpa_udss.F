@@ -2200,7 +2200,6 @@ c               print*,subprocess(i)
       endif
 
 
-
       udssg = 0.D0 
       DO I = 1, NCOLOR
           ZTEMP = (0.D0,0.D0)

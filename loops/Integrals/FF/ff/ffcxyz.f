@@ -43,7 +43,7 @@
 	integer i,j,ip1,ip2,ip3,is1,is2,is3
 	DOUBLE COMPLEX c
 	DOUBLE PRECISION absc,y(4)
-	DOUBLE PRECISION delps1,disc,hulp,xlosn
+	DOUBLE PRECISION disc,hulp,xlosn
 *
 *	common blocks:
 *

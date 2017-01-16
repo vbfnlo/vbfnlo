@@ -37,11 +37,10 @@ c for testing purposes
       common /WWWrrtest/ tamprr(36,-1:1,-1:1,-1:1,4), iprr
 
 
-      
 c---------------------common block for vhj -----------------------
       double complex hig, wtowh, wtoonlyw
       double precision qh, qwh,qw0
-      common /vhj/ hig(6,11), wtowh(0:5,max_kin),
+      common /vhj/ hig(6,11), wtowh(0:5,max_kin), ! TODO: change max_kin to 1?!
      1       qh(0:4,11),qwh(0:4,11),qw0(0:4,11),
      2       wtoonlyw(0:5,max_kin)
 

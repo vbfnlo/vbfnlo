@@ -142,10 +142,10 @@ c*******************************************************************************
       Complex*16 F(135)
       Real*8 FI(135),FR(135),P(52)
       Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-      Complex*16 dotrc,dotcc,result,resultn(535)
+      Complex*16 dotrc,dotcc,result
        Real*8 musq,m,msq
       EXTERNAL   dotrc,dotcc
-      Integer alpha,comp,Div
+      Integer comp,Div
       common/Ffermionbox/F
       common/Pfermionbox/P
       Save/Ffermionbox/

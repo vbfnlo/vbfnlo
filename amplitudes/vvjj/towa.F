@@ -4,7 +4,7 @@
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:5)
       complex*16 zwtowa1(0:3,0:3), awtowa1(0:3,0:3),awamp(7,0:3,0:3)
-      integer lsign(3:6,2),ll,mu,nu,h
+      integer lsign(3:6,2),ll,h
       
 
 !     possible lepton helicities:
@@ -46,7 +46,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU,NU
+      INTEGER I,MU,NU
       COMPLEX*16 AMP(NGRAPHS,0:3,0:3)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -54,7 +54,6 @@ C
 c     lepton spinors and A polarization vector
 #include "tensorw.inc"
 #include "VBFNLO/utilities/coupl.inc"
- 
 
 
 C ----------
@@ -142,9 +141,9 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU,NU
+      INTEGER I,MU,NU
       COMPLEX*16 AMP(NGRAPHS)
-      COMPLEX*16 W(6,NWAVEFUNCS),dummy
+      COMPLEX*16 W(6,NWAVEFUNCS)
 c     lepton spinors and A polarization vector
 #include "tensorw.inc"
 #include "VBFNLO/utilities/coupl.inc"
@@ -231,8 +230,7 @@ c      zwtowa1(MU,NU) = dcmplx(zero,zero)
       Enddo !MU
 C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN) 
       END
-       
-       
+
 
 c------------------------------------------------------------
       subroutine wmtowma(P,V,h,wtowa1)
@@ -256,13 +254,13 @@ C
 C  
 C ARGUMENTS 
 C  
-      REAL*8 V(0:3,3:5), P(0:3), q(0:3)
+      REAL*8 V(0:3,3:5), P(0:3)
       complex*16 wtowa1(0:5)
       integer h
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU,NU,lsign(3:5)
+      INTEGER I,MU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)                            
 
@@ -273,7 +271,6 @@ C
 C ----------
 C BEGIN CODE
 C ----------
-
 
 
       do i=1,6
@@ -324,7 +321,7 @@ c------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:5)
       complex*16 zwtowa1(0:3,0:3), awtowa1(0:3,0:3),awamp(7,0:3,0:3)
-      integer lsign(3:5,2),ll,mu,nu,h
+      integer lsign(3:5,2),ll,h
       
 
 !     possible lepton helicities:
@@ -369,7 +366,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU,NU
+      INTEGER I,MU,NU
       COMPLEX*16 AMP(NGRAPHS,0:3,0:3)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -462,7 +459,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU,NU
+      INTEGER I,MU,NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
       double complex ratio
@@ -581,13 +578,13 @@ C
 C  
 C ARGUMENTS 
 C  
-      REAL*8 V(0:3,3:5), P(0:3), q(0:3)
+      REAL*8 V(0:3,3:5), P(0:3)
       complex*16 wtowa1(0:5)
       integer h
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU,NU,lsign(3:5)
+      INTEGER I,MU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -599,7 +596,6 @@ C
 C ----------
 C BEGIN CODE
 C ----------
-
 
 
       do i=1,6
@@ -617,7 +613,6 @@ c$$$         CALL IXXXXX(V(0,3   ),ZERO ,-lsign(3   ),-1,W(1,2   ))	!e+
 c$$$         CALL OXXXXX(V(0,4   ),ZERO ,lsign(4   ),+1,W(1,3   )) !ve
 c$$$         CALL VXXXXX(V(0,5   ),ZERO ,-lsign(5   ),+1,W(1,4   ))	!a
 c$$$         CALL JIOXXX(W(1,2   ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,5   ))
-
 
 
       DO MU = 0,3
@@ -667,7 +662,7 @@ C
   
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU,NU
+      INTEGER I,MU,NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(18,NWAVEFUNCS)
       real*8 Q1(0:3), Q2(0:3)

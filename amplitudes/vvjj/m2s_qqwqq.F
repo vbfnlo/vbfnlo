@@ -13,6 +13,7 @@ c
      &     rn,                   !in:  random number array
      &     ps_number            !in:  Number of PS channel
      &                        )
+          use globalvars, only: ldoblha
       implicit none
 c
 c declare input/output variables
@@ -36,7 +37,7 @@ c variables for hadronic decays
       real*8 xi(nx), p(0:3,max_p), v(0:3,max_v), rn(1), m2s
 
 c  helicity selection
-      integer h, hh
+      integer h
       integer jsig, jsig1, jsig3, jsig5
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 
@@ -145,9 +146,8 @@ c -----------------------------------------------------------------------
             res(i) = 0
          enddo
       endif
-      
-      
- 
+
+
 c -----------------------------------------------------------------------
       call Calc_Momentum_Transfer(p, v, q12,q34,1) 
 
@@ -304,7 +304,6 @@ c     for W+ --> e+ ve mu+ mu-
 #endif
             
          elseif (with_spin2) then    
-#ifdef WITH_SPIN2
             j = 1
 c for ZW+,AW+ -> e+ ve mu+ mu-:
             call vwtovwp_spin2(q12(0,j),q34(0,j),v,h,zwwv(0,0,j),awwv(0,0,j)) !q12 = V
@@ -331,7 +330,6 @@ c
 c     for W+ --> e+ ve mu+ mu-
 	
             call wpto4l(v,h,wwv)
-#endif
 
          elseif (with_anom) then ! anomalous gauge boson couplings  
 
@@ -487,9 +485,8 @@ c     wet(mu) = we(mu) - xxew*qe(mu) and zut(mu) = zu(mu) - xxmz*qu(mu)
          endif
          
 c     leptonic tensors:
-         
-         
-         
+
+
          SELECT CASE(procid)
          CASE(WMhadZjj, WMZhadjj)
          
@@ -517,8 +514,7 @@ C     for WV --> e- ve~:
             call WMVtoln_had(1,q12(0,j),v,waen(0,0,2,j),wzen(0,0,2,j)) !emit V->mu+mu- on lower
             call WMVtoln_had(2,q34(0,j),v,waen(0,0,1,j),wzen(0,0,1,j)) !emit V->mu+mu- on upper
 c     for W- --> e- ve mu+ mu-
-            call wmto4l_had(v,h,wwv)	
-
+            call wmto4l_had(v,h,wwv)
 
 
          CASE DEFAULT
@@ -555,7 +551,6 @@ c     for W- --> e- ve mu+ mu-
 #endif
 
             elseif (with_spin2) then    
-#ifdef WITH_SPIN2
                j = 1
 c     for ZW-,AW- -> e- ve~ mu+ mu-:
                call vwtovwm_spin2(q12(0,j),q34(0,j),v,h,zwwv(0,0,j),awwv(0,0,j)) !q12 = V
@@ -583,7 +578,6 @@ c
 c     for W- --> e- ve mu+ mu-
 	
 	call wmto4l(v,h,wwv)	
-#endif
 
       elseif (with_anom) then   ! anomalous gauge boson couplings  
 
@@ -697,9 +691,7 @@ c     leptonic tensors:
             j = 1
 #endif
          elseif (with_spin2) then    
-#ifdef WITH_SPIN2
             j = 1
-#endif
          elseif (with_anom) then ! anomalous gauge boson couplings  
 
             j = 1
@@ -798,9 +790,7 @@ c     leptonic tensors:
 #endif
 
          elseif (with_spin2) then    
-#ifdef WITH_SPIN2
             j = 1 	
-#endif
          elseif (with_anom) then ! anomalous gauge boson couplings  
 
             j = 1
@@ -1143,7 +1133,6 @@ c for W- --> e- ve mu+ mu-
          endif
 
 
-
 C*******************  q1 q3 ---> q2 q4  W (Z)  **********************
 
 c   physToDiag(ext.momentum label) = Feynman diagram label
@@ -1321,6 +1310,7 @@ c
 c*****************************************************************
       subroutine wbf_w2j(xi,p,v,physToDiag,fsign,bos, nlo,
      1                   pdf,res,nmin,nmax,ps_number)
+          use globalvars, only: ldoblha
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
@@ -1577,7 +1567,6 @@ c
 c   end subroutine wbf_w2j
 c
 c*****************************************************************
-
 
 
 c******************************************************************

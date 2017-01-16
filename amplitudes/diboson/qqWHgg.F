@@ -11,17 +11,14 @@
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1), XM2(6), XMG(6), B(6,6,6)
 
-      integer nlo, j, i, k, l, mu, nu, ep, isig1, isig2, ihel(7), ipart(7),
-     &        graphsign(2), colormap(2), colormapg(2)
-      integer sign(4), iflavu, iflavd, polmap(2)
+      integer j, i, k, l, mu, ep, isig1, isig2
+      integer sign(4), polmap(2)
 
-      double complex waveglu(6,3)
-      double precision p(0:3, max_p), v(0:3, max_v), rn(1), m2s, cpl(5)
-      double precision Q1(0:3), Q2(0:3), pbar(0:3,4),
-     &       imp(0:3,2), Q1uaw(0:3), Q1daw(0:3), Q2uaw(0:3), Q2daw(0:3), Q1a(0:3), Q2a(0:3),
-     &       Q2uza(0:3), Q2dza(0:3), qbar(0:3,4), gluvec(0:4,2), gluvecb(0:4,2), glumom(0:4)
+      double precision p(0:3, max_p), v(0:3, max_v), m2s, cpl(5)
+      double precision pbar(0:3,4),
+     &       qbar(0:3,4), gluvec(0:4,2), gluvecb(0:4,2), glumom(0:4)
 
-      double complex psi(2,-1:1,4), jqqu(0:5,-1:1,2), jqqd(0:5,-1:1,2),
+      double complex psi(2,-1:1,4),
      &       ubdgg(3), psiv(2,-1:1,2,5), psivv(2,-1:1,2,5,5),
      &       jv(1:6,-1:1,5:5,2), jvv(1:6,-1:1,5,5,3), effgluhel(0:3) 
       double precision pmomv(0:4,2,5), pmomvv(0:4,2,5,5) 
@@ -29,15 +26,12 @@
       parameter (ldebug=.false.)
       parameter (ldebugm=.false.)
     
-      double precision helastestmom(0:3,7), m2helastest, q_sf, pdf(-6:6,2)
-      double precision test1
-      double complex dotcc, temp, test, dotrc, temp1
+      double complex dotcc, temp, dotrc, temp1
 
       DOUBLE PRECISION fpials(2:3), fpi
       PARAMETER (fpi=4d0*pi)
 
-      integer selc, selid
-
+      integer selc
       double precision pall(0:3,8), mg2res
       integer fsign(8)
 

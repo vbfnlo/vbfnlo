@@ -195,7 +195,6 @@ c$$$c$$$      return
 c$$$c$$$      end
 
 
-
       subroutine dt3(p1s,p2s,s12,ratio)  
       implicit none
       real * 8 p1s, p2s, s12,ratio,p1p2,det33,cdet
@@ -243,8 +242,6 @@ c      Parameter(wr2='(A4,F28.16)')
       end
 
 
-
-
       subroutine dt5(p1,p2,p3,p4,p1p2,p1p3,p1p4,p2p3,p2p4,p3p4,ratio)
       implicit none
       real*8 p1,p2,p3,p4,p5,p1p2,p1p3,p1p4,p2p3,p2p4,p3p4
@@ -288,8 +285,6 @@ c      Parameter(wr2='(A4,F28.16)')
       ratio=abs(d)/abs(cd)
       return
       end
-
-
 
 
       subroutine dt51m(msq,p1,p2,p3,p4,p1p2,p1p3,p1p4,p2p3,p2p4,p3p4,ratio)
@@ -352,18 +347,6 @@ c determinte Cayley determinants and the sum of the absolute of their terms
       ratio=abs(d)/abs(cd)
       return
       end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
       subroutine dt6(p1s,p2s,p3s,p4s,p5s,p1p2, p1p3,p1p4,p1p5,p2p3,
@@ -858,9 +841,6 @@ c determinte Cayley determinants and the sum of the absolute of their terms
      -   +p3s*(-2*s23*s56+s123*(s234+s56))+s123*(-(s123*(s234+s34))+s
      -   23*(s34+s56)))-p3s*s16*s56s+2*p3s*s23*s56s-s23*s345*s56s-p3s
      -   *s45*s56s-s23*s45*s56s)
-
-
-
 
 
        cx1=Abs(p1s*p2s**2*p4s**2)+Abs(p1s*p2s2*p4s**2)+2*Abs(p1s**2*p3
@@ -2405,7 +2385,6 @@ c determinte Cayley determinants and the sum of the absolute of their terms
        End
 
 
-
       subroutine Print_Det_up_F(p1,p2,p3,p4,p5,p6)
       Implicit none 
       real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3) 
@@ -2417,11 +2396,9 @@ c determinte Cayley determinants and the sum of the absolute of their terms
       real*8 p4p5
       real*8 p5p6
       real*8 ratio(20),tempC(15),lossC(15)
-      real*8 ratioD(15),lossD(15),tempD(6)
-      real*8 ratioE(6),lossE(6),tempE(1)
-      real*8 ratioF(1),lossF(1)
-      logical bad
-      Integer seedbad(1000000),countbad,k
+      real*8 ratioD(15),lossD(15)
+
+
       real*8 dotrr,Cut
       parameter(Cut=1d-21)
 c      Common bad
@@ -2516,7 +2493,6 @@ c       D01245
        print*, 'det43',ratioD(3)
 
 
-
 c       C0134
         tempC(4)=ratio(3)
 c       C0135
@@ -2605,7 +2581,6 @@ c       D01346
        print*, 'det32',ratio(14)
        print*, 'det32',ratio(16)
        print*, 'det48',ratioD(8)
-
 
 
 c       C0234
@@ -2739,7 +2714,6 @@ c       D03456
       end
 
 
-
       subroutine Calc_Det_up_F(p1,p2,p3,p4,p5,p6,k,countbad,seedbad)
       Implicit none 
       real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3) 
@@ -2752,8 +2726,8 @@ c       D03456
       real*8 p5p6
       real*8 ratio(20),tempC(15),lossC(15)
       real*8 ratioD(15),lossD(15),tempD(6)
-      real*8 ratioE(6),lossE(6),tempE(1)
-      real*8 ratioF(1),lossF(1)
+      real*8 lossE(6),tempE(1)
+
       logical bad
       Integer seedbad(1000000),countbad,k
       real*8 dotrr,Cut
@@ -3281,11 +3255,6 @@ c       print*, 'here',bad
        end
 
 
-
-
-
-
-
       subroutine Calc_Det_up_D(p1,p2,p3,p4,k,badF)
 c Author: Francisco Campanario 
 c DAte: 14.08.2009
@@ -3299,7 +3268,7 @@ c DAte: 14.08.2009
       real*8 ratio(4),tempC(1),lossC(1)
       real*8 ratioD(1),lossD(1)
       logical bad,badF
-      Integer seedbad(1000000),countbad,k
+      Integer k
       real*8 dotrr,Cut
       parameter(Cut=1d-21)
       Common bad
@@ -3350,10 +3319,6 @@ c       D01234
        end
 
 
-
-
-
-
       subroutine Calc_Det_up_E(p1,p2,p3,p4,p5,countbad)
 c Francisco Campanario
 c Date:03.03.2010
@@ -3371,9 +3336,9 @@ c as well as define a common variable. Possible in global.inc
       real*8 p4p5
       real*8 ratio(10),tempC(10),lossC(10)
       real*8 ratioD(5),lossD(5),tempD(1)
-      real*8 ratioE(1),lossE(1),tempE(1)
+      real*8 ratioE(1),lossE(1)
       logical bad
-      Integer seedbad,countbad,k
+      Integer countbad
       real*8 dotrr,Cut
       parameter(Cut=1d-21)
       Common bad
@@ -3611,25 +3576,6 @@ c       Endif
 c       print*, 'here',bad
        return
        end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

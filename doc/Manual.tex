@@ -2,6 +2,7 @@
 
 \documentclass[english,12pt]{article}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage[latin1]{inputenc}
 
 \usepackage{geometry}
@@ -327,11 +328,12 @@ corrections.
 \item {\tt -{}-enable-kk} \\ Enable simulation of Kaluza-Klein resonances.
 Disabled by default, the Kaluza-Klein option requires the installation of the
 GNU Scientific Library, which can be specified via {\tt -{}-with-gsl}. 
-\item {\tt -{}-enable-spin2} \\ Enable simulation of spin-2 models.
-Disabled by default. 
 \item {\tt -{}-enable-quad} \\ Enable quadruple precision for difficult phase space points.
 Enabled by default, if QCD-induced vector boson (pair) plus two jet processes
 are requested, otherwise disabled by default.
+\item {\tt -{}-enable-MPI} \\ Enables support for parallel runs using MPI. See
+  Sec.~\ref{sec:MPI} for additional requirements for using MPI.
+Disabled by default.
 \item {\tt -{}-with-gsl=[path]} \\ Enable the use of the GNU
 Scientific Library. {\tt [path]} specifies the location of the GSL installation.
 If the GSL is available directly from the system libraries this flag can be omitted.
@@ -368,10 +370,15 @@ program in the system directories.  Once {\tt configure} has finished
 successfully, the {\tt make} and {\tt make install} commands will compile and
 install \textsc{Vbfnlo}, respectively.
 
+To test the installation against a set of typical run files, {\tt make check} can be used.
+It requires {\tt py.test} to be installed and takes a few minutes to run.
+Due to numerical checks it will fail if any compiler optimization beyond the default
+settings was used.
+
 If at any point include files, with a file name suffix {\tt .inc}, are
 changed, the command {\tt make clean} must be run so that the changes
 are picked up correctly. For normal program usage, this will not be
-necessary, but two cases where options can be altered in the file {\tt
+necessary, but cases where options can be altered in the file {\tt
 global.inc} will be mentioned later.
 When changing only Fortran source code files, running {\tt make clean}
 first is not mandatory. In both cases, {\tt make all install} must be
@@ -414,7 +421,7 @@ The installation is performed in a standard \textsc{Unix}-layout, i.e.\ the dire
 specified with the {\tt -{}-prefix} option of the {\tt configure} script contains the
 following directories:
 \begin{itemize}
-\item {\tt bin/:} {\tt vbfnlo} and {\tt ggflo} executables.
+\item {\tt bin/:} {\tt vbfnlo} executable.
 \item {\tt include/VBFNLO/:} \textsc{Vbfnlo} header files. 
 \item {\tt lib/VBFNLO/:} \textsc{Vbfnlo} modules as dynamically loadable
   libraries. These can also
@@ -426,8 +433,8 @@ be used independently from one of the main programs.
 
 \subsection{Running the program}
 
-Both the {\tt vbfnlo} and {\tt ggflo} executables contained in the {\tt bin}
-directory of the installation path look for input files in the current working
+The {\tt vbfnlo} executables contained in the {\tt bin}
+directory of the installation path looks for input files in the current working
 directory. An alternative path to input files may be specified explicitly by
 passing the {\tt -{}-input=[path]} argument to the programs, with {\tt path}
 denoting the full path where input files are located.  I.e.\ in order to run
@@ -478,15 +485,36 @@ and histograms from parallel runs.
 
 %===================================================================
 
+
+\subsection{MPI}
+
+MPI allows to run code in parallel. VBFNLO provides experimental support for usage with MPI.
+Integration as well as grid and histogram generation are available with MPI parallelization, while for event
+outputs only single-core runs are supported.
+
+Compilation und running with MPI is so far only tested with \textsc{GNU} OpenMPI and
+GFortran, although it should work . 
+To use this combination load openmpi in your environment (e.g. {\tt module load openmpi}),
+then configure with {\tt -{}-enable-MPI} and the OpenMPI wrapper {\tt FC=mpifort}.
+
+To run the resulting binary start {\tt mpirun -np 8 /prefix/bin/vbfnlo}, replacing 8 with
+the number of requested parallel runs.
+
+Due to the experimental nature, please test that for your configuration and choice of
+process the compilation with and without MPI leads to the same numerical output. For
+single-core usage MPI and non-MPI runs should agree up to machine precision, while for
+multi-core runs, numerical differences up to the stated statistical uncertainty are expected.
+
 \subsection{MacOSX}
 
-The current version of {\sc Vbfnlo} has been compiled successfully 
-on the current MacOSX version (10.9.2) as well as on an older one
-(10.6.8), if only static libraries are used. This can be
-requested with the configure-option {\tt -{}-enable-shared=no} .
+Compilation of {\sc Vbfnlo} on MacOSX only works with static libraries.
+This can be requested with the configure-option {\tt -{}-enable-shared=no}.
+With this option the current version of {\sc Vbfnlo} has been compiled successfully 
+on different versions of MacOSX  between 10.6.8 and 10.12.3
+using GFortan 5 or 6 from Homebrew.
 However, linking with the library {\sc LoopTools}, which is only
 needed for the calculation of the electroweak corrections in the {\tt Hjj}
-process, was not successful.
+process, is known to fail.
 
 
 %===================================================================
@@ -774,8 +802,8 @@ via vector boson fusion at NLO QCD accuracy.}
 %===================================================================
 
 \textsc{Vbfnlo} can simulate the production of a spin-2 particle via VBF, which then decays into two photons, 
-with the process ID 191 (see Table~\ref{tab:spin2}). This process is only available if it has been enabled at 
-compilation (using the {\tt configure} flag {\tt -{}-enable-spin2}), and will only run if the switch {\tt SPIN2} 
+with the process ID 191 (see Table~\ref{tab:spin2}). This process 
+will only run if the switch {\tt SPIN2} 
 in {\tt vbfnlo.dat} is set to {\tt true}. Furthermore, spin-2 production
 is also available in the $WW$ and $ZZ$ modes 
 given in Table~\ref{tab:spin2} if the switch {\tt SPIN2} 
@@ -932,7 +960,6 @@ production via vector boson fusion at NLO QCD accuracy.}
 
 
 %===================================================================
-
 
 
 \subsection{$W$ production with up to one jet}
@@ -1470,7 +1497,7 @@ production at NLO QCD accuracy.}
 $\cal{CP}$-even and $\cal{CP}$-odd Higgs boson production in gluon fusion,
 associated with two additional jets, are processes that first appear at the
 one-loop level which, therefore, are counted as leading order in the strong
-coupling constant. These processes are simulated (via the {\tt ggflo} executable) with the
+coupling constant. These processes are simulated with the
 full mass dependence of the top- and bottom-quark\footnote{The value
 $m_{b}(M_{H})$ in the $\overline{MS}$ scheme is used for both the mass
 and the Yukawa coupling of the bottom quark, while for the top quark we
@@ -1507,7 +1534,7 @@ define additional settings for these processes.
 \hline
 \end{tabular}
 \caption {\em  Process IDs for LO Higgs boson plus 2 jet
-  production via gluon fusion.  Note that these processes are accessed via the {\tt ggflo} executable.}
+  production via gluon fusion.}
 \vspace{0.2cm}
 \label{tab:prc6}
 \end{center}
@@ -1525,7 +1552,7 @@ Details of the calculations can be found in
 %===================================================================
 %
 Gluon-induced diboson production can be studied separately in \textsc{Vbfnlo} at
-LO with the {\tt ggflo} executable, using the process IDs in
+LO, using the process IDs in
 Table~\ref{tab:gludib}\footnote{These are also included by default as higher
 order corrections to diboson production.}.  Continuum production via box
 diagrams as well as production via an $s$-channel Higgs boson resonance are included, with
@@ -1561,7 +1588,7 @@ Anomalous $HVV$ couplings are available.
 &\\
 \hline
 \end{tabular}
-\caption {\em  Process IDs for the gluon-induced diboson production at LO (one-loop) QCD.  Note that these processes are accessed via the {\tt ggflo} executable.}
+\caption {\em  Process IDs for the gluon-induced diboson production at LO (one-loop) QCD.}
 \vspace{0.2cm}
 \label{tab:gludib}
 \end{center}
@@ -1575,7 +1602,7 @@ Anomalous $HVV$ couplings are available.
 %===================================================================
 %
 Gluon-induced diboson production in association with a hadronic jet can be studied separately in \textsc{Vbfnlo} at
-LO with the {\tt ggflo} executable, using the process IDs in
+LO, using the process IDs in
 Table~\ref{tab:gludibj}\footnote{These are also included by default as higher
 order corrections to diboson plus jet production.}.  Continuum production via box and pentagon
 diagrams as well as production via an $s$-channel Higgs boson resonance are included, with
@@ -1600,7 +1627,7 @@ Details of the calculation can be found in Ref.~\cite{Campanario:2012bh}.
 &\\
 \hline
 \end{tabular}
-\caption {\em  Process IDs for the gluon-induced diboson production in association with a hadronic jet at LO (one-loop) QCD.  Note that these processes are accessed via the {\tt ggflo} executable.}
+\caption {\em  Process IDs for the gluon-induced diboson production in association with a hadronic jet at LO (one-loop) QCD.  }
 \vspace{0.2cm}
 \label{tab:gludibj}
 \end{center}
@@ -1617,7 +1644,7 @@ Details of the calculation can be found in Ref.~\cite{Campanario:2012bh}.
 \begin{itemize}
 \item {\tt vbfnlo.dat:} General parameters for a run.
 \item {\tt cuts.dat:} Values for kinematic cuts.
-\item {\tt ggflo.dat:} Additional parameters for the {\tt ggflo} program.
+\item {\tt ggflo.dat:} Additional parameters for gluon-fusion induced processes.
 \item {\tt susy.dat:} Parameters describing the MSSM scenario.
 \item {\tt anom\_HVV.dat:} Parameters for anomalous Higgs boson couplings.
 \item {\tt anomV.dat:} Parameters for anomalous gauge boson couplings.
@@ -2059,8 +2086,8 @@ to be enabled at compilation, using the {\tt configure} option {\tt
 kk\_input.dat} or {\tt kk\_coupl\_inp.dat}.
 \item {\tt SPIN2:} Option for the spin-2 models.  This is available for the
 $VVjj$ production modes in VBF except same sign $W^\pm W^\pm$ production.  Default is set
-to {\tt false}.  Note that this needs to be enabled at compilation, using the
-{\tt configure} option {\tt -{}-enable-spin2}.  Spin-2 parameters are set via
+to {\tt false}. 
+Spin-2 parameters are set via
 the file {\tt spin2coupl.dat}.
 \item {\tt EW\_APPROX:} Option controlling the electroweak corrections in
 \textit{Hjj} production via VBF.
@@ -2233,7 +2260,6 @@ Default is set to {\tt true}.
 \item {\tt DATAFILE:}  Name of the data output directory. Default is 
 {\tt histograms}.
 \end{itemize}
-
 
 
 %=================================================================
@@ -2463,7 +2489,6 @@ These cuts apply only to processes with one hadronically decaying vector boson.
       {\tt QSQAMIN\_ZDEC}.
 
 
-
 %===================================================================
 
 \subsection{{\tt ggflo.dat} $-$ general parameters for gluon fusion processes}
@@ -2485,9 +2510,6 @@ which works well for intermediate Higgs boson masses (provided that the
 transverse momenta of the final state partons are smaller than the top-quark
 mass), is also implemented.
 
-Note that these gluon fusion processes require the use of the {\tt ggflo}
-executable rather than the {\tt vbfnlo} one.
-  
 If Higgs boson plus two jet production via gluon fusion is selected in {\tt
 vbfnlo.dat}, i.e.\ {\tt PROCESS = 4100-4107}, the following additional
 parameters can be adjusted in the {\tt ggflo.dat} file:
@@ -2941,7 +2963,7 @@ $\cal{CP}$-odd di\-mension-6 operators, i.e.\ $f_{i}$/$\Lambda^{2}$.  Note that
 these are
 not implemented for $Vjj$ production via VBF (process IDs 120-150) and $VVj$
 processes (IDs 610-640).  Default value is 0  GeV$^{-2}$.
- \item {\tt  FS0, FS1, FM0 -- FM7, FT0 -- FT2, FT5 -- FT9:} Parameters that give
+ \item {\tt  FS0 -- FS2, FM0 -- FM7, FT0 -- FT2, FT5 -- FT9:} Parameters that give
 the values of the coefficients of the dimension-8 operators, i.e.\
 $f_{i}$/$\Lambda^{4}$. The default values for these parameters are~0 GeV$^{-4}$.  Note that
 these are only relevant for triboson production and $VVjj$ production via VBF.
@@ -3057,7 +3079,6 @@ they are consistent with the {\tt anomV.dat} inputs -- if they are inconsistent,
 is printed and $HVV$ parametrisation 2 or 3 is used instead.
 
 
-
 %===================================================================
 
 \subsection{{\tt kk\_input.dat} $-$ parameters for Higgsless models}
@@ -3164,8 +3185,7 @@ values of {\tt kk\_input.dat} as described above.
 
 The file {\tt spin2coupl.dat} is used to set the parameters for the spin-2
 models.  It is read if the switch {\tt SPIN2} in {\tt vbfnlo.dat} is set to {\tt
-true}, and will only run if the spin-2 models were enabled at compilation
-using the {\tt configure} option {\tt -{}-enable-spin2}.
+true}.
 
 \textsc{Vbfnlo} uses an effective model to describe the interactions of spin-2
 particles with electroweak gauge bosons for two cases: an isospin singlet spin-2 state
@@ -3235,9 +3255,7 @@ value is {\tt 1}.
 
 Default values for different processes and scenarios can be found in 
 Refs.~\cite{frank,Frank:2012wh,Frank:2013gca}\footnote{Note that in Ref.~\cite{frank}, 
-process 191 ($pp \rightarrow \mbox{spin-2} \, jj \rightarrow \gamma \gamma \, jj$) is referred to as process 240.}. 
-
-
+process 191 ($pp \rightarrow \mbox{spin-2} \, jj \rightarrow \gamma \gamma \, jj$) is referred to as process 240.}.
 
 
 %===================================================================
@@ -3280,7 +3298,7 @@ edges caused by cuts, the smearing can be switched off.
  \item {\tt SMEARING:} Enable or disable smearing.  Default is {\tt true}.
  \item {\tt SMEAR\_VALUE:} Set the bin fraction where the bin smearing is active.
                           The part that is put to the next bin becomes larger when
-                          the x-value is closer to a bin border. Default is {\tt 0.2}.
+                          the x-value is closer to a bin border. Default is {\tt 0.1}.
 \end{itemize}
 
 \noindent The range of the $x$-axis of the produced histograms is input in the format: {\tt xmin xmax}. 
@@ -3335,8 +3353,6 @@ can be found on the \VBFNLO{} webpage,
 \label{sec:random}
 To run with different seeds, simply set the variable {\tt SEED} in the file {\tt
 random.dat} to a different integer value.
-
-
 
 
 %===================================================================
@@ -3523,7 +3539,6 @@ Several bugs have been fixed concerning the event output to Les Houches or HepMC
 \end{itemize}
 
 
-
 \subsection{Previous changes -- version 2.6.3}
 
 
@@ -3550,7 +3565,6 @@ can be up to a few per cent smaller.
 \subsubsection{Electroweak corrections in the VBF $Hjj$ processes}
 
 Some bugs have been fixed in the calculation of electroweak corrections for the processes 10x.
-
 
 
 \subsection{Previous changes -- version 2.6.2}
@@ -3580,7 +3594,6 @@ due to a bug in the dipole subtraction. This bug has been fixed in v.2.6.2.
  For the $\gamma\,jj$ production in VBF (procID 150) a different form factor is used.
 
 
-
 \subsection{Previous changes -- version 2.6.1}
 
 The release \textsc{Version 2.6.1} included some changes that altered previous results:
@@ -3598,7 +3611,6 @@ In the processes $pp \rightarrow H \gamma jj \rightarrow ZZ \gamma jj \rightarro
 \ell^{-} \ell^{+} \ell^{-} \gamma jj$ (ID 2106) and gluon fusion $pp \rightarrow H jj \rightarrow 
 ZZ jj \rightarrow \ell^{+} \ell^{-} \ell^{+} \ell^{-} jj $ (ID 4106) a symmetry factor was missing 
 when identical final-state leptons were chosen.
-
 
 
 \subsection{Previous changes -- version 2.6.0}
@@ -3721,7 +3733,6 @@ and the gluon-gluon loops have also been checked against \textsc{gg2VV}\footnote
 \href{http://gg2VV.hepforge.org/}{http://gg2VV.hepforge.org/}}~\cite{Binoth:2008pr,Kauer:2012ma}.
 
 
-
 %--------------------------------------------------------------------------------
 %================= Section ======================================================
 %--------------------------------------------------------------------------------
@@ -3744,8 +3755,7 @@ Kaiser, Gunnar Kl\"amke and Stefan Prestel who, as earlier members of the
 release.  We also gratefully acknowledge the collaboration of Stefan Kallweit
 and Georg Weiglein in calculating corrections for specific processes.  
 TF would like to thank the North American Foundation for The University of
-Manchester and George Rigg for their financial support. 
-
+Manchester and George Rigg for their financial support.
 
 
 %--------------------------------------------------------------------------------
@@ -4172,7 +4182,7 @@ Firstly, the processes that are accessed via the {\tt vbfnlo} executable are giv
 }
 
 \clearpage
-The gluon-fusion processes accessed via the executable {\tt ggflo} are given below.
+The gluon-fusion processes are given below.
 
 {
 \footnotesize

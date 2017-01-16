@@ -31,11 +31,9 @@ c*******************************************************************************
        Real*8   s23, s24, s25 
        Real*8   s34, s35 
        Real*8   s45 
-       Real*8   s234 
-       Complex*16  B012,B013,B014,B015 
-       Complex*16  B023,B024,B025 
-       Complex*16  B034,B035 
-       Complex*16  B045 
+       Real*8   s234
+
+
        Real*8  B012R,B013R,B014R,B015R 
        Real*8  B023R,B024R,B025R 
        Real*8  B034R,B035R 
@@ -51,13 +49,9 @@ c*******************************************************************************
        Real*8  B12I(3,3),B13I(3,3),B14I(3,3),B15I(3,3) 
        Real*8  B23I(3,3),B24I(3,3),B25I(3,3) 
        Real*8  B34I(3,3),B35I(3,3) 
-       Real*8  B45I(3,3) 
-       Complex*16 C0123,C0124,C0125 
-       Complex*16 C0134,C0135 
-       Complex*16 C0145 
-       Complex*16 C0234,C0235 
-       Complex*16 C0245 
-       Complex*16 C0345   
+       Real*8  B45I(3,3)
+
+
        Real*8 C0123R,C0124R,C0125R 
        Real*8 C0134R,C0135R 
        Real*8 C0145R 
@@ -81,11 +75,9 @@ c*******************************************************************************
        Real*8 C145I(9,4) 
        Real*8 C234I(9,4),C235I(9,4) 
        Real*8 C245I(9,4) 
-       Real*8 C345I(9,4) 
-       Complex*16  D01234,D01235 
-       Complex*16 D01245 
-       Complex*16 D01345 
-       Complex*16 D02345    
+       Real*8 C345I(9,4)
+
+
        Real*8 D01234R,D01235R 
        Real*8 D01245R 
        Real*8 D01345R 
@@ -102,21 +94,21 @@ c*******************************************************************************
        Real*8 D1245I(34,5) 
        Real*8 D1345I(34,5) 
        Real*8 D2345I(34,5) 
-       Complex*16 E012345 
+
        Real*8 E012345R 
        Real*8 E012345I 
        Real*8 E12345R(80,5) 
        Real*8 E12345I(80,5) 
        Logical PrintB,PrintC,PrintD,PrintE 
-       Integer comp,Div 
+       Integer comp 
        Real*8  MM1,MM3,MM4,M1,M3,M4,m1sq,m3sq,m4sq 
        Real*8 cpl(10) 
       Complex*16 F(4476),Fa(3196)
       Real*8 P(1383)
-      Complex*16 dotrc,dotcc,result(1,6),resultborn
+      Complex*16 dotrc,dotcc,result(1,6)
        Real*8 musq
       EXTERNAL   dotrc,dotcc
-      Integer alpha
+
       Complex*16 EpsF(126)
        common/EPSFPenOddGSim/EPSF
       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR
@@ -145,7 +137,7 @@ c*******************************************************************************
      -   B034R,B034I, B035R,B035I, B045R,B045I, B12R,B12I, B13R,B13I,
      -    B14R,B14I, B15R,B15I, B23R,B23I, B24R,B24I, B25R,B25I, B34R
      -   ,B34I, B35R,B35I, B45R,B45I 
-       Integer ngluon, posgluon
+
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************

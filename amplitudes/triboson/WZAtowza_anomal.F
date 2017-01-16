@@ -6,7 +6,7 @@ c ------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:6)
       complex*16 wza(0:5)
-      integer lsign(2:6,4),ll,mu,nu,h,N
+      integer lsign(2:6,4),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -55,7 +55,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -257,7 +257,7 @@ c ------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:6)
       complex*16 wza(0:5)
-      integer lsign(2:6,4),ll,mu,nu,h,N
+      integer lsign(2:6,4),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -306,7 +306,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors

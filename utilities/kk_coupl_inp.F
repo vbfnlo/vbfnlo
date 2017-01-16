@@ -3,9 +3,9 @@ c
 c     Calculates Kaluza-Klein - STM Gauge Boson Couplings
 c
 c-------------------------------------------------------------
-c
-c      
+c 
       subroutine kk_coupl_inp_man(vbfcalcswitch)
+          use readinput
       
       implicit none
 
@@ -13,13 +13,12 @@ c
 c
 c  Local Variables
       integer i,j,k,l
-      character*50 gtext
 c 
 c  Global Variables
 #include "VBFNLO/utilities/coupl.inc"
 #include "kkcoupl.inc"
-
-      DOUBLE PRECISION CLR,XM2,XMG,B,V,A
+#include "VBFNLO/utilities/global.inc"
+      double precision CLR,XM2,XMG,B,V,A !difference SM<->KK
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
 
 ** default and temporary values
@@ -519,15 +518,14 @@ c
       END
 
 
-
       subroutine kkcouplcheck
       
       implicit none
 c
 c  Local Variables
-      integer i,j,k,l
-      character*50 gtext
-      double precision h1,h2,h3
+      integer i,j,k
+      double precision h1,h2,pi
+      parameter(pi =3.141592653589793d0)      
 c 
 c  Global Variables
 #include "VBFNLO/utilities/coupl.inc"
@@ -697,6 +695,7 @@ c  Global Variables
 !    still using standard width for w+-, z and h
 
       subroutine widthkk
+      IMPLICIT NONE
 
 c    in:       l:  decaying boson W/Z
 c              i:  KK-Index of decaying boson
@@ -705,9 +704,10 @@ c              k:  kk-Index of decay product
 c    out:      width
 c
 #include "kkcoupl.inc"
+#include "coupl.inc"
 
-      integer i,j,k,l
-      double precision width,pi
+      integer i,j,k
+      double precision pi
       Parameter(pi=3.14159265358979)
 
       do i=1,kkhw
@@ -819,22 +819,21 @@ c
 ********************************************************************************
      
       subroutine kk_coupl_inp
+          use readinput
       
       implicit none
       
-c
 c  Local Variables
-      double precision kk1,kk2,kk3,kk4,kk5,kk6,kk7,kk8,kk9,rdwn,
-     &     kk10
-      double precision inp1,inp2,pi,h1,h2, wpmass
-      parameter(pi =3.141592653589793d0)
-      integer*4 k,i,kkmaxw,kkmaxz,kkmaxg
+      double precision kk1,kk2,kk3,kk4,rdwn
+      double precision wpmass
+      integer*4 k,kkmaxw,kkmaxz,kkmaxg
       logical vbfcalcswitch
 
 c
 c  Global Variables
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/kkcoupl.inc"
+#include "VBFNLO/utilities/global.inc"
 
 c -----------------------------------------
       call loadfile("kk_input.dat",.true.)
@@ -843,7 +842,7 @@ c -----------------------------------------
       call read_logical("MHLM_SWITCH",mhlmswitch,.false.)
       if (mhlmswitch) then
          call read_Real("WPMASS",wpmass,500D0)
-      else 
+      else
          call read_Real("RDWN",rdwn,9.75D-9)
          call read_Int("KKMAXW",kkmaxw,1)
          call read_Int("KKMAXZ",kkmaxz,1)
@@ -852,9 +851,9 @@ c -----------------------------------------
 
       call closefile
 
-      kkmaxw=kkmaxw             !+1
-      kkmaxz=kkmaxz             !+1
-      kkmaxg=kkmaxg             !+1
+      kkmaxw=kkmaxw!+1
+      kkmaxz=kkmaxz!+1
+      kkmaxg=kkmaxg!+1
 
       if (mhlmswitch) then
          Print*, "**************************************************"
@@ -910,7 +909,7 @@ c     C++ Calculation of Couplings and Masses
             Print*, "kkcheck.dat:  Kaluza-Klein information and "
             Print*, "relative sum rule violation"
             Print*, "**************************************************"
-         ENDIF
+        ENDIF
       endif
 c
 c  Read in Parameters from kk_input.dat

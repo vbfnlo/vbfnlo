@@ -10,10 +10,10 @@ c  cpl(5)-cpl(8)  P_left couplingss
        Real*8 za1,za2,za3,za4,zb1,zb2,zb3,zb4
        Real*8  cpl(8),m1,m2,m3,m4
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 result,resultE,resultO
-       Real*8 musq,resultgauge,resultgaugeE,resultgaugeO
+       Complex*16 result
+       Real*8 musq,resultgauge
        integer gauge,comp,Div
        cpl(1)=za1
        cpl(2)=za2
@@ -29,14 +29,12 @@ c  cpl(5)-cpl(8)  P_left couplingss
        end
 
 
-
-
         subroutine FermionBoxCouplingT_GM(cpl,m1,m2,m3,m4,p1,p2,p3,p4,
      &  mup1,mup2,mup3,mup4,musq,gauge,comp,result,resultgauge,Div)
        implicit none
        Real*8  cpl(8),m1,m2,m3,m4
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 result,resultE,resultO
        Real*8 musq,resultgauge,resultgaugeE,resultgaugeO
@@ -68,13 +66,13 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
        implicit none
        Real*8 cpl(8),m1,m2,m3,m4
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2
-       Real*8 musq,resultgauge,temp1,temp2,temp3,temp4
-       complex*16 rg1,rg2,rg3,rg4
-       integer gauge,i,comp,Div
+
+       Complex*16 result
+       Real*8 musq,resultgauge
+
+       integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionBoxEvenGCoupling(cpl,m1,m2,m3,m4,p1,p2,p3,p4
@@ -94,8 +92,8 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(5),resultZERO(5)
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
+       Complex*16 result,resultn(5),resultZERO(5)
+       Real*8 musq,resultgauge,temp1,temp2,temp3,temp4
        complex*16 rg1,rg2,rg3,rg4
        integer gauge,i,comp
 
@@ -164,7 +162,7 @@ cFC          print*, "temp2",temp2
 cFC          print*, "temp3",temp3
 cFC          print*, "temp4",temp4
 cFC          print*, "result1",resultn(1)
-cFC          print*, "result2",resultn(2)
+cFC          print*, "result",resultn(2)
 cFC          print*, "result3",resultn(3)
 cFC          print*, "result4",resultn(4)
 cFC          print*, "result5",resultn(5)
@@ -186,13 +184,13 @@ cFCcccccccccccccccccccc    ODD PART cccccccccccccccccccccccccccccccccccccccccccc
        implicit none
        Real*8 cpl(8),m1,m2,m3,m4
        Real*8 p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8 p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
-       complex*16 rg1,rg2,rg3,rg4
-       integer gauge,i,comp,Div
+
+       Complex*16 result
+       Real*8 musq,resultgauge
+
+       integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionBoxCouplingO_G(cpl,m1,m2,m3,m4,p1,p2,p3,p4
@@ -212,8 +210,8 @@ cFCcccccccccccccccccccc    ODD PART cccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(5),resultZERO(5)
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
+       Complex*16 result,resultn(5),resultZERO(5)
+       Real*8 musq,resultgauge,temp1,temp2,temp3,temp4
        complex*16 rg1,rg2,rg3,rg4
        integer gauge,i,comp
 

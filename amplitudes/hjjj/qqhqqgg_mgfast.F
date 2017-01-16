@@ -46,11 +46,11 @@ C LOCAL VARIABLES
 C  
       INTEGER NHEL(NEXTERNAL,NCOMB),NTRY
       REAL*8 T(0:6)
-      INTEGER IHEL,IDEN(NCROSS),IC(NEXTERNAL,NCROSS)
-      INTEGER IPROC,JC(NEXTERNAL), I,ICOL
+      INTEGER IHEL,IDEN(NCROSS)
+      INTEGER IPROC,ICOL
       LOGICAL GOODHEL(NCOMB,NCROSS)
       INTEGER NGRAPHS
-      REAL*8 hwgt, xtot, xtry, xrej, xr, yfrac(0:ncomb)
+      REAL*8 hwgt, xtry, xrej
       INTEGER idum, ngood, igood(ncomb), jhel, j
       LOGICAL warned
       REAL     xran1
@@ -67,7 +67,7 @@ C
       DATA NTRY,IDUM /0,-1/
       DATA xtry, xrej, ngood /0,0,0/
       DATA warned, isum_hel/.false.,0/
-      SAVE yfrac, igood, IDUM, jhel
+      SAVE igood, IDUM, jhel
       DATA NGRAPHS /   24/                    
       DATA GOODHEL/THEL*.FALSE./
       DATA (NHEL(IHEL,   1),IHEL=1,7) /-1,-1,-1,-1,-1,-1,-1/
@@ -248,7 +248,7 @@ C
       COMPLEX*16 ZTEMP
       REAL*8 DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
       COMPLEX*16 AMP(NGRAPHS), JAMP(NCOLOR)
-      COMPLEX*16 W(6,NWAVEFUNCS),WX1(6),WX2(6)
+      COMPLEX*16 W(6,NWAVEFUNCS)
       complex*16 gzf1(2),gzf3(2)
 c     local switches
       real*8 tfac(ncolor)

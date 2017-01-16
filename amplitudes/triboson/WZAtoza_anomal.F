@@ -60,7 +60,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -176,7 +176,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors

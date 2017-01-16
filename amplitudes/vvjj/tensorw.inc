@@ -41,10 +41,8 @@ c  leptonic tensors
 
 c for testing purposes
       double complex tampw,tampwr
-      integer ipw,ipwr,isw1,isw3
       double complex tampm,tampmr
-      integer ipm,ipmr,ism1,ism3
-      common /wpztest/ tampw(300,-1:1,-1:1,6), ipw
-      common /wpzrtest/ tampwr(2000,-1:1,-1:1,-1:1,6), ipwr
-      common /wmztest/ tampm(300,-1:1,-1:1,6), ipm
-      common /wmzrtest/ tampmr(2000,-1:1,-1:1,-1:1,6), ipmr
+      common /wpztest/ tampw(300,-1:1,-1:1,6)
+      common /wpzrtest/ tampwr(2000,-1:1,-1:1,-1:1,6)
+      common /wmztest/ tampm(300,-1:1,-1:1,6)
+      common /wmzrtest/ tampmr(2000,-1:1,-1:1,-1:1,6)

@@ -34,7 +34,7 @@ c  helicity selection
       INTEGER h
       COMMON /hcount / h
 
-      complex*16 zero, z1
+      complex*16 zero
       parameter (zero=(0d0,0d0))
 
 c declare external functions
@@ -47,15 +47,15 @@ c declare external functions
 c declare local variables
 
       real*8 q_sf
-      integer init/0/, I, J, mu, nu, id
+      integer init/0/, I, mu
       save init
 
 c declare variables for summation process
 
       INTEGER ires
 
-      integer FSIGN(2+n_v), physToDiag(2), nmin, nmax, nproc(4)
-      save nmax, nproc
+      integer FSIGN(2+n_v), physToDiag(2), nmin, nmax
+      save nmax
 c
 c store contributions from subprocess ip in res(ip) where
       real*8 res(maxnumsubproc)
@@ -149,7 +149,6 @@ c leptonic tensors
         if ((nlo .eq. -8) .or. (nlo.eq.1)) 
      &    call ww_htoww(v(0,1,1),1,w4l(h,1),0) !H -> e+ ve vu~ mu-
       END SELECT
-
 
 
 c if desired, print output information
@@ -329,12 +328,12 @@ c local variables
       integer iflav(4), diagToPhys(2), FL_VV
       external dotrr, FL_VV
 
-      logical ChargedCurrent, sametype, oneAntiparticle
+
       logical ldebug, ldebuglt
       parameter (ldebug=.false.)
       parameter (ldebuglt=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,icc1,j,k,mu
+      integer i,if1,k,mu
 
       uuww = 0d0
       uuww2 = 0d0
@@ -378,14 +377,14 @@ c gluon-fusion loop contributions
       if (nlo .ne. -8) then
 #ifdef WITH_MADGRAPH
          if(ldebug) then
-            call suu_ww(pbar,fsign,uuww2)
-            ! call suu_ww_had(pbar,fsign,uuww2)  ! for hadronic decay
-            call sdd_ww(pbar,fsign,ddww2)
-            ! call sdd_ww_had(pbar,fsign,ddww2)  ! for hadronic decay
-         endif
+               call suu_ww(pbar,fsign,uuww2)
+               ! call suu_ww_had(pbar,fsign,uuww2)  ! for hadronic decay
+               call sdd_ww(pbar,fsign,ddww2)
+               ! call sdd_ww_had(pbar,fsign,ddww2)  ! for hadronic decay
+	    endif
 #endif
-
-         call QQVV(pbar,fsign,nlo,1,uuww,ddww)
+       
+	   call QQVV(pbar,fsign,nlo,1,uuww,ddww)
 
 #ifdef WITH_MADGRAPH
          if (ldebug) then
@@ -425,7 +424,6 @@ c
 c   end subroutine qq_VV
 c
 c*****************************************************************
-
 
 
 c******************************************************************
@@ -517,10 +515,10 @@ c  include files
 #include "VBFNLO/utilities/process.inc"
 
 c  input parameters
-      INTEGER iflav(2),id1,id2,id3,id4,listposition !2 quark flavors and subprocess number
+      INTEGER iflav(2),id1,id2,listposition !2 quark flavors and subprocess number
 
 c  local variables
-      INTEGER i
+
       
       id1=iflav(1)
       id2=iflav(2)
@@ -592,7 +590,7 @@ c*****************************************************************************
 #include "tensor.inc"
       complex*16 zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,mu
 
       do mu = 0,3
          do j = 1,3

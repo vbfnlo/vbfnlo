@@ -22,7 +22,7 @@ c the lost of precision in the other subroutine.
       DOUBLE PRECISION p1(0:3), p2(0:3), p3(0:3), p4(0:3) 
       DOUBLE PRECISION p5(0:3), p23(0:3), p34(0:3)
       DOUBLE COMPLEX barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-      DOUBLE COMPLEX emup2(0:3),emup3(0:3),emup4(0:3) 
+      DOUBLE COMPLEX emup3(0:3),emup4(0:3) 
       DOUBLE PRECISION musq,test1,test2
       DOUBLE COMPLEX x2,x3,x4,cte
       Integer alpha,i
@@ -162,10 +162,10 @@ c of precision in the other subroutine.
       IMPLICIT NONE
       DOUBLE PRECISION   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p23(0:3),p34(0:3)
       DOUBLE COMPLEX barpsi_p5(2,-1:1),psi_p1(2,-1:1),mup2(0:3),mup3(0:3),mup4(0:3) 
-      DOUBLE COMPLEX emup2(0:3),emup3(0:3),emup4(0:3) 
+      DOUBLE COMPLEX emup3(0:3),emup4(0:3) 
       DOUBLE PRECISION musq,test1,test2
       DOUBLE COMPLEX x2,x3,x4,cte
-      Integer alpha,i
+      Integer i
       DOUBLE COMPLEX result(-1:1),result1,result2,result3,result4
       DOUBLE COMPLEX result5,result6,result7,result8
       DOUBLE COMPLEX resultb5,resultb6,resultb7,resultb8

@@ -255,15 +255,12 @@ c*******************************************************************************
      -   F(4))*Fa(3)+(p1mup2*F(5)+p2mup2*F(6))*Fa(4))
 
 
-        if (comp.gt.0) then    
-
+        if (comp.gt.0) then
 
 
        resultn(2) = (0,-1)*F(7)*Fa(5)
        resultn(3) = (0,-1)*F(8)*Fa(4)
        resultn(4) = (0,-1)*F(9)*Fa(3)
-
-
 
 
         endif 
@@ -284,7 +281,7 @@ c************** Calling the Fa functions****************************************
        IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3)
        Complex*16   mup1(0:3),mup2(0:3),mup3(0:3)
-       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,result
+       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR
        Real*8 EPSRRRR
       EXTERNAL   EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,EPSRRRR
       Complex*16 Fa(5)

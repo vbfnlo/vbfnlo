@@ -64,7 +64,6 @@ c
           BijI(2,3)= IMAG(B12(2,3))
 
 
-
           endif
 c p1sq=0
           else
@@ -116,9 +115,6 @@ c p1sq>0
 
           BijR(2,3)= REAL(B12(2,3))
           BijI(2,3)= IMAG(B12(2,3))
-
-
-
 
 
           return
@@ -181,7 +177,6 @@ c m1 or m2 = 0
 
 
          endif
-       
 
 
        endif

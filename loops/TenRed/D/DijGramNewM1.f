@@ -11,7 +11,7 @@ c*******************************************************************************
       Implicit None
       Real*8 p1sq,p2sq,p3sq,p4sq,s12,s23,musq
       Real*8 p1sqsq,p2sqsq,p3sqsq,p4sqsq,s23sq,s12sq
-      Real*8 r10,r21,r32,m0,m1,m2,m3,m0sq,m1sq,m2sq,m3sq
+      Real*8 r10,r21,r32,m0,m0sq,m1sq,m2sq,m3sq
       Complex*16 D0,Dij(34,5)
       Complex*16 C0123,C0124,C0134,C0234
       Real*8 C0123R,C0124R,C0134R,C0234R
@@ -388,7 +388,6 @@ c       Print*, 'HERE'
               IX=1d0/TX3
            endif
       endif
-
 
 
        kinit=k
@@ -910,9 +909,7 @@ c FC1 %
        print*, 'tempjj',tempjj
        print*, 'jjtemp',jjtemp
        print*, "F(5)",F(5)
-       endif        
-
-
+       endif
 
 
        tempkl1=abs(det4*temp2(1,1)/(Z(1,1)*4d0))

@@ -40,17 +40,9 @@ read Matchbox/VBFDiagramsOnly.in
 cd /Herwig/MatrixElements/Matchbox/Amplitudes
 set VBFNLO:RandomHelicitySummation True
 
-cd /Herwig/MatrixElements/Matchbox/Utility
-## use diagonal FFW vertex
-insert DiagramGenerator:Vertices 0 /Herwig/Vertices/FFWDiagonalVertex
-insert DiagramGenerator:ExcludeVertices 0 /Herwig/Vertices/FFWVertex
-## allow internal Higgs bosons
-erase DiagramGenerator:ExcludeInternal 0
-## switch off Higgs-fermion and the loop-induced Higgs-photon and Higgs-gluon couplings
-insert DiagramGenerator:ExcludeVertices 0 /Herwig/Vertices/FFHVertex
-insert DiagramGenerator:ExcludeVertices 0 /Herwig/Vertices/HPPVertex
-insert DiagramGenerator:ExcludeVertices 0 /Herwig/Vertices/HGGVertex
-
+## Model assumptions
+read Matchbox/StandardModelLike.in
+read Matchbox/DiagonalCKM.in
 
 ##################################################
 ## Cut selection
@@ -185,7 +177,7 @@ cd /Herwig/Samplers
 ## Use Monaco sampler
 set MonacoSampler:InitialPoints 10000
 set MonacoSampler:NIterations 4
-set MonacoSampler:EnhancementFactor 2
+set MonacoSampler:EnhancementFactor 1.2
 set MonacoSampler:RandomNumbers RanDist
 set Sampler:BinSampler MonacoSampler
 

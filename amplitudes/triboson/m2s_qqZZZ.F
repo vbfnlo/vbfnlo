@@ -64,7 +64,7 @@ c declare local variables
       PARAMETER (zero=(0d0,0d0))
 
       DOUBLE PRECISION q_sf
-      INTEGER init/0/, I, J, mu, nu, id
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -176,7 +176,6 @@ c...Les Houches interface
       qzzz(4,1) = dotrr(qzzz(0,1),qzzz(0,1))
 
 
-
       SELECT CASE(procid)
       CASE(ZZZhad)
             call anomal_formfactor(qzzz(0,1),qze(0,1),qzmu(0,1),qztau(0,1))
@@ -258,7 +257,6 @@ c only higgs contributions
       END SELECT ! procid
 
 
-
 #ifdef WITH_MADGRAPH
       if (ldebug_ltens) then
          print*, ""
@@ -321,7 +319,6 @@ c only higgs contributions
          read(*,*)
       endif
 #endif
-
 
 
 c call PDF subroutine in order to determine parton
@@ -570,11 +567,11 @@ c local variables
       INTEGER iflav(4), diagToPhys(2), FL_VVV
       EXTERNAL dotrr, FL_VVV
 
-      LOGICAL ChargedCurrent, sametype, oneAntiparticle
+
       LOGICAL ldebug
       PARAMETER (ldebug=.false.)
       PARAMETER (zero = (0d0,0d0) )
-      INTEGER i,if1,if2,icc1,j,k,mu
+      INTEGER i,if1,k,mu
 
       uuzzz = 0d0
       uuzzz2 = 0d0
@@ -706,7 +703,7 @@ c*****************************************************************
 #include "tensor.inc"
       complex*16 zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,mu
 
       do mu = 0,5
          do j = 1,3

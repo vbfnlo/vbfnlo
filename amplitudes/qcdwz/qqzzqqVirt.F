@@ -20,23 +20,23 @@ c      flavour: 2: diff family (only u channel), q1 corresponds to qline q2>q3
 #include "common.inc"
       real*8 P(0:3,max_p,max_kin),res(0:2,3:4,3:4,0:2)
       integer id(4),fsign(4),lephel,nlo
-      logical lnlo,luseprecalc
+      logical luseprecalc
       
-      real*8 pbar(0:3,4),pdia(0:3,4),momTemp(0:4),momTemp4(0:4,4),pbartemp(0:3,1:8),kdia(0:3,3)
+      real*8 pbar(0:3,4),pdia(0:3,4),momTemp(0:4),kdia(0:3,3)
       complex*16 psitemp(2,-1:1,4),kdiac(0:3,3)
       complex*16 currij(0:3,-1:1,1:2,3:4), currVij(0:3,-1:1,3:4,1:2,3:4,3)
       complex*16 amp(2),ampborn(2,-1:1,-1:1,3:4,3:4),ampb(2,-1:1,-1:1,3:4,3:4)
       complex*16 ampv(2,-1:1,-1:1,3:4,3:4),ampvCross1(2,-1:1,-1:1,3:4,3:4)
       real*8 resb(3:4,3:4,0:2),resi(3:4,3:4,0:2),resv(3:4,3:4,0:2)
-      complex*16 gluWij(0:3,1:2,3:4,2),temp
+      complex*16 temp
       complex*16 tempCurr(0:3,-1:1,4),psi4(4,4)
-      complex*16 s1c, dotcc, dotrc,momtempc(0:4)
-      complex*16 MGtemp(18,4)
-      complex*16 boxgauge(2),boxres(5),boxgaugeb(2),boxborn,nothing(3),checkg(5,3),checkgb(2),boxresRen(3)
+      complex*16 dotcc,momtempc(0:4)
+
+      complex*16 boxgauge(2),boxres(5),boxgaugeb(2),boxborn,nothing(3),checkg(5,3),checkgb(2)
       complex*16 penbamp(3),penbres,penbborn,tempborn,tempvirt,hexamp(9),hexres,hexborn,hexresG(2,2)
       complex*16 pengauge(3),penres(8),pengaugeb(3),penborn 
-      real*8 mass2,qjj2,qsq(1:2,3:4,0:3),logmuosij(4,4),musq,dotrr,td,gaugeR
-      real*8 squared(2,2), tempR,gaugeprecision
+      real*8 qjj2,qsq(1:2,3:4,0:3),logmuosij(4,4),musq,dotrr,td
+      real*8 squared(2,2),gaugeprecision
       logical lborn,lcsi,lhex,lpenl,lpenb,lboxl,lsimple,lfloop,ldebug
       logical GaugeOK(0:2),wardidtest(0:8),wardidtest_q(0:8),ltop,lhiggs,lZ4l,lZZ
       integer div, col(2),comp,ngauge
@@ -44,8 +44,8 @@ c      flavour: 2: diff family (only u channel), q1 corresponds to qline q2>q3
       parameter( CF = 4d0/3d0, CA = 3d0, CFCA=-1d0/6d0, TR=0.5d0)
 
       
-      integer i,j,mu,nu,tempi4(4), lepkin,colstr,tempi8(4),h1,h2,q,q1,q2
-      integer minhel, maxhel, ikin, in,out,qid(4),iAZ,iV,hel,iV2,iAZ2,in2,out2
+      integer i,j,mu,tempi4(4), lepkin,colstr,h1,h2,q,q1,q2
+      integer ikin, in,out,iV,hel,iV2,in2,out2
       integer qin,qin2,qout,qout2,qline, bos
 
       logical wardpAbe(2),wardpNoAbe(2)
@@ -388,9 +388,9 @@ c include propagator in currij, currVij
       do h1=-1,1,2
         currij(:,h1,in,out)=-currij(:,h1,in,out)/qsq(in,out,0)
       do q=3,4
-        currVij(:,h1,q,in,out,1)=-currVij(:,h1,q,in,out,1)/qsq(in,out,1)
-        currVij(:,h1,q,in,out,2)=-currVij(:,h1,q,in,out,2)/qsq(in,out,2)
-        currVij(:,h1,q,in,out,3)=-currVij(:,h1,q,in,out,3)/qsq(in,out,3)
+        if (lAZ(0,1)) currVij(:,h1,q,in,out,1)=-currVij(:,h1,q,in,out,1)/qsq(in,out,1)
+        if (lAZ(0,2)) currVij(:,h1,q,in,out,2)=-currVij(:,h1,q,in,out,2)/qsq(in,out,2)
+        if (lAZ(0,3)) currVij(:,h1,q,in,out,3)=-currVij(:,h1,q,in,out,3)/qsq(in,out,3)
       enddo;enddo;enddo;enddo
 
       out=3 ! fix final state
@@ -1483,7 +1483,6 @@ c same flavor
         enddo
         enddo
 
-        pause
       endif
 
       if(GaugeOK(0)) then ! all gauge test ok

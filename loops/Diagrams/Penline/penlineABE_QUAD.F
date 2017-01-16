@@ -68,9 +68,9 @@ c*******************************************************************************
        IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3)
       Real*8   p1t(0:3),p2t(0:3),p3t(0:3),p4t(0:3),p5t(0:3)
-       Real*8   p1sq, p1p2, p1p3, p1p4, p1p5, p2sq, p2p3, p2p4, 
-     -          p2p5, p3sq, p3p4, p3p5, p4sq, p4p5, p5sq
-       Real*8   s12, s13, s14, s15, s23, s24, s25, s34, s35, s45
+       Real*8   p1sq, p2sq, 
+     -          p3sq, p4sq, p5sq
+       Real*8   s12, s15, s23, s34, s45
        Complex*16   p1mup2, p1mup3, p1mup4, p2mup2, p2mup3, p2mup4, 
      -          p3mup2, p3mup3, p3mup4, p4mup2, p4mup3, p4mup4, 
      -          p5mup2, p5mup3, p5mup4
@@ -78,17 +78,15 @@ c*******************************************************************************
        Real*8 dotrr
        Complex*16 B0fin,C0fin,D02m_fin,D02m_fine,D01m_fin,E0fin,D0fin
        EXTERNAL dotrr,B0fin,C0fin,D01m_fin,D02m_fine,D0fin,D02m_fin,E0fin
-       Complex*16 B012,B013,B014,B015,B023,B024,B025,B034,B035,B045
+
       Real*8 B012R,B013R,B014R,B015R,B023R,B024R,B025R,B034R,B035R,B045R
       Real*8 B012I,B013I,B014I,B015I,B023I,B024I,B025I,B034I,B035I,B045I
-       Complex*16 C0123,C0124,C0125,C0134,C0135,C0145,C0234,C0235,C024
-     -   5,C0345
        Real*8 C0123R,C0124R,C0125R,C0134R,C0135R,C0145R,C0234R,C0235R,
      -   C0245R,C0345R
        Real*8 C0123I,C0124I,C0125I,C0134I,C0135I,C0145I,C0234I,C0235I,
      -   C0245I,C0345I
 
-       Complex*16 D01234,D01235,D01245,D01345,D02345,EE0
+
         Real*8 D01234R,D01235R,D01245R,D01345R,D02345R,EE0R
         Real*8 D01234I,D01235I,D01245I,D01345I,D02345I,EE0I
 
@@ -104,9 +102,9 @@ c*******************************************************************************
         Real*8 Dij1234I(13,3),Dij1235I(13,3),Dij1245I(13,3),Dij1345I(13
      -   ,3),Dij2345I(13,3),EijI(46,4)
        Complex*16 SMB(16),SMG(16) ,Fa(62),F(448),K(4)
-       Real*8 FI(448),FR(448),FaI(62),FaR(62),PaR(23),PaI(23),KI(4),KR(4)
+       Real*8 FI(448),FR(448),PaR(23),PaI(23),KI(4),KR(4)
        Complex*16 barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-       Complex*16 SC1c,SC3ccc,SC3rcc,SC3rrc,SC5rrccc,SC1r,SC3rrr,dotrc,dotcc,result(8),resultg(8)
+       Complex*16 SC1c,SC3ccc,SC3rcc,SC3rrc,SC5rrccc,SC1r,dotrc,dotcc,result(8),resultg(8)
        Complex*16 resultgauge(3),resultgaugeb(3),resultb 
        Real*8 musq,Is12,Is45,Is12s45,P(554),musqIn 
        EXTERNAL   dotrc,dotcc,SC1c,SC1r,SC3ccc,SC3rcc,SC3rrc,SC5rrccc
@@ -195,7 +193,6 @@ c*******************************************************************************
           Is12=Is12T
           Is45=Is45T
           Is12s45=Is12s45T
-
 
 
 c************************************************************************************

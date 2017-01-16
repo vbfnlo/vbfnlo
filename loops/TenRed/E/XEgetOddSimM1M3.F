@@ -100,7 +100,7 @@ c*******************************************************************************
        Real*8 E12345R(80,5) 
        Real*8 E12345I(80,5) 
 
-       Logical PrintB,PrintC,PrintD,PrintE 
+
        COMMON/EVALFunctionsPenoddgSim/ E012345R,E12345R,E012345I,E12345I
        COMMON/DVALFunctionsPenoddgSim/ D01234R,D1234R,D01234I,D1234I, D01235R,D1
      -   235R,D01235I,D1235I, D01245R,D1245R,D01245I,D1245I, D01345R,
@@ -449,9 +449,6 @@ c FC%       write(*,*)"E12345"
 c FC%       call print_EijR(E012345,E12345R,E12345I)
 c FC%       endif
 c FC%
-
-
-
 
 
        return

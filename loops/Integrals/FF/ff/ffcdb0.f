@@ -713,7 +713,7 @@
 *
 *		    first s2:
 *
-  490		    s2p = s2 - alpha
+     		    s2p = s2 - alpha
 		    if ( absc(s2p) .lt. xloss*absc(s2) ) then
 * -#[			bounds:
 *			determine the boundaries for 1,5,10,15 terms

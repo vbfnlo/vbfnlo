@@ -122,7 +122,7 @@ c      complex*16 C0t
       External dilog_QUAD
 
 c      complex*32 C0
-      logical debugB0C0D0
+
 c      common/debug_B0C0D0/debugB0C0D0
 
 c      if (debugB0C0D0) then
@@ -307,12 +307,6 @@ c TRIANGLE WITH ZERO EXTERNAL INVARIANTS
       end
 
 
-
-
-
-
-
-
 c------------- C(m,q1^2,q2^2,P^2)  3-point fuction ---------------------------
 c
 c      complex*16 function I3point(m,q1sq,q2sq,Psq)
@@ -343,7 +337,6 @@ c      external li2
       parameter (eps=1q-36, ieps = eps*(0q0,1q0), precise=1q-9 )
       parameter (pi=3.141 592 653 589 793 238 462 643 383 279 502 88q0, fac=-1q0/2q0)
 
-     
 
       eps1=1d-10
       if(abs(mt).le.eps1) then
@@ -406,9 +399,8 @@ c         STOP
       else
          rtlam = sqrt(lambda)
       endif
-      
-      
-      
+
+
 c determine factors for call of spence functions
       fmsq = 4q0*m**2
       fmt2 = fmsq - ieps
@@ -507,8 +499,8 @@ c-------------  spence function  li2(z) ------------------------
 c
       complex*32 function QUADcdilog(zin)
       implicit none
-      complex*32 zin, z, unpo, ans, zext,test
-      real*16 r, r2, r2n, fac
+      complex*32 zin, z, ans, zext,test
+      real*16 r2, fac
 c
 c determine the value of the dilogarithm 
 c
@@ -517,7 +509,7 @@ c                                        real axis, z>1
 c
 c       Francisco Campanario
 c  
-      integer i
+
       real*16 c0,c1,c2,c4,c6,c8,c10,c12,c14,c16,c18,c20,c22
       real*16  c24,c26,c28,c30,c32,c34,c36,c38
       real*16 b0,b1,b2,b4,b6,b8,b10,b12,b14,b16,b18,b20,b22
@@ -527,7 +519,7 @@ c
      
       real*16  I2,I4,I9,I16,I25,I36,I49,I64,I81,I100,I121,I144
       real*16 I169
-      complex*32  u,u2,u4,u6,u8,u16,u32
+      complex*32  u,u2,u4,u8,u16,u32
      
 
       parameter (b0=1q0,            d0 =1q0,      c0= b0/d0,I2=1q0/2q0, I4=1/4q0 )
@@ -614,8 +606,6 @@ c
       endif
 
 
-
-
         if (sqrt(r2).gt.1q0) then     ! map z ---> 1/z
          fac = -fac
          ZLOG=Log(-z)
@@ -624,7 +614,6 @@ c
         zreal=REAL(z)
         zimag=IMAG(z)
       endif
-
 
 
       if (zreal.gt.I2) then     ! map new z ---> 1-z

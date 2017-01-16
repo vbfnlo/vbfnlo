@@ -21,7 +21,7 @@ c	SM fermions are treated massless
 c	the heavy partner aquire an infinite mass
 c	W' doesnt couple to SM fermions through ideal delocalization
 	double precision wmass,ee,mwp,zmass,mzp
-      double precision G,GWWA,GWWZ,gOne,GWWpA,GWWpZ,GWWZp,GWpWpA,
+      double precision GWWA,GWWZ,gOne,GWWpA,GWWpZ,GWWZp,GWpWpA,
      +GWpWpZ,GWWpZp,GWpWpZp,GWWAA,GWWZA,GWWZZ,GWWWW,
      +GWpAWA,GWpZWA,GWpZWZ,GWpWWW,GWZpWA,GWZpWZ,GWpAWpA,GWpZWpA,
      +GWpZWpZ,GWpWWpW,GWpZpWA,GWpZpWZ,GWZpWZp,GWpZpWpA,GW
@@ -52,7 +52,6 @@ c-------------------------------------------
      -	*vW0f(WMASS,MWP)*vW0f(WMASS,MWP)*vZ0f(WMASS,ZMASS,MWP)
      - +gtf(ee,WMASS,ZMASS,MWP)
      -	*vW1f(WMASS,MWP)*vW1f(WMASS,MWP)*vZ1f(WMASS,ZMASS,MWP)
-
 
 
 c-------------------------------------------
@@ -325,7 +324,6 @@ c-------------------------------------------
      -	*vWP1f(WMASS,MWP)*vWP1f(WMASS,MWP)
 
 
-
 c--------------------------------------------------------------
 c now the output for the kk_coupl_inp routine
 c--------------------------------------------------------------
@@ -429,7 +427,7 @@ c	fermions
      &                BHWW,BHZZ,BHGG,BHTT,BHBB,BHCC,BHTAU,BHMU,
      &                BHGAM, BHGAMZ, XGW, XGZ, XGH, GAMT
 
-	double precision decw,gwne,gwud,xmw,xmz,decz,gznn,
+	double precision decw,gwne,gwud,decz,gznn,
      & 			gzee,gzuu,gzdd
 	external gf,gtf,gpf,vw0f,vw1f,vz0f,vz1f,vz2f
 	external vL0f,vL1f

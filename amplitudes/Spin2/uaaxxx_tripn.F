@@ -16,7 +16,7 @@ c
       implicit none
       double complex a1(6), a2(6), uaa(18)
 
-      integer i, j, k, l, m, n, a, s
+      integer i, j, k, l, m, n
 
       double complex yaa(6,4)
       double precision p1(4), p2(4), pT(4), p1p2, pT2

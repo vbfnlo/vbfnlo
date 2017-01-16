@@ -7,6 +7,7 @@ c	Initial version:  1995 March 25
 c	Last modified:  2005 Dec.        
 c
       subroutine def_ps_vvnj(bos0,bos1,bos2, iwidth0, iwidth1, iwidth2)
+          use globalvars, only: ldoblha
       implicit none 
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/cuts.inc"
@@ -71,7 +72,6 @@ c       bos0 = -6   ==>  sharp Higgs resonance for H-->V1 V2 decay plus broad di
 c       bos0 = 39   ==>  sharp Spin-2 resonance for Spin-2-->V1 V2 decay
 
 
-
 ! settings for intermediate (higgs / spin2 / W / Z / continuum) resonances
 
       rm2min(0) = 1d-3              ! min/max values may be changed in each event
@@ -131,7 +131,6 @@ c       bos0 = 39   ==>  sharp Spin-2 resonance for Spin-2-->V1 V2 decay
         F_i(N_res)  = 0.5d0
       endif
 
-#ifdef WITH_SPIN2
       if (with_spin2) then
          Select Case (procID)
          Case(ZZjj_lnu, ZZjj_ll, WPWMjj, WPZjj, WMZjj)
@@ -155,10 +154,8 @@ c       bos0 = 39   ==>  sharp Spin-2 resonance for Spin-2-->V1 V2 decay
            F_i(N_res)  = 0.5d0
          end select
       endif ! with_spin2
-#endif
 
       call MultiResonancesInit(1, base_m2, base_mg, 1d0, M2_i, MG_i, F_i, N_res)
-
 
 
 ! settings for vector bosons
@@ -171,7 +168,6 @@ c       bos0 = 39   ==>  sharp Spin-2 resonance for Spin-2-->V1 V2 decay
       enddo
 
 
-
       do i = 1,N1
          yjmin(i) = 0d0
          yjmax(i) = ymax_def
@@ -179,11 +175,6 @@ c       bos0 = 39   ==>  sharp Spin-2 resonance for Spin-2-->V1 V2 decay
          ejmin(i) = 0d0
          infoj(i) = -1
       enddo
- 10   format ( " pTjmin = ", 5(f6.1,2x) )
- 20   format ( " Ejmin  = ", 5(f6.1,2x) )
- 30   format ( " yjmin  = ", 5(f6.1,2x) )
- 40   format ( " yjmax  = ", 5(f6.1,2x) )
- 50   format ( " infoj  = ", 5(i6,2x) )
  60   format ( " machine energy = ", f10.1, "  GeV" )
  70   format ( " integration range for boson ",i2," = ",f10.3,
      1         "  to ",f12.3," GeV" )
@@ -303,9 +294,9 @@ C  local variables
       
 
 c only relevant for spin-2 scenario
-      double precision xmassx, xwidthx   !mass and width of the spin-2 resonance
-      double precision hm,hw             !mass and width of the higgs resonance
-      double precision ovp, ovp2         !OverLapPoint of spin-2 and higgs resonance for two cases
+      double precision xwidthx   !mass and width of the spin-2 resonance
+      double precision hw             !mass and width of the higgs resonance
+      double precision ovp2         !OverLapPoint of spin-2 and higgs resonance for two cases
 
     
       if (ldebug) print*," enter LIPSNVV"
@@ -499,6 +490,12 @@ C  Generate Q**2 = Q(4) according to Breit Wigner distribution
            rx = R(1+3*i)
          endif
          if ( i.gt.0 ) then
+         ! possible different choices here:
+         ! * increase nonresonance-part of lighter V to 0.5:
+         !   works better for ZZ -> lnu, but less efficient for other processes
+         ! * check for "RM2(i)-8d0*RMG(i)", else only nonresonant part:
+         !   improves total number of events, but increases runtime even more, due to more events passing PS-generator,
+         !   but not mapped optimal on random number
             if (                                                                    ! split rnd for Q2 of bosons in the following cases:
      &            bos0.eq.-6 .or.                                                   ! WW / ZZ production (higgs (+Sp2) + continuum)
      &            ( (bos0.eq.6 .or. bos0.eq.39) .and. bos(1).eq.2 .and. ii.eq.1 )   ! (light) Higgs / Spin2 -> ZZ, heavier Z

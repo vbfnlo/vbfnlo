@@ -41,7 +41,7 @@ c declare local variables
 c
       real*8 q_sf
 
-      integer init/0/, I, J, k, l, m,n, mu, nu
+      integer init/0/, I, J, k
       save init
 c
 c declare variables for summation process
@@ -61,11 +61,11 @@ c local varriables
       save ires_min, ires_max
       data ires_min,ires_max / 1, maxnumsubproc/
       external FL5qcdWZ
-      logical FLskip(2)
+
       logical ldebug,lallsub
 !       parameter (ldebug=.false.)
       integer nhel
-      real*8 dotrr, mjj2, mass2
+      real*8 mjj2, mass2
       integer hel, h, q
       integer qcdVVjjkin
       complex*16 phase1, phase2
@@ -73,12 +73,10 @@ c local varriables
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
       
-      real*8 temp(0:6), sd(2) /0d0,0d0/
+
       integer helswitch
       common/helswitchTemp/ helswitch
-      real*8 pMG(0:3,9),amptemp(0:6,3:4),amptemp4q(0:4,3:4,3:4,0:2)
-      complex*16 gzlc(2),clrc(4,5,-1:1)
-      complex*16 gV,gA,gL,gR,qf,t3,csin2w,e
+
 
 c V currents
 c V1/V2/V12,
@@ -156,8 +154,7 @@ c
       do i=ires_min,ires_max
         res(i) = 0d0
       enddo
-      
-      
+
 
 #ifdef NINH_COMPARE
 
@@ -325,7 +322,6 @@ c calculate leptonic decay
         momV(4,2,kin) = mass2(momV(0,2,kin))
         momV(4,3,kin) = mass2(momV(0,3,kin))
       endif
-
 
 
 c calc Z currents
@@ -550,8 +546,7 @@ c     p1 p2    p3 p4 p5     phasespace
 !       print*,res(1)
 !       pause
 !       return
-!  
-
+!
 
 
 !       lokt(1)=.true.
@@ -630,9 +625,8 @@ c     p1 p2    p3 p4 p5     phasespace
 !       print*,amptemp4q(0,3,3,0),amptemp4q(0,4,4,0),amptemp4q(0,3,4,0)
 !       pause
 !       return
-      
-      
-      
+
+
 !  
 !       if(sub_number.eq.2.or.lallsub) call getRes2Q3GZZ(p,id,fsign,pdf,nbos,lnlo,lokt,xyuz,res,v)
 ccc  Mad Graph
@@ -920,7 +914,6 @@ c
 #ifdef NINH_COMPARE
       m2s = m2s
       print*,m2s(1),m2s(0)-m2s(1),m2s(0)
-      pause
 #endif
 
       end
@@ -937,16 +930,16 @@ c
       real*8 amp(0:6,3:4) ! m^2: lnlo ? (Born, T1T2, T1T3) : les houches color flow
       integer flav(5), k, colstr,q,qt
       integer FL5QCDWZ
-      real*8 polcol(maxnumsubproc), qcdVVjjDipole2q3g, dip(3:4,4,5,5),dipSum(16,3:4)
+      real*8 polcol(maxnumsubproc), dip(3:4,4,5,5),dipSum(16,3:4)
       common / polcolz / polcol
       integer qcdVVjjKin
-      integer emit1, emit2, spect, kin, i,j,in,spectB,buff,emitB
-      integer emiO1, emiO2
+      integer emit1, emit2, spect, kin, i,j,spectB,emitB
+
       
       logical ldebug
       parameter (ldebug = .false.)
       external CScolAmpGNewUsePrecalc
-      integer di,fisgnB
+      integer di
 
       double precision  alphas, xmt, alfa, xmz, xmw,s2w, xmh
       common /bkopin/   alphas, xmt, alfa, xmz, xmw, s2w, xmh
@@ -1097,7 +1090,6 @@ c LO subprocesses
       end
 
 
-
       subroutine getRes4Q1GZZ(p,id,fsign,pdf,Nbos,lnlo,lokt,xyuz,res)
 c hel summation, if rn < 0
       implicit none
@@ -1107,29 +1099,29 @@ c hel summation, if rn < 0
       real*8 res(1:maxNumSubProc) !out: subprocess cross-sections
       real*8 p(0:3,max_p,max_kin)
       integer fsign(5), id(5),fsignB(5)
-      real*8 pdf(-6:6,2,16), xyuz(2,2:max_kin), rn
-      logical SkipIdFl(1:2),lnlo,lokt(16)
-      logical calc12Id,calc34Id
-      integer diffFamily,idB(4),emitB,spectB
+      real*8 pdf(-6:6,2,16), xyuz(2,2:max_kin)
+      logical lnlo,lokt(16)
+
+      integer idB(4),emitB,spectB
       integer nbos
 
-      integer FL5qcdWZ, di,in
-      real dt(2),timearray(2)
+      integer FL5qcdWZ, di
+
 
       double precision  alphas, xmt, alfa, xmz, xmw,s2w, xmh
       common /bkopin/   alphas, xmt, alfa, xmz, xmw, s2w, xmh
 
-      integer colstr,j,i,k,n,q1,q2,q,tempi
+      integer j,i,k,n,q1,q2,q,tempi
       integer iflav(1:5)
-      integer family
-      integer kin,emit1,emit2,spect, qcdVVjjkin,tempSing(2)
+
+      integer kin,emit1,emit2,spect, qcdVVjjkin
       logical ldebug, idFl
       parameter (ldebug = .false.)
       real*8 amp(0:4,3:4,3:4,0:2),dip(3:4,3:4,0:2),dipsum(3:4,3:4,0:2,2:16),dipq(3:4)
       external CScolAmpGNewUsePrecalc,CScolAmpQZZ
 
       double precision polcol(maxnumsubproc)
-      real*8 temp(3:4,0:3),mjj2
+
       common /polcolz/ polcol
 
       if(ldebug) then
@@ -1281,28 +1273,25 @@ c fill flavor information for pdf and lha output
       end
 
 
-
-
-
       SUBROUTINE qg2qggZZ(P,id,fsign,lephel, res) ! sum over glu hel if ghel ==0
       implicit none 
 #include "cacheZZ.inc"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
       real*8 P(0:3,max_p,max_kin), res(0:6,3:4)
-      integer kin, id(5),fsign(5),nbos,lephel,ghel2 ,ghel4,ghel5
+      integer kin, id(5),fsign(5),lephel 
 
-      real*8 pbar(0:3,2),kbar(0:4,3),pdia(0:3,2),kdia(0:4,7),momTemp(0:4) ! kdia for glu: 1 2 3 12 13 23 123
+      real*8 pbar(0:3,2),kbar(0:4,3),pdia(0:3,2),kdia(0:4,7) ! kdia for glu: 1 2 3 12 13 23 123
 ! !       real*8 momPsiW(0:4,2),momPsiV(0:4,2),momPsiWV(0:4,2),momPsiG(0:4,2,7)
       real*8 triD(0:4,3,2,2,2),triV(0:4,3,2,2,2) ! 3-gluon polarications (see Nucl Phys B313 560, (5.13-14) indices: triD(mu,i) with j<k, triV(j)
 !       complex*16 PsiVVG(2,-1:1,3:4,2,3,2)
-      complex*16 PsiTemp(2,-1:2), amp(6)
-      complex*16 s1c,s1r, dotcc, dotrc, dotcr,temp
+      complex*16 amp(6)
+      complex*16 s1r,temp
       real*8 eps3G(0:3,4:6,0:2,0:2,0:2),epsTemp(0:3)
-      real*8 mass2, colsumsq,dotrr,mass2Q
-      integer denom(6),CF(6,6),idg(3),iV,qt
+      real*8 mass2, colsumsq,dotrr
+      integer denom(6),CF(6,6),idg(3),qt
       
-      integer i,j,mu,nu,q,qh, tempi2(2), lepkin,qtype(2),ggsign(3:5),pol1,pol2,pol3,pol0,pol(0:3)
+      integer i,j,mu,qh, lepkin,ggsign(3:5),pol1,pol2,pol3,pol(0:3)
       integer ig(3),perm, permutations(3,6)
 
 c permutations convenient with Madgraph u g -> e+ ve d g mu+ mu- g  
@@ -1520,7 +1509,6 @@ c square amp
       end
 
 
-
       subroutine amp4q1gzz(P,id,fsign,lephel,res)
       implicit none
 #include "common.inc"
@@ -1531,7 +1519,7 @@ c square amp
       integer id(5),fsign(5),lephel
 
       
-      real*8 pbar(0:3,5),pdia(0:3,5),momTemp(0:4)
+      real*8 pbar(0:3,5),pdia(0:3,5)
       complex*16 currij(0:3,-1:1,1:2,3:4),currGij(0:3,-1:1,1:2,3:4,2,2)
       complex*16 currVij(0:3,-1:1,3:4,1:2,3:4,3),currVGij1(0:3,-1:1,3:4,1:2,3:4,3,2),currVGij2(0:3,-1:1,3:4,1:2,3:4,3,2)
       complex*16 tempCurr(0:3,-1:1,4),amp_ort(0:2),amp(4,2),temp
@@ -1539,16 +1527,16 @@ c square amp
       complex*16 dotcc
       external s1c, dotcc, dotrc,dotrr,qjj2,mass2, qjj2Q
       real*8 mass2,qjj2,qjj2Q,qVij(0:4,1:2,3:4,0:3)
-      real*8 squared(2,2), tempR,colsq(0:4,2)
+      real*8 tempR
       real*8 dotrr
-      logical skip(3:4)
+
       integer helswitch
       common/helswitchTemp/ helswitch
 
-      integer i,j,k,l,m,mu,nu,hel(4), tempi4(4), lepkin,colstr,qtype(2),gh,qh,qt,iV,pol,q1,q2,h1,h2
-      integer ikin, in,out,in2,out2,helcfg,qid(4)
-      integer minhelq,maxhelq,idi,idi2,ido,ido2,idtemp(4)
-      logical eval(4,-1:1), lpasstest(3)
+      integer i,j,k,l,m,mu,colstr,qt,iV,pol,q1,q2,h1,h2
+      integer in,out,in2,out2
+      integer idi,ido
+
       integer color_Z(2,2,4),color_C(2,2)
       data (color_Z(2,2,i),i=1,4) / 2, 2, 2, 2 /
       data (color_Z(1,2,i),i=1,4) / 2,-2,-4, 4 /

@@ -41,10 +41,14 @@ do
 
   cd ${process}
   num=`echo "$process" | awk -F'_' '{print $1}'`
+  aid=`echo "$process" | awk -F'_' '{print $3}'`
   NLO=1
   if ( [ $num -ge 4000 ] && [ $num -lt 5000 ] ); then 
     NLO=0
   fi
+  if ( [ "x$aid" == "xkk" ] ); then 
+    NLO=0
+  fi  
   READABLE=0
   for i in check*.o*; do
     test -r $i && READABLE=1

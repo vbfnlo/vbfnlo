@@ -92,7 +92,7 @@
        Real*16 E12345R(80,5) 
        Real*16 E12345I(80,5) 
 
-       Logical PrintB,PrintC,PrintD,PrintE 
+
 cfc       COMMON/EVALFunctionsPenoddgSim/ E012345R,E12345R,E012345I,E12345I
 cfc       COMMON/DVALFunctionsPenoddgSim/ D01234R,D1234R,D01234I,D1234I, D01235R,D1
 cfc     -   235R,D01235I,D1235I, D01245R,D1245R,D01245I,D1245I, D01345R,
@@ -222,7 +222,6 @@ c       external A0finG,B0finG,C0finG,D0finG,E0finG
 
        s234=s15
 
- 
 
         A01=A0finG_QUAD(M5,musq)  
         A01R=REAL(A01)   
@@ -629,10 +628,6 @@ cfc       write(*,*)"E12345",E012345R_d,E012345I_d
 cfc       write(*,*)"E12345",E012345R,E012345I
 cfc       call print_EijR(DCMPLX(E012345),E12345R_d,E12345I_d)
 cfc       endif
-
-
-
-
 
 
        return

@@ -219,7 +219,6 @@ cfc            write(*,'(A3,I1,A2,E25.16,E25.16)') "p5(",i,")=",ptemp(i,5)
 cfc             enddo
 
 
-
        psq(1)=abs(dotrr(p1,p1))
        psq(2)=abs(dotrr(p2,p2))
        psq(3)=abs(dotrr(p3,p3))
@@ -595,7 +594,6 @@ cc off-shell
        endif
 
 
-
           do i=0,3
             if(abs(p1(i)-ptemp(i,1)).gt.1d-8) then
             write(*,'(A3,I1,A2,E25.16,E25.16)') "p1(",i,")=",p1(i)-ptemp(i,1)
@@ -882,13 +880,9 @@ c       Write(*,'(a5,E44.36)')," p6sq_QUAD ", p6sq_QUAD
        s34=s34_QUAD 
        s35=s35_QUAD 
 
-       s45=s45_QUAD 
+       s45=s45_QUAD
 
 
-
-
-
-        
         s234=s15
         m1=mm1
         m3=mm3

@@ -60,12 +60,12 @@ c*******************************************************************************
 c************************************************************************************
        IMPLICIT NONE
       Complex*16 SMB(63),Fa(872),F(9706)
-      Real*8 FI(9706),FR(9706)
+
       Complex*16 barpsi_p4(2),psi_p1(2)
        Real*8 P(9687)
        Complex*16  SC1c,SC1r, SC3crr,SC3ccr,SC3crc,SC3ccc,SC3rrc,SC3rrr, SC5ccrrr,SC5cccrr,SC5ccccr,SC7ccccrrr
        EXTERNAL    SC1c,SC1r, SC3crr,SC3ccr,SC3crc,SC3ccc,SC3rrc,SC3rrr, SC5ccrrr,SC5cccrr,SC5ccccr,SC7ccccrrr 
-       Integer alpha,i,j,k,comp
+       Integer alpha,comp
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************

@@ -4,7 +4,7 @@
 
 #include "global.inc"
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
@@ -60,9 +60,7 @@
      -  (4.*Logx*pdfqxa*x**2)/(3.*omx**2)
 
 
-
       end
-
 
 
       subroutine finitecollgqREM(xa,x,patilde,pb,pin,mufac,result,pdfchange)
@@ -71,7 +69,7 @@
 
 #include "global.inc"
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
@@ -142,7 +140,6 @@
       end
 
 
-
       subroutine finitecollqgREM(xa,x,patilde,pb,pin,mufac,quark,result,pdfchange)
 
       implicit none
@@ -150,7 +147,7 @@
 #include "global.inc"
 
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,

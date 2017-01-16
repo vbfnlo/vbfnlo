@@ -30,27 +30,25 @@ c     electroweak couplings are taken from KOPPLN
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),
      1                  V(4,5),A(4,5)
       double precision  pbar(0:3,2+n_v)
-      double precision  uuzz, ddzz, res(3),resv(3)
+      double precision  uuzz, res(3)
       double precision  p(0:3,2+n_v)
-      double precision  fqz1(0:4,2), fqz2(0:4,2)
-      double precision  fqa1(0:4,2), fqa2(0:4,2)
+
+
       double precision  eps(0:3,2,2) ! g in kartesian basis
       integer  fsign(2+n_v), sign(2+n_v), nlo, mu, i, j, k, isig, N
-      integer  ifl(2), l1, l2
-      double complex psiz1(2,-1:1,2),psiz2(2,-1:1,2)
-      double complex psia1(2,-1:1,2),psia2(2,-1:1,2)
-      double complex ja1(0:5,-1:1,2),ja2(0:5,-1:1,2)
+      integer  l1, l2
+
+
       double complex ceps(0:3,2,2) ! g in complex kartesian basis
-      double complex addnumber
-      double complex temp, temp1
+
+
       double complex mat(2,-1:1,2,2)
-      double complex mm(2,-1:1), mv(2,-1:1), zero, im
-      double complex ma, mz, m1, m2, m3, m4
-      double complex psi(2,-1:1,2), jqq(0:5,-1:1)
+      double complex mm(2,-1:1), zero, im
+      double complex m1, m2
+
       double complex dotcc, s1c, dotrc
       double precision dotrr, psumsq
       external dotcc, s1c, dotrr, dotrc, psumsq
-      save ifl
       parameter (im = (0d0,1d0))
       parameter (zero = (0d0,0d0) )
 
@@ -63,27 +61,25 @@ c variables for virtual corrections
       double precision c2,c2o4pi,oneo4pi,TR,tf
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi, oneo4pi=1d0/4d0/pi)
       parameter (TR=1d0/2d0,tf=1d0/2d0)
-      logical lnlo, lbox, lpq, lpt, lpent, ldebuglt, linit, lhiggs
+      logical lbox, ldebuglt, linit, lhiggs
 
 c Variables for fermion loops
       integer cpl(4), Div
-      double precision mf(4), vv, temp_m2s
+      double precision mf(4), vv
       double complex rfbox(6,2,4,2,2)
       double precision rgfbox(6,2,4,2,2) 
       double complex rfvert(2,3,4,2,2)
-      double precision rgfvert(2,3,4,2,2) 
-      double precision fcresult, fctreeresult
-      integer*8 fchelicities, thirtytwo
-      integer fcflags
-      double complex fcamp(-2:2,-2:2), fckamp(2,2)
+
+
+      integer*8 thirtytwo
+
+
       parameter(thirtytwo=32)
 
-      Logical wardidtest1,wardidtest2
+      Logical wardidtest1
 
-      real*8 p1(0:3),p2(0:3),minus_qa1(0:3),minus_qa2(0:3),minus_qaa(0:3)
+      real*8 minus_qaa(0:3)
       real*8 minus_qa1z(0:3),minus_qa2z(0:3)
-
-      double complex result(-1:1,4,2),result_born(-1:1,4,2)
 
       data linit /.true./
       save linit

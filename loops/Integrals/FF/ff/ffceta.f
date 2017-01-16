@@ -30,7 +30,7 @@
 *
 *	local variables
 *
-	integer i,n,ns,ier0,ier1,n19a
+	integer i,n,ns,ier0,ier1
 	parameter(ns=21)
 	DOUBLE PRECISION absc,xmax,xnul
 	DOUBLE COMPLEX s(ns),c,zz,v(2:4),w(4),dvw(2:2,2),

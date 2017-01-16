@@ -35,7 +35,7 @@ c
 
       implicit none
       real*16  p1sq, p2sq, s12
-      complex*32 B0_23, B0_13, B0_12, C0,ct
+      complex*32 C0,ct
       real*16 r1, r2r1, det,p1p2,r10,r21
 
       real*16 BijR_12(2,3),BijR_13(2,3),BijR_23(2,3)
@@ -50,7 +50,7 @@ c
       real*16 z11,z12,z21,z22,iz11,iz22
 
       real*16 Rr(2),RI(2),PRr(2),PRI(2)
-      REAL*16 Inv18,Inv36
+
       real*16 B21r_12,B21r_13,B21r_23
       real*16 B21I_12,B21I_13,B21I_23
       real*16 B22r_12,B22r_13,B22r_23
@@ -64,8 +64,8 @@ c
 c New for Gram
       common/GramSwitch/GramCS,GramDS
       logical GramCS,GRAMDS
-      Integer jjinit
-      real*16 para
+
+
 cFC      real*16 tempjj,tempkl,IX,Zmax
 c      Common/Decide/tempjj,tempkl,IX,ZMax,jjinit
 c      Save/Decide/
@@ -79,7 +79,7 @@ cFC      complex*32 test2g,test2p1p2,ten2g, ten2g_Dble,ten2p1p2
 cFC      complex*32 ten2p1p2_Dble,test2p1p2_dble
 cFC      complex*32 test3gp2,ten3gp2,ten3gp2_dble
 cFC      complex*32 test2g_dble,test3gp2_dble
-      integer j1,j2,index(4)
+
 cFC      complex*32 A0finG,A02,A03
 cFC      external A0finG
 cFC      real*16 accuracyC(0:4,5),AccuracyD(0:5,4)
@@ -155,7 +155,6 @@ c         return
        B21I_23= BijI_23(1,2)
        B22I_23= BijI_23(2,2)
 
-  
 
       If(abs(p1sq).gt.abs(p1p2)) then
           z11=2q0*p1sq
@@ -313,8 +312,6 @@ c       RI(1)=(PRI(1)-z12*RI(2))*iz11
 
 c       CijI(1,1) = RI(1)
        CijI(2,3) = RI(2)
-
-
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -525,7 +522,6 @@ c       RI(1)=(PRI(2)-z12*RI(2))*iz11
 
 c       CijI(1,1) = RI(1)
        CijI(2,3) = RI(2)
-
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

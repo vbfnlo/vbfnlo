@@ -810,7 +810,6 @@ c comparison with hand made code
 c------------------------------------------------------------------
 
 
-
       UU_WWAG = 0.D0 
       DO I = 1, NCOLOR
          ZTEMP = (0.D0,0.D0)

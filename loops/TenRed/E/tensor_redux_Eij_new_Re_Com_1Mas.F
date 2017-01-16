@@ -80,17 +80,17 @@ c
       real*8 R224(4),R331(4),R332(4),R333(4),R334(4),R441(4),R442(4)
       real*8 R443(4),R444(4),R123(4),R124(4),R134(4),R234(4)
 
-      real*8 s12,s23,s34,s45,s15,s12sq,s45sq,s1523,s15m23,s15m34,s1534
-      real*8 s15mp2,p2t45,st1223mp245,aux1,aux2,aux3,s1215,s15p2,s45mp4
-      real*8  p2sq,sts15m23,p5sq,d,Id,I2,I3,I4,d2,d3,d4
+      real*8 s12,s23,s34,s45,s15,s12sq,s45sq
+
+      real*8  d,Id,I2,I3,I4,d3
       real*8  Y123,Y124,Y134,Y213,Y214,Y234,Y312,Y314,Y324,Y412,Y413,Y423
-      real*8  x(1:4,0:4), Y(4,4,4),ER,EI
+      real*8  x(1:4,0:4), Y(4,4,4)
       real*8 DR2345,DR1345,DR1245,DR1235,DR1234,DRR1234(13,3),E(46,4)
       real*8 DRR2345(13,3),DRR1345(13,3),DRR1245(13,3),DRR1235(13,3)
       real*8 DI2345,DI1345,DI1245,DI1235,DI1234,DII1234(13,3),C(46,4)
       real*8 DII2345(13,3),DII1345(13,3),DII1245(13,3),DII1235(13,3)
       Parameter(eps=1d-07)
-      Integer i,j 
+
 c with p1.p1 = 0
 c p5=(-p1-p2-p3-p4) with p5.p5=0
 c      if(p1.ne.0.d0) then
@@ -100,7 +100,6 @@ c      p5sq=(p1+p2+p3+p4+2.d0*(p1p2+p1p3+p1p4+p2p3+p2p4+p3p4))
 c      if(p5sq.gt.1.d-07) then
 c      print*, ' p5sq=(p1+p2+p3+p4)^2 must be zero. Here p5sq = ',p5sq
 c      endif
-
 
 
 c s_ij=(p_i+p_j)^2

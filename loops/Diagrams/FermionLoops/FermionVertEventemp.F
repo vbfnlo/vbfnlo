@@ -39,12 +39,12 @@ c*******************************************************************************
       Real*8 FI(14),FR(14),P(5)
       Complex*16 mup1(0:3),mup2(0:3),mup3(0:3)
       Complex*16 dotrc,dotcc,result
-       Real*8 p5t,m,msq,musq
+       Real*8 m,msq,musq
       EXTERNAL   dotrc,dotcc
-      Integer alpha
+
       Save F
-      integer i1,i2,indexD(4)
-      logical MyPrint
+
+
 c      MyPrint=.true.
 c************************************************************************************
 c************************************************************************************

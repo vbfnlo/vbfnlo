@@ -477,9 +477,6 @@ cccccccccccc
       end
 
 
-
-
-
 c----  B0t(qsq): regularized 2-point function for massless loop  -----
 c
       complex*16 function B0t(qsq,musq)
@@ -526,7 +523,6 @@ c
          b0t = 2d0 - log(qsq/musq) + ipi
       endif
       end
-
 
 
 c
@@ -774,11 +770,6 @@ c                  endif
 c
 
 
-
-
-
-
-
 ********************************************************************************
 c--------------  B0tM(m,qsq): regularized 2-point function --------------
 
@@ -829,7 +820,6 @@ c
       endif
       return
       end
-
 
 
 ********************************************************************************

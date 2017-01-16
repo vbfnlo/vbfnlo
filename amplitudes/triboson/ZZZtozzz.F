@@ -10,7 +10,7 @@ c ------------------------------------------------------------
       IMPLICIT NONE
       DOUBLE PRECISION P(0:3,2:7)
       COMPLEX*16 ZZZTENSOR(0:5)
-      integer lsign(2:7,8),ll,mu,nu,h,N
+      integer lsign(2:7,8),ll,h,N
 
       !possible lepton helicities
       data (lsign(ll,1),ll=2,7) / -1, -1, -1, -1, -1, -1/  !h=1
@@ -58,7 +58,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and Z/A polarization vectors
@@ -467,7 +467,7 @@ c ----------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:7)
       COMPLEX*16 ZZZtensor(0:5)
-      INTEGER lsign(2:7,8),ll,mu,nu,h,N
+      INTEGER lsign(2:7,8),ll,h,N
       integer NW
 
       !possible lepton helicities
@@ -517,7 +517,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -982,7 +982,7 @@ c ----------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:7)
       COMPLEX*16 ZZZtensor1(0:5),ZZZtensor2(0:5),ZZZtensor3(0:5)
-      INTEGER lsign(2:7,8),ll,mu,nu,h,N
+      INTEGER lsign(2:7,8),ll,h,N
       integer NW
 
       !possible lepton helicities
@@ -1034,7 +1034,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 

@@ -6,22 +6,10 @@ amplitudes.F
 libVBFNLOAmplitudes_la_FFLAGS = $(AM_FFLAGS)
 libVBFNLOAmplitudes_la_LIBADD = 
 
-if WITH_GGFLO
-pkglib_LTLIBRARIES += libGGFLOAmplitudes.la
-libGGFLOAmplitudes_la_FFLAGS = $(AM_FFLAGS) 
-libGGFLOAmplitudes_la_SOURCES = \
-amplitudes.F
-libGGFLOAmplitudes_la_LIBADD = 
-endif
-
 if WITH_DIBOSON
 SUBDIRS += diboson
 libVBFNLOAmplitudes_la_FFLAGS += -DWITH_DIBOSON
 libVBFNLOAmplitudes_la_LIBADD += diboson/libdiboson.la
-if WITH_GGFLO
-libGGFLOAmplitudes_la_FFLAGS += -DWITH_DIBOSON
-libGGFLOAmplitudes_la_LIBADD += diboson/libdiboson.la
-endif
 endif
 
 if WITH_DIBOSONJET
@@ -32,10 +20,6 @@ endif
 SUBDIRS += vvj
 libVBFNLOAmplitudes_la_FFLAGS += -DWITH_DIBOSONJET
 libVBFNLOAmplitudes_la_LIBADD += vvj/libvvj.la
-if WITH_GGFLO
-libGGFLOAmplitudes_la_FFLAGS += -DWITH_DIBOSONJET
-libGGFLOAmplitudes_la_LIBADD += vvj/libvvj.la
-endif
 endif
 
 if WITH_QCDV
@@ -77,10 +61,6 @@ if WITH_GGF
 SUBDIRS += ggf
 libVBFNLOAmplitudes_la_FFLAGS += -DWITH_GGF
 libVBFNLOAmplitudes_la_LIBADD += ggf/libggf.la
-if WITH_GGFLO
-libGGFLOAmplitudes_la_FFLAGS += -DWITH_GGF
-libGGFLOAmplitudes_la_LIBADD += ggf/libggf.la
-endif
 endif
 
 if WITH_NLO
@@ -91,11 +71,7 @@ if WITH_KK
 libVBFNLOAmplitudes_la_FFLAGS += -DWITH_KK
 endif
 
-if WITH_SPIN2
 SUBDIRS += Spin2
-libVBFNLOAmplitudes_la_FFLAGS += -DWITH_SPIN2
 libVBFNLOAmplitudes_la_LIBADD += Spin2/libSpin2.la
-if WITH_GGFLO
-libGGFLOAmplitudes_la_LIBADD += Spin2/libSpin2.la
-endif
-endif
+
+libVBFNLOAmplitudes_la_LIBADD += $(top_builddir)/helas/libHELAS.la

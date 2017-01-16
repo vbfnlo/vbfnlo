@@ -616,7 +616,6 @@ c D00ij and D0000 functions for Denner-Dittmaier E-coefficients !!
       END
 
 
-
 **************************************************************************
       SUBROUTINE D_1M_ALL(mass, q1sq, q2sq, q3sq, q1q2, q1q3, q2q3, DDij)
 **************************************************************************

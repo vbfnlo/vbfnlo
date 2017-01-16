@@ -11,13 +11,13 @@ c*******************************************************************************
      -   q,gauge,comp,result,resultgauge,Div)
        implicit none
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
-       Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
+
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
-       complex*16 rg1,rg2,rg3,rg4
-       integer gauge,i,comp,Div
+
+       Complex*16 result
+       Real*8 musq,m,resultgauge
+
+       integer gauge,comp,Div
 
        If (Div.eq.0) then
           call FermionBox(m,p1,p2,p3,p4,mup1,mup2,mup3,mup4,mus
@@ -27,9 +27,6 @@ c*******************************************************************************
      -   q,gauge,comp,result,resultgauge,Div)
        endif
        end
-
-
-
 
 
         subroutine FermionBox(m,p1,p2,p3,p4,mup1,mup2,mup3,mup4,mus
@@ -200,10 +197,10 @@ c*******************************************************************************
       Complex*16 F(135)
       Real*8 FI(135),FR(135),P(52)
       Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-      Complex*16 dotrc,dotcc,result,resultn(535)
+      Complex*16 dotrc,dotcc,result
        Real*8 musq,m,msq
       EXTERNAL   dotrc,dotcc
-      Integer alpha,comp
+      Integer comp
       common/Ffermionbox/F
       common/Pfermionbox/P
       Save/Ffermionbox/

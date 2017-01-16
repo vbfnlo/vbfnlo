@@ -11,24 +11,24 @@
 #include "VBFNLO/utilities/coupl.inc"
 #include "tensorlep.inc"
  
-      integer i,j,k,mu,sign(4),nhel(7),ic(7),i1,i2,i3,i4,i5,i6,i7,nlo,signpdf1,signpdf2,
-     &  pdfl
+      integer i,j,k,mu,nlo,signpdf1,signpdf2
+
       logical lokt(11),fincolcalc,pdfchange
 
       integer lokstear(11)
       common/whywhat/lokstear
 
       double precision xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin),m2s_qqwgaglujfey,
-     &   m2s_qqwgaglujf(4,3),pch(0:3,max_p,max_kin),pcross(0:3,max_p,max_kin),
-     &   pcrossch(0:3,max_p,max_kin),muu(3),mdd(3),muuch(3),mddch(3),m2s_qqwgaglujch(4,3),
+     &   m2s_qqwgaglujf(4,3),pch(0:3,max_p,max_kin),
+     &   muu(3),mdd(3),muuch(3),mddch(3),m2s_qqwgaglujch(4,3),
      &   q_sf,pdf(-6:6,2),amp,m2s_qqwgaglujdd(4,3),dotrr,m2s_qqwgaglujddch(4,3),
-     &   helastestmom(0:3,7),help1,help2,help3,help4,help2v(3),mgg(4),mggch(4),m2s(0:11),test,help5,
-     &   help6,help7,help8,help9,help10,help11,fincol(12),fincolampsq(12),coll3,coll4,
-     &   fincolconv,coll7,coll8,pdftmp(-6:6,2),xitilde(2)
+     &   helastestmom(0:3,7),mgg(4),mggch(4),m2s(0:11),
+     &   fincol(12),fincolampsq(12),coll3,coll4,
+     &   fincolconv,coll7,coll8,pdftmp(-6:6,2)
 
-      double precision pijt(0:3),pkt(0:3),dipole(10),dipolesum,bk(0:3),bkt(0:3),
+      double precision dipole(10),
      &   xuz(2,2:max_kin),kinem(11),dipolev(6,6),dipolea(3),dipoleb(3),borncache147(2,2),
-     &   borncache(9,4),borncache145(3,2),ptelw(11),ptelwtmp(0:3,11)
+     &   borncache(9,4),borncache145(3,2)
 
       double precision zero,inv2,four,two
 
@@ -36,7 +36,7 @@
 
       common/BORNCACHE/borncache145,borncache147
 
-      double complex help1c,borncurr(0:3),borncurrc(0:3),Contract_Trjj
+      double complex Contract_Trjj
       external dotrr,Contract_Trjj
 
       parameter(fincolcalc=.true.)
@@ -129,8 +129,6 @@
       pch(mu,3,1)=p(mu,3,1)
       pch(mu,4,1)=p(mu,4,1)
       enddo
-
-
 
 
 !  call topologies for crossed kinematics
@@ -607,7 +605,6 @@
      &        + 2d0*dipolev(5,3) *(pdf(0,1)*pdf( 0,2))
 
 
-
 !
 !     Fill Cache
 !
@@ -881,7 +878,6 @@
 !      Call SUGDAEVE(helastestmom,fincolampsq(4))
       fincolampsq(4)=borncache(1,1)
 
-     
 
       amp=(fincol(1)*pdf(1,2)+fincol(7)*pdf(3,2))   *fincolampsq(1)
      &   +(fincol(2)*pdf(-2,2)+fincol(8)*pdf(-4,2)) *fincolampsq(2)
@@ -1094,7 +1090,6 @@
       endif
 
 
-
       if (lokt(9).and.fincolcalc) then
 
       call getyourscalesready(xi,p(0,1,9),v(0,1,9),pdfchange,pdf,nlo,9)
@@ -1267,7 +1262,6 @@
       end
 
 
-
       subroutine getyourscalesready(xi,p,v,pdfchange,pdf,nlo,l)
 
       implicit none
@@ -1325,14 +1319,13 @@
       end
 
 
-
       subroutine finitecollqqREM(xa,x,patilde,pb,pin,mufac,quark,result,pdfchange)
 
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
@@ -1388,9 +1381,7 @@
      -  (4.*Logx*pdfqxa*x**2)/(3.*omx**2)
 
 
-
       end
-
 
 
       subroutine finitecollgqREM(xa,x,patilde,pb,pin,mufac,result,pdfchange)
@@ -1400,7 +1391,7 @@
 #include "VBFNLO/utilities/global.inc"
 #include "tensor.inc"
 
-      integer quark,i
+      integer quark
       integer pdfchange
       integer maxflav
 
@@ -1478,7 +1469,6 @@
       end
 
 
-
       subroutine finitecollqgREM(xa,x,patilde,pb,pin,mufac,quark,result,pdfchange)
 
       implicit none
@@ -1486,7 +1476,7 @@
 #include "VBFNLO/utilities/global.inc"
 
 
-      integer quark,i
+      integer quark
       integer pdfchange
 
       double precision xa,x,patilde(0:3),pb(0:3),pin(0:3),result,dotrr,
@@ -1555,28 +1545,20 @@
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
 
-      integer bos, nlo,j,i,k,l,mu,nu,ep,isig1,isig2,isig3,ihel(7),ipart(7),chi,
-     &        graphsign(2),colormap(2),colormapg(2)
-      integer photonhel,sign(4),iflavu,iflavd,polmap(2)
+      integer i,mu,isig1,isig2,isig3
 
-      double complex currwma(0:3,0:3), currwmz(0:3,0:3), currfwma(0:3,0:3,4),
-     &       currfwmz(0:3,0:3,4),currwmahel(0:3,0:3,-1:1), currwmzhel(0:3,0:3,-1:1),
-     &       currw(0:3,2),curra(0:3,2),currz(0:3,2),currup(0:3,2),currdwn(0:3,2),waveglu(6,3)
-      double precision p(0:3,max_p), v(0:3,max_v), rn(1),m2s_qqwgagluj
-      double precision Q1(0:3),Q2(0:3),pbar(0:3,4),
-     &       fermpphot(0:4,4),fermpphotw(0:4,8),threegbinputmom(0:3,2,2),threegbcurr(0:3,2),
-     &       threegbcurrgu(0:3,2),threegbcurrgd(0:3,2),threegbcurrab(0:3,2),
-     &       imp(0:3,2),Q1uaw(0:3),Q1daw(0:3),Q2uaw(0:3),Q2daw(0:3),Q1a(0:3),Q2a(0:3),
-     &       Q2uza(0:3),Q2dza(0:3),qbar(0:3,4),gluvec(0:4,2),gluvecb(0:4,2),glumom(0:4),
-     &       fermpphotww(0:4,4),fermpphotwa(0:4,6)
+      integer sign(4),polmap(2)
+
+      double precision p(0:3,max_p), v(0:3,max_v),m2s_qqwgagluj
+      double precision pbar(0:3,4),
+     &       fermpphot(0:4,4),
+     &       qbar(0:3,4),gluvec(0:4,2),gluvecb(0:4,2),glumom(0:4)
+
       double precision fermpg(0:4,4),fermpg17(0:4),fermpg16(0:4),fermpg15(0:4),fermpg27(0:4),
      &       fermpg25(0:4),fermpg26(0:4)
 
-      double complex psi(2,-1:1,4), jqqu(0:5,-1:1,2), jqqd(0:5,-1:1,2),
-     &       jqqaw(0:5,-1:1,2),jqqawmw(0:5,-1:1,2),jqqawmz(0:5,-1:1,2),
-     &       psiwmaz(2,-1:1,4),jqqwa(0:5,-1:1,2),jqqwamw(0:5,-1:1,2),jqqwamz(0:5,-1:1,2),
-     &       jqqawr(0:5,-1:1,2),testcurr(6,0:3,2,2),ubububdb(2,-1:1,-1:1,-1:1,-1:1),
-     &       curflephel(0:3),wafpol2(0:3,-1:1),testvec1(6),testvec2(6),jqqggg(0:5,-1:1,8),
+      double complex psi(2,-1:1,4),
+     &       jqqggg(0:5,-1:1,8),
      &       fourgbcurr(0:3,2),ubdgg(2),jqqgggtmp(0:5,-1:1,11),jqqgggoff(0:5,-1:1,8),
      &       psig17(2,-1:1),psig176(2,-1:1),psig1765(2,-1:1),psig175(2,-1:1),psig1756(2,-1:1),
      &       psig16(2,-1:1),psig167(2,-1:1),psig1675(2,-1:1),psig165(2,-1:1),psig1657(2,-1:1),
@@ -1588,23 +1570,16 @@
      &       psig257(2,-1:1),psig2576(2,-1:1),psig256(2,-1:1),psig2567(2,-1:1),
      &       psig267g(2,-1:1),psig267g5(2,-1:1),
      &       psig2567g(2,-1:1),
-     &       gluwave(6),gluwavetmp(6,2),effgluhel(0:3),wtoevea(0:3,-1:1),
-     &       jqqza(0:5,-1:1,2),jqqaz(0:5,-1:1,2),jqqzamz(0:5,-1:1,2),jqqazmz(0:5,-1:1,2),
-     &       jqqww(0:5,-1:1,2),psiww(2,-1:1,4),propww(2),propw(2),jqqvw(0:5,-1:1,4),propwa(2),
-     &       propwz(2),psiwwa(2,-1:1,8),jqqwwa(0:5,-1:1,7),jqqwwaoff(0:5,-1:1,2),threev(6,2),
-     &       jqqwaa(0:5,-1:1,20),psiwaa(2,-1:1,6),propa(2),propz(2),jqqwaaoff(0:5,-1:1,4),
-     &       threevert(0:3,0:3),jqqthreev(0:5,-1:1,2)
+     &       effgluhel(0:3)
+
       logical ldebug
       parameter (ldebug=.false.)
-    
-      double precision helastestmom(0:3,7),m2helastest,q_sf,pdf(-6:6,2)
-      double precision m2s_qqwgaglu,help1,help2,m2s_wgaglu,test1
-      double complex contract_Tjj,dotcc,help1c,help2c
-      double precision dotrr
-      double complex temp,test,test2,test3,test4,test5,dotrc
-      double complex temp1,temp2,temp3,temp4,temp5,temp6,temp7,temp8
+      double complex dotcc
 
-      integer selc,selid
+      double complex temp,dotrc
+
+
+      integer selc
 
       m2s_qqwgagluj=0d0
 !
@@ -2081,9 +2056,7 @@
       enddo     !Close Gluon 1 helicity loop HELICITY
 
 
-
       end
-
 
 
       subroutine calcuu (p,v,selc,m2s_qqwgagluj)
@@ -2099,53 +2072,35 @@
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
 
-      integer bos, nlo,j,i,k,l,mu,nu,ep,isig1,isig2,isig3,ihel(7),ipart(7),chi,
-     &        graphsign(2),colormap(2),colormapg(2)
-      integer photonhel,sign(4),iflavu,iflavd
+      integer j,i,k,l,mu,isig1,isig2,ihel(7),ipart(7),chi
 
-      double complex currwma(0:3,0:3), currwmz(0:3,0:3), currfwma(0:3,0:3,4),
-     &       currfwmz(0:3,0:3,4),currwmahel(0:3,0:3,-1:1), currwmzhel(0:3,0:3,-1:1),
-     &       currw(0:3,2),curra(0:3,2),currz(0:3,2),currup(0:3,2),currdwn(0:3,2)
-      double precision p(0:3,max_p), v(0:3,max_v), rn(1),m2s_qqwgagluj(3)
-      double precision Q1(0:3),Q2(0:3),pbar(0:3,4),
-     &       fermpphot(0:4,4),fermpphotw(0:4,8),fermpg(0:4,4),threegbinputmom(0:3,2,2),threegbcurr(0:3,2),
-     &       threegbcurrgu(0:3,2),threegbcurrgd(0:3,2),threegbcurrab(0:3,2),
-     &       imp(0:3,2),Q1uaw(0:3),Q1daw(0:3),Q2uaw(0:3),Q2daw(0:3),Q1a(0:3),Q2a(0:3),
-     &       Q2uza(0:3),Q2dza(0:3),qbar(0:3,4),gluvec(0:4,2),glumom(0:4),
+      integer sign(4),iflavu,iflavd
+
+      double precision p(0:3,max_p), v(0:3,max_v),m2s_qqwgagluj(3)
+      double precision Q2(0:3),pbar(0:3,4),
+     &       fermpphot(0:4,4),fermpphotw(0:4,8),
+     &       Q2a(0:3),
+     &       Q2uza(0:3),Q2dza(0:3),qbar(0:3,4),
      &       fermpphotww(0:4,4),fermpphotwa(0:4,6)
       double complex psi(2,-1:1,4), jqqu(0:5,-1:1,2), jqqd(0:5,-1:1,2),
-     &       jqqaw(0:5,-1:1,2),jqqawmw(0:5,-1:1,2),jqqawmz(0:5,-1:1,2),
-     &       psiwmaz(2,-1:1,4),jqqwa(0:5,-1:1,2),jqqwamw(0:5,-1:1,2),jqqwamz(0:5,-1:1,2),
-     &       jqqawr(0:5,-1:1,2),testcurr(6,0:3,2,2),ubububdb(2,-1:1,-1:1,-1:1,-1:1),
-     &       curflephel(0:3),wafpol2(0:3,-1:1),testvec1(6),testvec2(6),jqqggg(0:5,-1:1,8),
-     &       fourgbcurr(0:3,2),ubdgg(2),
-     &       psig17(2,-1:1),psig176(2,-1:1),psig1765(2,-1:1),psig175(2,-1:1),psig1756(2,-1:1),
-     &       psig16(2,-1:1),psig167(2,-1:1),psig1675(2,-1:1),psig165(2,-1:1),psig1657(2,-1:1),
-     &       psig15(2,-1:1),psig157(2,-1:1),psig1576(2,-1:1),psig156(2,-1:1),psig1567(2,-1:1),
-     &       psig25(2,-1:1),psig26(2,-1:1),psig27(2,-1:1),psig167g(2,-1:1),psig167g5(2,-1:1),
-     &       psig1567g(2,-1:1),
-     &       psig276(2,-1:1),psig2765(2,-1:1),psig275(2,-1:1),psig2756(2,-1:1),
-     &       psig267(2,-1:1),psig2675(2,-1:1),psig265(2,-1:1),psig2657(2,-1:1),
-     &       psig257(2,-1:1),psig2576(2,-1:1),psig256(2,-1:1),psig2567(2,-1:1),
-     &       psig267g(2,-1:1),psig267g5(2,-1:1),
-     &       psig2567g(2,-1:1),
-     &       gluwave(6),gluwavetmp(6,2),effgluhel(0:3),wtoevea(0:3,-1:1),
-     &       jqqza(0:5,-1:1,2),jqqaz(0:5,-1:1,2),jqqzamz(0:5,-1:1,2),jqqazmz(0:5,-1:1,2),
-     &       jqqww(0:5,-1:1,2),psiww(2,-1:1,4),propww(2),propw(2),jqqvw(0:5,-1:1,4),propwa(2),
-     &       propwz(2),psiwwa(2,-1:1,8),jqqwwa(0:5,-1:1,7),jqqwwaoff(0:5,-1:1,2),threev(6,2),
-     &       jqqwaa(0:5,-1:1,20),psiwaa(2,-1:1,6),propa(2),propz(2),jqqwaaoff(0:5,-1:1,4),
-     &       threevert(0:3,0:3),jqqthreev(0:5,-1:1,2)
+     &       psiwmaz(2,-1:1,4),
+     &       ubububdb(2,-1:1,-1:1,-1:1,-1:1),
+     &       jqqza(0:5,-1:1,2),jqqaz(0:5,-1:1,2),
+     &       psiww(2,-1:1,4),jqqvw(0:5,-1:1,4),propwa(2),
+     &       psiwwa(2,-1:1,8),jqqwwa(0:5,-1:1,7),
+     &       jqqwaa(0:5,-1:1,20),psiwaa(2,-1:1,6),propa(2),jqqwaaoff(0:5,-1:1,4)
+
       logical ldebug
       parameter (ldebug=.true.)
     
-      double precision helastestmom(0:3,7),m2helastest,q_sf,pdf(-6:6,2)
-      double precision m2s_qqwgaglu,help1,help2,m2s_wgaglu,test1
-      double complex contract_Tjj,dotcc,help1c,help2c
+      double precision helastestmom(0:3,7)
+      double precision m2s_qqwgaglu,m2s_wgaglu
+      double complex contract_Tjj,dotcc
       double precision dotrr
-      double complex temp,test,test2,test3,test4,test5,dotrc
+      double complex temp,dotrc
       double complex temp1,temp2,temp3,temp4,temp5,temp6,temp7,temp8
 
-      integer selc,selid
+      integer selc
      
       external m2s_qqwgaglu,m2s_wgaglu,contract_Tjj,dotcc,dotrc,dotrr
 
@@ -2274,7 +2229,6 @@
         enddo
        enddo
       enddo
-
 
 
       if(ldebug) then
@@ -2683,53 +2637,35 @@
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
 
-      integer bos, nlo,j,i,k,l,mu,nu,ep,isig1,isig2,isig3,ihel(7),ipart(7),chi,
-     &        graphsign(2),colormap(2),colormapg(2)
-      integer photonhel,sign(4),iflavu,iflavd
+      integer j,i,k,l,mu,isig1,isig2,ihel(7),ipart(7),chi
 
-      double complex currwma(0:3,0:3), currwmz(0:3,0:3), currfwma(0:3,0:3,4),
-     &       currfwmz(0:3,0:3,4),currwmahel(0:3,0:3,-1:1), currwmzhel(0:3,0:3,-1:1),
-     &       currw(0:3,2),curra(0:3,2),currz(0:3,2),currup(0:3,2),currdwn(0:3,2)
-      double precision p(0:3,max_p), v(0:3,max_v), rn(1),m2s_qqwgaglujdd(3)
-      double precision Q1(0:3),Q2(0:3),pbar(0:3,4),
-     &       fermpphot(0:4,4),fermpphotw(0:4,8),fermpg(0:4,4),threegbinputmom(0:3,2,2),threegbcurr(0:3,2),
-     &       threegbcurrgu(0:3,2),threegbcurrgd(0:3,2),threegbcurrab(0:3,2),
-     &       imp(0:3,2),Q1uaw(0:3),Q1daw(0:3),Q2uaw(0:3),Q2daw(0:3),Q1a(0:3),Q2a(0:3),
-     &       Q2uza(0:3),Q2dza(0:3),qbar(0:3,4),gluvec(0:4,2),glumom(0:4),
+      integer sign(4)
+
+      double precision p(0:3,max_p), v(0:3,max_v),m2s_qqwgaglujdd(3)
+      double precision Q2(0:3),pbar(0:3,4),
+     &       fermpphot(0:4,4),fermpphotw(0:4,8),
+     &       Q2a(0:3),
+     &       Q2uza(0:3),Q2dza(0:3),qbar(0:3,4),
      &       fermpphotww(0:4,4),fermpphotwa(0:4,6)
       double complex psi(2,-1:1,4), jqqu(0:5,-1:1,2), jqqd(0:5,-1:1,2),
-     &       jqqaw(0:5,-1:1,2),jqqawmw(0:5,-1:1,2),jqqawmz(0:5,-1:1,2),
-     &       psiwmaz(2,-1:1,4),jqqwa(0:5,-1:1,2),jqqwamw(0:5,-1:1,2),jqqwamz(0:5,-1:1,2),
-     &       jqqawr(0:5,-1:1,2),testcurr(6,0:3,2,2),ubububdb(2,-1:1,-1:1,-1:1,-1:1),
-     &       curflephel(0:3),wafpol2(0:3,-1:1),testvec1(6),testvec2(6),jqqggg(0:5,-1:1,8),
-     &       fourgbcurr(0:3,2),ubdgg(2),
-     &       psig17(2,-1:1),psig176(2,-1:1),psig1765(2,-1:1),psig175(2,-1:1),psig1756(2,-1:1),
-     &       psig16(2,-1:1),psig167(2,-1:1),psig1675(2,-1:1),psig165(2,-1:1),psig1657(2,-1:1),
-     &       psig15(2,-1:1),psig157(2,-1:1),psig1576(2,-1:1),psig156(2,-1:1),psig1567(2,-1:1),
-     &       psig25(2,-1:1),psig26(2,-1:1),psig27(2,-1:1),psig167g(2,-1:1),psig167g5(2,-1:1),
-     &       psig1567g(2,-1:1),
-     &       psig276(2,-1:1),psig2765(2,-1:1),psig275(2,-1:1),psig2756(2,-1:1),
-     &       psig267(2,-1:1),psig2675(2,-1:1),psig265(2,-1:1),psig2657(2,-1:1),
-     &       psig257(2,-1:1),psig2576(2,-1:1),psig256(2,-1:1),psig2567(2,-1:1),
-     &       psig267g(2,-1:1),psig267g5(2,-1:1),
-     &       psig2567g(2,-1:1),
-     &       gluwave(6),gluwavetmp(6,2),effgluhel(0:3),wtoevea(0:3,-1:1),
-     &       jqqza(0:5,-1:1,2),jqqaz(0:5,-1:1,2),jqqzamz(0:5,-1:1,2),jqqazmz(0:5,-1:1,2),
-     &       jqqww(0:5,-1:1,2),psiww(2,-1:1,4),propww(2),propw(2),jqqvw(0:5,-1:1,4),propwa(2),
-     &       propwz(2),psiwwa(2,-1:1,8),jqqwwa(0:5,-1:1,7),jqqwwaoff(0:5,-1:1,2),threev(6,2),
-     &       jqqwaa(0:5,-1:1,20),psiwaa(2,-1:1,6),propa(2),propz(2),jqqwaaoff(0:5,-1:1,4),
-     &       threevert(0:3,0:3),jqqthreev(0:5,-1:1,2)
+     &       psiwmaz(2,-1:1,4),
+     &       ubububdb(2,-1:1,-1:1,-1:1,-1:1),
+     &       jqqza(0:5,-1:1,2),jqqaz(0:5,-1:1,2),
+     &       psiww(2,-1:1,4),jqqvw(0:5,-1:1,4),propwa(2),
+     &       psiwwa(2,-1:1,8),
+     &       jqqwaa(0:5,-1:1,20),psiwaa(2,-1:1,6),propa(2),jqqwaaoff(0:5,-1:1,4)
+
       logical ldebug
       parameter (ldebug=.true.)
     
-      double precision helastestmom(0:3,7),m2helastest,q_sf,pdf(-6:6,2)
-      double precision m2s_qqwgaglu,help1,help2,m2s_wgaglu,test1
-      double complex contract_Tjj,dotcc,help1c,help2c
+      double precision helastestmom(0:3,7)
+      double precision m2s_qqwgaglu,m2s_wgaglu
+      double complex contract_Tjj,dotcc
       double precision dotrr
-      double complex temp,test,test2,test3,test4,test5,dotrc
+      double complex temp,dotrc
       double complex temp1,temp2,temp3,temp4,temp5,temp6,temp7,temp8
 
-      integer selc,selid
+      integer selc
      
       external m2s_qqwgaglu,m2s_wgaglu,contract_Tjj,dotcc,dotrc,dotrr
 
@@ -2915,7 +2851,6 @@
      &              psiww(1,-1,1),fermpphotww(0,1))
       call ket2c(psi(1,-1,3),.true.,qbar(0,3),-1,wemnumom(0),currlepw(0),
      &              psiww(1,-1,3),fermpphotww(0,3))
-
 
 
       Call curr6(-1,psi(1,-1,2),qbar(0,2),psiww(1,-1,1),fermpphotww(0,1),jqqvw(0,-1,1))
@@ -3269,7 +3204,7 @@ c
 
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildek(0:3),dipole(0:3,0:3),p(0:3,3),v(0:3,3)
+      double precision dipole(0:3,0:3),p(0:3,3),v(0:3,3)
      &    ,pipk,pkpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,6),color,symmetry
 c
       double complex borncurr(0:3,-1:1)
@@ -3427,14 +3362,14 @@ c
       parameter (ldebug=.false.)
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildeb(0:3),dipole(0:3,0:3),xuz(2),pges(0:3),
-     & pipb,papb,pipa,k(0:3),Ktilde(0:3),bornmom(0:3,6),dipoleres(3),color,symmetry,
+      double precision dipole(0:3,0:3),xuz(2),pges(0:3),
+     & pipb,papb,pipa,bornmom(0:3,6),dipoleres(3),color,symmetry,
      & borncache147(2,2),borncache145(3,2)
 
       common/BORNCACHE/borncache145,borncache147 
 
       double complex borncurr(0:3,-1:1)
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3),lep(0:3)
+      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3)
 
 c
       double precision xiab,ui
@@ -3583,7 +3518,7 @@ c
 
 #include "VBFNLO/utilities/coupl.inc"
 
-      integer mu,nu,sel,kin
+      integer mu,sel,kin
 c INPUT
 
       double precision pi(0:3),pk(0:3),pa(0:3)
@@ -3594,11 +3529,11 @@ c INPUT
 
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildek(0:3),dipole,p(0:3,3),v(0:3,3)
-     &    ,pipk,pkpa,pipa,xuz(2),dipoleres(6),bornmom(0:3,6),color(3),symmetry
+      double precision dipole,p(0:3,3),v(0:3,3)
+     &    ,pipk,pkpa,pipa,xuz(2),dipoleres(6),bornmom(0:3,6),color(3)
 c
       double precision born
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3)
+      double precision Contract_Trjcj
 
       double precision xika,ui
       double precision dotrr
@@ -3674,14 +3609,13 @@ c
       end
 
 
-
       subroutine daibdipole145(sel,kin,xuz,pi,pa,pb,p,v,dipoleres)
 
       implicit none
 
 #include "VBFNLO/utilities/coupl.inc"
 
-      integer mu,nu,sel,kin
+      integer mu,sel,kin
 c INPUT
 c
       double precision pi(0:3),pb(0:3),pa(0:3),p(0:3,3),v(0:3,3)
@@ -3691,14 +3625,14 @@ c
       parameter (ldebug=.false.)
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildeb(0:3),dipole,xuz(2),
-     &    pipb,papb,pipa,k(0:3),Ktilde(0:3),bornmom(0:3,6),dipoleres(6),color(3),symmetry,
+      double precision dipole,xuz(2),
+     &    pipb,papb,pipa,bornmom(0:3,6),dipoleres(6),color(3),
      &    borncache145(3,2),borncache147(2,2)
 
       common/BORNCACHE/borncache145,borncache147
 
       double precision born
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3),lep(0:3)
+      double precision Contract_Trjcj
 
 c
       double precision xiab,ui
@@ -3790,14 +3724,14 @@ c
 
 c OUTPUT
 c
-      double precision ptildea(0:3),ptildeij(0:3),dipole(0:3,0:3),p(0:3,3),v(0:3,3)
+      double precision dipole(0:3,0:3),p(0:3,3),v(0:3,3)
      &    ,pipj,pjpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,6),color,symmetry,borntmp,
      &    dipolesc
 c
       double complex borncurr(0:3,-1:1)
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3)
+      double precision Contract_Trjcj
 
-      double precision xija,zi,ui,zj
+      double precision xija,zi,zj
       double precision dotrr
       external dotrr,Contract_Trjcj
 
@@ -3957,8 +3891,6 @@ c
       end
 
 
-
-
       subroutine test40(sel,kin,xuz,pj,pi,pa,p,v,dipoleres)
 
       implicit none
@@ -3969,7 +3901,7 @@ c
 c INPUT
 
 c
-      double precision pi(0:3),pj(0:3),pa(0:3),omx,one,two,u,x,omz
+      double precision pi(0:3),pj(0:3),pa(0:3)
       double precision pis,CF,CA,TR
       parameter (pis=3.141592653589793238d0,CF=4d0/3d0,CA=3d0,TR=1d0/2d0)
       logical ldebug
@@ -3977,12 +3909,12 @@ c
 
 c OUTPUT
 c
-      double precision ptildea(0:3),ptildeij(0:3),dipole(0:3,0:3),p(0:3,3),v(0:3,3)
-     &    ,pipj,pjpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,6),color,symmetry,borntmp,
-     &    dipolesc,test1,test2,test3,z
+      double precision p(0:3,3),v(0:3,3)
+     &    ,pipj,pjpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,6),color,borntmp,
+     &    dipolesc
 c
       double complex borncurr(0:3,-1:1)
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3),dptmp
+      double precision Contract_Trjcj,borntest2,metric(0:3,0:3),dptmp
 
       double precision xija,zi,ui,zj
       double precision dotrr
@@ -4022,7 +3954,6 @@ c
       elseif (kin.eq.3) then
       CALL SDGUAEVE(bornmom,borntmp)
       endif
-
 
 
       do mu=0,3
@@ -4065,7 +3996,6 @@ c
 !       print*, "My Dipole", borntmp*dipolesc
 
       end
-
 
 
 

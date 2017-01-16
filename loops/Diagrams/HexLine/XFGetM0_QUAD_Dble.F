@@ -172,7 +172,7 @@ c*******************************************************************************
        Real*8 F0123456I 
        Real*8 F123456R(166,5) 
        Real*8 F123456I(166,5) 
-       Complex*16 F123456(166,5) 
+
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 c

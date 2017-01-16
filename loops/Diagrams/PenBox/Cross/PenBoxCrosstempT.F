@@ -65,8 +65,7 @@ c or 2*hel1 + hel2 -> 3,1,-1,-3
        endif
        end
 
-          
-          
+
        subroutine PenBoxCross67T(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi
      &   _p2,psi_p4,mup3,musq,comp,ngluon,posgluon,result,resultn,res
      &   ultborn,Div)
@@ -90,9 +89,6 @@ c or 2*hel1 + hel2 -> 3,1,-1,-3
      &   ultborn)
        endif
        end
-
-          
-
 
 
        subroutine PenBoxCross76T(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi
@@ -118,7 +114,6 @@ c or 2*hel1 + hel2 -> 3,1,-1,-3
      &   ultborn)
        endif
        end
-
 
 
        subroutine PenBoxCross77T(p1,p2,p3,p4,p5,psi_p1,barpsi_p5,barpsi

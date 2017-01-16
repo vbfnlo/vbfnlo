@@ -513,7 +513,7 @@ c
       implicit none
       double precision s, t, q1sq, q2sq,musq
       double precision sl, tl, q1sql, q2sql,qsql
-      double precision p1sq, p2sq, p3sq, p1p2, p1p3, p2p3
+
 
 c evaluate the finite part of the scalar 4-point function for zero mass
 c propagators 
@@ -551,7 +551,7 @@ c	Last modified:    2005 June 27 by Terrance Figy
 c
 c       needs to checked numerically
 c  
-      complex*16 ipi, ieps, z1, z2, zlog, vli2, D0t4,D0t1m
+      complex*16 ipi, ieps, z1, z2, zlog, vli2,D0t1m
       complex*16 zlog1
       complex*16 zslog,ztlog,zqsqlog
       parameter (ipi=(0d0,3.14159 26535 89793d0),ieps=(0d0,1d-16))

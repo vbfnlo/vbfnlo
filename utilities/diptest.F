@@ -91,9 +91,6 @@
       end
 
 
-
-
-
       Subroutine WriteDipTestEvent(p,m2s,dps,weight,lokt, iteration)
 
       implicit none
@@ -184,7 +181,6 @@
       
       return
       end
-
 
 
       Subroutine FinishDipTest()

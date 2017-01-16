@@ -525,7 +525,6 @@ void calckkcoupl_( double *ggrf, double *wmassrf,
    gsl_integration_qags (&F, rdwn,rup, 0, 1e-7, 1000000,w, &norm6, &error);
 
 
-
 // Right Z normalization
 
    omega[0]=massg[k];

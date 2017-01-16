@@ -40,11 +40,11 @@ c     electroweak couplings are taken from KOPPLN
      1                  V(4,5),A(4,5)
       double precision  pbar(0:3,2+n_v)
       double precision  uuww, ddww, res(2),resv(2)
-      double precision  p(0:3,2+n_v), p21(0:4),
+      double precision  p(0:3,2+n_v),
      1                  fqp(0:4,2), fqm(0:4,2)
-      integer  sign(2+n_v), nlo, mu, i, j, jj, k, kk, id,
-     1         isig, isig1, N
-      integer  ifl(2,2), js1, js3
+      integer  sign(2+n_v), nlo, mu, i, k,
+     1         isig1, isig, N
+      integer  ifl(2,2)
       double complex psiwp(2,2), psiwm(2,2),
      1               jwp(0:5,-1:1), jwm(0:5,-1:1)
       double complex temp, temp1
@@ -52,7 +52,7 @@ c     electroweak couplings are taken from KOPPLN
       double complex madgr(3,-1:1,2)
       double complex mm(2,-1:1), mv(2,-1:1), zero
       double complex ma, mz, m1, m2
-      double complex mv1,mv2
+
       double complex psi(2,-1:1,4), jqq(0:5,-1:1,2)
       double complex dotcc, s1c
       double precision dotrr

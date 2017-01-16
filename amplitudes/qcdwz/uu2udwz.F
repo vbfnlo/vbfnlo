@@ -19,12 +19,16 @@ c   res(colstr,2nd qtype =3,4  ;  diff qflavor=0,1)
 c      colstr=0..2: for catani seymour: <|>,  <|T1T2|>,  <|T1T3|>
 c		    for lo: col summed, and the 2 different color flows
       subroutine amp4qwzCS(P,kin,id,fsign,nbos,qhel,res)
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "common.inc"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
       real*8 P(0:3,max_p,max_kin),res(0:2,3:4,0:2)
-      real*8 restemp(0:2,3:4,0:2)
+
       integer kin, id(4),fsign(4),nbos,qhel
       logical lnlo
 
@@ -41,14 +45,14 @@ c		    for lo: col summed, and the 2 different color flows
       complex*16 psiTemp(2,-1:1),psiVV(2,4), amp(2,3:4,3) ! colstr, 2nd, hel
       complex*16 gluWij(0:3,1:3,2:4), gluWVij(0:3,1:3,2:4),temp
       complex*16 tempCurr(0:3,-1:1,4)
-      complex*16 s1c, dotcc, dotrc
-      real*8 mass2,qjj2
-      real*8 squared(2,2), tempR
+      complex*16 s1c
+      real*8 qjj2
+      real*8 squared(2,2)
       integer helswitch
       common/helswitchTemp/ helswitch
 
-      integer i,j,mu,nu,hel(4), tempi4(4), lepkin,colstr,qtype(2)
-      integer minhel, maxhel, ikin, in,out,in2,out2,helcfg,qid(4), lephel,lephel0
+      integer i,j,mu,hel(4), tempi4(4), lepkin,colstr,qtype(2)
+      integer minhel, maxhel, ikin, in,out,in2,out2,helcfg, lephel,lephel0
       logical eval(4,-1:1), lpasstest
       lnlo = .true.
       ikin = kin
@@ -248,15 +252,31 @@ c square amplitudes
 	  squared(1,2) = dble(amp(1,i,helcfg)*dconjg(amp(2,i,helcfg)))
 
 	  if(lnlo) then ! CS color factors
-	    res(0,i,0) = res(0,i,0) + 2d0*(squared(1,1)+squared(2,2)-2d0/3d0*squared(1,2))
-	    res(0,i,1) = res(0,i,1) + 2d0*(squared(1,1))
-	    res(0,i,2) = res(0,i,2) + 2d0*(squared(2,2))
-	    res(1,i,0) = res(1,i,0) - 2d0/3d0*(squared(1,1)+squared(2,2)-10d0/3d0*squared(1,2))
-	    res(1,i,1) = res(1,i,1) - 2d0/3d0*squared(1,1)
-	    res(1,i,2) = res(1,i,2) - 2d0/3d0*squared(2,2)
-	    res(2,i,0) = res(2,i,0) + 1d0/3d0*(squared(1,1)-7d0*squared(2,2)-2d0/3d0*squared(1,2))
-	    res(2,i,1) = res(2,i,1) + 1d0/3d0*squared(1,1)
-	    res(2,i,2) = res(2,i,2) - 7d0/3d0*squared(2,2)
+            if (ldoblha) then
+              res(0,i,0) = res(0,i,0) + blha_CF*blha_CA/2d0*(squared(1,1)+squared(2,2))
+     &                                - blha_CF*blha_CA*(blha_CA-2d0*blha_CF)*squared(1,2)
+              res(0,i,1) = res(0,i,1) + blha_CF*blha_CA/2d0*(squared(1,1))
+              res(0,i,2) = res(0,i,2) + blha_CF*blha_CA/2d0*(squared(2,2))
+              res(1,i,0) = res(1,i,0) - blha_CF*blha_CA/2d0*(blha_CA-2d0*blha_CF)
+     &                                  *(squared(1,1)+squared(2,2)-2d0*(blha_CA-blha_CF)*squared(1,2))
+              res(1,i,1) = res(1,i,1) - blha_CF*blha_CA/2d0*(blha_CA-2d0*blha_CF)*squared(1,1)
+              res(1,i,2) = res(1,i,2) - blha_CF*blha_CA/2d0*(blha_CA-2d0*blha_CF)*squared(2,2)
+              res(2,i,0) = res(2,i,0) + blha_CF*blha_CA/4d0*(blha_CA-2d0*blha_CF)*squared(1,1)
+     &                                + blha_CF*blha_CA/4d0*(blha_CA-4d0*blha_CF)*squared(2,2)
+     &                                - blha_CF/2d0*(blha_CA-2d0*blha_CF)*squared(1,2)
+              res(2,i,1) = res(2,i,1) + blha_CF*blha_CA/4d0*(blha_CA-2d0*blha_CF)*squared(1,1)
+              res(2,i,2) = res(2,i,2) + blha_CF*blha_CA/4d0*(blha_CA-4d0*blha_CF)*squared(2,2)
+            else 
+              res(0,i,0) = res(0,i,0) + 2d0*(squared(1,1)+squared(2,2)-2d0/3d0*squared(1,2))
+              res(0,i,1) = res(0,i,1) + 2d0*(squared(1,1))
+              res(0,i,2) = res(0,i,2) + 2d0*(squared(2,2))
+              res(1,i,0) = res(1,i,0) - 2d0/3d0*(squared(1,1)+squared(2,2)-10d0/3d0*squared(1,2))
+              res(1,i,1) = res(1,i,1) - 2d0/3d0*squared(1,1)
+              res(1,i,2) = res(1,i,2) - 2d0/3d0*squared(2,2)
+              res(2,i,0) = res(2,i,0) + 1d0/3d0*(squared(1,1)-7d0*squared(2,2)-2d0/3d0*squared(1,2))
+              res(2,i,1) = res(2,i,1) + 1d0/3d0*squared(1,1)
+              res(2,i,2) = res(2,i,2) - 7d0/3d0*squared(2,2)
+            endif
 	  else ! get colorstr weighted amp for lha output
 
 	    res(1,i,1) = res(1,i,1) + 2d0*squared(1,1)
@@ -273,6 +293,69 @@ c           or                  3 and 4 --> res(::,2) is born, T12 and T14
 ! 	    res(2,i,2) = -4d0/3d0*res(0,i,2)-res(1,i,2)-res(2,i,2)
 	endif
       enddo
+
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      res(0,
+     &          mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &          mod(blha_idsubproc(blha_cursubproc,blha_curproc),10)    )
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      + res(1,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),10)    )
+     &    )
+          ! 1-3
+          call BLHA_cctree(1,3,
+     &      + res(2,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),10)    )
+     &    )
+          ! 1-4 = -(CF<> + <12> + <13>)
+          call BLHA_cctree(1,4,
+     &      - ( blha_CF*res(0,
+     &                      mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &                      mod(blha_idsubproc(blha_cursubproc,blha_curproc),10))
+     &          + res(1,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),10))
+     &          + res(2,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),10))   )
+     &    )
+          ! 2-3 = -(CF<> + <12> + <13>)
+          call BLHA_cctree(2,3,
+     &      - ( blha_CF*res(0,
+     &                      mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &                      mod(blha_idsubproc(blha_cursubproc,blha_curproc),10))
+     &          + res(1,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),10))
+     &          + res(2,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &                mod(blha_idsubproc(blha_cursubproc,blha_curproc),10))   )
+     &    )
+          ! 2-4 = <13>
+          call BLHA_cctree(2,4,
+     &      + res(2,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),10)    )
+     &    )
+          ! 3-4 = <12>
+          call BLHA_cctree(3,4,
+     &      + res(1,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &            mod(blha_idsubproc(blha_cursubproc,blha_curproc),10)    )
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
+
 #ifdef NINH_COMPARE
 c      restemp=restemp+res
 c      enddo
@@ -282,12 +365,15 @@ c      res=restemp
       end
 
 
-
       subroutine amp4q1gwzNew(P,id,fsign,nbos,qhel,ghel,res)
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "common.inc"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "brakets.inc"
       real*8 P(0:3,max_p,max_kin),res(0:4,3:4,0:1)
       integer id(5),fsign(5),nbos,qhel,ghel
@@ -306,7 +392,7 @@ c      res=restemp
 !       complex*16 psi(2,-1:1,4), psiW(2,4),psiV(2,-1:1,3:4,4),psiWV(2,4)
 !       complex*16 psiG(2,-1:1,4,-1:1), psiWG(2,4,-1:1),
       complex*16 psiVG(2,-1:1,3:4,4,2),psiWVG(2,4,2)
-      complex*16 psiTemp(2,-1:1),psiVV(2,4),psiVVG(2,4,2), amp(4,2,3:4,3,2) ! numbering as in MG u u -> e+ ve u d mu+ mu- g (1<>3, 2<>4 interchanged!), colstr, 2nd, hel
+      complex*16 psiTemp(2,-1:1),psiVVG(2,4,2), amp(4,2,3:4,3,2) ! numbering as in MG u u -> e+ ve u d mu+ mu- g (1<>3, 2<>4 interchanged!), colstr, 2nd, hel
 !       complex*16 epsG(0:3,-1:1)
       complex*16 gluWij(0:3,1:3,2:4), gluWVij(0:3,1:3,2:4),temp,temp2
       complex*16 gluWGij(0:3,1:3,2:4,2,2), gluWVGij(0:3,1:3,2:4,2,2)
@@ -317,7 +403,7 @@ c      res=restemp
       complex*16 dotcc
       external s1c, dotcc, dotrc,dotrr,qjj2,mass2, qjj2Q
       real*8 mass2,qjj2,qjj2Q
-      real*8 squared(2,2), tempR,colsq(0:4,2)
+      real*8 tempR,colsq(0:4,2)
       real*8 dotrr
       logical skip(3:4)
       integer helswitch
@@ -327,8 +413,8 @@ c      res=restemp
       real*8 restemp(0:4,3:4,0:1)
 #endif
       
-      integer i,j,k,l,m,mu,nu,hel(4), tempi4(4), lepkin,colstr,qtype(2),gh
-      integer ikin, in,out,in2,out2,helcfg,qid(4), lephel
+      integer i,j,k,l,m,mu,hel(4),colstr,qtype(2),gh
+      integer in,out,in2,out2,helcfg, lephel
       integer minhelq,maxhelq,idi,idi2,ido,ido2,idtemp(4)
       logical eval(4,-1:1), lpasstest(3)
       integer color_Z(2,2,4),color_C(2,2)
@@ -337,6 +423,7 @@ c      res=restemp
       data (color_Z(2,1,i),i=1,4) /-4, 2, 4,-2 /
       data (color_Z(1,1,i),i=1,4) /-4,-4,-4,-4 /
       data color_C(2,2), color_C(1,2), color_C(2,1), color_C(1,1) / 5, 3, 3, 1 /
+      double precision color_m(8,8)
 
       lephel = 0
 
@@ -734,6 +821,43 @@ c square amplitudes
         enddo
         do helcfg = minhelq,maxhelq
         do gh = 1,2
+          if (ldoblha) then
+            do m=1,4
+c (1:4,1:4)
+              color_m(m  ,m            ) =  blha_CA*blha_CF**2/2d0
+              color_m(m  ,mod( 6-m,4)+1) = -blha_CA*blha_CF*(blha_CA-2d0*blha_CF)/4d0
+              color_m(m  ,mod(m+ 1,4)+1) = -blha_CA*blha_CF*(blha_CA-2d0*blha_CF)/2d0
+              color_m(m  ,5-m          ) = -blha_CA*blha_CF*(blha_CA-4d0*blha_CF)/4d0
+c (5:8,5:8)
+              color_m(m+4,m+4          ) =  blha_CA*blha_CF**2/2d0
+              color_m(m+4,mod( 6-m,4)+5) = -blha_CA*blha_CF*(blha_CA-4d0*blha_CF)/4d0
+              color_m(m+4,mod(m+ 1,4)+5) = -blha_CA*blha_CF*(blha_CA-2d0*blha_CF)/2d0
+              color_m(m+4,9-m          ) = -blha_CA*blha_CF*(blha_CA-2d0*blha_CF)/4d0
+c (1:4,5:8)
+              color_m(m  ,m+4          ) =  blha_CA*blha_CF**2*(blha_CA-2d0*blha_CF)/2d0
+              color_m(m  ,mod( 6-m,4)+5) = -blha_CF*(blha_CA-2d0*blha_CF)/4d0
+              color_m(m  ,mod(m+ 1,4)+5) = -blha_CA*blha_CF*(blha_CA-2d0*blha_CF)*(blha_CA-blha_CF)/2d0
+              color_m(m  ,9-m          ) = -blha_CF*(blha_CA-2d0*blha_CF)/4d0
+            enddo
+c upper right and lower left 4x4 blocks are identical
+            color_m(5:8,1:4) = color_m(1:4,5:8)
+            do k=1,4 
+            do l=1,4
+              res(0,i,1) = res(0,i,1) 
+     &          + dreal( color_m(k,l)*
+     &              amp(k,1,i,helcfg,gh)*dconjg(amp(l,1,i,helcfg,gh))
+     &            )
+            enddo
+            enddo
+            do k=1,8 
+            do l=1,8
+              res(0,i,0) = res(0,i,0) 
+     &          + dreal( color_m(k,l)*
+     &              amp(mod(k-1,4)+1,(k-1)/4+1,i,helcfg,gh)*dconjg(amp(mod(l-1,4)+1,(l-1)/4+1,i,helcfg,gh))
+     &            )
+            enddo
+            enddo
+          else
 c for lhe output
           colsq(0,1) = 0d0
           colsq(0,2) = 0d0
@@ -790,8 +914,20 @@ c lhe output
             res(3,i,0)= res(3,i,0)+ colsq(0,2)*(colsq(1,2)+colsq(2,2))/tempR
             res(4,i,0)= res(4,i,0)+ colsq(0,2)*(colsq(3,2)+colsq(4,2))/tempR
           endif
+          endif !ldoblha
         enddo;enddo ! hel
       enddo
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+
+     &      res(0,
+     &          mod(blha_idsubproc(blha_cursubproc,blha_curproc),100)/10,
+     &          mod(blha_idsubproc(blha_cursubproc,blha_curproc),10)    )
+        else
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+      endif
+
 #ifdef NINH_COMPARE
 cc      restemp = restemp + res
 cc      enddo

@@ -1,15 +1,22 @@
-pkglib_LTLIBRARIES = libVBFNLOUtilities.la libVBFspecific.la libGGFspecific.la
+pkglib_LTLIBRARIES = libVBFNLOUtilities.la
 libVBFNLOUtilities_la_SOURCES = \
+globalvars.F90 \
 instabilities.F\
+readinput.F90 \
+version.F90 \
+cmd_args.F90 \
 statistics.F\
 brakets.F \
 diptest.F \
 dotproducts.F \
 kinematics_aux.F \
-monaco8.F \
-readinput.F \
+histogram_storage.F90 \
+monran.F90 \
+sobol.F90 \
+monaco8.F90 \
+vbfnlo_mpi.F90 \
 getPaths.F90 \
-time.F \
+time.F90 \
 cuts.F \
 choose_ps.F \
 jetdefinition.F \
@@ -17,7 +24,6 @@ leshouches.F \
 ptilde.F \
 reweighting.F \
 histograms.F \
-histogram_storage.F90 \
 random.F \
 scales.F \
 globals.F \
@@ -28,15 +34,14 @@ pdfsets.F90 \
 finitecoll.F \
 CataniSeymour.F\
 FCtools.F \
-version.F \
+writedata.c \
 ckm.F \
 BLHAhelper.F90 \
 BLHAmommapping.F90 \
 BLHAinterface.cpp \
 BLHAclass.cpp \
-CPS_HIGGSTO.F
-
-libVBFspecific_la_SOURCES = \
+output.F90 \
+CPS_HIGGSTO.F90 \
 ggf_init.F \
 process.F \
 koppln.F \
@@ -44,83 +49,62 @@ coupl_haddecay.F \
 parameters.F \
 slha_read.F 
 
-libGGFspecific_la_SOURCES = \
-ggf_init.F \
-process.F \
-koppln.F \
-coupl_haddecay.F \
-parameters.F \
-slha_read.F 
 
 libVBFNLOUtilities_la_FFLAGS = $(AM_FFLAGS)
 libVBFNLOUtilities_la_CPPFLAGS = $(AM_CPPFLAGS) 
 
-libVBFNLOUtilities_la_LIBADD= \
-$(top_builddir)/PDFsets/libVBFNLOPDFsets.la
-
-libVBFspecific_la_FFLAGS = $(AM_FFLAGS)
-libVBFspecific_la_LIBADD= \
-libVBFNLOUtilities.la
-
-libGGFspecific_la_FFLAGS = $(AM_FFLAGS)
-libGGFspecific_la_LIBADD= \
-libVBFNLOUtilities.la
-
+libVBFNLOUtilities_la_LIBADD= $(top_builddir)/PDFsets/libVBFNLOPDFsets.la
 
 if WITH_GGF
-libGGFspecific_la_FFLAGS += -DWITH_GGF
+libVBFNLOUtilities_la_FFLAGS += -DWITH_GGF
 endif
 
 if WITH_DIBOSON
-libVBFspecific_la_FFLAGS += -DWITH_DIBOSON
-libGGFspecific_la_FFLAGS += -DWITH_DIBOSON
+libVBFNLOUtilities_la_FFLAGS += -DWITH_DIBOSON
 endif
 
 if WITH_DIBOSONJET
-libVBFspecific_la_FFLAGS += -DWITH_DIBOSONJET
-libGGFspecific_la_FFLAGS += -DWITH_DIBOSONJET
+libVBFNLOUtilities_la_FFLAGS += -DWITH_DIBOSONJET
 endif
 
 if WITH_QCDVV
-libVBFspecific_la_FFLAGS += -DWITH_QCDVV
+libVBFNLOUtilities_la_FFLAGS += -DWITH_QCDVV
 endif
 
 if WITH_TRIBOSON
-libVBFspecific_la_FFLAGS += -DWITH_TRIBOSON
+libVBFNLOUtilities_la_FFLAGS += -DWITH_TRIBOSON
 endif
 
 if WITH_TRIBOSONJET
-libVBFspecific_la_FFLAGS += -DWITH_TRIBOSONJET
+libVBFNLOUtilities_la_FFLAGS += -DWITH_TRIBOSONJET
 endif
 
 if WITH_QCDV
-libVBFspecific_la_FFLAGS += -DWITH_QCDV
+libVBFNLOUtilities_la_FFLAGS += -DWITH_QCDV
 endif
 
 if WITH_VBF
 libVBFNLOUtilities_la_FFLAGS += -DWITH_VBF
-libVBFspecific_la_FFLAGS += -DWITH_VBF
 endif
 
 if WITH_HJJJ
 libVBFNLOUtilities_la_FFLAGS += -DWITH_HJJJ
-libVBFspecific_la_FFLAGS += -DWITH_HJJJ
 endif
 
 if WITH_KK
-libVBFspecific_la_FFLAGS += -DWITH_KK
+libVBFNLOUtilities_la_FFLAGS += -DWITH_KK
 endif
 
-if WITH_SPIN2
-libVBFspecific_la_SOURCES += \
+libVBFNLOUtilities_la_SOURCES += \
 spin2width.F \
 spin2coupl.F
-libVBFspecific_la_FFLAGS += -DWITH_SPIN2
-endif
 
 if WITH_NLO
 libVBFNLOUtilities_la_FFLAGS += -DWITH_NLO
-libVBFspecific_la_FFLAGS += -DWITH_NLO
+endif
+
+if WITH_MPI
+libVBFNLOUtilities_la_FFLAGS += -DWITH_MPI
 endif
 
 if WITH_LHAPDF
@@ -135,26 +119,10 @@ endif
 if WITH_FEYNHIGGS
 libVBFNLOUtilities_la_SOURCES += FHiggs.F
 libVBFNLOUtilities_la_FFLAGS += -DWITH_FH
-libVBFspecific_la_FFLAGS += -DWITH_FH
-
-if WITH_GGFLO
-libGGFspecific_la_FFLAGS += -DWITH_FH
-endif
 
 libVBFNLOUtilities_la_LIBADD += $(FEYNHIGGS_LDFLAGS) $(FEYNHIGGS_LIBS)
 
-if FH26
-libVBFNLOUtilities_la_FFLAGS += -DWITH_FH26
-endif
-if FH27
-libVBFNLOUtilities_la_FFLAGS += -DWITH_FH27
-endif
-if FH28
-libVBFNLOUtilities_la_FFLAGS += -DWITH_FH28
-endif
-if FH_SHARED
-libVBFNLOUtilities_la_FFLAGS += -DFH_SHRD
-endif
+libVBFNLOUtilities_la_FFLAGS += -DFHVERSION=$(FHVERSION)
 
 endif
 
@@ -173,10 +141,7 @@ NC_qqV.F \
 NC_pentagons.F \
 mat_elNC+.F
 libVBFNLOUtilities_la_FFLAGS += -DWITH_LT
-libVBFspecific_la_FFLAGS += -DWITH_LT
-if WITH_GGFLO
-libGGFspecific_la_FFLAGS += -DWITH_LT
-endif
+
 libVBFNLOUtilities_la_LIBADD += $(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS)
 endif
 
@@ -185,7 +150,6 @@ libVBFNLOUtilities_la_FFLAGS += -DWITH_ROOT
 libVBFNLOUtilities_la_CPPFLAGS += $(ROOTINCLUDE)
 libVBFNLOUtilities_la_LIBADD += $(ROOTLDFLAGS) $(ROOTLIBS)
 libVBFNLOUtilities_la_SOURCES += \
-rootevents.cpp \
 roothist.cpp \
 rootuserhists.cpp
 endif
@@ -198,11 +162,8 @@ libVBFNLOUtilities_la_SOURCES += \
 hepmc.cpp 
 endif
 
-EXTRA_DIST = getPaths.F90.in pdfsets.F90.in FHiggs.F.in renormalisation.F.in ew_qqV_eff.F.in ew_formfactors.F.in mat_elCC+.F.in CC_pentagons.F.in CC_boxes.F.in CC_qqV.F.in mat_elNC+.F.in NC_pentagons.F.in NC_boxes.F.in NC_qqV.F.in version.F.in
-BUILT_SOURCES = getPaths.F90 pdfsets.F90 FHiggs.F renormalisation.F ew_qqV_eff.F ew_formfactors.F mat_elCC+.F CC_pentagons.F CC_boxes.F CC_qqV.F mat_elNC+.F NC_pentagons.F NC_boxes.F NC_qqV.F version.F
-if USE_SVNVERSION
-BUILT_SOURCES += version.tmp
-endif
+EXTRA_DIST = getPaths.F90.in pdfsets.F90.in FHiggs.F.in renormalisation.F.in ew_qqV_eff.F.in ew_formfactors.F.in mat_elCC+.F.in CC_pentagons.F.in CC_boxes.F.in CC_qqV.F.in mat_elNC+.F.in NC_pentagons.F.in NC_boxes.F.in NC_qqV.F.in version.F90.in
+BUILT_SOURCES = getPaths.F90 pdfsets.F90 FHiggs.F renormalisation.F ew_qqV_eff.F ew_formfactors.F mat_elCC+.F CC_pentagons.F CC_boxes.F CC_qqV.F mat_elNC+.F NC_pentagons.F NC_boxes.F NC_qqV.F version.F90
 
 
 ## extra dependencies for the histogram routine: the include files (which are only used in histograms.F) and the
@@ -328,26 +289,9 @@ NC_qqV.F: $(srcdir)/NC_qqV.F.in
 	@touch NC_qqV.F
 endif
 
-if USE_SVNVERSION
-.PHONY: version
-version:
-	@(( test -d $(top_srcdir)/.svn && svnversion -cn $(top_srcdir)) \
-		|| (test -d $(top_srcdir)/.git && git --no-pager log -1 --pretty=format:%h )) \
-         | sed -e "s/.*://" -e "s/\([0-9a-f]*\).*/\1/" | grep "[0-9a-f]" > version.tmp.new
-
-version.tmp: version
-	@if ! diff -q version.tmp{.new,}; then mv -f version.tmp{.new,}; fi
-	@rm -f version.tmp.new
-
-version.F: $(srcdir)/version.F.in version.tmp
-	@sed s%@VBFNLOSVNVERSION@%`cat version.tmp`% $(srcdir)/version.F.in > version.F
-	@touch version.F
-else 
-version.F: $(srcdir)/version.F.in
-	@sed s%@VBFNLOSVNVERSION@%% \
-          $(srcdir)/version.F.in > version.F
-	@touch version.F
-endif 
+version.F90: $(srcdir)/version.F90.in
+	@sed s%@VBFNLOGITVERSION@%`git rev-parse --short=8 HEAD`% $(srcdir)/version.F90.in > version.F90
+	@touch version.F90
 
 clean-local:
 	rm -f $(BUILT_SOURCES) hist_stor.mod
@@ -375,4 +319,3 @@ endif
 ##    extended in the .am file...
 ##
 libVBFNLOUtilities_la_FCFLAGS = $(libVBFNLOUtilities_la_FFLAGS)
-

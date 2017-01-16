@@ -90,11 +90,6 @@ c comment: check below if it changes between s and s/2
          ejmin(i) = 0d0
          infoj(i) = -1
       enddo
- 10   format ( " pTjmin = ", 5(f6.1,2x) )
- 20   format ( " Ejmin  = ", 5(f6.1,2x) )
- 30   format ( " yjmin  = ", 5(f6.1,2x) )
- 40   format ( " yjmax  = ", 5(f6.1,2x) )
- 50   format ( " infoj  = ", 5(i6,2x) )
  60   format ( " machine energy = ", f10.1, "  GeV" )
  70   format ( " integration range for boson ",i2," = ",f10.3,
      1         "  to ",f12.3," GeV" )
@@ -152,11 +147,6 @@ c                      Q(*,1) = V(*,1) + V(*,2)
 c           Pjets(0:3,N)  4-vector for the jets, assumed massless
 c           W          the weight of the phase space point
 c
-c
-c
-c  INPUT INFORMATION on the phase space region is transferred via the
-c    common block /BLIPSI/
-c
 c****************************************************************************
 
       SUBROUTINE LIPSNHH(N,RD,RN,
@@ -166,7 +156,7 @@ c****************************************************************************
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/process.inc"
 
-      INTEGER N,NRANDL,N1,OS
+      INTEGER N,N1,OS
       REAL*8 TPI
 c      PARAMETER (nrandl=12, TPI=2D0*PI )
 c      PARAMETER (nrandl=16, TPI=2D0*PI )
@@ -174,7 +164,7 @@ c      PARAMETER (nrandl=16, TPI=2D0*PI )
       parameter ( N1=max_p-nx )
 c      REAL*8 RD(nrandl),RN
       REAL*8 RD(*),RN
-      REAL*8 K1(0:3), K2(0:3), D(0:3,4), X1, X2, W, K(0:4)
+      REAL*8 K1(0:3), K2(0:3), D(0:3,4), X1, X2, W
       REAL*8 DTEMP(0:3,2)
       REAL*8 Q(0:4)
       REAL*8 Pjets(0:3,N)
@@ -192,7 +182,6 @@ c
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
 
       LOGICAL ldebug
       PARAMETER (ldebug=.false.)

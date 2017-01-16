@@ -100,9 +100,9 @@ c*******************************************************************************
         Real*8 Dij1234I(13,3),Dij1235I(13,3),Dij1245I(13,3),Dij1345I(13
      -   ,3),Dij2345I(13,3),EijI(46,4)
        Complex*16 SMB(16),SMG(16) ,Fa(14),F(271),K(3)
-       Real*8 FI(271),FR(271),FaI(14),FaR(14),KI(3),  KR(3)
+       Real*8 FI(271),FR(271),KI(3),  KR(3)
        Complex*16 barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-       Complex*16 SC1c,SC3ccc,SC3rcc,SC3rrc,SC5rrccc,SC1r,SC3rrr,dotrc,dotcc,result
+       Complex*16 SC1c,SC3ccc,SC3rcc,SC3rrc,SC5rrccc,SC1r,dotrc,dotcc,result
        Complex*16 resultgauge(3),resultgaugeb(3),resultb 
        Real*8 musq,p5t,P(592),Is12,Is45,Is12s45 ,musqIn
        EXTERNAL   dotrc,dotcc,SC1c,SC1r,SC3ccc,SC3rcc,SC3rrc,SC5rrccc

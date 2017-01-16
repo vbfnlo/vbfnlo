@@ -8,6 +8,7 @@ c---------------------------------------------------------------------------
       
       subroutine qqwmzqqj(pbar,sign,qbar,gsign,bos,
      1                  ans1,ans2,ans3,ans4)
+          use globalvars, only: ldoblha
       implicit none
 c
 c	Barbara Jaeger, <baj@particle.physik.uni-karlsruhe.de>
@@ -62,14 +63,14 @@ c
       real*8 fpials(2:3), fpi
       parameter (fpi=4d0*pi)
 
-      double precision  pbar(0:3,4+max_v),qbar(0:4), musq
+      double precision  pbar(0:3,4+max_v),qbar(0:4)
       double precision ans1(3), ans2(3), ans3(3), ans4(3),res(4,2:3),
      1		       resv(4)
       double precision  p(0:3,4+max_v),q(0:4), p21(0:4,2:3), p43(0:4,2:3),
      1                  pq(0:4,4),pew(0:4),puz(0:4),pwz(0:4)
-      integer  sign(4+max_v),gsign, mu, i, j, jj, k, kk, id,is,
-     1         isig, isig1, isig3,bos,h,lh,il,arg,arg2,jout
-      integer  ifl(4,6), js1, js3, is1, is3
+      integer  sign(4+max_v),gsign, mu, i, j, k, kk,is,
+     1         isig, isig1, isig3,bos,lh,il,arg,arg2,jout
+      integer  ifl(4,6), is1, is3
       integer  l   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
       integer jmin, jmax
       logical jlog2,jlog3
@@ -77,9 +78,9 @@ c
       double complex mat(4,-1:1,-1:1,2:3,0:2,9)
       double complex mm(4,-1:1,-1:1,2:3,2)
       double complex maw,mzw,mwa,mwz
-      double complex m1,m2,m3,m4
-      double complex m1h(-1:1),m2h(-1:1),m3h(-1:1),m4h(-1:1),
-     1		     m1k(2),m2k(2),m3k(2),m4k(2),rat1,rat2,rat
+
+      double complex m1h(-1:1),
+     1		     m1k(2),rat1,rat2
       double complex mw(2,2:3,2)
       double complex mbwa(2,3:4,-1:1,-1:1,2:3,2),mbwz(2,3:4,-1:1,-1:1,2:3,2),
      1 		     mbaw(2,3:4,-1:1,-1:1,2:3,2),mbzw(2,3:4,-1:1,-1:1,2:3,2),
@@ -105,7 +106,7 @@ c
      2		     m2awu,m2zwu,m2wau,m2wzu,
      2		     m3awu,m3zwu,z3awu,z3zwu,m3wau,m3wzu,
      2		     m4awu,m4zwu,m4wau,m4wzu
-      integer id1,id2,id3
+
       double precision eps(0:3,2) ! g in kartesian basis 
       double complex psi(2,-1:1,4), jqq(0:5,-1:1,2,-1:1,0:2), 
      1 		     braketg(2,-1:1,4,2), jh1(0:5,-1:1), jh2(0:5,-1:1)
@@ -133,8 +134,7 @@ c
      1		     jaugii(0:5,-1:1),jgauii(0:5,-1:1),jaug0ii(0:5,-1:1),
      1		     jzugi(0:5,-1:1),jgzui(0:5,-1:1),jzug0i(0:5,-1:1),
      1		     jzugii(0:5,-1:1),jgzuii(0:5,-1:1),jzug0ii(0:5,-1:1)
-      double complex j5wz(0:3,3,-1:1,2), j5zw(0:3,3,-1:1,2),
-     1 		     j5wa(0:3,3,-1:1,2), j5aw(0:3,3,-1:1,2)
+
       double complex epsaa(0:3),epsaz(0:3),epsza(0:3),epszz(0:3),epsww(0:3),
      1 		     epsaw(0:3),epszw(0:3),epswa(0:3),epswz(0:3),
      1		     epsawe(0:3,-1:1,3:4,2,2:3,0:2), epszwe(0:3,-1:1,3:4,2,2:3,0:2),
@@ -150,17 +150,16 @@ c
       double complex jj21we(-1:1,0:2),jj43we(-1:1,0:2),
      1 		     jj21au(-1:1,0:2),jj43au(-1:1,0:2),
      1 		     jj21zu(-1:1,0:2),jj43zu(-1:1,0:2)
-      double complex z1
+
       double complex propt1(-1:1,-1:1,4,2,2:3), propt2(-1:1,-1:1,4,2,2:3),
-     1		     propw(2,2:3),
-     1		     propt(-1:1,-1:1,5:6,2)
+     1		     propw(2,2:3)
 c
        double complex psiwg,jwgg(2,-1:1,-1:1,3,2:3,2)
        integer kb,kp
 c
       double complex im
       parameter (im = (0d0,1d0))
-      double complex fac
+
       integer idu,idl
       double complex contract_Tjj, dotcc, dotrc, dotqj, s1c
       external contract_Tjj, dotcc, dotrc, dotqj, s1c
@@ -174,15 +173,13 @@ c
       
       integer*8 icb1, icount1, icb2, icount2
       data icb1/0/,icount1/0/,icb2/0/,icount2/0/
-      double precision xgc1, xgc2
-      double complex mvwz,mvzw,mvwa,mvaw,xvwz,xvzw,xvwa,xvaw
- 
+
+
       save ifl, zm2i, linit, lgauge,ldebug
       save jw,psiw,fq
-      save j5wz,j5zw,j5wa,j5aw
       double complex  zero
       parameter (zero = (0d0,0d0) )
-      integer ii,ll
+      integer ll
 c
 c
 c

@@ -370,7 +370,7 @@
 		if ( lwarn ) then
 		    call vbfffwarn(226,ier1,absc(cb2i(2)),xmax)
 		endif
-  110		continue
+     		continue
 		if ( lwrite ) print *,'cb2i(2)+= ',cb2i(2)
 	    endif
 	    cb2i(1) = DBLE(1/(3*cp)) * cb2i(1)

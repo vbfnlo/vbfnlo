@@ -44,86 +44,44 @@ c
       real*8 fpials(2:3), fpi
       parameter (fpi=4d0*pi)
 
-      double precision  pbar(0:3,4+max_v),qbar(0:4), fac
+      double precision  pbar(0:3,4+max_v),qbar(0:4)
       double precision uucc(3),uuss(3),ddcc(3),ddss(3),udsc(3),ducs(3),
      1 		       res(6,2:3),resv(6)
       double precision  p(0:3,4+max_v),q(0:4), p21(0:4,2:3), p43(0:4,2:3),
      1                  pq(0:4,4),pwp(0:4),pwm(0:4),pww(0:4),
      2			qpm(0:4,2:3),qmp(0:4,2:3)!,
 c     2			qpml(0:4,2:3),qmpl(0:4,2:3)
-      integer  sign(4+max_v),gsign, mu, i, j, k, kk, id,
-     1         isig, isig1, isig3,is,ka,kb,kf
-      integer  ifl(4,6), js1, js3 !, is1, is3 taken from "tensor.inc"
+      integer  sign(4+max_v),gsign, mu, i, j, k,
+     1         isig, isig1, isig3
+      integer  ifl(4,6) !, is1, is3 taken from "tensor.inc"
       integer  l   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
       integer jmin, jmax
       logical jlog2,jlog3
       double complex prop21(4,2:3), prop43(4,2:3),
      1		     prop_pm(4,2:3),prop_mp(4,2:3)
-      double complex mat(6,-1:1,-1:1,2:3,0:2,9),temp
+      double complex mat(6,-1:1,-1:1,2:3,0:2,9)
       double complex mata(6,-1:1,-1:1,2:3,0:2,9),
      1 		     matz(6,-1:1,-1:1,2:3,0:2,9)
-      double complex mm(6,-1:1,-1:1,2:3,2),m5(3,3:4,2:3,2)
-      double complex ga,gb,gc,gd
+      double complex mm(6,-1:1,-1:1,2:3,2)
+
       double complex maa, maz, mza, mzz, mww5, mww6
-      double complex  mpm(4,2:3,2), mmp(4,2:3,2)
-      double complex  m1u,m2u,m1l,m2l,z1u,z1l
+
+
 c      double complex  m1,m2 ! for checks only
-      double complex  matot,ratot,raz,raa! for checks only
+      double complex  raz! for checks only
       double precision eps(0:3,2) ! g in kartesian basis 
       double complex psi(2,-1:1,4),jqq(0:5,-1:1,2,-1:1,0:2), 
      1 		     braketg(2,-1:1,4,2), jh1(0:5,-1:1), jh2(0:5,-1:1)
-      double complex psiwp(2,4), psiwm(2,4),
-     1               jwp(0:5,-1:1,-1:1,4,0:2), jwm(0:5,-1:1,-1:1,4,0:2)
-      double precision fqp(0:4,4), fqm(0:4,4), fq(0:4,4),dummy(0:4),
-     1 		       bq(0:4,4)
-      double complex bkjqq(2,-1:1,-1:1,4,2:3,0:2),
-     1		     bkjqqg(2,-1:1,-1:1,4,2:3,0:2),
-     1 		     gbkjqq(2,-1:1,-1:1,4,2:3,0:2)
-      double complex braketgWP(2,-1:1,4,0:2),braketWPg(2,-1:1,4,0:2),
-     3		     braketgWM(2,-1:1,4,0:2),braketWMg(2,-1:1,4,0:2)      
-       double complex braketgA(2,-1:1,0:2),braketAg(2,-1:1,0:2),
-     3		      braketgZ(2,-1:1,0:2),braketZg(2,-1:1,0:2)      
-      double precision  pgwp(0:4,4),pgwm(0:4,4),
-     3			pwpg(0:4,4),pwmg(0:4,4)
-      double precision  pga(0:4,4),pgz(0:4,4),
-     3			pag(0:4,4),pzg(0:4,4)
-      double complex psia(2,-1:1,-1:1,4), psiz(2,-1:1,-1:1,4)
-      double complex ja(0:5,-1:1,-1:1,4,0:2), jz(0:5,-1:1,-1:1,4,0:2),
-     1		     jag(0:5,-1:1),jga(0:5,-1:1),jg0(0:5,-1:1),
-     1		     jgz(0:5,-1:1),jzg(0:5,-1:1),jgm(0:5,-1:1)
-      double complex jwgi(0:5,-1:1),jgwi(0:5,-1:1),jwg0i(0:5,-1:1),
-     1		     jwgii(0:5,-1:1),jgwii(0:5,-1:1),jwg0ii(0:5,-1:1)
-      double complex epsa0(0:3),epsz0(0:3),epsa(0:3),epsz(0:3),
-     1               epsNCwp(0:5,-1:1,3:4,2,2:3,0:2),
-     2		     epsNCwm(0:5,-1:1,3:4,2,2:3,0:2),
-     2               epsCCwp(0:5,-1:1,3:4,2,2:3,0:2), 
-     2		     epsCCwm(0:5,-1:1,3:4,2,2:3,0:2)
-      double complex qepsCCwp(2,2:3,0:2),qepsCCwm(2,2:3,0:2),
-     1	 	     qepswp(3:4,2:3,0:2),qepswm(3:4,2:3,0:2)
-      double complex jj21m(0:2),jj21p(0:2),jj43m(0:2),jj43p(0:2)
-      double complex zp(4:5,2:3),zm(4:5,2:3)
-      double complex zpm(2:3,2),zmp(2:3,2)
-      double complex  ma(4,2:3,0:2), mz(4,2:3,0:2)
-      double complex propt(-1:1,-1:1,6,2:3,2)
+
       double complex  zm2i(2:4)
       double complex contract_Tjj,! contract_T1j,contract_T2j,
      1 		     dotcc, dotrc, s1c !, dotqj
       external contract_Tjj, !contract_T1j,contract_T2j,
      1 	       dotcc, dotrc, s1c !, dotqj
-      integer lh
-      double complex m1hj(-1:1,2:3),m1kj(2,2:3)
-      double complex m1haj(-1:1,2:3),m1hzj(-1:1,2:3),
-     1 		     m1hu(-1:1,2:3),m1hl(-1:1,2:3),m1hc(-1:1),
-     1 		     m1hua(-1:1,2:3),m1hla(-1:1,2:3),
-     1 		     m1huz(-1:1,2:3),m1hlz(-1:1,2:3),
-     1 		     m1kaj(2,2:3),m1kzj(2,2:3),
-     1 		     m1ku(2,2:3),m1kl(2,2:3),m1kc(2),
-     1 		     m1kua(2,2:3),m1kla(2,2:3),
-     1 		     m1kuz(2,2:3),m1klz(2,2:3)
+
       double complex im
       parameter (im = (0d0,1d0))
       logical ldebug, linit,lerror,ldebugm
-      integer n,m
      
       save ifl, zm2i, linit, lerror,ldebug,ldebugm
 c stuff for comparison with madgraph :

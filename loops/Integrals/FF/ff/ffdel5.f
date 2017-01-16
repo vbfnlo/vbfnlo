@@ -649,7 +649,7 @@
   120	continue
 *  #] calculations:
 *  #[ into memory:
-  800	continue
+     	continue
 	memind = memind + 1
 	if ( memind .gt. mem ) memind = 1
 	memarr(memind,1) = id

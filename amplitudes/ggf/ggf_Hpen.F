@@ -49,11 +49,11 @@ c... local dot products
      &           J1J2,J1J3,J1J4,J2J3,J2J4,J3J4
 
 c... parts of the pentagon
-      complex*16 a,b,c,d,e	
+      complex*16 a,b,c	
 
 c... other variables
-      integer i,j,mu
-      integer id(4)
+      integer i,j
+
 
       integer init,ie0(4,4,4,4)
       data init/0/, ie0/256*0/

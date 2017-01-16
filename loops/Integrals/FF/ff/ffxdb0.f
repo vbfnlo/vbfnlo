@@ -110,7 +110,7 @@
      +		xlam,slam,xlogmm,alpha,alph1,xnoe,xpneq(30),
      +		xx,vbfdfflo1,vbfdfflo3,d1,d2,diff,h,a,b,c,d,beta,
      +		betm2n,xmax,s1c,s1d,s1e,s1f,s3
-	DOUBLE COMPLEX cc,vbfzxfflg
+	DOUBLE COMPLEX vbfzxfflg
 	save initeq,xpneq,initir,
      +		xprceq,bdeq01,bdeq05,bdeq11,bdeq17,bdeq25,
      +		xprcn3,bdn301,bdn305,bdn310,bdn315,
@@ -627,7 +627,7 @@
 *
 *		    first s2:
 *
-  490		    continue
+     		    continue
 		    s2p = s2 - alpha
 		    if ( abs(s2p) .lt. xloss*abs(s2) ) then
 * -#[			bounds:
@@ -811,7 +811,7 @@
 	    endif
 	    y = 0
 	endif
-  590	continue
+     	continue
 	cdb0p = DCMPLX(DBLE(xx),DBLE(y))
 	cdb0 = cdb0p*(1/DBLE(xp))
 	goto 990

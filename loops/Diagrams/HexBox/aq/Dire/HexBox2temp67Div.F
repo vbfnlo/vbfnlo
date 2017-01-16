@@ -49,7 +49,7 @@ c*******************************************************************************
      &   ,SMB15(0:3),SMB16(0:3),SMB17(0:3),SMB18(0:3),SMB19(0:3),SMB1
      &   10(0:3)
       Complex*16 SMB1(133)
-      Real*8 FI(1646),FR(1646)
+
       Complex*16 barpsi_p1_P(2),psi_p5_P(2),barpsi_p2_P(2),psi_p4_P(2) 
        Complex*16 barpsi_p1_M(2),psi_p5_M(2),barpsi_p2_M(2),psi_p4_M(2)
        Complex*16 barpsi_p1(4),psi_p5(4),barpsi_p2(4),psi_p4(4)
@@ -60,8 +60,8 @@ c*******************************************************************************
        External  delta
        Complex*16 ten2cc
        External  ten2cc
-       Complex*16 v1(0:3),v2(0:3),v3(0:3) 
-       Integer alpha_1,alpha_2,i,j,k,comp
+       Complex*16 v1(0:3) 
+       Integer i,comp
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************
@@ -225,7 +225,7 @@ c*******************************************************************************
       Complex*16 dotrc,dotcc,result(9),resultn,resultborn
        Real*8 musq
       EXTERNAL   dotrc,dotcc
-      Integer alpha
+
        COMMON/HexBox2FaFunctions/Fa
        COMMON/HexBox2FhlFunctions/F
       Save/HexBox2FhlFunctions/

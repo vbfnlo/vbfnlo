@@ -14,7 +14,7 @@ c ------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:7)
       complex*16 wwz(0:5)
-      integer lsign(2:7,2),ll,mu,nu,h,N
+      integer lsign(2:7,2),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -58,7 +58,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -195,8 +195,7 @@ c      CALL JVVXXX(W(1,13  ),W(1,28  ),GWWZ ,ZMASS   ,ZWIDTH  ,W(1,38))
 
       CALL IOVXXX(W(1,7   ),W(1,6   ),W(1,38  ),GZL ,AMP(22  ))            
       CALL FVOXXX(W(1,6   ),W(1,28  ),GWF ,ZERO    ,ZERO    ,W(1,40  ))    
-      CALL IOVXXX(W(1,7   ),W(1,40  ),W(1,13  ),GWF ,AMP(24  ))            
-
+      CALL IOVXXX(W(1,7   ),W(1,40  ),W(1,13  ),GWF ,AMP(24  ))
 
 
       CALL wwaa_anomal4(W(1,13),W(1,1),W(1,8),W(1,25), AMP(25  ))
@@ -204,7 +203,6 @@ c      CALL JVVXXX(W(1,13  ),W(1,28  ),GWWZ ,ZMASS   ,ZWIDTH  ,W(1,38))
 c      changed procedure argument order
 c      CALL wwaa_anomal8(W(1,8),W(1,13),W(1,25),W(1,1), AMP(25  ))
 c      CALL wwza_anomal8(W(1,8),W(1,13),W(1,22),W(1,1), AMP(26  ))
-
 
 
       CALL FVIXXX(W(1,5   ),W(1,8   ),GWF ,ZERO    ,ZERO    ,W(1,41  ))    
@@ -315,7 +313,7 @@ c ------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:7)
       complex*16 wwz(0:5)
-      integer lsign(2:7,2),ll,mu,nu,h,N
+      integer lsign(2:7,2),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -359,7 +357,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
       common/debug1/W

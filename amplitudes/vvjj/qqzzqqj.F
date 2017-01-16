@@ -1,6 +1,7 @@
 
       subroutine qqzzqqj(pbar,sign,qbar,gsign, bos,
      1                  uucc,uuss,ddcc,ddss,udsc,ducs)
+          use globalvars, only: ldoblha
       implicit none
 c
 c	Barbara Jaeger, <baj@particle.physik.uni-karlsruhe.de>
@@ -56,21 +57,21 @@ c
       real*8 fpials(2:3), fpi
       parameter (fpi=4d0*pi)
 
-      double precision  pbar(0:3,4+max_v),qbar(0:4),musq
+      double precision  pbar(0:3,4+max_v),qbar(0:4)
       double precision uucc(3),uuss(3),ddcc(3),ddss(3),udsc(3),ducs(3),
      1 		       res(6,2:3),resv(6)
       double precision  p(0:3,4+max_v),q(0:4), p21(0:4,2:3), p43(0:4,2:3),
      1                  pq(0:4,4),pez(0:4),puz(0:4),pzz(0:4),
      2			qee(0:4,2:3),quu(0:4,2:3)!,
-      integer  sign(4+max_v),gsign, mu, i, j,jj, k, kk, id,
+      integer  sign(4+max_v),gsign, mu, i, j, k,
      1         isig, isig1, isig3,is,ka,kb,kf,il,ib,ll,bos
-      integer  ifl(4,6), js1, js3, is1, is3
+      integer  ifl(4,6), is1, is3
       integer  l   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
       integer jmin, jmax
       logical jlog2,jlog3
       double complex prop21(4,2:3), prop43(4,2:3),
      1		     prop_ee(4,2:3),prop_uu(4,2:3)
-      double complex mat(6,-1:1,-1:1,2:3,0:2,9),temp
+      double complex mat(6,-1:1,-1:1,2:3,0:2,9)
       integer id1,id2,id3
       double complex m5e(3,2,2,2:3,2),m5u(3,2,2,2:3,2),
      1 	             m1p(6,2,2,2:3,2),m2p(6,2,2,2:3,2),m3p(6,2,2,2:3,2)
@@ -82,8 +83,8 @@ c
       double complex mm(6,-1:1,-1:1,2:3,2)
       double complex ga,gb,gc,gd
       double complex maa, maz, mza, mzz, mzz5, mzz6
-      double complex  m1,m2 ! for checks only
-      double complex  matot,ratot,raz,raa! for checks only
+      double complex  m2 ! for checks only
+      double complex  raz! for checks only
       double precision eps(0:3,2) ! g in kartesian basis 
       double complex psi(2,-1:1,4),jqq(0:5,-1:1,2,-1:1,0:2), 
      1 		     braketg(2,-1:1,4,2), jh1(0:5,-1:1), jh2(0:5,-1:1)
@@ -176,18 +177,12 @@ c
      1 	       dotcc, dotrc, dotqj, s1c
       integer lh
       double complex m1hc(-1:1),m1kc(2),m1hh(-1:1),m1kh(2)
-      double complex m1hj(-1:1,2:3),m1kj(2,2:3)
-      double complex m1haj(-1:1,2:3),m1hzj(-1:1,2:3),
-     1 		     m1hua(-1:1,2:3),m1hla(-1:1,2:3),
-     1 		     m1huz(-1:1,2:3),m1hlz(-1:1,2:3),
-     1 		     m1kaj(2,2:3),m1kzj(2,2:3),
-     1 		     m1kua(2,2:3),m1kla(2,2:3),
-     1 		     m1kuz(2,2:3),m1klz(2,2:3)
+
       double complex fac
       double complex im
       parameter (im = (0d0,1d0))
       logical ldebug, linit,lerror,lgauge,ldebugm
-      integer n,m
+
      
       save ifl, zm2i, linit, lerror,ldebug,ldebugm,lgauge
 	
@@ -723,8 +718,7 @@ c
      1                 psi(1,-1,i),p(0,i), juz(0,-1,is,i+1,l) )
          call curr6(1,psiau(1,-1,i+1),fqau(0,i+1),
      1                 psi(1,-1,i),p(0,i), jua(0,-1,is,i+1,l) )
-     
-      
+
 
  	enddo ! i loop
  
@@ -744,10 +738,9 @@ c attach A/Z to f1 or f2 / f3 or f4:
 		   is = is1
 		else
 		   is = is3   
-		endif   
+		endif
 
 
- 
  ! gluon radiation from fermion i / i+1
  	 do l = 1,2
 
@@ -853,7 +846,6 @@ c attach A/Z to f1 or f2 / f3 or f4:
      $	    			braketg(1,-1,i,l),pq(0,i),jaug0ii)
 
 
-     	 
 	    do mu = 0,5
 	    do isig = -1,1,2
 	    	   
@@ -1444,8 +1436,6 @@ c
        mat(k,isig1,isig3,3,l,2) = mate12 + matu12
 
 
-
-
 c ---------
 
 
@@ -1774,8 +1764,6 @@ c
        mat(k,isig1,isig3,2,l,3) = mate34 + matu34
 
 
-
-      
       !udsc, e+e- from lower line, g from lower line:
      
       m3ae = dotcc(jea(0,isig3,is3,4,l),epsCCuu(0,isig1,2,3,0))
@@ -1826,7 +1814,6 @@ c
      #	      +  clr(3,3,isig3)*(m3au-z3au+m3zu-z3zu)
     
        mat(k,isig1,isig3,3,l,3) = mate34 + matu34
-
 
 
 c ---------------
@@ -1885,7 +1872,6 @@ c ---------------
        mat(k,isig1,isig3,2,l,3) = mate34 + matu34
 
 
-      
       !ducs, e+e- from lower line, g from lower line:
      
       m3ae = dotcc(jea(0,isig3,is3,4,l),epsCCuu6(0,isig1,2,3,0))
@@ -1937,7 +1923,6 @@ c ---------------
 
      
        mat(k,isig1,isig3,3,l,3) = mate34 + matu34
-
 
 
       enddo	! l 	 
@@ -2124,7 +2109,6 @@ c    jqq(mu,isig3,2,is3,l) = j43  with momentum    p43        and
 c    zzztens/azz(mu)         	  with momentum    pzz
 
 
-      
 c attach V=A/Z to f1 or f3:
 	 
        
@@ -2264,12 +2248,10 @@ c now do A/Z from fermion i+1:
      1              psi(1,-1,i),p(0,i), jz(0,-1,is,i+1,0) )
 
    	 enddo ! l=1,2 loop
-         
-	 
-	 
+
+
       enddo !i
-     
-     
+
 
 c -----------------------------------------------------------------------
       
@@ -3201,7 +3183,6 @@ c  eps1=v1,eps2=v2,eps3=j43, g from lower line
      #					 .true.,isig1,psizu(1,isig1,1))
 
 
-
 c  eps1=v1,eps2=v2,eps3=j43, g from upper line
 c
 c eu, AA:
@@ -3349,8 +3330,7 @@ c ----------------
       
       enddo !isig3
       enddo !isig1
-      
-      
+
 
 c-----------------------------------------------------------------
       
@@ -3412,7 +3392,6 @@ c	had m5(conf,bid,j,l)
      #	 	           isig3,psizu(1,isig3,3))
          m5u(2,2,2,2,l) = -s1c(psize(1,isig3,4),jqq(0,isig1,1,is1,l),.true.,
      #	 		   isig3,psizu(1,isig3,3))
-
 
 
 c  eps1=v1,eps2=j21 (with v2 arbitray),eps3=v3, g from lower line: 
@@ -3644,8 +3623,7 @@ c  eps1=v1,eps2=v2,eps3=j21, g from upper line
          m5u(3,2,2,2,l) = -s1c(bkjqq(1,isig3,isig1,4,2,l),ze,
      #					.true.,isig3,psizu(1,isig3,3))
 
-   
-     
+
 c  eps1=v1,eps2=v2,eps3=j21, g from lower line
 c
 c eu, AA:

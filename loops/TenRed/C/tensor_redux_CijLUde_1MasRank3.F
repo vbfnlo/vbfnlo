@@ -35,7 +35,7 @@ c
 
       implicit none
       real * 8  p1sq, p2sq, s12
-      complex*16 B0_23, B0_13, B0_12, C0
+      complex*16 C0
       real*8 r1, r2r1, det,p1p2
 
       real*8 BijR_12(2,2),BijR_13(2,2),BijR_23(2,2)
@@ -50,7 +50,7 @@ c
       real*8 z11,z12,z21,z22,iz11,iz22
 
       real*8 Rr(2),RI(2),PRr(2),PRI(2)
-      REAL*8 Inv18,Inv36
+
       real*8 B21r_12,B21r_13,B21r_23
       real*8 B21I_12,B21I_13,B21I_23
       real*8 B22r_12,B22r_13,B22r_23
@@ -86,7 +86,6 @@ c       If( (deter/detAbs).le.1d-5) Singular=.true.
          endif
 
 
- 
        C0r=Dble(C0)
        C0I=DImag(C0)
 
@@ -427,7 +426,6 @@ c       RI(1)=(PRI(2)-z12*RI(2))*iz11
 
 c       CijI(1,1) = RI(1)
        CijI(2,3) = RI(2)
-
 
 
        endif

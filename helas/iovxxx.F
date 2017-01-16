@@ -15,7 +15,7 @@ c
       implicit none
       double complex fi(6),fo(6),gc(2),vc(6),vertex
 
-      double precision rZero, rOne
+      double precision rZero
       parameter( rZero = 0.0d0 )
       double complex cImag, cZero
       parameter( cImag = ( 0.0d0, 1.0d0 ), cZero = ( 0.0d0, 0.0d0 ) )

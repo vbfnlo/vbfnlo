@@ -453,8 +453,5 @@ c FC%       endif
 c FC%
 
 
-
-
-
        return
        end

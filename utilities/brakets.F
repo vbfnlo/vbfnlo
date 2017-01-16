@@ -116,7 +116,6 @@ C And now the general case
       END
 
 
-
 C********************************************************************
 C
 C Calculates the bra and ket vectors for external massless fermions as
@@ -1186,9 +1185,9 @@ c----------------------------------------------------------------------
 c----------------------------------------------------------------------
 
       subroutine curr6addm( sigmax,psibar,pb,psi,p,j,cplm,cplp)
-      double complex  j(0:5,-1:1), psibar(2,-1:1), psi(2,-1:1), zj2
+      double complex  j(0:5,-1:1), psibar(2,-1:1), psi(2,-1:1)
       double precision pb(0:3), p(0:3), cplm, cplp
-      double complex  z1, z2, z3, z4, q4, q5
+
       integer  sigmax
 
       double complex tmpj(0:5,-1:1)

@@ -33,7 +33,7 @@ c electroweak couplings are taken from KOPPLN
      1                  V(4,5),A(4,5)
 
 c variables for the main part of the program
-      double precision fpials(2:3), fpi
+      double precision fpi
       parameter (fpi=4d0*pi)
 
       double precision  pbar(0:3,2+n_v), qbar(0:4), q(0:3)
@@ -42,11 +42,11 @@ c variables for the main part of the program
       double precision  ggZZj, res(2)
       double precision  p(0:3,2+n_v)
 
-      integer  sign(2+n_v), gsign, mu, i, j, k, bos, isig, nlo, N
-      integer  ifl(2), l(3), ll(3), lh(3), l1, l2, l3, k1, k2
+      integer  sign(2+n_v), gsign, mu, i, j, k, bos, nlo, N
+      integer  l(3), ll(3), lh(3), l1, l2, l3, k1, k2
       integer perm(6,3), signperm(6), redo, helmult, signglu(3)
 
-      logical lnlo, lvert, lbox, lpq, lpt, lpent,lhex,lbox2, lhiggs
+      logical lvert, lbox, lpent,lbox2, lhiggs
       logical lhaszvv
       logical wardidtest1
 
@@ -54,18 +54,17 @@ c variables for the main part of the program
       double complex ceps(0:5,2,3), cteps(0:5,2,2,3)
       double complex mat(6,2,2,2,2)
       double complex mm(2), zero
-      double complex ma, mz, m1, m2, m3, m4
+      double complex m1, m2, m3, m4
 
       double complex im
       double complex dotcc, s1c, dotrc
       double precision dotrr, psumsq
       external dotcc, s1c, dotrr, dotrc, psumsq
-      save ifl
       parameter (im = (0d0,1d0))
       parameter (zero = (0d0,0d0) )
 
 c Variables for fermion loops
-      integer flgauge, flcomp
+
       integer Div, cpl(4)
       double precision mf(4), vv, scale, musq
       double complex rfpenE(6,4,4,4,2,2,2)
@@ -100,10 +99,7 @@ c Gram determinant
       save linit
       parameter(ldebugm = .false.)
       parameter(lhelrand = .true.)
-      INTEGER IJ
-      integer ik1,kk1,jk1
-     
- 
+
 
 c---------------------------- BEGIN CODE -----------------------
 

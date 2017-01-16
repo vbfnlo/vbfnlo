@@ -45,7 +45,5 @@ cc     lzs(8) = .false.      fsign(3) = +1 fsign(4) = -1 has been calcd ...
 c
 c
 c for testing purposes
-      double complex tampn,tamprn
-      integer ipn,iprn,isn1,isn3
-      common /zntest/  tampn(300,-1:1,-1:1,6), ipn
-      common /znrtest/ tamprn(1200,-1:1,-1:1,-1:1,6), iprn               
+      double complex tampn
+      common /zntest/  tampn(300,-1:1,-1:1,6)

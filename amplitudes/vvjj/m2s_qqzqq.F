@@ -25,6 +25,8 @@ c
      &                   v,	!in:  momenta associated with Z/H dec. fermions
      &                   rn,     !in:  random number array
      &                   ps_number  )
+          use globalvars, only: ldoblha
+          use VBFNLO_HIGGSTO, only: VBFNLO_HIGGSTO_gridHt
       implicit none
 c
 c declare input/output variables
@@ -46,11 +48,11 @@ c
       real*8 vtemp(0:3,max_v)
 
 c  helicity selection
-      integer h, hh
+      integer h
       integer jsig, jsig1, jsig3, jsig5
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 
-      complex*16 zero, z1
+      complex*16 zero
       parameter (zero=(0d0,0d0))
 c
 c declare external functions
@@ -69,7 +71,7 @@ c declare local variables
 c
       real*8 q_sf, qq
 
-      integer init/0/, I, J, mu, nu, id
+      integer init/0/, I, J, mu
       save init
 c
 c declare variables for summation process
@@ -102,7 +104,7 @@ c
       common /hcount / h
       real*8 weight,rnumb,RandomNumber
 
-      integer a,b,c
+      integer a,b
       double complex aazz1(0:3,0:3,3), 
      1                azzz1(0:3,0:3,3), zazz1(0:3,0:3,3), 
      2                zzzz1(0:3,0:3,3), wwzz51(0:3,0:3,3), 
@@ -137,7 +139,6 @@ c CPS scheme
       common /VBFNLO_HIGGS_CPS/ qgammaq
 
 c -----------------------------------------------------------------------
-
       if ( (init .eq. 0) .and. (.not. ldoblha) ) then
          photon_hel=0
          if (bos.eq.2) then
@@ -196,14 +197,12 @@ c -----------------------------------------------------------------------
             write(6,*) "-----------------------------------------------"
             write(6,*) " "
             call vtohh_reset
-#ifdef WITH_SPIN2
          elseif (bos.eq.11) then
             write(6,*) " "
             write(6,*) "VV (-> Spin2) -> A A amplitude square info:"
             write(6,*) "-----------------------------------------------"
             write(6,*) " "
             call vtosp2aa_reset
-#endif
          elseif (bos.eq.734) then
            if (with_spin2) then  
             write(6,*) " "
@@ -259,10 +258,8 @@ c -----------------------------------------------------------------------
             res(i) = 0
          enddo
       endif    ! end of init
-
 c -----------------------------------------------------------------------
       call Calc_Momentum_Transfer(p, v, q12,q34,1)
-
 
 c
 c for WW->4l precalculate A->WW,Z->WW,AZ->WW etc leptonic tensors
@@ -397,7 +394,6 @@ C     for WV --> mu- nu_mu
             call WVtoWM_kk(1,q12(0,j),v,CCwma(0,0,2,j),CCwmz(0,0,2,j)) !emit W+ on lower
 #endif
 
-#ifdef WITH_SPIN2
          elseif (with_spin2) then  
             call atoww(v,aww)
             call ztoww(v,zww)
@@ -419,8 +415,7 @@ C     for WV --> mu- nu_mu
             call WVtoWM(2,q12(0,j),v,NCwma(0,0,2,j),NCwmz(0,0,2,j)) !emit W+ on lower
             call WVtoWM(1,q34(0,j),v,CCwma(0,0,1,j),CCwmz(0,0,1,j)) !emit W+ on upper
             call WVtoWM(1,q12(0,j),v,CCwma(0,0,2,j),CCwmz(0,0,2,j)) !emit W+ on lower
-#endif
-         else !(SM)
+         else                   !(SM)
             call atoww(v,aww)
 c         z1 = qww(0)*aww(0) - qww(1)*aww(1) - qww(2)*aww(2) - qww(3)*aww(3)
 c         print*," gauge check A: ",
@@ -587,7 +582,6 @@ c leptonic tensors
            call vto4l_had(v,h,azz,zzztens)
 
 
-
          CASE DEFAULT
 
 C for AA,AZ,ZA,ZZ -> e+ e- mu+ mu- :
@@ -634,51 +628,48 @@ c for V-> llll
             call vto4l_KK(v,h,azz,zzztens)	
 #endif	   
     
-#ifdef WITH_SPIN2
          elseif (with_spin2) then
             call vvtozz_spin2(q12(0,j),q34(0,j),v,h,aazz(0,0,j),azzz(0,0,j),
      - 					   zazz(0,0,j),zzzz(0,0,j))
 c
 C for W+W-
-         call wwtozz_spin2(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j))  ! q12 = W+
-         call wwtozz_spin2(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j))  ! q12 = W-
+            call wwtozz_spin2(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j)) ! q12 = W+
+            call wwtozz_spin2(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j)) ! q12 = W-
 
 c other processes do not change
 
 C for V1V2 --> e+ e- or  V1V2 -->  mu+ mu- (Vi=A,Z)
 c NCl tensors for NC process (k=1...4)
 
-         call VVtoll(2,1,h,q34(0,j),v,aaee(0,0,1,j),azee(0,0,1,j),
+            call VVtoll(2,1,h,q34(0,j),v,aaee(0,0,1,j),azee(0,0,1,j),
      #	 	 zaee(0,0,1,j),zzee(0,0,1,j))    	 !emit V on upper        
-	 call VVtoll(1,1,h,q12(0,j),v,aaee(0,0,2,j),azee(0,0,2,j),
+            call VVtoll(1,1,h,q12(0,j),v,aaee(0,0,2,j),azee(0,0,2,j),
      #		 zaee(0,0,2,j),zzee(0,0,2,j))    	 !emit V on lower
-         call VVtoll(2,2,h,q34(0,j),v,aauu(0,0,1,j),azuu(0,0,1,j),
+            call VVtoll(2,2,h,q34(0,j),v,aauu(0,0,1,j),azuu(0,0,1,j),
      #		 zauu(0,0,1,j),zzuu(0,0,1,j))    	 !emit V on upper        
-	 call VVtoll(1,2,h,q12(0,j),v,aauu(0,0,2,j),azuu(0,0,2,j),
+            call VVtoll(1,2,h,q12(0,j),v,aauu(0,0,2,j),azuu(0,0,2,j),
      #		zauu(0,0,2,j),zzuu(0,0,2,j))     	!emit V on lower
 
 C for W+W- --> e+ e- or  W+W- -->  mu+ mu-
 c  CCl tensors for CC (k=5)
 
-         call WWtoll(2,1,h,q34(0,j),v,CCee(0,0,1,j))     !emit V on upper
-         call WWtoll(1,1,h,q12(0,j),v,CCee(0,0,2,j))     !emit V on lower
-         call WWtoll(2,2,h,q34(0,j),v,CCuu(0,0,1,j))     !emit V on upper
-         call WWtoll(1,2,h,q12(0,j),v,CCuu(0,0,2,j))     !emit V on lower
+            call WWtoll(2,1,h,q34(0,j),v,CCee(0,0,1,j)) !emit V on upper
+            call WWtoll(1,1,h,q12(0,j),v,CCee(0,0,2,j)) !emit V on lower
+            call WWtoll(2,2,h,q34(0,j),v,CCuu(0,0,1,j)) !emit V on upper
+            call WWtoll(1,2,h,q12(0,j),v,CCuu(0,0,2,j)) !emit V on lower
 	 
 C for W-W+ --> e+ e- or mu+ mu-
 c CCl for CC (k=6)
 	
-         call WWtoll(1,1,h,q34(0,j),v,CCee6(0,0,1,j))     !emit V on upper
-         call WWtoll(2,1,h,q12(0,j),v,CCee6(0,0,2,j))     !emit V on lower
-         call WWtoll(1,2,h,q34(0,j),v,CCuu6(0,0,1,j))     !emit V on upper
-         call WWtoll(2,2,h,q12(0,j),v,CCuu6(0,0,2,j))     !emit V on lower
+            call WWtoll(1,1,h,q34(0,j),v,CCee6(0,0,1,j)) !emit V on upper
+            call WWtoll(2,1,h,q12(0,j),v,CCee6(0,0,2,j)) !emit V on lower
+            call WWtoll(1,2,h,q34(0,j),v,CCuu6(0,0,1,j)) !emit V on upper
+            call WWtoll(2,2,h,q12(0,j),v,CCuu6(0,0,2,j)) !emit V on lower
 	 
 	 
 c for V-> llll
 	
-            call vto4l(v,h,azz,zzztens)	
-
-#endif  
+            call vto4l(v,h,azz,zzztens)
 
 
          elseif (with_anom) then ! anomalous gauge boson couplings
@@ -726,8 +717,7 @@ c CCl for CC (k=6)
 	 
 c for V-> llll
 	
-           call vto4l_anomal(v,h,azz,zzztens)	
-	     
+           call vto4l_anomal(v,h,azz,zzztens)
 
 
 c-----------------------------
@@ -781,7 +771,6 @@ c
          END SELECT
 
 
-#ifdef WITH_SPIN2
 c for VV (-> spin-2) -> gamma gamma  precalculate leptonic tensors
       elseif (bos.eq.11) then
 
@@ -795,8 +784,8 @@ c			 combination (h=1:4) .. needed only for ZZ
          endif
          h = mod(h,4) + 1
 
-	lsign(3) = sign(1,2-h)
-	lsign(4) = (-1)**(h+1)
+         lsign(3) = sign(1,2-h)
+         lsign(4) = (-1)**(h+1)
 
          if ((lha.or.hepmc).and..not.doNLO) then
             helicity(1)= lsign(3)
@@ -818,6 +807,7 @@ c leptonic tensors
        call vvsp2tovv(1,q34(0,j),q12(0,j),v(0,1),v(0,2),sp2au(1),sp2ae(1), 
      1           sp2wwaa5(0,0,j),sp2wwaa6(0,0,j),sp2zzaa(0,0,j),
      2           sp2azaa(0,0,j),sp2zaaa(0,0,j),sp2aaaa(0,0,j))
+         
 
 c for VV -> spin-2 -> WW -> 4l precalculate leptonic tensors
        elseif (bos.eq.734) then !  734 = spin-2 -> W+W-
@@ -1138,7 +1128,6 @@ c leptonic tensors
          call wwtozzn_Hres(q34(0,j),q12(0,j),v,h,sp2wwzz6(0,0,j)) ! q12 = W-	 
 
         endif
-#endif
 
 
 c for ZZ->2l 2v precalculate  leptonic tensors
@@ -1278,15 +1267,14 @@ c for V-> llll
             call vto4ln_kk(v,h,azz,zzztens)	
 #endif	
 
-#ifdef WITH_SPIN2
          elseif (with_spin2) then     ! for bos = 21
 C for AA,AZ,ZA,ZZ -> e+ e- vm vm~ :
-         call vvtozzn_spin2(q12(0,j),q34(0,j),v,h,aazz(0,0,j),
+            call vvtozzn_spin2(q12(0,j),q34(0,j),v,h,aazz(0,0,j),
      # 		azzz(0,0,j),zazz(0,0,j),zzzz(0,0,j))
 c
 C for W+W-
-         call wwtozzn_spin2(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j))  ! q12 = W+
-         call wwtozzn_spin2(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j))  ! q12 = W-
+            call wwtozzn_spin2(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j)) ! q12 = W+
+            call wwtozzn_spin2(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j)) ! q12 = W-
 
 c other processes do not change
 	 
@@ -1322,7 +1310,6 @@ c CCl for CC (k=6)
 c for V-> llll
 	
             call vto4ln(v,h,azz,zzztens)	
-#endif	
 
 
          elseif (with_anom) then ! anomalous gauge boson couplings
@@ -1370,9 +1357,7 @@ c CCl for CC (k=6)
 	 	 
 c for V-> llll
 	
-	  call vto4ln_anomal(v,h,azz,zzztens)	
-
-
+	  call vto4ln_anomal(v,h,azz,zzztens)
 
 
 c --------------------------------------------
@@ -1430,7 +1415,6 @@ c     reset lzs to .true. to force recalculation of virtual contributions in qqw
             lzs(i) = .true.
          enddo
 
-        
 
 c     select helicity: h ... random number for lepton helicity
 c     combination (h=1:2) 
@@ -2014,7 +1998,6 @@ c      if (ldebug) call resprint2(nmin,nmax,res)
       if (init.eq.1) nproc(4) = nmax
 
 
-
 c**************  end of process evaluation part one ******************
 
 
@@ -2108,7 +2091,6 @@ c**************  end of process evaluation part one ******************
          call vto4l_had(v,h,azz,zzztens)
 
 
-
 C*******************  q1 q3 ---> q2 q4  V V  **********************
          
 c   physToDiag(ext.momentum label) = Feynman diagram label
@@ -2193,15 +2175,12 @@ c      if (ldebug) call resprint2(nmin,nmax,res)
       if (init.eq.1) nproc(4) = nmax
 
 
-
 c***  end of extra process evaluation for hadronic decay  ***
 
        endif
       end select
 
 
-
- 
 c*****************  end of process evaluation  *********************
 
 
@@ -2236,7 +2215,6 @@ c*****************  end of process evaluation  *********************
           endif
         ENDDO
       END SELECT
-
 
 
       if (init.eq.1) then
@@ -2357,6 +2335,7 @@ c
 c*****************************************************************
       subroutine wbf_zh(xi,p,v,rn,physToDiag,fsign,bos, nlo, ps_number,
      1                  pdf,Qpdf,res,nmin,nmax)
+          use globalvars, only: ldoblha
 
       implicit none
 
@@ -2414,7 +2393,7 @@ c local variables
 
       logical ChargedCurrent, sametype, oneAntiparticle
       logical ldebug
-      integer i,if1,if2,icc1,j,k,mu
+      integer i,if1,if2,icc1,k,mu
       parameter (ldebug=.false.)
 
       LOGICAL ldebug_ltens
@@ -2440,8 +2419,7 @@ c local variables
 
 ** random number 
       real*8 rn
-      
-      real*8 temp
+
 
 cmr      call ranmar ( rn ) 
 
@@ -2595,7 +2573,6 @@ c     1                    uucc,uuss,ddcc,ddss,udsc,ducs)
          call qqhhqq(pbar,fsign, nlo, 1,bos,
      1                    uucc,uuss,ddcc,ddss,udsc,ducs)
 
-#ifdef WITH_SPIN2
       elseif (bos.eq.11) then         ! qq(-->spin-2)-->qq gamma gamma
          do mu = 0,3             
             pbar(mu,5) = v(mu,1) ! photon 1
@@ -2652,7 +2629,6 @@ c     1                    uucc,uuss,ddcc,ddss,udsc,ducs)
         
 	call qqsp2zzqq(pbar,fsign, nlo, 1,bos,
      1                    uucc,uuss,ddcc,ddss,udsc,ducs) 
-#endif
 
       elseif (bos.eq.21) then         ! ZZ to 2 leptons + 2 neutrinos
          do mu = 0,3             ! kinematics for H-->ZZ-->2l 2v decay
@@ -2886,7 +2862,6 @@ c
 c   end subroutine wbf_zh
 c
 c*****************************************************************
-
 
 
 c******************************************************************
@@ -3268,7 +3243,6 @@ c         zzz(mu) = zero
 
 c --------------------------------------------------------------------------
 
-#ifdef WITH_SPIN2
       subroutine vtosp2aa_reset
       implicit none
 #include "tensorsp2aa.inc"
@@ -3297,7 +3271,6 @@ c --------------------------------------------------------------------------
  
       return
       end
-#endif
 
 #ifdef WITH_LT
 *** start sophy qed  - to end

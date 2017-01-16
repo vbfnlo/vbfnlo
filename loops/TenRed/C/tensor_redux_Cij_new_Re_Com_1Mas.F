@@ -37,8 +37,8 @@ c
       real * 8  p1sq, p2sq, s12
       complex*16 B0_23, B0_13, B0_12, C0
       real*8 r1, r2r1, det,p1p2
-      real*8 B1r_12,B1r_13,B1r_23,Cijr(4,2),Cijr1(4,2)
-      real*8 B1I_12,B1I_13,B1I_23,CijI(4,2),CijI1(4,2)
+      real*8 B1r_12,B1r_13,B1r_23,Cijr(4,2)
+      real*8 B1I_12,B1I_13,B1I_23,CijI(4,2)
       real*8 B0r_23, B0r_13, B0r_12, C0r
       real*8 B0I_23, B0I_13, B0I_12, C0I 
       real*8 z11,z12,z21,z22,iz11,iz22
@@ -46,10 +46,8 @@ c
 	  real*8 m,msq
 	  real*8 deter,detAbs
 	  Logical Singular
-      integer counter(10),iteration 
-      COMMON/DetCount/counter,iteration,Singular
+      COMMON/DetCount/Singular
       integer i,j
-
 
 
       p1p2 = (s12 - p1sq - p2sq)*0.5d0
@@ -74,8 +72,6 @@ c      If( (deter/detAbs).le.1d-5) Singular=.true.
          enddo
          Return
        endif
-
-
 
 
       B0r_12=Dble(B0_12)

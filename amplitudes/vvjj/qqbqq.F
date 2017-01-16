@@ -1,6 +1,7 @@
 C********************  qqbqqi ***********************************
 
       subroutine qqbqqi(bos,lflavr)
+          use globalvars, only: ldoblha
       implicit none
       integer bos, lflavr(5:6)
 #include "VBFNLO/utilities/global.inc"
@@ -394,6 +395,7 @@ C********************  qqZqqMod ***********************************
 C
       subroutine qqZqq(pbar,sign,NLO, 
      1                 uucc,uuss,ddcc,ddss,udsc,ducs)
+          use globalvars, only: ldoblha
       implicit none
       double precision uucc,uuss,ddcc,ddss,
      1       udsc,ducs,          pbar(0:3,6),
@@ -487,15 +489,15 @@ C  local variables
       save fac,fac_virt
       double complex prop21(4), prop43(4)
       external s1c
-      double complex m1,m2, je1(0:5),je2(0:5)
-      DOUBLE COMPLEX resultgauge(2),result,resultb,resultgaugeb(2),td(2)
+      double complex m1, je1(0:5),je2(0:5)
+      DOUBLE COMPLEX resultgauge(2),resultb,resultgaugeb(2)
       integer jd, isPhoton, isNoPhoton
       logical ldebug, lflagv
       parameter (ldebug=.false.)
       common /bnumerr/lflagv           ! if true: numerical problems in
 
 c      double precision td
-      logical wardb
+
 
 ! calculation of M_virt
       double precision scale(2),pcall(0:3,6),cte!, resultgauge(2), resultgaugeb(2)
@@ -675,7 +677,11 @@ c  graphs (excluding the 3 boson vertex)
       enddo
 C
 C  Get the external spinors (including factor sqrt(2E) )
-      call psi0m(6,pbar,sign,psi)
+      if (ibos.eq.1) then
+        call psi0m(4,pbar,sign,psi)
+      else
+        call psi0m(6,pbar,sign,psi)
+      endif
 
 C  get the f-fbar currents J21^mu, J43^mu, J65^mu
       call curr(1,psi(1,-1,2),psi(1,-1,1),j21)
@@ -745,10 +751,8 @@ C  graphs a and b (1,2): 2 bosons attached to 34 line
      &              p65,j65(0,isig5),braket,dummy)
 
 
-
                matr = -s1c(braket,j21(0,isig1),.true.,isig3,
      &              psi(1,isig3,3))
-
 
 
 #ifdef WITH_NLO 
@@ -1224,7 +1228,6 @@ c but should work for other VBF processes as well
       
       return
       end
-
 
 
 #ifdef WITH_NLO 

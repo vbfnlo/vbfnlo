@@ -6,7 +6,7 @@ c -----------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 zaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),ll,mu,h,N
       integer nA 
 
       ! possible lepton helicities:
@@ -63,7 +63,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -124,7 +124,7 @@ c -------------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:5), v(0:3,4)
       complex*16 zaa(0:5)
-      integer lsign(2:5,8),ll,mu,nu,h,N
+      integer lsign(2:5,8),ll,mu,h,N
       integer nA 
 
       ! possible lepton helicities:
@@ -181,7 +181,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 

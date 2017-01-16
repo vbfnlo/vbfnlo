@@ -1,6 +1,10 @@
+/itp/fast/robin/vbfnlo-installs/mpi-disable/bin/ggflo
+running on itpalbatros10
+command to run:
+/itp/fast/robin/vbfnlo-installs/mpi-disable/bin/ggflo
    
  -----------------------------------------------------------------
- VBFNLO, version 3.0.0 beta0 svn 7626
+ VBFNLO, version 3.0.0 beta2 GIT a9d9ebca
   (sub-program GGFLO)
  Comput. Phys. Commun. 180 (2009) 1661[arXiv:0811.4559 [hep-ph]]
  arXiV:1107.4038, arXiV:1207.4975, arXiv:1404.3940
@@ -8,18 +12,6 @@
  -----------------------------------------------------------------
    
    
-   
- Initialising LoopTools ..
-   
- ====================================================
-   FF 2.0, a package to evaluate one-loop integrals
- written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
- ====================================================
- for the algorithms used see preprint NIKHEF-H 89/17,
- 'New Algorithms for One-loop Integrals', by G.J. van
- Oldenborgh and J.A.M. Vermaseren, published in 
- Zeitschrift fuer Physik C46(1990)425.
- ====================================================
   
         Information on global parameters
  -----------------------------------------------
@@ -46,6 +38,7 @@
    MUR_USER              =  100.000    
    XIF                   =  1.00000    
    XIR                   =  1.00000    
+ Warning: cannot read value for key = SHOWTIMING. Using default value :  T
  
        information on the selected process 
  -----------------------------------------------
@@ -73,6 +66,8 @@
    
  Higgs mass =   125.00000000000000     
    
+   
+ Higgs is produced on-shell
   
  Information on scale setting in InitScales 
  -------------------------------------------
@@ -111,7 +106,7 @@
  ---------------------------
    total widths of Z0              :   2.508420 GeV
    total widths of W+ or W-        :   2.097673 GeV
-   total widths of Higgs           :   0.004134 GeV
+   total widths of Higgs           :   0.004128 GeV
    total widths of top quark       :   1.339784 GeV
   
      branching ratios
@@ -126,16 +121,16 @@
    Z -> down-type quark anti-quark : 15.3804024 %
    Z -> top anti-top               :  0.0000000 %
   
-   H -> WW                         : 20.4354245 %
-   H -> ZZ                         :  2.6896560 %
-   H -> bottom anti-bottom         : 58.6690752 %
+   H -> WW                         : 20.4626192 %
+   H -> ZZ                         :  2.5390121 %
+   H -> bottom anti-bottom         : 58.7482941 %
    H -> top anti-top               :  0.0000000 %
-   H -> charm anti-charm           :  3.4854547 %
-   H -> tau anti-tau               :  6.2580570 %
-   H -> mu anti-mu                 :  0.0221552 %
-   H -> gluon gluon                :  8.0404904 %
-   H -> gamma gamma                :  0.2380426 %
-   H -> Z gamma                    :  0.1616444 %
+   H -> charm anti-charm           :  3.4901610 %
+   H -> tau anti-tau               :  6.2665070 %
+   H -> mu anti-mu                 :  0.0221851 %
+   H -> gluon gluon                :  8.0513472 %
+   H -> gamma gamma                :  0.2383640 %
+   H -> Z gamma                    :  0.1815102 %
   
  Warning: cannot read value for key = MLL_OSONLY. Using default value :  T
  Warning: cannot read value for key = PTMISS_MIN. Using default value :    0.0000000000000000     
@@ -196,14 +191,16 @@
 
  ---------------------------------------------------
 
-  Random number generator initialized with seed =            0
+  Open error on file random.dat
+  Using default values.
   Random number generator initialized with seed =            0
  
           information on histogram config
  -----------------------------------------------
  
- SMEARING           =      T
- SMEAR_VALUE        =       0.20000000000000001     
+  Open error on file histograms.dat
+  Using default values.
+ SMEARING           =      F
  CALC_ERROR_GNUPLOT =      F
  CALC_ERROR_ROOT    =      F
  CALC_ERROR_1D      =      T
@@ -226,18 +223,10 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
  
  
  
+Starttime: 2016-12-01T11:06:09+0100
    
  Initialising FF ..
    
- ====================================================
-   FF 2.0, a package to evaluate one-loop integrals
- written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
- ====================================================
- for the algorithms used see preprint NIKHEF-H 89/17,
- 'New Algorithms for One-loop Integrals', by G.J. van
- Oldenborgh and J.A.M. Vermaseren, published in 
- Zeitschrift fuer Physik C46(1990)425.
- ====================================================
  ====================================================
    FF 2.0, a package to evaluate one-loop integrals
  written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
@@ -259,13 +248,15 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
   
   v(v) to WW tensors initialized to  (  0.0000000000000000     ,  0.0000000000000000     )
   External b-quark contributions are excluded
+ vbfquadffxc0b: error: isgnal should be +/-1, not            0
+         forgot to call vbfquadffini?
 
  iteration  1:
- integral =  3.161055E+01,  sigma = 1.122E+00
- efficacy = 4.420E-04,  raw efficacy = 4.420E-04
- f_positive = 7.646E-2,  f_zero = 9.235E-1,  f_negative = 0.000E+0
+ integral =  3.072765E+01,  sigma = 9.417E-01
+ efficacy = 4.957E-04,  raw efficacy = 4.957E-04
+ f_positive = 7.607E-2,  f_zero = 9.239E-1,  f_negative = 0.000E+0
  accumulated statistics:
- integral =  3.161055E+01,  sigma = 1.122E+00,  chi^2/iteration = 0.000E+00
+ integral =  3.072765E+01,  sigma = 9.417E-01,  chi^2/iteration = 0.000E+00
 
  MONACO:  grid written to file grid2_1.out.1
 
@@ -274,11 +265,11 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
 
  iteration  2:
- integral =  3.094049E+01,  sigma = 3.245E-01
- efficacy = 2.092E-03,  raw efficacy = 2.288E-04
- f_positive = 1.745E-1,  f_zero = 8.255E-1,  f_negative = 0.000E+0
+ integral =  3.146476E+01,  sigma = 3.542E-01
+ efficacy = 9.945E-04,  raw efficacy = 1.594E-04
+ f_positive = 1.757E-1,  f_zero = 8.243E-1,  f_negative = 0.000E+0
  accumulated statistics:
- integral =  3.099217E+01,  sigma = 3.117E-01,  chi^2/iteration = 3.290E+05
+ integral =  3.137341E+01,  sigma = 3.315E-01,  chi^2/iteration = 5.367E+05
 
  MONACO:  grid written to file grid2_1.out.2
 
@@ -287,25 +278,24 @@ HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
 
  iteration  3:
- integral =  3.102527E+01,  sigma = 1.919E-01
- efficacy = 1.486E-03,  raw efficacy = 1.457E-04
- f_positive = 2.127E-1,  f_zero = 7.873E-1,  f_negative = 0.000E+0
+ integral =  3.136197E+01,  sigma = 1.938E-01
+ efficacy = 1.793E-03,  raw efficacy = 1.501E-04
+ f_positive = 2.157E-1,  f_zero = 7.843E-1,  f_negative = 0.000E+0
  accumulated statistics:
- integral =  3.101618E+01,  sigma = 1.634E-01,  chi^2/iteration = 3.371E-01
+ integral =  3.136488E+01,  sigma = 1.673E-01,  chi^2/iteration = 5.376E-01
 
  MONACO:  grid written to file grid2_1.out.3
 
  MONACO input parameters:
  ndim = 12,  ncall =       2M,   rtype = 0
  nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
-  random number setting in monaco saved 
 
  iteration  4:
- integral =  3.089509E+01,  sigma = 1.246E-01
- efficacy = 2.387E-03,  raw efficacy = 1.421E-04
- f_positive = 2.295E-1,  f_zero = 7.705E-1,  f_negative = 0.000E+0
+ integral =  2.003706E+02,  sigma = 1.694E+02
+ efficacy = 5.640E-07,  raw efficacy = 3.050E-08
+ f_positive = 2.309E-1,  f_zero = 7.691E-1,  f_negative = 0.000E+0
  accumulated statistics:
- integral =  3.093961E+01,  sigma = 9.908E-02,  chi^2/iteration = 3.422E-01
+ integral =  3.136505E+01,  sigma = 1.673E-01,  chi^2/iteration = 7.665E-01
 
  MONACO:  grid written to file grid2_1.out.4
    
@@ -317,51 +307,40 @@ total number of errors and warnings
 vbffferr: no errors
 the warning system has been disabled
  
- vbfquadffopen: error: could not open /itp/scratch/rauch/vbfquadnlotest/binaryrelease30/share/VBFNLO/ff/fferr.dat                                                     
-         adjust path in vbfquadffopen (vbfquadffinit.f)
-vbfquadfferr:  warning cannot open fferr.dat with error texts
- 
-total number of errors and warnings
-===================================
-vbfquadfferr: no errors
-the warning system has been disabled
- 
   
   Vertex instabilites           0
-           total calls      829527
+           total calls      836654
            instabilities [%]   0.0000000000000000     
-  Box instabilites       13742
-           total calls     1659115
-           instabilities [%]  0.82827290453042735     
+  Box instabilites       14184
+           total calls     1673361
+           instabilities [%]  0.84763538770175717     
   Pentagon instabilites           0
-           total calls      815785
+           total calls      822470
            instabilities [%]   0.0000000000000000     
  
-  result (LO):    30.939613672778826       +-    9.9077211978565755E-002  fb    0.32022769588017025      %
+  result (LO):    31.365049615674042       +-   0.16729797071767427       fb    0.53338978502387113      %
  
  number of events in the last iteration =              2097152
- number of events after cuts in the last iteration =               487096
- maximal weight in the last iteration =   6.1720390018821340E-003
- average weight in the last iteration =   6.3427106525919380E-005
- ratio largest / average weight =   97.309168586461382     
- estimated number of unweighted events:        5005
+ number of events after cuts in the last iteration =               490154
+ maximal weight in the last iteration =   169.40498043284245     
+ average weight in the last iteration =   4.0879101436967015E-004
+ ratio largest / average weight =   414404.85352657322     
+ estimated number of unweighted events:           1
  
  
   
- 
-total number of errors and warnings
-===================================
-fferr: no errors
- 
+     Time: 2016-12-02T04:24:12+0100
   
   
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     VBFNLO 3.0.0 beta0 svn 7626
+     VBFNLO 3.0.0 beta2 GIT a9d9ebca
    
   GLUON FUSION (1-loop):
   PROCESS:         4600   :   p p -->  W+ W- j -->  ve e+ mu- vmu~ j
    
-  TOTAL result (LO):          30.939613672778826       +-    9.9077211978565755E-002  fb    0.32022769588017025      %
+  TOTAL result (LO):          31.365049615674042       +-   0.16729797071767427       fb    0.53338978502387113      %
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   
   
+  Endtime: 2016-12-02T04:24:12+0100
+  Runtime: 17:18:02 (62282 seconds)

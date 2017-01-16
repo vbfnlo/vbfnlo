@@ -9,16 +9,16 @@
 
       complex*16 H4G_LoopDD2a
       
-      integer i1,i2,i3,i4,i,j
-      real*8 q1sq,q2sq,q3sq,q4sq,q12sq,q34sq,q1234sq,
+
+      real*8 q1sq,q2sq,q3sq,q4sq,
      &       q1q2,q1q3,q1q4,q2q3,q2q4,q3q4,m
 
       complex*16 q1J1,q2J1,q3J1,q4J1,q1J2,q2J2,q3J2,q4J2,
      &           q1J3,q2J3,q3J3,q4J3,q1J4,q2J4,q3J4,q4J4,
      &           J1J2,J1J3,J1J4,J2J3,J2J4,J3J4
 
-      complex*16 C0_1M,C034,
-     &           D0_1M,D0234,Dij(3,13),  
+      complex*16 C034,
+     &           D0234,Dij(3,13),  
      &           E0L,Eij(4,46)
 
 c... Emu_nu_rho_sigma

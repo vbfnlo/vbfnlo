@@ -62,9 +62,9 @@ c*******************************************************************************
        IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       Real*8   p1t(0:3),p2t(0:3),p3t(0:3),p4t(0:3)
-       Real*8   p1sq, p1p2, p1p3, p1p4, p2sq, p2p3, p2p4, p3sq, 
+       Real*8   p1sq, p1p2, p1p3, p2sq, p2p3, p2p4, p3sq, 
      -          p3p4, p4sq
-       Real*8   s12, s13, s14, s23, s24, s34
+       Real*8   s12, s23
        Complex*16   p1mup2, p1mup3, p2mup2, p2mup3, p3mup2, p3mup3, 
      -          p4mup2, p4mup3
        Complex*16 mup2mup3!,mup2mup4,mup3mup4
@@ -74,18 +74,18 @@ c*******************************************************************************
 c       Complex*16 B012,B013,B014,B023,B024,B034
       Real*8 B012R,B013R,B014R,B023R,B024R,B034R
       Real*8 B012I,B013I,B014I,B023I,B024I,B034I
-       Complex*16 C0123,C0124,C0134,C0234
+
        Real*8 C0123R,C0124R,C0134R,C0234R
        Real*8 C0123I,C0124I,C0134I,C0234I
        Real*8 Cij123R(4,2),Cij124R(4,2),Cij134R(4,2),Cij234R(4,2)
        Real*8 Cij123I(4,2),Cij124I(4,2),Cij134I(4,2),Cij234I(4,2)
-       Complex*16 D01234
+
         Real*8 D01234R
         Real*8 D01234I
         Real*8 Dij1234R(13,3)
         Real*8 Dij1234I(13,3)
        Complex*16 SMB(4),SMG(4) ,Fa(5),F(27),K(1)
-       Real*8 FI(27),FR(27),FaI(5),FaR(5),PaR(9),PaI(9),KI(1),KR(1)
+       Real*8 FI(27),FR(27),PaR(9),PaI(9),KI(1),KR(1)
        Complex*16 barpsi_p4(2),psi_p1(2),mup2(0:3),mup3(0:3)
        Complex*16 SC1c,SC3rcc,SC1r,dotrc,dotcc,result(5),resultg(5)
        Complex*16 resultgauge(2),resultgaugeb(2),resultb 

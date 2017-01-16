@@ -60,9 +60,9 @@ c declare external functions
 c alfas, scales etc
 
       DOUBLE PRECISION x1,x2
-      DOUBLE PRECISION q12(0:4,3), q34(0:4,3), lnQomu(2:3), omxi(2:3), 
+      DOUBLE PRECISION lnQomu(2:3), omxi(2:3), 
      &       Ax(2:3), Bx(2:3), Cx(2:3), Dxi(2:3), tgs2oqsq(2:3), 
-     &       ln1mxi, lnrat, z, lnz, qsq
+     &       ln1mxi, lnrat, z, lnz
 
 c declare local variables
 
@@ -566,7 +566,7 @@ c  helicity selection
 
       DOUBLE PRECISION uuwwab(2,2:3), ddwwab(2,2:3), uuwwa, ddwwa
       DOUBLE PRECISION uuwwa2, ddwwa2, uuwwag, ddwwag
-      DOUBLE PRECISION pbar(0:3,3+n_v), qbar(0:4), y,q2,v2,q3,v3,sub(2:3), 
+      DOUBLE PRECISION pbar(0:3,3+n_v), qbar(0:4),q2,v2,sub(2:3), 
      1       dotrr, gs2(2:3), polcolq, polcolg
       DOUBLE PRECISION NCmatrixelt(0:1,3,2), temp, temp1, temp2, temp3
       INTEGER iflav(3), diagToPhys(3), FL_VVVg
@@ -575,9 +575,9 @@ c  helicity selection
       COMPLEX*16 zero
       PARAMETER (zero=(0d0,0d0))
 
-      LOGICAL loldp, ldebug, lres, ldebugsoft
+      LOGICAL ldebug, ldebugsoft
       SAVE gs2,polcolq,polcolg,uuwwab,ddwwab
-      INTEGER i,if1,icc1,j,k,mu
+      INTEGER i,if1,j,k,mu
       
       PARAMETER (ldebug=.false.)
       PARAMETER (ldebugsoft=.false.)

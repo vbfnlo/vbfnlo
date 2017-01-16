@@ -122,14 +122,14 @@
 *	local variables
 *
 	integer i,j,k,l,m,ii(10),ier2,ier1,ier0,irota,itype,ndiv,idum,
-     +		idone,ii4(6),is
+     +		idone,ii4(6)
 	logical lwsav,ldel2s,lwhich
 	DOUBLE COMPLEX c,cfac,cs,cd0i(5),csum,csi(7)
 	DOUBLE PRECISION del6,xpi4(13),dpipj4(10,13),piDpj4(10,10),
      +		absc,xmax,piDpj(21,21),xqi4(13),dqiqj4(10,13),
      +		qiDqj4(10,10),del2s,xmx4(6,6),dl4rij(6,6),xpi5(20),
      +		dpipj5(15,20),piDpj5(15,15),dl4ri(5),dl5ri(6),xlosn, 
-     +		d5sp,dl4q(6),psum
+     +		psum
 	save ii4
 *
 *	common blocks:
@@ -424,7 +424,7 @@
 	DOUBLE PRECISION xpi(21),xqi(21)
 	DOUBLE COMPLEX cf0,ce0i(6),cd0ij(6,6),cf0p,ce0ip(6),cd0ijp(6,6),
      +		ce0iq(6),cd0ijq(6,6)
-	integer inew(21,nrot),irota,ier1,i,j,k,l,icon,ialsav,init
+	integer inew(21,nrot),irota,ier1,i,k,l,icon,ialsav,init
 	parameter(icon=3)
 	logical lcon
 	save inew,init,lcon

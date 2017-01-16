@@ -119,7 +119,6 @@ c For most processes no multi-channel approach is used -> .TRUE.
       END
 
 
-
 c*************************************************************************
       LOGICAL FUNCTION VA_Choose(PS_number, mom, L, bos1)
 c*************************************************************************
@@ -476,7 +475,6 @@ c     external functions
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
 
 
-
       VAA_ps = .true.
 
       do mu=0,3
@@ -538,7 +536,6 @@ c     external functions
 
       DOUBLE PRECISION CLR,XM2,XMG,B,V,A
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
-
 
 
       WAA_ps = .true.
@@ -607,7 +604,6 @@ c     external functions
 
       DOUBLE PRECISION CLR,XM2,XMG,B,V,A
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
-
 
 
       ZAA_ps = .true.
@@ -683,7 +679,6 @@ c     external functions
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
 
 
-
       ZnAA_ps = .true.
 
       do mu=0,3
@@ -746,7 +741,6 @@ c     external functions
 
       DOUBLE PRECISION CLR,XM2,XMG,B,V,A
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
-
 
 
       AAA_ps = .true.

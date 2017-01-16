@@ -61,12 +61,12 @@ c alfas, scales etc
       real*8 x1,x2
       real*8 lnQomu(2:3), omxi(2:3), 
      &       Ax(2:3), Bx(2:3), Cx(2:3), Dxi(2:3), tgs2oqsq(2:3), 
-     &       ln1mxi, lnrat, z, lnz, qwpz(0:4,1:3), qwpa(0:4,1:3), qsq
+     &       ln1mxi, lnrat, z, lnz, qwpz(0:4,1:3), qwpa(0:4,1:3)
 
 c declare local variables
 
-      real*8 q_sf, wtot(0:3)
-      real*8 qa3,qa5,q35, dotrr
+      real*8 q_sf
+      real*8 dotrr
       external dotrr
 
       integer init/0/, I, J, mu
@@ -74,11 +74,10 @@ c declare local variables
 
 c declare variables for summation process
 
-      INTEGER ires, nmaxold, FSIGN(3+n_v), gsign
-      save nmaxold
+      INTEGER ires, FSIGN(3+n_v), gsign
 
-      integer physToDiag(3), nlo, nmin, nmax, nproc(8)
-      save nmin, nmax, nproc
+      integer physToDiag(3), nlo, nmin, nmax
+      save nmin, nmax
 
 c store contributions from subprocess ip in res(ip,ID) where
 c  ID = 1  : the real emission |M|^2 * pdf
@@ -249,9 +248,7 @@ c for the NLO contributions x1 = x*y in my notes with x=xuz, y=xi(i)
             pdf(i,1,3) = pdf(i,1,1)
          enddo
       endif
-      endif        
-
-
+      endif
 
 
       x2 = xi(2)*xuz
@@ -316,7 +313,6 @@ C error of Int_x1^1 dz log(1-z) is less than 1E-4/(1-x1). see notes p 28.4
      1                     *1d0/(1d0-z)
          endif
       enddo
-
 
 
 C********************************************************************
@@ -523,7 +519,6 @@ c***  end of extra process evaluation for hadronic decay  ***
 c*****************  end of process evaluation  *********************
 
 
-
       SELECT CASE(procid)
       CASE(WPhadZ,WMhadZ)
        call hadDecayFactor_W(finalquarks(1), abs(mjj2(v(0,1,1),v(0,2,1))), N_gen_W, fac_W)
@@ -685,13 +680,11 @@ c  helicity selection
       integer jsig, jsig1, jsig3, jsig5
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 c
-      real*8 udwzb(2,2:3), ddwwb(2,2:3),
-     &       udwz, ddww, udwzg, ddwwg,
-     &       udwzr(0:3), ddwwr(0:3)
-      real*8 udwz2, ddww2
-      real*8 pbar(0:3,3+n_v), qbar(0:4), y,q2,v2,q3,v3,sub(2:3), 
+      real*8 udwzb(2,2:3),
+     &       udwz, udwzg
+      real*8 pbar(0:3,3+n_v), qbar(0:4),q2,v2,sub(2:3), 
      1       e_in(2), dotrr, gs2(2:3), polcolq, polcolg
-      real*8 xa
+
       double precision NCmatrixelt(3,2), temp, temp2, temp3, temp1
       integer iflav(3), diagToPhys(3), FL_VVg
       external dotrr, FL_VVg
@@ -699,11 +692,11 @@ c
       complex*16 zero
       parameter (zero=(0d0,0d0))
 
-      logical ChargedCurrent, sametype, oneAntiparticle
-      logical loldp, ldebug, lres
+
+      logical ldebug, lres
       data e_in/0d0,0d0/
-      save e_in,loldp, gs2,polcolq,polcolg, udwzb,ddwwb
-      integer i,if1,icc1,j,k,mu, fc(6), fcb(6)
+      save e_in,gs2,polcolq,polcolg, udwzb
+      integer i,if1,j,k,mu
       
       parameter (ldebug=.false.)
       PARAMETER (lres=.false.)
@@ -813,8 +806,6 @@ c calculation of matrix elemnets for q qb -> W Z g:
 
                NCmatrixelt(j,2)=udwz   !Born for momentum
                                           !configuration 2 and 3
-           
-
 
 
 c save matrix elements for later use with initial gluons
@@ -830,9 +821,6 @@ c save matrix elements for later use with initial gluons
 #endif
 
 
-
-
-
          iflav(3) = 0           ! final state gluon id
          do if1=2,(nfl/2)*2,2
 
@@ -845,8 +833,6 @@ c save matrix elements for later use with initial gluons
              endif
 
 
-
-
                k=FL_VVg(iflav,2)
                if(lok(1)) then
                   res(k,1)=pdf(sign1*iflav(1),1,1)  !1 for j=2;3 for j=3
@@ -855,7 +841,6 @@ c save matrix elements for later use with initial gluons
                else
                      res(k,1) = 0
                endif
-            
 
 
                if ( (nlo.eq.1) .and. (lok(2).or.lok(3)) ) then
@@ -957,7 +942,6 @@ c----------------------------------------------------------------------
             endif
 #endif
          endif !nlo
-
 
 
             iflav(j-1) = 0
@@ -1063,15 +1047,6 @@ c
 c   end subroutine qq_WPZj
 c
 c*****************************************************************
-
-
-
-
-
-
-
-
-
 
 
 

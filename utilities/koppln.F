@@ -4,6 +4,9 @@ c*************************************************************************
 c     This is the interface to the koppln-routine for the initialization
 c     of coupling constants. 
 c*************************************************************************
+       use globalvars, only: lglobalprint
+       use readinput
+       use VBFNLO_HIGGSTO, only: VBFNLO_HIGGSTO_gridHt
 
       implicit none
 
@@ -65,15 +68,15 @@ c temporary variables
       double precision srt
       external srt
 
-
       call clearwidths
       
-
       call loadfile("vbfnlo.dat",.true.)
 
+      if (lglobalprint) then
       print *," "
       print *,"              Physics parameters"
       print *,"-----------------------------------------------"
+      endif
 
 *sophy: read model (SM/MSSM) and HiggsType (SM/h0/H0/A0)
       call read_Int("HTYPE",HiggsType,0)
@@ -98,9 +101,7 @@ c set ckm values, this could be an input at some point
          vckm = reshape( (/1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0 /),(/3,3/) )
       endif
 
-
       call closefile
-
 
       if (HiggsType .ne. 0) then
          call loadfile("susy.dat",.true.)
@@ -120,7 +121,7 @@ c set ckm values, this could be an input at some point
 *sophy: setting SLHA file path name
             call read_string("SLHA_FILE",slhaFILE,"sps1a.slha")
             path = GetInputPath()
-            slhaFILE = path(1:len_trim(path))//"/"//slhaFILE
+            slhaFILE = trim(path)//"/"//slhaFILE
 *         write(*,*)'Reading from SLHA file =', slhaFILE
 *sophy:  reading SLHA file. Argument is debugging
             call readSLHA(1)
@@ -151,6 +152,15 @@ c set ckm values, this could be an input at some point
 c get width from HXSWG Table
            if (xgh .eq. -998d0) call VBFNLO_HIGGSTO_gridHt(XMH,XGH)
          endif
+      end if
+
+* reading W width
+      if (replace(xgw,3)) then
+        call read_Real("WWIDTH",xgw,-999d0,.true.)
+      end if
+* reading Z width
+      if (replace(xgz,3)) then
+        call read_Real("ZWIDTH",xgz,-999d0,.true.)
       end if
 
 c read in additional parameters for two-Higgs model
@@ -378,6 +388,7 @@ c get width from HXSWG Table
 
 
 ** Writing out SM / MSSM info 
+      if (lglobalprint) then
       if (model .eq. 1) then
          write(*,*)'  '
          write(*,*)'Running in the SM'
@@ -393,6 +404,7 @@ c get width from HXSWG Table
      &             'or 3 (Two-Higgs)'
          stop
       end if
+      endif
 
       call closefile
 
@@ -488,7 +500,6 @@ c move result into Higgs2 parameters and copy back
 
  
       if (spin2switch) then
-#ifdef WITH_SPIN2
          Select Case (procID)
          Case(ZZjj_lnu, ZZjj_ll, WPWMjj, WPZjj, WMZjj, AAjj, Sp2jj_WW,
      &        Sp2jj_ZZ_ll, AAjjjLO, Sp2jjjLO_WW, Sp2jjjLO_ZZ_ll, 
@@ -498,19 +509,11 @@ c move result into Higgs2 parameters and copy back
             call read_spin2coupl
             call spin2width
          CASE DEFAULT
-            print *," Error: spin-2 couplings not available" //
-     &           " for this process       !"
+            print *," Error: spin-2 couplings not available for this process!"
             stop		
          END Select
-#else
-         print *,"Sorry! In order to run in the spin2 model you must" //
-     &        " enable it when configuring VBFNLO, using the flag" //
-     &        " --enable-spin2"
-         stop
-#endif
       else if (procID .eq. AAjj) then
-         print *,"Sorry! Process 240 (pp->AAjj) only runs in spin-2" //
-     &        " models"
+         print *,"Sorry! Process 240 (pp->AAjj) only runs in spin-2 models"
       end if
 
 !     call coupling settings for hadronic boson decays
@@ -735,12 +738,14 @@ C
 
 
       SUBROUTINE KOPPLN(INFO,e,g2,s,c,z,w,q,g)
+          use globalvars, only: lglobalprint
+          use VBFNLO_HIGGSTO, only: VBFNLO_HIGGSTO_pole
 
       implicit none
 
       double complex  f_tau_t, f_tau_b, f_tau_W, F_t, F_b, F_W, dum
-      double precision  beta0, beta1, gamma0, gamma1
-      double precision  mllb
+      double precision  beta0
+
       double precision  zero
       parameter ( zero = 0.0d0 )
       integer  info, i, j, k
@@ -786,10 +791,10 @@ C
 ** coupling parameters, widths, ..
       double precision e,g,s,c,g2,z,w,q, 
      & gwh, gzh, decw, gwne, gwud, gwtb, decz, gznn, gzee, gzuu, gzdd,
-     & gztt, xgz, fh, y1,y2,x,xgw,xlw,xlz,dhzz,dhwwst,
-     & ghww,ghzz,ghtt, betac,betab,betat, qcdc,qcdb,qcdt,
+     & gztt, xgz,xgw,xlw,xlz,
+     & ghww,ghzz,ghtt,betat,qcdt,
      & ghcc,ghbb,ghtau,ghgg,ghgam,tau_t,eta_p,eta_m,tau_b,tau_w,xgh
-      double precision xmMU,betaMU,ghmu,gh4f,gamt,alphas5,alphas
+      double precision xmMU,betaMU,ghmu,gamt,alphas5,alphas
       double precision A_12_t, A_12_b
       external alphas5, alphas
       double precision BHGAMZ,GHGAMZ
@@ -821,6 +826,11 @@ c function to calculate phase space reduction for heavy fermionic decays
 ** reasonable value
       logical replace
       external replace
+
+      double precision hww_width,gaus
+      external hww_width, gaus
+
+      double precision relerr, abserr
 
 c
 c mass dependence for H--->W*W,Z*Z (From Gunion et al., Higgs Hunters Guide)
@@ -1093,7 +1103,7 @@ c
          GWTB = BWTB*XGW
       end if
 
- 31   if (replace(XGW,0)) then
+ 31   if (replace(XGW,3)) then
          XGW  = 3.d0*GWNE + 2.d0*GWUD + GWTB
       end if
 
@@ -1137,7 +1147,7 @@ c
          GZTT = BZTT*XGZ
       end if
 
- 32   if (replace(XGZ,0)) then
+ 32   if (replace(XGZ,3)) then
          XGZ  = 3.d0*GZNN + 3.d0*GZEE + 2.d0*GZUU + 3.d0*GZDD + GZTT
       end if
       BZNN = GZNN/XGZ
@@ -1205,7 +1215,7 @@ c     subroutines below use  BKOPOUshort common block
 c **********  First h -> Z*Z* **********************
       if (replace(bhzz,3) .or. replace(xgh,3)) then
 
-         call flavor_sum(ghzz)
+         call hzz_width_flavor_sum(ghzz)
          if (replace(xgh,3) .and. (.not. replace(bhzz,3))) then
             xgh = bhzz*ghzz
          end if
@@ -1216,12 +1226,14 @@ c **********  First h -> Z*Z* **********************
 
 c*********** Next h -> W*W* *************************
       if (replace(bhww,3) .or. replace(xgh,3)) then
-         call initbosid(4)
-         call calZ(0.0d0,xmin)      
-         call calZ(xmh**2,xmax)
+         call calZ(0.0d0,xmin,4)      
+         call calZ(xmh**2,xmax,4)
          if (ldebug) print*," xmin,xmax = ",xmin,xmax
         
-         call quad2d(xmin,xmax,ghww)
+         relerr = 1d-6
+         abserr = 1d-10
+         ghww = gaus(hww_width,xmin,xmax,relerr,abserr)   !partial width for h-> V*V* -> all
+
          if(ghww.lt.0.0d0) ghww = 0.0d0
          if (replace(xgh,3) .and. (.not. replace(bhww,3))) then
             xgh = bhww*ghww
@@ -1512,7 +1524,7 @@ c     W loop
          if(with_anomHiggs) call fillanomhcoupl(2,A_sum,dum,loopfac)
 c     
          if(xmh.gt.xmz) then
-            call width_hgamff(ghgamz)
+            call hzgamma_width(ghgamz)
          else
             ghgamz = 0.0d0
          endif
@@ -1525,7 +1537,7 @@ c
       end if  ! end of Higgs decay to gamma Z
 
 c H total decay width and branching ratios
- 50   if (replace(xgh,3)) then
+      if (replace(xgh,3)) then
          XGH = GHWW + GHZZ + GHBB + GHTT + GHCC + GHTAU + GHMU 
      $        + GHGG + GHGAM + GHGAMZ
       end if
@@ -1736,10 +1748,10 @@ c
 c     The subroutine below calculate the partial width for H-> V*V* semi-
 c     analytically.
       
-      function fun(xx,yy)
+      function hww_width_amp(xx,yy)
       implicit none
 
-      double precision lamb1,lamb2,xx,yy,fun,
+      double precision lamb1,lamb2,xx,yy,hww_width_amp,
      $     fun5de,fun5do,funsm5de,funsm
 c     
 #include "global.inc"
@@ -1749,31 +1761,25 @@ c
       common/hcoupl/g5hvv,lambda5
       double precision XM2s(6),XMGs(6)
       COMMON /BKOPOUshort/ XM2s,XMGs
-      double precision xmv,xmw, xmh
+      double precision xmv, xmh
       double precision lambda,constants
-      double precision Q2(2),prop1,prop2,DV(2:4,2)
-      integer id,bos,bos1,bos2,i,j
-      common /partid/ id
+      double precision Q2(2)
+      integer id,bos,bos1,bos2
       double complex ahvv(3,4,4), ahvvL(3,4,4)
       common/tensorhvv/ ahvv, ahvvL
 
-      bos = id
-      if(id.eq.4) then
-         bos1 = 3
-         bos2 = 4
-      else
-         bos1 = 2
-         bos2 = 2
-      endif
+      ! this is no longer used for z bosons
+      bos1 = 3
+      bos2 = 4
+
       xmv = sqrt(xm2s(bos1))
       xmh = sqrt(xm2s(6))
-      xmw = sqrt(xm2s(4))
 c      print*,"mh=",xmh
-      call calQ2(xx,Q2(1))
+      call calQ2(xx,Q2(1),4)
 c      Q2(1) = xx 
       lamb1 = Q2(1)/xmh**2
 c      
-      call calQ2(yy,Q2(2))
+      call calQ2(yy,Q2(2),4)
 c      Q2(2) = yy
       lamb2 = Q2(2)/xmh**2
 c
@@ -1788,11 +1794,6 @@ c
       funsm = funsm * constants
 
   
-      funsm5de = 0d0
-      fun5do = 0d0
-      fun5de = 0d0
-
-
 c     cp odd contribution
       fun5do = lambda * (1.0d0 + lamb1**2 + lamb2**2 - 
      1     2.0d0*lamb1*lamb2 -  2.0d0 * lamb1 -  2.0d0 * lamb2)
@@ -1809,7 +1810,6 @@ c     cp even contribution
      $     xmh**7/( 8.0d0 * xmv**4 * (PI**3) * (lambda5**2))
       fun5de = fun5de*constants
 
-
 c     interefence of SM and CP even 
       funsm5de = lambda * (1.0d0 - lamb1 - lamb2) 
      2     *lamb1*lamb2
@@ -1820,58 +1820,31 @@ c
      $     3.0d0*xmh**5/( 8.0d0 * xmv**4 * (PI**3) * lambda5)
       funsm5de = funsm5de * constants
 
-c     fun = fun * xmgs(bos1)*xmgs(bos2) !for no BW map
-c      do i = 2,4
-c         do j=1,2 ! i is bos and j is 1 or 2 
-c            Dv(i,j) = 1.0d0/((Q2(j) - xm2s(i))**2 + xmgs(i)**2)
-c         enddo
-c      enddo
-c      
-c      fun = fun * Dv(bos1,1) * Dv(bos2,2)
-*      end if
 
-
-      fun = funsm + funsm5de + fun5do + fun5de !sum 
-
-
-      return 
-
+      hww_width_amp = funsm + funsm5de + fun5do + fun5de !sum 
       end
 
 
-********************************************************************************
-********************************************************************************
-c
-      subroutine calQ2(x,Q2)
+      subroutine calQ2(x,Q2,id)
       implicit none
       double precision XM2s(6),XMGs(6)
       COMMON /BKOPOUshort/ XM2s,XMGs
       double precision x,Q2
-      integer id                !id = 3,4 W"s 2 is Z
-      common /partid/ id
+      integer id
 c      for W bosons
       Q2 = xm2s(id) + xmgs(id) * dtan(x)
-      return
-
       end
 
 
-********************************************************************************
-********************************************************************************
-c
-      subroutine calZ(QQ2,Z)
+      subroutine calZ(QQ2,Z,id)
       implicit none
       double precision XM2s(6),XMGs(6)
       COMMON /BKOPOUshort/ XM2s,XMGs
       double precision QQ2,Z
       integer id
-      common /partid/ id
 
 c      print*,"mv=",sqrt(xm2s(id))
       Z = datan((QQ2 - xm2s(id))/xmgs(id))
-c      
-      return
-
       end
 
 
@@ -1881,255 +1854,134 @@ c
       subroutine lambda1(x,y,z,lambda)
       implicit none
       double precision x,y,z,lambda2, lambda
-c
+
       lambda2 = x**2 + y**2 + z**2 - 2.0d0*x*y - 2.0d0*y*z - 2.0d0*x*z
       if (lambda2.gt.0d0) then
          lambda = sqrt(lambda2)
       else
          lambda = 0d0
       endif
-      return
-
       end
 
 
-********************************************************************************
-********************************************************************************
-
-      subroutine quad2d(x1,x2,ss)
+      function hww_width_1d(y)
       implicit none
-      double precision eps
-      parameter(eps = -1.0d-5)
-      double precision ss,x1,x2,h,gaus2
-      external h
-      external gaus2
-c
-      ss = gaus2(h,x1,x2,eps)   !partial width for h-> V*V* -> all
-      return
+      double precision hww_width_1d,y,hww_width_amp,x
+      common/x_ghww/ x
 
+      hww_width_1d = hww_width_amp(x,y)
       end
 
 
-********************************************************************************
-********************************************************************************
-c
-      function ff2(yy)
+      function hww_width(xx)
       implicit none
-      double precision ff2,yy,fun,x,y
-      common/xy/ x,y
-
-      y = yy
-      
-      ff2 = fun(x,y)
-      return
- 
-      end
-
-
-********************************************************************************
-********************************************************************************
-c
-      function h(xx)
-      implicit none
-      double precision eps
-      parameter(eps = 1.0d-7)
-      double precision h,xx,y1,y2,x,y,ff2
-      common /xy/ x,y
-      double precision ss,gaus
-      external ff2
+      double precision hww_width
+      double precision xx,y1,y2,x,hww_width_1d
+      common /x_ghww/ x
+      double precision gaus
+      external hww_width_1d
       external gaus
       double precision Q2,q2max
       double precision  xmh
       double precision XM2s(6),XMGs(6)
       COMMON /BKOPOUshort/ XM2s,XMGs
-      integer id,boson
-      common /partid/ id
-c     
+
+      double precision relerr, abserr
+
       xmh = sqrt(xm2s(6))
       x = xx
-      call calQ2(x,Q2)
-c      Q2 = x
+      call calQ2(x,Q2,4)
       q2max = (xmh - sqrt(Q2))**2
-      call calZ(q2max,y2) 
-c      y2 = q2max                !no BW map
-      call calZ(0.0d0,y1)
-c      y1 = 0.0d0
+      call calZ(q2max,y2,4) 
+      call calZ(0.0d0,y1,4)
 
-      ss = gaus(ff2,y1,y2,eps)
-      if(id.eq.2) then          !symmetry factor of h->ZZ
-         h =ss/2.0d0
-      else
-         h = ss
-      endif
+      relerr = 1d-6
+      abserr = 1d-10
 
-      return
-
-      end
-
-
-********************************************************************************
-********************************************************************************
-
-      subroutine initbosid(boson)
-      implicit none
-      integer id,boson
-      common /partid/ id
-
-      id = boson
+      hww_width = gaus(hww_width_1d,y1,y2,relerr,abserr)
+      ! this routine is no longer used for z bosons
+      ! if(id.eq.2) then          !symmetry factor of h->ZZ
+      !    h =ss/2.0d0
+      ! else
+      !    h = ss
+      ! endif
 
       end
 
 
-********************************************************************************
-********************************************************************************
-c
-* THIS IS ITERATIVE INTEGRATION PROCEDURE                               
-* ORIGINATES  PROBABLY FROM CERN LIBRARY                                
-* IT SUBDIVIDES INTEGRATION RANGE UNTIL REQUIRED PRECISION IS REACHED    
-* PRECISION IS A DIFFERENCE FROM 8 AND 16 POINT GAUSS ITEGR. RESULT     
-* EEPS POSITIVE TREATED AS ABSOLUTE PRECISION                           
-* EEPS NEGATIVE TREATED AS RELATIVE PRECISION                           
-      DOUBLE PRECISION FUNCTION GAUS(F,A,B,EEPS)                        
-*     *************************             
+! this is a numerical integration function \int_a^b f
+! it's based on cernlibs gaus(f,a,b,eeps) and has some overlap with
+! the quadpack routines
+!
+! eeps > 0: absolute precision
+! eeps < 0: relative precision
+      recursive double precision function gaus(f,a,b,relerr,abserr)
       implicit none
 
-      double precision A, B, AA, BB, C1, C2, CONST, DELTA, eeps, EPS
-      double precision F, S8, S16, U, W, X, Y
+      double precision, intent(in) :: a, b
+      double precision, intent(in) :: relerr, abserr
+      double precision :: AA, BB, C1, C2, DELTA
+      double precision S8, S16, U, Y
       integer i
       integer count
-      EXTERNAL F                                                        
-      DIMENSION W(12),X(12)                                             
-      DATA CONST /1.0D-19/                                              
-      DATA W                                                            
-     1/0.10122 85362 90376, 0.22238 10344 53374, 0.31370 66458 77887,   
-     2 0.36268 37833 78362, 0.02715 24594 11754, 0.06225 35239 38648,   
-     3 0.09515 85116 82493, 0.12462 89712 55534, 0.14959 59888 16577,   
-     4 0.16915 65193 95003, 0.18260 34150 44924, 0.18945 06104 55069/   
-      DATA X                                                            
-     1/0.96028 98564 97536, 0.79666 64774 13627, 0.52553 24099 16329,   
-     2 0.18343 46424 95650, 0.98940 09349 91650, 0.94457 50230 73233,   
-     3 0.86563 12023 87832, 0.75540 44083 55003, 0.61787 62444 02644,   
-     4 0.45801 67776 57227, 0.28160 35507 79259, 0.09501 25098 37637/   
+
+      double precision f
+      external f
+
+      double precision, parameter :: numacc = 1.0e-19
+      double precision, parameter, dimension(12) :: W = (
+     1/0.10122 85362 90376, 0.22238 10344 53374, 0.31370 66458 77887,
+     2 0.36268 37833 78362, 0.02715 24594 11754, 0.06225 35239 38648,
+     3 0.09515 85116 82493, 0.12462 89712 55534, 0.14959 59888 16577,
+     4 0.16915 65193 95003, 0.18260 34150 44924, 0.18945 06104 55069/),
+     & X = (
+     1/0.96028 98564 97536, 0.79666 64774 13627, 0.52553 24099 16329,
+     2 0.18343 46424 95650, 0.98940 09349 91650, 0.94457 50230 73233,
+     3 0.86563 12023 87832, 0.75540 44083 55003, 0.61787 62444 02644,
+     4 0.45801 67776 57227, 0.28160 35507 79259, 0.09501 25098 37637/)
 
       count = 0
 
-      EPS=dABS(EEPS)                                                    
-      DELTA=CONST*dABS(A-B)                                             
-      GAUS=0.d0                                                         
-      AA=A                                                              
-    5 Y=B-AA             
-      IF(dABS(Y) .LE. DELTA) RETURN                                     
-    2 BB=AA+Y              
-      count = count + 1
-      if (count .ge. 150000) then
-         write(*,*)'Sorry!  We are having problems calculating a '
-         write(*,*)'decay width.  Try altering the anomalous couplings'
-         write(*,*)'or putting the width in by-hand using a SLHA file'
-         stop
-      end if      
-      C1=0.5d0*(AA+BB)                                                  
-      C2=C1-AA                                                          
-      S8=0.d0                                                           
-      S16=0.d0                                                          
-      DO I=1,4                                                        
-         U=X(I)*C2                                                         
-         S8=S8+W(I)*(F(C1+U)+F(C1-U))   
-      end do
-      DO I=5,12                                                       
-         U=X(I)*C2                                                         
-         S16=S16+W(I)*(F(C1+U)+F(C1-U)) 
-      end do
-      S8=S8*C2                                                          
-      S16=S16*C2           
-      IF(EEPS.LT.0D0) THEN       
-        IF(dABS(S16-S8) .GT. EPS*dABS(S16)) GO TO 4                     
-      ELSE                
-        IF(dABS(S16-S8) .GT. EPS) goto 4
-      ENDIF                                                             
-      GAUS=GAUS+S16 
-      AA=BB                                       
-      GO TO 5                                                          
-    4 Y=0.5d0*Y                        
-      IF(dABS(Y) .GT. DELTA) GOTO 2                                     
-      PRINT 7                                                           
-      GAUS=0.d0                   
-      RETURN                                                            
-    7 FORMAT(1X,36HGAUS  ... TOO HIGH ACCURACY REQUIRED)                
+      delta=numacc*abs(A-B)
+      gaus=0.d0
+      AA=A
+      Y=B-A
+      do while (abs(y)>= delta)
+          s16=0
+          s8=1e20
+          do while (abs(S16-S8) > max(relerr*abs(S16), abserr))
+              BB=AA+Y
+              count = count + 1
+              if (count .ge. 150000) then
+                  write(*,*)'Sorry!  We are having problems calculating a '
+                  write(*,*)'decay width.  Try altering the anomalous couplings'
+                  write(*,*)'or putting the width in by-hand using a SLHA file'
+                  stop
+              end if
 
-      END                                                               
+              C1=0.5d0*(AA+BB)
+              C2=C1-AA
+              S8=0.d0
+              DO I=1,4
+                  S8=S8+W(I)*(F(C1+x(i)*c2)+F(C1-x(i)*c2))
+              end do
+              S16=0.d0
+              DO I=5,12
+                  U=X(I)*C2
+                  S16=S16+W(I)*(F(C1+U)+F(C1-U))
+              end do
+              S8=S8*C2
+              S16=S16*C2
 
+              Y=0.5d0*Y
+              if (abs(y) <= delta) return ! this should not happen for normal integrands
+          enddo
+          GAUS=GAUS+S16
+          AA=BB
+          Y=B-AA
+      enddo
 
-********************************************************************************
-********************************************************************************
-                                                                        
-      DOUBLE PRECISION FUNCTION GAUS2(F,A,B,EEPS)                       
-*     *************************       
-      implicit none
-
-      integer count
-
-      double precision A, B, AA, BB, F, EPS, EEPS, CONST
-      double precision C1, C2, DELTA, S8, S16, U, W, X, Y
-      integer i
-      EXTERNAL F                                                        
-      DIMENSION W(12),X(12)                                             
-      DATA CONST /1.0D-19/                                              
-      DATA W                                                            
-     1/0.10122 85362 90376, 0.22238 10344 53374, 0.31370 66458 77887,   
-     2 0.36268 37833 78362, 0.02715 24594 11754, 0.06225 35239 38648,   
-     3 0.09515 85116 82493, 0.12462 89712 55534, 0.14959 59888 16577,   
-     4 0.16915 65193 95003, 0.18260 34150 44924, 0.18945 06104 55069/   
-      DATA X                                                            
-     1/0.96028 98564 97536, 0.79666 64774 13627, 0.52553 24099 16329,   
-     2 0.18343 46424 95650, 0.98940 09349 91650, 0.94457 50230 73233,   
-     3 0.86563 12023 87832, 0.75540 44083 55003, 0.61787 62444 02644,   
-     4 0.45801 67776 57227, 0.28160 35507 79259, 0.09501 25098 37637/   
-
-      count = 0
-
-      EPS=dABS(EEPS)                                                    
-      DELTA=CONST*dABS(A-B)                                             
-      GAUS2=0.D0                                                        
-      AA=A                                                              
-    5 Y=B-AA                                                          
-      IF(dABS(Y) .LE. DELTA) RETURN                                     
-    2 BB=AA+Y                          
-      count = count + 1
-      if (count .ge. 150000) then
-         write(*,*)'Sorry!  We are having problems calculating a '
-         write(*,*)'decay width.  Try altering the anomalous couplings'
-         write(*,*)'or putting the width in by-hand using a SLHA file'
-         stop
-      end if      
-      C1=0.5d0*(AA+BB)                                                  
-      C2=C1-AA                                                          
-      S8=0.d0                                                           
-      S16=0.d0                                                        
-      DO 1 I=1,4             
-      U=X(I)*C2         
-    1 S8=S8+W(I)*(F(C1+U)+F(C1-U))                                      
-
-      DO 3 I=5,12                                                       
-      U=X(I)*C2                                                         
-    3 S16=S16+W(I)*(F(C1+U)+F(C1-U))                                    
-      S8=S8*C2                                                          
-      S16=S16*C2                                                     
-      IF(EEPS.LT.0D0) THEN                                              
-        IF(dABS(S16-S8) .GT. EPS*dABS(S16)) GO TO 4 
-      ELSE                                                              
-        IF(dABS(S16-S8) .GT. EPS) GO TO 4 
-      ENDIF                                                             
-      GAUS2=GAUS2+S16                                                   
-      AA=BB                                                             
-      GO TO 5                                                           
-    4 Y=0.5d0*Y                                                         
-      IF(dABS(Y) .GT. DELTA) GOTO 2                                     
-      PRINT 7                                                           
-      GAUS2=0.D0                                                        
-      RETURN                                                            
-    7 FORMAT(1X,36HGAUS2 ... TOO HIGH ACCURACY REQUIRED)                
-
-      END                                                               
+      END
 
 
 ********************************************************************************
@@ -2212,6 +2064,7 @@ c
 c	edited by Barbara Jager on March 10, 2005
 
 	subroutine ctrans(xmb)
+          use globalvars, only: ldoblha
 c     some coupling parameters are modified here. (This should be corrected.)
 c***********************************************************************
 c 	This subroutine sets up the couplings, masses and widths 
@@ -2489,7 +2342,6 @@ c--------------------------------------------------------------------------
 
 
       end
-
 
 
 ********************************************************************************

@@ -140,9 +140,9 @@ C             If data file not initialized, do so.
          Endif
 c add input file path to filename
          path=GetPdfsetsPath()
-         path = path(1:len_trim(path))//"/"//Tablefile
+         path = trim(path)//"/"//Tablefile
          Open(IU, File=path, Status='OLD', Err=100)
- 21      Call ReadTbl (IU)
+         Call ReadTbl (IU)
          Close (IU)
          Isetold=Iset
       Endif
@@ -284,7 +284,7 @@ c
       double precision fvec,fij,xvpow,onep,xpow,q,dfq,dfx,ff,fx
       integer nqvec,ientry,ju,jtmp,i,ip,it,j1,jlq,jlx,jm,jq,jx
       double precision const1,const2,const3,const4,const5,const6
-      double precision g1,g4,h00,s12,s13,s1213,s23,s24,s2324,sdet
+      double precision g1,g4,h00,s12,s13,s1213,s23,s24,sdet
       double precision sf2,sf3,ss,svec1,svec2,svec3,svec4,sy2,sy3
       double precision t12,t13,t23,t24,t34,tdet,s34,s2434,tf2,tf3
       double precision tmp,tmp1,tmp2,tt,tvec1,tvec2,tvec3,tvec4

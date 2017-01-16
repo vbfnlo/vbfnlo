@@ -1,47 +1,51 @@
-bin_PROGRAMS = vbfnlo 
-vbfnlo_SOURCES = vbfnlo_main.F
-vbfnlo_LDADD = $(top_builddir)/lib/libVBFNLO.la \
-               $(top_builddir)/loops/libVBFNLOLoops.la \
-               $(top_builddir)/utilities/libVBFNLOUtilities.la
-vbfnlo_FFLAGS = $(AM_FFLAGS)
+ADDSOURCES =
+ADDFFLAGS = 
+ADDLDADD =
 
 if WITH_LOOPS
-vbfnlo_SOURCES += FFini.F
+ADDSOURCES += FFini.F90
 if WITH_QUAD
-vbfnlo_FFLAGS += -DWITH_QUAD
+ADDFFLAGS += -DWITH_QUAD
 endif
 endif
 
 if WITH_NLO
-vbfnlo_FFLAGS += -DWITH_NLO
+ADDFFLAGS += -DWITH_NLO
 endif
 
 if WITH_ROOT
-vbfnlo_FFLAGS += -DWITH_ROOT
+ADDFFLAGS += -DWITH_ROOT
 endif
 
 if WITH_LOOPTOOLS
-vbfnlo_SOURCES += LTools.F
-vbfnlo_LDADD += $(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS) 
-vbfnlo_FFLAGS += -DWITH_LT 
+ADDSOURCES += LTools.F
+ADDLDADD += $(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS) 
+ADDFFLAGS += -DWITH_LT 
 
 if NEW_LT
-vbfnlo_FFLAGS += -DLT_NEW
+ADDFFLAGS += -DLT_NEW
 endif
 if OLD_LT
-vbfnlo_FFLAGS += -DLT_OLD
+ADDFFLAGS += -DLT_OLD
 endif
 endif
 
 if WITH_FEYNHIGGS 
-vbfnlo_LDADD += $(FEYNHIGGS_LDFLAGS) $(FEYNHIGGS_LIBS) 
-vbfnlo_FFLAGS += -DWITH_FH
+ADDLDADD += $(FEYNHIGGS_LDFLAGS) $(FEYNHIGGS_LIBS) 
+ADDFFLAGS += -DWITH_FH
 endif
+
+bin_PROGRAMS = vbfnlo 
+vbfnlo_SOURCES = vbfnlo_main.F90 $(ADDSOURCES)
+vbfnlo_LDADD = $(top_builddir)/lib/libVBFNLO.la \
+               $(top_builddir)/loops/libVBFNLOLoops.la \
+               $(top_builddir)/utilities/libVBFNLOUtilities.la \
+               $(ADDLDADD)
+vbfnlo_FFLAGS = $(AM_FFLAGS) $(ADDFFLAGS)
 
 bin_PROGRAMS += vbfnlo_olpread 
 vbfnlo_olpread_SOURCES = vbfnlo_olpread.cxx
 vbfnlo_olpread_LDADD = $(top_builddir)/utilities/libVBFNLOUtilities.la \
-                       $(top_builddir)/utilities/libVBFspecific.la \
                        $(top_builddir)/amplitudes/libVBFNLOAmplitudes.la \
                        $(top_builddir)/loops/libVBFNLOLoops.la \
                        $(top_builddir)/helas/libHELAS.la \
@@ -55,45 +59,6 @@ endif
 if WITH_LOOPTOOLS
 vbfnlo_olpread_SOURCES += LTools-dummy.F
 endif
-
-if WITH_GGFLO
-bin_PROGRAMS += ggflo
-ggflo_SOURCES = ggflo_main.F
-ggflo_LDADD = $(top_builddir)/lib/libGGFLO.la \
-              $(top_builddir)/loops/libVBFNLOLoops.la \
-              $(top_builddir)/utilities/libVBFNLOUtilities.la
-ggflo_FFLAGS = $(AM_FFLAGS)
-
-ggflo_SOURCES += FFini.F
-
-if WITH_ROOT
-ggflo_FFLAGS += -DWITH_ROOT
-endif
-
-if WITH_LOOPTOOLS
-ggflo_SOURCES += LTools.F
-ggflo_LDADD +=$(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS) 
-ggflo_FFLAGS += -DWITH_LT 
-
-if NEW_LT
-ggflo_FFLAGS += -DLT_NEW
-endif
-if OLD_LT
-ggflo_FFLAGS += -DLT_OLD
-endif
-endif
-
-if WITH_FEYNHIGGS
-ggflo_LDADD += $(FEYNHIGGS_LDFLAGS) $(FEYNHIGGS_LIBS)
-ggflo_FFLAGS += -DWITH_FH 
-endif
-
-if WITH_QUAD
-ggflo_FFLAGS += -DWITH_QUAD
-endif
-endif
-
-
 
 EXTRA_DIST = LTools.F.in
 BUILT_SOURCES = LTools.F
@@ -114,7 +79,7 @@ clean-local:
 
 
 INPUTFILES = kk_coupl_inp.dat procinfo.dat \
-             vbfnlo.dat ggflo.dat anom_HVV.dat cuts.dat kk_input.dat \
+             vbfnlo.dat anom_HVV.dat cuts.dat kk_input.dat \
              random.dat histograms.dat \
 	     susy.dat anomV.dat sps1a.slha spin2coupl.dat
 

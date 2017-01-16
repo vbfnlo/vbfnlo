@@ -42,10 +42,10 @@ c
       real*8 B0I_23, B0I_13, B0I_12, C0I 
       real*8 z11,z12,z21,z22,iz11,iz22
       real*8 Rr(2),RI(2),PRr(2),PRI(2)
-      complex*16 Cij(30,9),C0123
-      REAL*8 dettemp,detabs
-      Integer i,jjinit
-      real*8 para
+
+
+      Integer jjinit
+
       real*8 tempjj,tempkl,IX,Zmax
       Common/Decide/tempjj,tempkl,IX,ZMax,jjinit
       Save/Decide/
@@ -133,7 +133,7 @@ c$$$	endif
 c$$$cc FINISH FOR SMALL GRAM DETERMINANT
 	  
 c 1-2
- 100   PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
+       PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
        PRr(2) = (B0r_12 - B0r_13 - C0r*r2r1)
    
        Rr(2)=(PRr(2)-z21*PRr(1))*iz22 
@@ -250,7 +250,7 @@ c$$$	endif
 c$$$cc FINISH FOR SMALL GRAM DETERMINANT 
 
 c 1-2
- 200   PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
+       PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
        PRr(2) = (B0r_12 - B0r_13 - C0r*r2r1)
    
        Rr(2)=(PRr(1)-z21*PRr(2))*iz22 
@@ -312,7 +312,6 @@ c      RI(1)=(PRI(2)-z12*RI(2))*iz11
 
        CijI(2,2) = RI(2)
 c      CijI(3,2) = RI(1)
-
 
 
        endif

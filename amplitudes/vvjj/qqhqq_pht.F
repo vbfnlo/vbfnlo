@@ -70,33 +70,30 @@ c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 
 C  Other local variables for QQBQQI
-      integer i,k,mu,v2,v3, isig,isig1,isig3,nlosusy
+      integer i,k,mu,v2,v3, isig,isig1,isig3
 C
 C  Variables for the main part of the program
       real*8 pbar(0:3,4+max_v),qbar(0:4),uucc,uuss,ddcc,ddss,udsc,ducs,
      1       p(0:3,4+max_v),q(0:4),p21(0:4),p43(0:4),p65(0:4),eps(0:3,2),
-     2       p21g(0:4),p43g(0:4), res(6), l21, l43
+     2       p21g(0:4),p43g(0:4), res(6)
       real*8 uucc_c(3),uuss_c(3),ddcc_c(3),ddss_c(3),udsc_c(3),ducs_c(3)
       integer fsign(4+max_v),gsign
       complex*16 psi(2,-1:1,4), braket(2,-1:1,4,2), 
      1        j21(0:3,-1:1), j43(0:3,-1:1), j21e43(-1:1,-1:1,2),
      2        jh1(0:3,-1:1), jh2(0:3,-1:1), e21(0:3,-1:1,2),
      3        e43(0:3,-1:1,2), e21j43(-1:1,-1:1,2),
-     4        mm21(6,4,2), mm43(6,4,2),mm21a(6,4,2),mm43a(6,4,2)
+     4        mm21(6,4,2), mm43(6,4,2)
       complex*16 f21(0:3,-1:1,2),f43(0:3,-1:1,2),f21j43(-1:1,-1:1,2),
      $     j21f43(-1:1,-1:1,2),j21j43a(-1:1,-1:1,2,2),amp(6,4,2)
-      complex*16 j21e43a(-1:1,-1:1,2,2), e21j43a(-1:1,-1:1,2,2)
+
       real*8 pk(0:4,4)
       complex*16 prop21(1:4), prop43(1:4), prop21g(1:4), prop43g(1:4)
-      complex*16 a1factor21(1:4),a2factor21(1:4),a3factor21(1:4),
-     1     born21(1:4)
-      complex*16 a1factor43(1:4),a2factor43(1:4),a3factor43(1:4),
-     1     born43(1:4)
+
 
 *S sophy: new output of call to formfactor calculation
-      double complex factor(3,4,4)
 
-      real*8 betah, lamb, xmw, fac
+
+      real*8 xmw, fac
       logical lcol
       double complex  czero
       parameter ( czero = (0.0d0,0.0d0) )
@@ -450,7 +447,6 @@ cc
          enddo
       enddo
 
-     
 
 C
 C  now get the coupling*propagator factors for subprocess k, helicity
@@ -598,7 +594,6 @@ C  Assign the final results for the subprocesses
 *      stop
 
 
-      
 c     do k = 5,6
 c     if(res(k).gt. 1.0d-5) then
 c         print*,'res=',res
@@ -691,7 +686,6 @@ c
       p1p2 = p1(1)*p2(1) + p1(2)*p2(2) + p1(3)*p2(3)
 
       costheta12 = p1p2/sqrt(p1sq)/sqrt(p2sq)
-      
 
 
 c      print*,'costheta12',costheta12

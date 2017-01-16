@@ -5,8 +5,8 @@ c ------------------------------------------------------------
       IMPLICIT NONE
 
       DOUBLE PRECISION P(0:3,2:7)
-      complex*16 wwz(0:5),wwzkk(0:5)
-      integer lsign(2:7,2),ll,mu,nu,h,N,i
+      complex*16 wwz(0:5)
+      integer lsign(2:7,2),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -50,7 +50,7 @@ C
 C
 C LOCAL VARIABLES
 C 
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -70,7 +70,7 @@ c
 	include "VBFNLO/utilities/kkcoupl.inc"
       COMPLEX*16 KK1(6,1:kkw),KK2(6,1:kkw),AMPK1(1:kkw),AMPK2(1:kkw)
 	COMPLEX*16 kkh1(6,1:kkh), AMPKH(1:kkh),h1(6), AMPH
-	COMPLEX*16 KK3(6,1:kkw),KK4(6,1:kkw)
+	COMPLEX*16 KK4(6,1:kkw)
       INTEGER k
 
 C ----------
@@ -367,7 +367,7 @@ c-----------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:7)
       complex*16 wwz(0:5)
-      integer lsign(2:7,2),ll,mu,nu,h,N
+      integer lsign(2:7,2),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -411,7 +411,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 

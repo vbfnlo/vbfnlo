@@ -47,7 +47,7 @@ c
 c     
       implicit none
       double complex vc(6), d
-      double precision p(0:3),vmass,vwidth,q2
+      double precision p(0:3)
       integer ncart, mu, nsv
 
       d = 1d0

@@ -34,7 +34,7 @@ c
 c declare local variables
 c
       real*8 q_sf
-      integer init/0/, I, J, mu, nu
+      integer init/0/, I, J, mu
       save init
 c
 c declare variables for summation process
@@ -44,13 +44,13 @@ c
 c
 c store contributions from subprocess ip in res(ip) where
       real*8 res(maxNumSubProc)
-      real*8 weight, RandomNumber
+      real*8 weight
 c
 c declare parton distribution variables
 c
-      real*8 pdf(-6:6,2,2),amp(0:2,0:1)
+      real*8 pdf(-6:6,2,2)
 
-      double precision XM2s(6),XMGs(6), XGW, XGZ, XGH, GAMT,
+      double precision XGW, XGZ, XGH, GAMT,
      & BWNE,BWUD,BWTB,BZNN,BZEE,BZUU,BZDD,BZTT,
      & BHWW,BHZZ,BHGG,BHTT,BHBB,BHCC,BHTAU,BHMU,BHGAM,BHGAMZ
       COMMON /BRANCH/ BWNE,BWUD,BWTB,BZNN,BZEE,BZUU,BZDD,BZTT,
@@ -72,7 +72,7 @@ c local variables
 #endif
       real*8 xiFinColl(2,2)
       
-      integer kin
+
       complex*16 lepton(6,3)
 
 #ifdef CALC_QCD_EW_INTERF
@@ -116,7 +116,6 @@ c EW/QCD interferences
          write(6,*) "precision of gauge test:   ",GaugeAccuracy
          write(6,*) "-----------------------------------------------"
       endif
-       
 
 
       if(nlo.ne.0) then
@@ -183,7 +182,6 @@ c
         
         call CScolAmpQNewReset
       endif
-
 
 
 ! ! ! ! ! ! ! ! ! ! ! ! c Paper
@@ -284,7 +282,6 @@ c calc W currents
         p(0:3,6,1) = momW(0:3,2,1)
         momW(4,1,1) = mass2(momW(0,1,1))
         momW(4,2,1) = mass2(momW(0,2,1))
-
 
 
 ! ! ! ! ! !         p(0:3,1,1) = (/ 1000.000000000000d0, 0.000000000000000d0,0.000000000000000d0,1000.000000000000d0/)
@@ -478,13 +475,11 @@ c select subprocess
 !       m2s_QCDww2j = debugsum
 ! ! ! ! !       m2s = debugsum
       print*,'sum', debugsum
-      pause
 #endif
 !       pause
 
       RETURN
       END
-
 
 
       subroutine getRes4QWW(res,p,xifincoll,fsign,id,pdf,Nbos,nlo)
@@ -504,11 +499,11 @@ c select subprocess
       real*8 xiFinColl(2,2)
       integer colstr,j,i,k
       integer iflav(1:4)
-      integer family,flav,temp
+      integer temp
       logical ldebug,idFl
       parameter (ldebug = .false.)
       real*8 amp(0:2,0:2),QCDVVjjFinCollBornKin
-      real dt(2), timearray(2)
+
       external QCDVVjjFinCollBornKin
 c EW/QCD interferences
       integer WWJJ_interf
@@ -624,25 +619,25 @@ c      flavour: 2: diff family (only u channel)
       integer kin, id(4),fsign(4)
       logical lnlo
       
-      real*8 pbar(0:3,4),pdia(0:3,4),momTemp(0:4),pbartemp(0:3,1:8),vtemp
+      real*8 pbar(0:3,4),pdia(0:3,4),vtemp
       common /wwInterferences/ vtemp(0:3,4)
       real*8 mompsiW(0:4,4,2)
       complex*16 psi(2,-1:1,4), psiW(2,4,2)
-      complex*16 psiTemp(2,-1:1),amp(2)
-      complex*16 gluWij(0:3,1:3,2:4,2),temp
+      complex*16 amp(2)
+      complex*16 gluWij(0:3,1:3,2:4,2)
       complex*16 tempCurr(0:3,-1:1,4)
-      complex*16 s1c, dotcc, dotrc
-      real*8 mass2,qjj2
-      real*8 squared(2,2), tempR
+      complex*16 dotcc
+      real*8 qjj2
+      real*8 squared(2,2)
       
-      integer i,j,mu,nu,tempi4(4), lepkin,colstr,tempi8(4)
-      integer minhel, maxhel, ikin, in,out,qid(4)
+      integer i,j,mu,tempi4(4), lepkin
+      integer ikin, in,out
 
 #include "VBFNLO/utilities/scales.inc"
       real*8  alphas, xmt, alfa, xmz, xmw,s2w, xmh
       common /bkopin/   alphas, xmt, alfa, xmz, xmw, s2w, xmh
 
-      complex*16 epsW, MATRIXWPP_UC2UC
+      complex*16 epsW
       real*8 momW
       common /QCDWWcurrents/ epsW(0:3,2,7),momW(0:4,2,7)
 
@@ -650,7 +645,7 @@ c      flavour: 2: diff family (only u channel)
 c EW/QCD interferences
       integer WWJJ_interf
       common /cWWJJ_interf/ WWJJ_interf
-      complex*16 amp_EW(2)
+
 
       lnlo = .true.
       ikin = kin
@@ -690,8 +685,6 @@ c get bra and ket
       call psi0m(4,pbar,tempi4,psi)
 
 
-
-      
 !       print*,psi(1:2,-1,1)
 c new convention
 c in   >W>>>>W>  out
@@ -736,9 +729,8 @@ c square amplitudes
 	res(j,1) = 0d0
 	res(j,2) = 0d0
       enddo
-      
 
-	  
+
       squared(1,1) = dble(amp(1)*dconjg(amp(1)))
       squared(2,2) = dble(amp(2)*dconjg(amp(2)))
       squared(1,2) = dble(amp(1)*dconjg(amp(2)))
@@ -925,6 +917,5 @@ c
           endif
           end ! fillColoredPartons
 
-       
-       
+
 

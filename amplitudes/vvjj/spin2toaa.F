@@ -51,7 +51,7 @@ c final photons
       CALL VXXXXX(P(0,3),ZERO ,lsign(3),1,W(1,3))          !A1
       CALL VXXXXX(P(0,4),ZERO ,lsign(4),1,W(1,4))          !A2
       endif
-       
+      
       DO MU = 0,3
          DO NU = 0,3
 
@@ -452,7 +452,7 @@ C ----------
 
          w(i,3) = sp2au(i)
          w(i,4) = sp2ae(i)
-
+         
       	enddo
       else 
 c final photons
@@ -465,7 +465,7 @@ c final photons
 
 c initial vector bosons      
       CALL VCARTX(Q1(0),zero ,zero, MU,-1,W(1,1   ))    
-      CALL VCARTX(Q2(0),zero ,zero, NU,-1,W(1,2   ))    
+      CALL VCARTX(Q2(0),zero ,zero, NU,-1,W(1,2   )) 
 
 c singlet diagrams 
 
@@ -881,7 +881,6 @@ c formfactor
 ! 
 !        RETURN
 ! 	end
-      
 
 
 

@@ -10,7 +10,7 @@
        Real*8 Inv2,Inv3,Inv4,Inv6,Inv18,Inv36,Inv48,Invp1sq
        parameter(Inv2=1d0/2d0,Inv3=1d0/3d0, Inv6=Inv2*Inv3)
        parameter(Inv36=Inv6*Inv6,Inv4=1d0/4d0, Inv48=1d0/48d0)
-       real*8 m0m1,m0m12,m0m13,m0m14,Logm1m0
+       real*8 m0m1,m0m12,m0m13,m0m14
        real*8 DerB0R, Der2B0R,DerB1R
 
          B012R=Dble(B012)
@@ -64,7 +64,6 @@ c
           BijI(2,3)= DImag(B12(2,3))
 
 
-
           endif
 c p1sq=0
           else
@@ -116,9 +115,6 @@ c p1sq>0
 
           BijR(2,3)= Dble(B12(2,3))
           BijI(2,3)= DImag(B12(2,3))
-
-
-
 
 
           return
@@ -185,7 +181,6 @@ c                  DerB1R= -Inv2*DerB0R- m0m1*Inv4*Der2B0R
 
 
          endif
-       
 
 
        endif

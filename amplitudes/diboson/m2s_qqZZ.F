@@ -51,8 +51,8 @@ c  helicity selection
       COMPLEX*16 zero
       PARAMETER (zero=(0d0,0d0))
 
-      DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      DOUBLE PRECISION q_sf
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -80,7 +80,7 @@ c variables for leshouches interface
       DOUBLE PRECISION weight,rnumb,RandomNumber
 
 c temporary variables
-      double complex ctmp1, ctmp2, ctmp3
+
       double complex zm2i(2:3)
       save zm2i
       double precision  clr, xm2, xmg, b
@@ -290,7 +290,6 @@ c***  end of extra process evaluation for hadronic decay  ***
       end select
 
 
-
 c*****************  end of process evaluation  *********************
 
 
@@ -406,7 +405,7 @@ c local variables
       parameter (ldebug=.false.)
       parameter (ldebuglt=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,j,k,mu
+      integer i,if1,k,mu
 
       uuzz = 0d0
       uuzz = 0d0

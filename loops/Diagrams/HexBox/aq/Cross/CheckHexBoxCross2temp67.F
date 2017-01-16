@@ -45,9 +45,9 @@ c*******************************************************************************
 c************************************************************************************
        IMPLICIT NONE
       Complex*16 SMB(303),Fa(392),F(1853)
-       Complex*16 SMB0(32),SMB11(0:3),SMB12(0:3),SMB13(0:3),SMB14(0:3)
-     &   ,SMB15(0:3),SMB16(0:3),SMB17(0:3),SMB18(0:3)
-      Complex*16 SMB1(133)
+
+     &   
+
        Complex*16 SMB0P(32),SMB1P1(0:3),SMB1P2(0:3),SMB1P3(0:3),SMB1P4
      &   (0:3),SMB1P5(0:3),SMB1P6(0:3),SMB1P7(0:3),SMB1P8(0:3),SMB1P9
      &   (0:3),SMB1P10(0:3),SMB1P11(0:3),SMB1P12(0:3),SMB1P13(0:3),SM
@@ -80,7 +80,7 @@ c*******************************************************************************
      &   :3),SMB3M2(0:3,0:3,0:3),SMB3M3(0:3,0:3,0:3),SMB3M4(0:3,0:3,0
      &   :3),SMB3M5(0:3,0:3,0:3),SMB3M6(0:3,0:3,0:3),SMB3M7(0:3,0:3,0
      &   :3),SMB3M8(0:3,0:3,0:3)
-      Real*8 FI(1853),FR(1853)
+
       Complex*16 psi_p1_P(2),barpsi_p5_P(2),barpsi_p2_P(2),psi_p4_P(2) 
        Complex*16 psi_p1_M(2),barpsi_p5_M(2),barpsi_p2_M(2),psi_p4_M(2)
        Complex*16 psi_p1(4),barpsi_p5(4),barpsi_p2(4),psi_p4(4)
@@ -96,7 +96,7 @@ c*******************************************************************************
        Complex*16 ten2cc,ten3cc
        External  ten2cc,ten3cc
        Complex*16 v1(0:3),v2(0:3),v3(0:3) 
-       Integer alpha_1,alpha_2,i,j,k,comp
+       Integer i,j,k,comp
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************
@@ -260,7 +260,7 @@ c*******************************************************************************
       Complex*16 dotrc,dotcc,result(9),resultn,resultborn
        Real*8 musq
       EXTERNAL   dotrc,dotcc
-      Integer alpha
+
        COMMON/HexBoxCross2FaFunctions/Fa
        COMMON/HexBoxCross2FhlFunctions/F
       Save/HexBoxCross2FhlFunctions/
@@ -297,7 +297,7 @@ c*******************************************************************************
      &   4R,B014I, B015R,B015I, B016R,B016I, B023R,B023I, B024R,B024I
      &   , B025R,B025I, B026R,B026I, B034R,B034I, B035R,B035I, B036R,
      &   B036I, B045R,B045I, B046R,B046I, B056R,B056I
-       Integer ngluon, posgluon,Div
+       Integer ngluon, posgluon
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************
@@ -1316,7 +1316,6 @@ c The Finite virtual piece should !!NOT!!!! be multiplied for (-1)
 c. The Born has a factor 1 and the Virtual (-I). The factorization
 c from the B_ij is Fact=(I/(4\[Pi])^2 (4 \[Pi])^Eps Gamma[1+Eps] (musq)^(-Eps))
 c  c So, (-I)*I=(1)!!!
-
 
 
        result(1) = (8*Fa(1)*SMB(1)+Fa(2)*SMB(2)+F(11)*SMB(18)+F(12)*SM

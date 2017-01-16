@@ -15,7 +15,7 @@ ccccccccccccccccccccc    Even PART ccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p1(0:3),p2(0:3),p3(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(4),resultZERO(4)
+       Complex*16 result,resultn(4),resultZERO(4)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3
        complex*16 rg1,rg2,rg3
        integer gauge,i,comp,Div
@@ -81,11 +81,7 @@ c FC %c	read(*,*)
         end
 
 
-
 cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccccccc
-
-
-       
 
 
        subroutine FermionVertCouplingO_Div(za1,za2,za3,zb1,zb2,zb3,
@@ -95,7 +91,7 @@ cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p1(0:3),p2(0:3),p3(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(4),resultZERO(4)
+       Complex*16 result,resultn(4),resultZERO(4)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3
        complex*16 rg1,rg2,rg3
        integer gauge,i,comp,Div
@@ -144,7 +140,6 @@ c Gauge 3
          endif
 
 
-      
 c FC %          print*, "rg1O",rg1
 c FC %          print*, "rg2O",rg2
 c FC %          print*, "rg3O",rg3
@@ -160,13 +155,6 @@ c FC %c	read(*,*)
         endif
          
         end
-
-
-
-
-
-
-
 
 
 

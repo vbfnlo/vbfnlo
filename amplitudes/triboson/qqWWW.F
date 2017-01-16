@@ -21,10 +21,6 @@ c----------------------------------------------------------------------------
 c----------------------------------------------------------------------------
 
 
-
-
-
-
 c****************subroutine QQWWWp********************************************
 c
 c  QQWWWp calculates the matrix elements**2 for 
@@ -76,7 +72,7 @@ c     electroweak couplings are taken from KOPPLN
       double precision  qqbarWWW, res,resv                           ! output M^2 of process
       double precision  p(0:3,2+n_v), pwp1wm1(0:4), pwp2wm1(0:4),    ! different momenta
      1                  fqp1(0:4,2), fqp2(0:4,2), fqm1(0:4,2)        ! and momentum combinations
-      integer  sign(2+n_v), nlo, mu, i, j, k, isig, N
+      integer  sign(2+n_v), nlo, mu, i, N
       integer NW
       double complex psiwp1(2,-1:1,2), psiwp2(2,-1:1,2),             ! q+W spinors, e.g. <q~W+(1)|,
      1               psiwm1(2,-1:1,2),                               ! and currents
@@ -88,7 +84,7 @@ c     electroweak couplings are taken from KOPPLN
       double complex mm, mv
       double complex m3line1, m2linea1, m2linez1, m1line1
       double complex psi(2,-1:1,2), jqqbar(0:5,-1:1)                 ! spinors <q~| and |q>, current <q~|gamma_mu|q>
-      double complex m3line2, m2linea2, m2linez2                     ! matrix variables for virtual corrections
+      double complex m3line2, m2linez2                     ! matrix variables for virtual corrections
       double complex dotcc, s1c, dotrc                               ! "dotproducts"
       double precision dotrr, psumsq
       external dotcc, s1c, dotrr, dotrc, psumsq
@@ -108,14 +104,14 @@ c variables for virtual corrections
       logical lnlo, lbox, lpq, lpt, lpent, linit
       data linit /.true./
       save linit
-      double complex j5wpwm(1:6), j5wmwp(1:6)
-      double complex jbwpwm(1:6), jbwmwp(1:6)
+      double complex j5wpwm(1:6)
+      double complex jbwpwm(1:6)
       double complex cte
       double complex resultgauge1(3), resultgauge3(3)
       double complex resultgaugeb1(3),resultgaugeb3(3)
       double precision p1(0:3),p2(0:3)
       double precision minus_qp1(0:3),minus_qp2(0:3),minus_q1m(0:3)
-      double precision minus_qp1p2(0:3), minus_qp1m(0:3), minus_qp2m(0:3)
+      double precision minus_qp1m(0:3), minus_qp2m(0:3)
       double complex result(8),result_born(8)
       double complex gaugebox1(2), gaugebox1_born(2), boxtest(2), treetest(2)
       double complex gaugebox2(2), gaugebox2_born(2)
@@ -523,10 +519,6 @@ c  end of subroutine qqWWWp
 c*******************************************************************************
 
 
-
-
-
-
 c****************subroutine QQWWWm*********************************************
 C
 C  QQWWWm calculates the matrix elements**2 for
@@ -560,7 +552,7 @@ c     electroweak couplings are taken from KOPPLN
       double precision  qqbarWWW, res,resv                      ! output M^2 of process
       double precision  p(0:3,2+n_v), pwp1wm1(0:4),pwp1wm2(0:4),! different momenta
      1                  fqp1(0:4,2), fqm1(0:4,2),fqm2(0:4,2)    ! and momentum combinations
-      integer  sign(2+n_v), nlo, mu, i, j, k, isig, N
+      integer  sign(2+n_v), nlo, mu, i, N
       integer NW
       double complex psiwp1(2,-1:1,2),                          ! q+W spinors, e.g. <q~W+(1)|,
      1               psiwm1(2,-1:1,2), psiwm2(2,-1:1,2),        ! and currents
@@ -573,12 +565,7 @@ c     electroweak couplings are taken from KOPPLN
       double complex m3line1, m2linea1,m2linez1, m1line1
       double complex psi(2,-1:1,2), jqqbar(0:5,-1:1)            ! spinors <q~| and |q>, current <q~|gamma_mu|q>
 
-      double complex m3line2, m2linea2, m2linez2                ! matrix variables for virtual corrections
-
-      double complex j5m1p(0:3,3,-1:1),j5m2p(0:3,3,-1:1),       ! stuff with virtual gluons
-     1               j5pm1(0:3,3,-1:1),
-     1               jvwm1(0:5,-1:1,2),jvwm2(0:5,-1:1,2)
-      double complex j5mp,j5pm
+      double complex m3line2, m2linez2                ! matrix variables for virtual corrections
 
       double complex dotcc, s1c, dotrc                          ! "dotproducts"
       double precision dotrr, psumsq
@@ -600,9 +587,9 @@ c variables for virtual corrections
       logical lnlo, lbox, lpq, lpt, lpent, linit
       data linit /.true./
       save linit
-      double complex j5wpwm(1:6), j5wmwp(1:6)
-      double complex jbwpwm(1:6), jbwmwp(1:6)
-      double complex pentgauge1(1:3,3), pentgauge2(1:3) 
+      double complex j5wmwp(1:6)
+      double complex jbwmwp(1:6)
+
       double complex cte
       double complex resultgauge1(3), resultgauge3(3)
       double complex resultgaugeb1(3),resultgaugeb3(3)
@@ -617,7 +604,7 @@ c variables for virtual corrections
       integer wardidtest1, wardidtest2, wardidtest3, wardidtest4
 
 c variables for test purposes
-      logical gaugetest(2)
+
 
       logical ldebugm, ldebugs,pentshift
       parameter( ldebugm = .false., ldebugs=.false., pentshift = .true.)
@@ -824,7 +811,6 @@ c pentagon contributions shifted to boxes by shifting polarisation vectors
          MATV(1) = M3LINE2
 
       endif          ! end lpent
-
 
 
       if(lbox) then

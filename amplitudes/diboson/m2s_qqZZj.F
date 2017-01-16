@@ -50,9 +50,9 @@ c declare external functions
 
 c alfas, scales etc
       DOUBLE PRECISION x1,x2
-      DOUBLE PRECISION q12(0:4,3), q34(0:4,3), lnQomu(2:3), omxi(2:3), 
+      DOUBLE PRECISION lnQomu(2:3), omxi(2:3), 
      &       Ax(2:3), Bx(2:3), Cx(2:3), Dxi(2:3), tgs2oqsq(2:3), 
-     &       ln1mxi, lnrat, z, lnz, qsq
+     &       ln1mxi, lnrat, z, lnz
 
 c declare local variables
       DOUBLE PRECISION q_sf
@@ -63,8 +63,7 @@ c declare local variables
       SAVE init
 
 c declare variables for summation process
-      INTEGER ires, nmaxold, FSIGN(3+n_v), gsign
-      SAVE nmaxold
+      INTEGER ires, FSIGN(3+n_v), gsign
 
       INTEGER physToDiag(3), nlo, nmin, nmax
       SAVE nmin, nmax
@@ -352,7 +351,6 @@ C*******************  q1 g ---> Z Z q1   **********************
 c**************  end of process evaluation part one ******************
 
 
-
       SELECT CASE(procid)
       CASE(ZZhad)
        if (finalquarks(1).eq.93 .or. finalquarks(1).eq.94) then
@@ -364,7 +362,6 @@ c**************  end of process evaluation part one ******************
            call zz_ztozz_had(v(0,1,J),J,wz(1,J),0) !Z -> e+ e- mu+ mu-
            call zz_atozz_had(v(0,1,J),J,wa(1,J),0) !A -> e+ e- mu+ mu-
         enddo
-
 
 
 C*******************  q1 qbar1 ---> Z Z g   **********************
@@ -456,7 +453,6 @@ c***  end of extra process evaluation for hadronic decay  ***
 
        endif
       end select
-
 
 
 c*****************  end of process evaluation  *********************
@@ -609,9 +605,9 @@ c  helicity selection
       double complex zero
       parameter (zero=(0d0,0d0))
 
-      logical loldp, ldebug, lres, ldebugsoft
+      logical ldebug, lres, ldebugsoft
       save gs2,polcolq,polcolg,uuzzb,ddzzb
-      integer i,if1,icc1,j,k,mu
+      integer i,if1,j,k,mu
 
       parameter (ldebug=.false.)
       parameter (ldebugsoft=.false.)

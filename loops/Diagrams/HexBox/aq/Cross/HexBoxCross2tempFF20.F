@@ -1,15 +1,15 @@
        subroutine HexBoxCross2FFhl20(F20)
        Real*8 P(1355),FRe(1749:1853),FIm(1749:1853)
        Complex*16 F20(1749:1853)
-       Real*8   p1sq, p1p2, p1p3, p1p4, p1p5,p1p6 
-       Real*8   p2sq, p2p3, p2p4, p2p5 
-       Real*8   p3sq, p3p4, p3p5 
-       Real*8   p4sq, p4p5 
-       Real*8   p5sq, p5p6 
+       Real*8   p1sq 
+       Real*8   p2sq 
+       Real*8   p3sq 
+       Real*8   p4sq 
+       Real*8   p5sq 
        Real*8   p6sq 
-       Real*8   s12, s13, s14, s15, s16 
-       Real*8   s23, s24, s25 
-       Real*8   s34, s35 
+       Real*8   s12, s16 
+       Real*8   s23 
+       Real*8   s34 
        Real*8   s45 
        Real*8   s56 
        Real*8   s123,s234,s345         
@@ -113,7 +113,7 @@
        Real*8 F0I 
        Real*8 FR(166,5) 
        Real*8 FI(166,5) 
-       Logical PrintB,PrintC,PrintD,PrintE,PrintF
+
        COMMON/HexBoxCross2Invariants/p1sq,p2sq,p3sq,p4sq,p5sq,p6sq,s12
      &   ,s23,s34,s45,s56,s16,s123,s234,s345
        COMMON/HexBoxCross2PFunctions/P

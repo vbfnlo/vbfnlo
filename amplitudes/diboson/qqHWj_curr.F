@@ -31,7 +31,7 @@ c variables for the main part of the program
       ! array length 5 means n_p+n_v
       ! TODO: remove or include leptons consistently
       double complex final(0:3)
-      double precision pbar(0:3,6), q(0:3)
+      double precision pbar(0:3,6)
       double precision momin(0:3,5)
       double precision p(0:3,5)
       double precision fqwh(0:4,2)

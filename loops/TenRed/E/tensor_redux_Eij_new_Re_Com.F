@@ -41,7 +41,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 c$$$      complex*16 D0_2345,D0_1345,D0_1245,D0_1235,D0_1234
 c$$$      complex*16 Dij_2345(13,3),Dij_1345(13,3),Dij_1245(13,3),
 c$$$     #     Dij_1235(13,3),Dij_1234(13,3)
-      complex*16 Eij(46,4)
+
 c                                                             d^4k
 c
 c   E0fin; E_mu; E_mu,nu; E_mu,nu,rho; E_mu,nu,rho_sig  =  Int -------
@@ -85,9 +85,9 @@ c
       real*8 s12,s23,s34,s45,s15!,s12sq,s45sq,s1523,s15m23,s15m34,s1534
 c      real*8 s15mp2,p2t45,st1223mp245,aux1,aux2,aux3,s1215,s15p2,s45mp4
 c      real*8  p2sq,sts15m23,p5sq,
-      real*8  d,Id,I2,I3,I4,d2,d3,d4
+      real*8  d,Id,I2,I3,I4,d3
       real*8  Y123,Y124,Y134,Y213,Y214,Y234,Y312,Y314,Y324,Y412,Y413,Y423
-      real*8  x(1:4,0:4), Y(4,4,4),ER,EI
+      real*8  x(1:4,0:4), Y(4,4,4)
       real*8 DR2345,DR1345,DR1245,DR1235,DR1234,DRR1234(13,3),E(46,4)
       real*8 DRR2345(13,3),DRR1345(13,3),DRR1245(13,3),DRR1235(13,3)
       real*8 DI2345,DI1345,DI1245,DI1235,DI1234,DII1234(13,3),C(46,4)
@@ -95,7 +95,7 @@ c      real*8  p2sq,sts15m23,p5sq,
       real*8 p12,p22,p32,p42,p52,s12s,s23s,s34s,s45s,s15s
       real*8 eps
       Parameter(eps=1d-07)
-      Integer i,j 
+
 c$$$c with p1.p1 = 0
 c$$$c p5=(-p1-p2-p3-p4) with p5.p5=0
 c$$$      if(p1.ne.0.d0) then
@@ -105,7 +105,6 @@ c$$$      p5sq=(p1+p2+p3+p4+2.d0*(p1p2+p1p3+p1p4+p2p3+p2p4+p3p4))
 c$$$      if(p5sq.gt.1.d-07) then
 c$$$      print*, ' p5sq=(p1+p2+p3+p4)^2 must be zero. Here p5sq = ',p5sq
 c$$$      endif
-
 
 
 c s_ij=(p_i+p_j)^2
@@ -190,8 +189,7 @@ c$$$       x(4,0) = s12*s23*(-(p3*s15)+s12*(p4+s15-s23)+s23*s34)-s12
 c$$$     -   *(-2*p3*s15+s23*(s15+s34))*s45+p2**2*(p4-s45)*s45+p2
 c$$$     -   *(-(p4*s12*s23)-(p3*s15+s12*(p4+s15-2*s23)+s23*s34)*s4
 c$$$     -   5+(s15+s34)*s45**2)     
-c$$$c       
-
+c$$$c
 
 
        If(abs(p1).lt.eps) then 
@@ -2054,14 +2052,8 @@ c
        endif 
        endif 
        endif 
-       endif 
+       endif
 
-
-
-
-
-
- 
 
        x(1,2) = x(2,1)
        x(1,3) = x(3,1)

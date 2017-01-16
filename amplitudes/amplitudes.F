@@ -35,6 +35,8 @@ c
 c     OUTPUT
 c     Amplitude : The amplitude square as returned by the matrix element code.
 c*************************************************************************
+          use globalvars, only: ldoblha
+
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
@@ -45,9 +47,9 @@ c*************************************************************************
       double precision rand(max_PS_dim)
       double precision p(0:3,max_p,max_kin)
       double precision v(0:3,max_v,max_kin)
-      double precision ptemp(0:3,max_p),vtemp(0:3,max_v)
-      double precision rn, rn2(2),rn4(4), xuz(2,2:max_kin), m2s(0:max_kin)
-      double precision m2s_dec,dump
+
+      double precision rn, rn2(2), rn4(4), xuz(2,2:max_kin), m2s(0:max_kin)
+      double precision m2s_dec
       logical lokt(max_kin)
       integer NLO,i, ps_number
 
@@ -68,10 +70,6 @@ c     external matrixelement functions
       double precision m2s_QCDzz2j
       double precision m2s_QCDwz2j
       double precision m2s_QCDww2j
-      double precision m2s_z2j
-      double precision m2s_z3j
-      double precision m2s_w2j
-      double precision m2s_w3j
       double precision RandomNumber
       double precision m2s_qqVV
       double precision m2s_qqZZ
@@ -107,10 +105,7 @@ c     external matrixelement functions
       external m2s_ggfh
       external m2s_QCDwz2j
       external m2s_QCDww2j
-      external m2s_z2j
-      external m2s_z3j
-      external m2s_w2j
-      external m2s_w3j
+      external m2s_QCDzz2j
       external RandomNumber
       external m2s_qqVV
       external m2s_qqZZ
@@ -140,7 +135,7 @@ c     external matrixelement functions
 
 c     auxiliary 
       double precision amp, Q(0:3)
-      integer lflavr(2)
+
       double precision mass2
       external mass2
 
@@ -953,7 +948,7 @@ c     pp -> HAjjjLO -> A Z Z jj
 *     DIBOSON : WW, WZ, ZZ, WA, ZA, AA, WH
 *
 *********************
-c pp -> W+ W- -> ve e+ e- ve~
+c pp -> W+ W- -> ve e+ e- ve~ 
       CASE(WW,WPhadWMlep,WPlepWMhad)
          rn = RandomNumber()
          Amplitude = m2s_qqvv( 34, VBFNLOswitch(nlo), x, p, v, rn)
@@ -1462,7 +1457,7 @@ c pp -> A A j
 *
 *     TRIBOSON : WWZ, ZZZ, ZZW, WWW, WWA, ZZA, WZA, WAA, ZAA, AAA
 *
-**********************************************************************	 
+**********************************************************************         
 c pp -> W+ W- Z -> ve e+ e- ve~ e- e+
       CASE(WWZ, WPhadWMZ, WPWMhadZ, WWZhad)
          rn = RandomNumber()
@@ -1875,8 +1870,7 @@ c     pp -> W HJ -> W Z Z
          Amplitude = m2s_qqWHj2( 46, VBFNLOswitch(nlo), x, p, v, rn, narrowwidth)
          call m2s_VVsum(v(0,3,1),2,2,2,1,m2s_dec)
          m2s_dec = m2s_dec/(16.0d0 * pi * xmgs(6))
-         Amplitude = Amplitude*m2s_dec  
-
+         Amplitude = Amplitude*m2s_dec
 
 
 c     pp -> W HJ
@@ -2191,36 +2185,36 @@ c     GF pp -> Hjj -> Z Z jj
 **************************************
 c     QCD pp -> W+ Z jj -> e+ ve mu+ mu- jj
       CASE(QCDWPZjj) 
-	 rn4(1) = RandomNumber()
-	 rn4(2) = rand(16) !RandomNumber()
-	 rn4(3) = RandomNumber()
+         rn4(1) = RandomNumber()
+         rn4(2) = rand(16) !RandomNumber()
+         rn4(3) = RandomNumber()
          Amplitude = m2s_QCDwz2j( x, p(0,1,1), v(0,1,1) ,rn4,32,nlo)
 c     QCD pp -> W+ Z jjj -> e+ ve mu+ mu- jjj
       CASE(QCDWPZjjjLO)
-	 do i=2,max_kin
-	    lokt(i) = .false.
-	 enddo
-	 lokt(1) = .true.
-	 rn2(1) = RandomNumber()
-	 rn2(2) = RandomNumber()
+         do i=2,max_kin
+            lokt(i) = .false.
+         enddo
+         lokt(1) = .true.
+         rn2(1) = RandomNumber()
+         rn2(2) = RandomNumber()
          call m2s_QCDwz3j( x, p(0,1,1), v(0,1,1) ,32,.false.,lokt,xuz,rn2,m2s)
          Amplitude = m2s(0)
 c     QCD pp -> W- Z jj -> e- ve~ mu- mu+ jj
       CASE(QCDWMZjj) 
-	 rn4(1) = RandomNumber()
-	 rn4(2) = RandomNumber()
-	 rn4(3) = RandomNumber()
+         rn4(1) = RandomNumber()
+         rn4(2) = RandomNumber()
+         rn4(3) = RandomNumber()
          Amplitude = m2s_QCDwz2j( x, p(0,1,1), v(0,1,1) ,rn4,42,nlo)
          rn=RandomNumber()         
 c     QCD pp -> W- Z jjj -> e- ve~ mu- mu+ jjj
       CASE(QCDWMZjjjLO)
-	 do i=2,max_kin
-	    lokt(i) = .false.
-	 enddo
-	 lokt(1) = .true.
-	 rn = RandomNumber()
+         do i=2,max_kin
+            lokt(i) = .false.
+         enddo
+         lokt(1) = .true.
+         rn = RandomNumber()
          call m2s_QCDwz3j( x, p(0,1,1), v(0,1,1) ,42,.false.,lokt,xuz,rn,m2s)
-	 Amplitude = m2s(0)
+         Amplitude = m2s(0)
 c     QCD pp -> W+ A jj -> e+ ve mu+ mu- jj
       CASE(QCDWPAjj) 
          rn4(1) = RandomNumber()
@@ -2336,16 +2330,16 @@ c     QCD pp -> Z A jj
          Amplitude=m2s(0)
 c     QCD pp -> W+ W+ jj
       CASE(QCDWPWPjj) 
-	 rn2(1) = RandomNumber()
+         rn2(1) = RandomNumber()
          rn2(2) = RandomNumber()
          Amplitude = m2s_QCDww2j( x, p(0,1,1), v(0,1,1) ,rn2,33,nlo)
 c     QCD pp -> W+ W+ jjj
       CASE(QCDWPWPjjjLO)
-	 do i=2,max_kin
-	    lokt(i) = .false.
-	 enddo
-	 lokt(1) = .true.
-	 rn = RandomNumber()
+         do i=2,max_kin
+            lokt(i) = .false.
+         enddo
+         lokt(1) = .true.
+         rn = RandomNumber()
          call m2s_QCDww3j( x, p(0,1,1), v(0,1,1) ,33,.false.,lokt,xuz,rn,m2s)
          Amplitude = m2s(0)
 c     QCD pp -> W- W- jj
@@ -2355,13 +2349,13 @@ c     QCD pp -> W- W- jj
          Amplitude = m2s_QCDww2j( x, p(0,1,1), v(0,1,1) ,rn2,44,nlo)
 c     QCD pp -> W- W- jjj
       CASE(QCDWMWMjjjLO)
-	 do i=2,max_kin
-	    lokt(i) = .false.
-	 enddo
-	 lokt(1) = .true.
-	 rn = RandomNumber()
+         do i=2,max_kin
+            lokt(i) = .false.
+         enddo
+         lokt(1) = .true.
+         rn = RandomNumber()
          call m2s_QCDww3j( x, p(0,1,1), v(0,1,1) ,44,.false.,lokt,xuz,rn,m2s)
-	 Amplitude = m2s(0)
+         Amplitude = m2s(0)
 #endif
 
 #ifdef WITH_QCDV
@@ -2406,34 +2400,34 @@ c     QCD pp -> Z jj -> nunu jj
          Amplitude=m2s(0)
 c     QCD pp -> W+ jj 
       CASE(QCDWPjj)
-	 rn4(1) = RandomNumber()
-	 rn4(2) = RandomNumber()
-	 rn4(3) = RandomNumber()
+         rn4(1) = RandomNumber()
+         rn4(2) = RandomNumber()
+         rn4(3) = RandomNumber()
          Amplitude = m2s_QCDwz2j( x, p(0,1,1), v(0,1,1) ,rn4,3,nlo)
 c     QCD pp -> W- jj 
       CASE(QCDWMjj)
-	 rn4(1) = RandomNumber()
-	 rn4(2) = RandomNumber()
-	 rn4(3) = RandomNumber()
+         rn4(1) = RandomNumber()
+         rn4(2) = RandomNumber()
+         rn4(3) = RandomNumber()
          Amplitude = m2s_QCDwz2j( x, p(0,1,1), v(0,1,1) ,rn4,4,nlo)
 c     QCD pp -> W+ jjj 
       CASE(QCDWPjjjLO)
-	 do i=2,max_kin
-	    lokt(i) = .false.
-	 enddo
-	 lokt(1) = .true.
-	 rn2(1) = RandomNumber()
-	 rn2(2) = RandomNumber()
+         do i=2,max_kin
+            lokt(i) = .false.
+         enddo
+         lokt(1) = .true.
+         rn2(1) = RandomNumber()
+         rn2(2) = RandomNumber()
          call m2s_QCDwz3j( x, p(0,1,1), v(0,1,1) ,3,.false.,lokt,xuz,rn2,m2s)
          Amplitude = m2s(0)
 c     QCD pp -> W- jjj 
       CASE(QCDWMjjjLO)
-	 do i=2,max_kin
-	    lokt(i) = .false.
-	 enddo
-	 lokt(1) = .true.
-	 rn2(1) = RandomNumber()
-	 rn2(2) = RandomNumber()
+         do i=2,max_kin
+            lokt(i) = .false.
+         enddo
+         lokt(1) = .true.
+         rn2(1) = RandomNumber()
+         rn2(2) = RandomNumber()
          call m2s_QCDwz3j( x, p(0,1,1), v(0,1,1) ,4,.false.,lokt,xuz,rn2,m2s)
          Amplitude = m2s(0)
 #endif
@@ -2447,7 +2441,6 @@ c     QCD pp -> W- jjj
 
       RETURN
       END
-       
 
 
 #ifdef WITH_NLO
@@ -2841,7 +2834,7 @@ c     pp -> HAjjj -> A Z Z jjj
 *
 *     DIBOSON : WWj, WZj, ZZj, WAj, ZAj, AAj
 *
-**************************************	 
+**************************************         
 c pp -> W+ W- (j) -> ve e+ e- ve~ (j)
       CASE(WW,WPhadWMlep,WPlepWMhad)
          rn = RandomNumber()
@@ -3007,7 +3000,7 @@ c pp -> ve e
 *
 *     DIBOSON PLUS JET : WWjj,WZjj,ZZjj,WAjj
 *
-**************************************	 
+**************************************         
       CASE(WWJ)
          call m2s_qqVVjj( 34, 1, lokt, x, p, v, rn, xuz, m2s)
 c pp -> W+-A (jj) -> ve e+- a (jj)
@@ -3150,16 +3143,16 @@ c pp -> W- j -> e- ve~ j
 *
 *     QCD VVjj
 *
-**************************************	
+**************************************        
 c pp -> Z A jj(j) -> e+ e- A jj(j)
       CASE(QCDZAJJ_l)
-	 rn3(1) = RandomNumber()
+         rn3(1) = RandomNumber()
          rn3(2) = RandomNumber()
          rn3(3) = RandomNumber()
          call m2s_QCDzz3j(x,p,v,20,.true.,lokt,xuz,rn3,m2s)
 c pp -> Z A jj(j) -> vm~ vm A jj(j)
       CASE(QCDZAJJ_n)
-	 rn3(1) = RandomNumber()
+         rn3(1) = RandomNumber()
          rn3(2) = RandomNumber()
          rn3(3) = RandomNumber()
          call m2s_QCDzz3j(x,p,v,23,.true.,lokt,xuz,rn3,m2s)
@@ -3171,7 +3164,7 @@ c pp -> A A jj(j)
          call m2s_QCDzz3j(x,p,v,24,.true.,lokt,xuz,rn3,m2s)
 c pp -> Z Z jj(j) -> e+ e- mu+ mu- jj(j)
       CASE(QCDZZJJ_ll)
-	 rn3(1) = RandomNumber()
+         rn3(1) = RandomNumber()
          rn3(2) = RandomNumber()
          rn3(3) = RandomNumber()
          call m2s_QCDzz3j(x,p,v,22,.true.,lokt,xuz,rn3,m2s)
@@ -3193,21 +3186,21 @@ c pp -> W+ Z jj(j) -> e- ve~ mu- mu+ jj(j)
          call m2s_QCDwz3j(x,p,v,42,.true.,lokt,xuz,rn3(1),m2s)
 c pp -> W+ Z jj(j) -> e+ ve mu+ mu- jj(j)
       CASE(QCDWPAjj)
-	 rn3(1) = RandomNumber()
+         rn3(1) = RandomNumber()
          rn3(2) = RandomNumber()
          call m2s_QCDwz3j(x,p,v,31,.true.,lokt,xuz,rn3(1),m2s)
 c pp -> W+ Z jj(j) -> e- ve~ mu- mu+ jj(j)
       CASE(QCDWMAjj)
-	 rn3(1) = RandomNumber()
-	 rn3(2) = RandomNumber()
+         rn3(1) = RandomNumber()
+         rn3(2) = RandomNumber()
          call m2s_QCDwz3j(x,p,v,41,.true.,lokt,xuz,rn3(1),m2s)
 c pp -> W+ W+ jj(j) -> e+ ve mu+ vm jj(j)
       CASE(QCDWPWPjj)
-	 rn = RandomNumber()
+         rn = RandomNumber()
          call m2s_QCDww3j(x,p,v,33,.true.,lokt,xuz,rn,m2s)
 c pp -> W- W- jj(j) -> e- ve mu- vm jj(j)
       CASE(QCDWMWMjj)
-	 rn = RandomNumber()
+         rn = RandomNumber()
          call m2s_QCDww3j(x,p,v,44,.true.,lokt,xuz,rn,m2s)
 #endif
 
@@ -3230,7 +3223,7 @@ c pp -> W- jj(j) -> e- ve mu- mu+ jj(j)
          call m2s_QCDwz3j(x,p,v,4,.true.,lokt,xuz,rn3(1),m2s)
 c pp -> Z jj(j) -> e+ e- jj(j)
       CASE(QCDZjj_l)
-	 rn3(1) = RandomNumber()
+         rn3(1) = RandomNumber()
          rn3(2) = RandomNumber()
          rn3(3) = RandomNumber()
          call m2s_QCDzz3j(x,p,v,2,.true.,lokt,xuz,rn3,m2s)

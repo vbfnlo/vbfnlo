@@ -6,6 +6,7 @@ c---------------------------------------------------------------------------
       
       subroutine qqwpzqq(pbar,sign, nlo, L,bos,
      1                  ans1,ans2,ans3,ans4)
+          use globalvars, only: ldoblha
       implicit none
 c
 c	Barbara Jaeger, <baj@particle.physik.uni-karlsruhe.de>
@@ -60,13 +61,13 @@ c
 c variables for the main part of the program
 c
       double precision  pbar(0:3,4+max_v), musq
-      double precision ans1, ans2, ans3, ans4,res(4),resv(4),
-     1		       uucs, ddcs, udcc, udss
+      double precision ans1, ans2, ans3, ans4,res(4),resv(4)
+
       double precision tree(6)
       double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), pew(0:4),
      1                  puz(0:4), pwz(0:4)
-      integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk, id,
-     1         isig, isig1, isig3,bos,h
+      integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk,
+     1         isig, isig1, isig3,bos
       integer  ifl(4,6), js1, js3, L, Lold, is1, is3
       double complex prop21(4), prop43(4)
       double complex mat(4,-1:1,-1:1,9), matv(4,-1:1,-1:1,9)
@@ -100,8 +101,8 @@ c
      2		     m2awu,m2zwu,m2wau,m2wzu,
      2		     m3awu,m3zwu,z3awu,z3zwu,m3wau,m3wzu,
      2		     m4awu,m4zwu,m4wau,m4wzu
-      double complex mvw1ae,mvw1ze,mv2ae,mv2ze,mvw2ae,mvw2ze,
-     1 		     mvw3ae,mvw3ze,mv4ae,mv4ze,mvw4ae,mvw4ze,
+      double complex mvw1ae,mvw1ze,mvw2ae,mvw2ze,
+     1 		     mvw3ae,mvw3ze,mvw4ae,mvw4ze,
      2		     mv1e,mv2e,mv3e,mv4e,
      3	             mvw1aau,mvw1azu,mvw1zau,mvw1zzu,
      3	             mvw2aau,mvw2azu,mvw2zau,mvw2zzu,
@@ -110,7 +111,7 @@ c
      2		     mv1u,mv2u,mv3u,mv4u,
      2		     mv1wau,mv1wzu,mv2wau,mv2wzu,
      2		     mv3wau,mv3wzu,mv4wau,mv4wzu
-      integer id1,id2,id3
+
       double complex psi(2,-1:1,4), jqq(0:5,-1:1,2) !, eps(0:5)
       double complex psiwe(2,-1:1,4),
      1 		     psizu(2,-1:1,4),psiau(2,-1:1,4),
@@ -137,15 +138,15 @@ c
       double complex zm2i(1:4)
       double complex jj21we(-1:1),jj43we(-1:1),jj21au(-1:1),jj43au(-1:1),
      1 		     jj21zu(-1:1),jj43zu(-1:1)
-      double complex z1
+
       double complex propt1(-1:1,-1:1,4,2), propt2(-1:1,-1:1,4,2),
      1		     propw(2),
-     1		     propt(-1:1,-1:1,5:6,2), prop_ee(3), prop_uu(3)
+     1		     prop_ee(3), prop_uu(3)
 c
        double complex psiwg,jwg(2,-1:1,-1:1,3)
        integer kb,kp
 c
-      double complex fac
+
       integer idu,idl
       double complex contract_Tjj, dotcc, dotrc, dotqj, s1c
       external contract_Tjj, dotcc, dotrc, dotqj, s1c
@@ -168,7 +169,7 @@ c
       save j5wz,j5zw,j5wa,j5aw
       double complex  zero
       parameter (zero = (0d0,0d0) )
-      integer ii,ll
+
    
       integer icountmax
 
@@ -845,10 +846,8 @@ c  gauge term for Z/W propagator:
 	   enddo !k
 	   
 	   enddo !isig3
-	enddo ! isig1  
+	enddo ! isig1
 
-           
-	
 
 c------------------------------------------------------------
       
@@ -973,8 +972,7 @@ c  gauge term for Z/W propagator:
 	   enddo !k
 	   
 	   enddo !isig3
-	enddo ! isig1  
-
+	enddo ! isig1
 
 
 c  virtual corrections:  
@@ -2291,7 +2289,6 @@ c  eps1=v1,eps2=v2,eps3=j21 with v3 arbitrary
          
 	 m5(3,1,3) = s1c(bkjqq(1,isig1,isig3,4),we,.true.,isig3,psiau(1,isig3,3))
          m5(3,2,3) = s1c(bkjqq(1,isig1,isig3,4),we,.true.,isig3,psizu(1,isig3,3))
-
 
 
 	if (lpent) then	

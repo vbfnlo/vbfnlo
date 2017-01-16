@@ -5,9 +5,9 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p4(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(6),result_color(2)
@@ -32,16 +32,6 @@
       end
 
 
-
-
-
-
-
-
-
-
-
-
         subroutine  NoAbe2gaHexLineT(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,gauge)
@@ -49,7 +39,7 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3)
        Complex*16 barpsi_p4(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
@@ -57,7 +47,7 @@
        Complex*16 result_graph(6),result_color(2),result_color_g(2)
      &            ,resulth(6)
        real*8 resultgauge(2)
-       Integer Div,Gauge
+       Integer Gauge
         musq=musqIn
 
 
@@ -125,8 +115,6 @@
         end
 
 
-
-
         subroutine  NoAbe2gaHexLineDivT(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,Div,gauge)
@@ -134,7 +122,7 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3)
        Complex*16 barpsi_p4(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
@@ -209,7 +197,6 @@
         end
 
 
-
 c gauge test of Hexagon using Pentagon: result_gaugeHex(1,1) and (1,2) should be the results of the Hexagons with mu2->p2 and mu3->p3; ngluons=2
        subroutine  gauge_NoAbe2gaHexLine(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,result_gaugeHex,resultgauge,Div,gauge)
@@ -268,7 +255,6 @@ c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
-
        subroutine NoAbe2gaHexLineTotalQ(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,Div,gauge)
@@ -276,9 +262,9 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 #include "VBFNLO/loops/Utilities/GaugeTest.inc"
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p4(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(6),result_color(2)
@@ -393,7 +379,6 @@ c test NAN
        endif
 
 
-
         tQUAD=Max(resultgauge_Q(1),resultgauge_Q(2))
 
 	if(tquad+1.eq.tquad) then
@@ -450,12 +435,7 @@ c       print*, "HexQ:2g", tquad
       end
 
 
-
-
-
-
 #ifdef WITH_QUAD
-
 
 
        subroutine NoAbe2gaHexLineTotal_QUAD(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
@@ -464,9 +444,9 @@ c       print*, "HexQ:2g", tquad
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+
        Complex*16 barpsi_p4(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(6),result_color(2)
@@ -494,7 +474,6 @@ c       print*, "HexQ:2g", tquad
       end
 
 
-
         subroutine  NoAbe2gaHexLineT_QUAD(p1,p2,p3,p4,p5,p6,barpsi_p4,psi_p1,m
      -   up2,mup3,mup5,mup6,alpha,musqIn,ngluon,posgluon,comp,result_gr
      -   aph,result_color,resultgauge,gauge)
@@ -502,7 +481,7 @@ c       print*, "HexQ:2g", tquad
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup5(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup5test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3)
        Complex*16 barpsi_p4(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i 
        Real*8 musqIn,musq
@@ -510,7 +489,7 @@ c       print*, "HexQ:2g", tquad
        Complex*16 result_graph(6),result_color(2),result_color_g(2)
      &            ,resulth(6)
        real*8 resultgauge(2)
-       Integer Div,Gauge
+       Integer Gauge
         musq=musqIn
 
 
@@ -576,10 +555,6 @@ c       print*, "HexQ:2g", tquad
         
         
         end
-
-
-
-
 
 
 #endif

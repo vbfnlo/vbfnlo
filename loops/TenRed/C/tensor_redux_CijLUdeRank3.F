@@ -43,7 +43,7 @@ c
       real*8 B0I_23, B0I_13, B0I_12, C0I 
       real*8 z11,z12,z21,z22,iz11,iz22
       real*8 Rr(2),RI(2),PRr(2),PRI(2)
-      REAL*8 dettemp,detabs,deter
+      REAL*8 detabs,deter
       Integer i,j
 
       real*8 BijR_12(2,2),BijR_13(2,2),BijR_23(2,2)
@@ -77,7 +77,7 @@ c New variables to compare
       complex*16 A0finG,A02,A03
       external A0finG
       real*8 accuracyC(0:4,5),AccuracyD(0:5,4)
-      real*8 accuracyCR(9,0:4,5)
+
       Common/Accuracy/AccuracyC,AccuracyD
       real*8 ratio
       real*8 m0sq,m1sq,m2sq
@@ -113,7 +113,6 @@ c         return
          endif
 
 
-
       C0r=Dble(C0)
       C0I=DImag(C0)
 
@@ -144,8 +143,6 @@ c         return
 *********************************************
 
 
-
-
       If(abs(p1sq).gt.abs(p1p2)) then
           z11=2d0*p1sq
           iz11=1d0/z11
@@ -158,7 +155,7 @@ c          iorder(2)=2
           det=z11*z22 
 
 c 1-2
- 100   PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
+       PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
        PRr(2) = (B0r_12 - B0r_13 - C0r*r2r1)
    
        Rr(2)=(PRr(2)-z21*PRr(1))*iz22 
@@ -319,7 +316,7 @@ c          iorder(2)=1
           det=-z11*z22
 
 c 1-2
- 200   PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
+       PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
        PRr(2) = (B0r_12 - B0r_13 - C0r*r2r1)
    
        Rr(2)=(PRr(1)-z21*PRr(2))*iz22 
@@ -551,7 +548,6 @@ c       test3gp2 =-(ZZ12+Z22/2d0)*B0_23
      -      (2*(m1sq - m2sq + ZZ12) + ZZ22))/2.d0
 
 
-
 cFC        ZZ12/3. + ZZ22/6. + 
 cFC     -  (ZZ11*ZZ12*Cij123(1,3))/2. + 
 cFC     -  (ZZ22**2*Cij123(2,3))/2. + 
@@ -591,9 +587,8 @@ c
       ten2g_Dble=ZZ11*DCMPLX(CijR(1,2),CijI(1,2))+ZZ22*DCMPLX(CijR(2,2),CijI(2,2))+ 
      1  2d0*(ZZ12*DCMPLX(CijR(3,2),CijI(3,2)) + 4d0*DCMPLX(CijR(4,2),CijI(4,2)))
      2 -1d0
-   
-   
-      
+
+
            ten2p1p2=ZZ11*(ZZ12*DCMPLX(CijRtemp(1,2),CijItemp(1,2))+ZZ22*DCMPLX(CijRtemp(3,2),CijItemp(3,2))) + 
      1  ZZ12*(ZZ22*DCMPLX(CijRtemp(2,2),CijItemp(2,2)) 
      1  + ZZ12*DCMPLX(CijRtemp(3,2),CijItemp(3,2))+2*DCMPLX(CijRtemp(4,2),CijItemp(4,2)))
@@ -628,8 +623,6 @@ c        print*, 'ten2p1p2_Dble',ten2p1p2_Dble
 	 endif
 
 
-
-
 	  If(abs(test2p1p2_dble).gt.1d-6) then
          ten2p1p2     =abs(ten2p1p2/test2p1p2-1d0)
 	 ten2p1p2_Dble=abs(ten2p1p2_Dble/test2p1p2_dble-1d0)
@@ -642,9 +635,7 @@ c        print*, 'ten2g',ten2g
 c        print*, 'ten2p1p2',ten2p1p2
 
 c        print*, 'ten2g_dble',ten2g_Dble
-c        print*, 'ten2p1p2_Dble',ten2p1p2_Dble	  
-
-
+c        print*, 'ten2p1p2_Dble',ten2p1p2_Dble
 
 
 c Check NAN
@@ -654,10 +645,9 @@ c Check NAN
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 	ten2g_dble=Max(abs(ten2g_dble),abs(ten2p1p2_Dble),abs(ten3gp2_dble))
-         ten2g=Max(abs(ten2g),abs(ten2p1p2),abs(ten3gp2)) 
+         ten2g=Max(abs(ten2g),abs(ten2p1p2),abs(ten3gp2))
 
- 
-        
+
 c        print*, 'ten2g',ten2g
 c        print*, 'ten2g_dble',ten2g_Dble
 
@@ -764,17 +754,6 @@ c         stop
          return
          endif
          endif
-
-
-
-
-
-
-
-
-
-
-
 
 
 	return

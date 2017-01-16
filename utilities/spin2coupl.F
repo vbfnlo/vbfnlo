@@ -1,10 +1,12 @@
 
       subroutine read_spin2coupl
+          use readinput
 c reads in initial set of spin-2 parameters
 c from file spin2coupl.dat. The parameters
 c are stored in common blocks in spin2coupl.inc      
       implicit none
-      integer i
+
+#include "global.inc"   
 #include "spin2coupl.inc"   
 
       print *," "

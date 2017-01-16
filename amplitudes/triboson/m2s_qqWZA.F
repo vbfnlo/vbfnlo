@@ -40,7 +40,7 @@ c declare input/output variables
 
       INTEGER bos, nlo,ps_number
       DOUBLE PRECISION xi(nx), p(0:3,max_p), v(0:3,n_v,3), rn(1), m2s
-      DOUBLE PRECISION q12(0:4,3), q34(0:4,3) !check if I really need these
+      DOUBLE PRECISION q34(0:4,3) !check if I really need these
 
 c declare external functions
 
@@ -61,7 +61,7 @@ c  helicity selection
       PARAMETER (zero=(0d0,0d0))
 
       DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -277,7 +277,6 @@ c contribute ( = 0: all diagrams, = 1: no non resonant diagrams)
       END SELECT
 
 
-
 #ifdef WITH_MADGRAPH
       if (ldebug_ltens) then
 
@@ -348,8 +347,6 @@ c contribute ( = 0: all diagrams, = 1: no non resonant diagrams)
          read(*,*)
       endif
 #endif
-
-
 
 
 c if desired, print output information
@@ -499,7 +496,6 @@ C*******************  q1bar q2 ---> W Z A   **********************
       call qq_WZA(xi,p,v,physToDiag,fsign,bos,nlo,pdf,res,nmin,nmax,ps_number)
 
 
-
 c***  end of extra process evaluation for hadronic decay  ***
 
        endif
@@ -641,11 +637,11 @@ c local variables
       INTEGER iflav(4), diagToPhys(2), FL_VVV
       EXTERNAL dotrr, FL_VVV
 
-      LOGICAL ChargedCurrent, sametype, oneAntiparticle
+
       LOGICAL ldebug
       PARAMETER (ldebug=.false.)
       PARAMETER (zero = (0d0,0d0) )
-      INTEGER i,if1,if2,icc1,j,k,mu
+      INTEGER i,if1,k,mu
       LOGICAL ldebug_ltens
       PARAMETER (ldebug_ltens=.false.)
 
@@ -763,7 +759,7 @@ c*****************************************************************
 #include "tensor.inc"
       complex*16 zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,mu
 
       do mu = 0,5
          do j = 1,3

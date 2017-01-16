@@ -7,9 +7,9 @@ C     this routine computes all the different permutations for a boxline
       implicit none
       integer divMax
       logical Ward1,WardTest
-      integer isig1max,isig3max,j 
+      integer isig1max,isig3max 
       double precision scale
-      integer isig1,isig2,isig3,div,comp,gluon_hel,i
+      integer isig1,isig2,isig3,div,comp
       double precision p1(0:3),p2(0:3),pbos1(0:3),pbos2(0:3)
       double complex PSI1(2,-1:1),PSI2(2,-1:1),extbos(1:5)
       double complex mat21(5,-1:1,-1:1,2,0:2), 
@@ -147,29 +147,18 @@ c$$$      endif                     !divmax
 c----------------------------------------------------------------------
 
       subroutine setmetozero(mat21g,mat21,mat21gb,mat21b,divmax)
+         implicit none
 
       double complex mat21(5,-1:1,-1:1,2,0:2), 
      $     mat21g(2,-1:1,-1:1,2,0:2), 
      $     mat21gb(2,-1:1,-1:1,2,0:2), 
      $     mat21b(-1:1,-1:1,2,0:2)
-      integer i,div, isig1, isig3, divmax
+      integer divmax
 
 c      print*,"setting me to zero"
-      do div = 0,divmax
-         do i=1,2
-            do isig1=-1,1,2
-               do isig3 = -1,1,2
-                  do j=1,5
-                     mat21(j,isig1,isig3,i,div)=0
-                  enddo
-                  do j=1,2
-                  mat21g(j,isig1,isig3,i,div)=0
-                  mat21gb(j,isig1,isig3,i,div)=0
-                  enddo
-                  mat21b(isig1,isig3,i,div)=0
-               enddo            !isig3
-            enddo               !isig1
-         enddo                  !i
-      enddo                     !div
+       mat21(1:5,-1:1:2,-1:1:2,1:2,0:divmax)=0
+       mat21g(1:2,-1:1:2,-1:1:2,1:2,0:divmax)=0
+       mat21gb(1:2,-1:1:2,-1:1:2,1:2,0:divmax)=0
+       mat21b(-1:1:2,-1:1:2,1:2,0:divmax)=0
 
       end

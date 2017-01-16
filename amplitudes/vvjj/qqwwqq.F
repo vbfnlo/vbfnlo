@@ -1,5 +1,6 @@
       subroutine qqwwqq(pbar,sign, nlo, L,
      1                  uucc,uuss,ddcc,ddss,udsc,ducs)
+          use globalvars, only: ldoblha
       implicit none
 c
 c	Dieter Zeppenfeld, <dieter@particle.physik.uni-karlsruhe.de>
@@ -57,17 +58,17 @@ c
       double precision tree(6)
       double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), pwp(0:4),
      1                  pwm(0:4), pww(0:4)
-      integer  sign(4+max_v), fs(4+max_v), nlo, mu, i, j, jj, k, kk, id,
+      integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk, id,
      1         isig, isig1, isig3
       integer  ifl(4,6), js1, js3, L, Lold  !, is1, is3
-      double complex prop21(4), prop43(4), propwp(4)
+      double complex prop21(4), prop43(4)
       double complex mat(6,-1:1,-1:1,9), matv(6,-1:1,-1:1,9)
       double complex mm(6,-1:1,-1:1), 
      1               mv12(6,-1:1,-1:1), mv34(6,-1:1,-1:1)
       double complex maa, maz, mza, mzz, mww5, mww6
       double complex  m1, m2, ma(2), mz(2), mpm(4), mmp(4), m5(3,3:4)
       double complex mv1,mv2,mva(2),mvz(2), mv5(3,3:4)
-      double complex psi(2,-1:1,4), jqq(0:5,-1:1,2), eps(0:5)
+      double complex psi(2,-1:1,4), jqq(0:5,-1:1,2)
       double complex psiwp(2,4), psiwm(2,4), bkjqq(2,-1:1,-1:1,4),
      1               jwp(0:5,-1:1,4), jwm(0:5,-1:1,4),
      1               jvwp(0:5,-1:1,-1:1,4), jvwm(0:5,-1:1,-1:1,4),
@@ -77,9 +78,8 @@ c
      2               psia(2,-1:1,-1:1,4), psiz(2,-1:1,-1:1,4),
      3               mvpm(4,2), mvmp(4,2)
       double complex j5pm(0:3,3,-1:1,2), j5mp(0:3,3,-1:1,2)
-      double complex j5pma(0:3,3,-1:1,2), j5mpa(0:3,3,-1:1,2)
-      double complex j5pmb(0:3,3,-1:1,2), j5mpb(0:3,3,-1:1,2)
-      double complex jbornp(0:5), jbornm(0:5)
+
+
       double complex epsa(0:3), epsz(0:3), 
      1               epsNCwp(0:5,-1:1,3:4,2), epsNCwm(0:5,-1:1,3:4,2),
      2               epsCCwp(0:5,-1:1,3:4,2), epsCCwm(0:5,-1:1,3:4,2)
@@ -99,7 +99,7 @@ c
       parameter (ldebugv=.false., ldebugvf=.false.)
       save ifl, Lold, zm2i, linit, lgc, icb1, icb2, icount1, icount2
       save ja,jz,jva,jvz,psia,psiz,fq,j5pm,j5mp
-      double complex wpx(0:5), wmx(0:5), z2, zero
+      double complex zero
       parameter (zero = (0d0,0d0) )
       real*8 widthfactor
      
@@ -1807,8 +1807,8 @@ c variables for monitoring gauge invariance:
      2               gce1g, gce2g, gcqg
 c
       integer icountmax
-      integer iterations1, iterations2, n2max1, n2max2
-      integer lflavr(5:8)
+
+
 !      character*50 gridname1, gridname2
 !      common /bmainpr/ iterations1, iterations2, n2max1, n2max2,
 !     2                 lflavr, gridname1, gridname2
@@ -2243,7 +2243,7 @@ c     returned current
       real * 8 musq
       complex * 16 jal(0:5),jbe(0:5)
       integer num_ret_current, nq1,nq2,nq3,nq4, sign(4)
-      complex * 16 jborn(0:3), jret(0:3)
+      complex * 16 jret(0:3)
       logical lpr
       common /e0print/lpr
 

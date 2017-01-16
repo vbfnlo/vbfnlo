@@ -29,18 +29,18 @@ C
       REAL*8 T!, P(0:3,NEXTERNAL)
       REAL*8 UD_ZZW_mhlm
       INTEGER IHEL,IDEN(NCROSS),IC(NEXTERNAL,NCROSS)
-      INTEGER IPROC, I !,JC(NEXTERNAL)
+      INTEGER IPROC !,JC(NEXTERNAL)
       LOGICAL GOODHEL(NCOMB,NCROSS)
       INTEGER NGRAPHS
-      REAL*8 hwgt, xtot, xtry, xrej, xr, yfrac(0:ncomb)
-      INTEGER idum, ngood, igood(ncomb), jhel, j, jj
+      REAL*8 xtry, xrej
+      INTEGER idum, ngood
       LOGICAL warned
       REAL     xran1
       EXTERNAL xran1
 C  
 C GLOBAL VARIABLES
 C  
-      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      Double Precision jamp2(0:maxamps)
 
 
 c helicity selection
@@ -61,7 +61,7 @@ c helicity selection
 c      DATA warned, isum_hel/.false.,0/
       DATA warned /.false./
 c      DATA multi_channel/.true./
-      SAVE yfrac, igood, IDUM, jhel
+      SAVE IDUM
       DATA NGRAPHS /  473/          
       DATA jamp2(0) /   1/          
       DATA GOODHEL/THEL*.FALSE./
@@ -476,7 +476,7 @@ C
       REAL*8 DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
       COMPLEX*16 AMP(NGRAPHS), JAMP(NCOLOR)
       COMPLEX*16 W(18,NWAVEFUNCS)
-      COMPLEX*16 subprocess(8)
+
 C  
 C GLOBAL VARIABLES
 C  

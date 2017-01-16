@@ -38,9 +38,9 @@ c     #     Jborn)
       double complex jret(0:3,-1:1)
       integer mu,kb, sign(4),isig
       double precision qa(0:4),qb(0:4),fa(0:4,4),fb(0:4,4),
-     # 		       fab(0:4,4),fba(0:4,4)
+     # 		       fba(0:4,4)
       double complex psia(2,-1:1,4),psib(2,-1:1,4),
-     #		     psiab(2,-1:1,4),psiba(2,-1:1,4)		      
+     #		     psiba(2,-1:1,4)		      
       double complex  jborn(0:5,-1:1),jret_nlo(0:3,-1:1)	      
    
       double precision  qak(0:4,2),qbk(0:4,2)	      
@@ -62,9 +62,8 @@ c
       parameter (pi = 3.141592653589793d0)
       parameter (pi2o3=pi**2/3d0, cvirtc=pi2o3-7d0)
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi)
- 	
 
- 	
+
       ! compute (outgoing) momenta asociated with external currents:
       
       qa(0) = dreal(jal(4))
@@ -124,8 +123,6 @@ c
             print*,"this configuration for pentagon line is not allowed" 
       
          endif
-	 
-
 
 
       !  compute pentagon line including born contribution:
@@ -308,8 +305,7 @@ c second graph (k=2): order = jal, open index, jbe (LO)
      
             enddo !isig
 
-     		
-		
+
             call curr6(1,psi(1,-1,nq2),p(0,nq2),
      1           psiak(1,-1,1,nq1),fqak(0,1,nq1),j0ak(0,-1,1)  )
 	
@@ -318,10 +314,8 @@ c second graph (k=2): order = jal, open index, jbe (LO)
 
 c            call curr6(-1,psi(1,-1,nq2),p(0,nq2),
 c     1                 psipak(1,1,nq1),fpak(0,1,nq1),j0aa(0,-1,1)   )
-   
-     	
-     
- 
+
+
 c k=2: order = jal, open index, jbe (NLO)
  
      	    call boxlinec(1,psi(1,-1,nq1),psi(1,-1,nq2),p(0,nq1),p(0,nq2),
@@ -332,9 +326,8 @@ c k=2: order = jal, open index, jbe (NLO)
         
 c          call boxlinec(-1,psi(1,-1,nq1),psi(1,-1,nq2),p(0,nq1),p(0,nq2),
 c     #	   	.true.,cak(0,1),2,j0aa(0,-1,1),jvirt3(0,-1))
-    
-   
-		 
+
+
     ! emit jal, then jbe from upper line: 
     	   
 	   do isig = -1,1,2
@@ -351,7 +344,6 @@ c -------------
 c third graph (k=1): order = open index, jal, jbe (LO)
 
 
-     
          if (num_ret_current.eq.1) then ! jexch,jal,jbe
 
 	    do isig = -1,1,2			
@@ -382,7 +374,6 @@ c third graph (k=1): order = open index, jal, jbe (LO)
 
             call curr6(1,psipak(1,-1,2,nq2),fpak(0,2,nq2),
      1           psi(1,-1,nq1),p(0,nq1),j0aa(0,-1,2)   )
-     
 
 
 c third graph (k=1): NLO for order = open index, jal, jbe 
@@ -431,7 +422,6 @@ c ---------------------------------------------------------------------
 c ---------------------------------------------------------------------
 c ---------------------------------------------------------------------
 
-		
 
       subroutine  J_virtual_tri_box_pent2(psi,p,nq1,nq2,isig,sign, musq,
 c     input currents (any ORDERED couple among [J1,J2,J3]) in DHELAS format
@@ -450,7 +440,7 @@ c     returned current
       real * 8 musq
       complex * 16 jal(0:5),jbe(0:5)
       integer num_ret_current, nq1,nq2,nq3,nq4, isig,sign(4)
-      complex * 16 jborn(0:3), jret(0:3)
+      complex * 16 jret(0:3)
       logical lpr
       common /e0print/lpr
 

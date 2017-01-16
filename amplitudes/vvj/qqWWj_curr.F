@@ -43,9 +43,9 @@ c variables for the main part of the program
       double precision  pbar(0:3,n_p+n_v), qbar(0:3)
       double precision  p(0:3,n_p+n_v)
 
-      integer  sign(n_p+n_v), mu, i, j, k, isig, N
+      integer  sign(n_p+n_v), mu, i, isig, N
       integer fsign(n_p+n_v)
-      integer  ifl(2), lh, l, bos
+
 
       double complex psi(2,-1:1,2),psiv(2,-1:1,4,4),psivv(2,-1:1,4,4,4)
       double complex gvv12(1:6,-1:1,3:4)
@@ -58,8 +58,7 @@ c variables for the main part of the program
       double complex dotcc, s1c, dotrc
       double complex zero 
       external dotcc, s1c, dotrc,dotrr,theta, contract_grjcj
-      integer u(2),d(2)
-      save ifl
+
       parameter (im = (0d0,1d0))
       parameter (zero = (0d0,0d0) )
 

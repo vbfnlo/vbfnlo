@@ -18,9 +18,8 @@ c
 c variables for the main part of the program
 c
       double precision  pbar(0:3,4+max_v),  pbs(0:3,4+max_v), ans
-      double precision uucc,uuss,ddcc,ddss,udsc,ducs,res(6)
-      double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), p65(0:4),
-     1                  p87(0:4), ph(0:4)
+      double precision uucc,uuss,ddcc,ddss,udsc,ducs
+
       integer  sign(4+max_v), fs(4+max_v), nlo, mu,i
       double complex zz
 c assign momenta for switched quark lines
@@ -153,7 +152,7 @@ c  OUTPUT:     mvirt           the amplitude for the finite part of all
 c                              virtual 1-loop QCD corrections
 c
 Common block for D_ij etc. information, calculated in BCD_fill
-      double complex D0v(8), Dijv(3,13,8), Teps1(8), Teps2(8), Tborn(8),
+      double complex Teps1(8), Teps2(8), Tborn(8),
      1               Tg1(8), Tg2(8)
       double precision ss(8), tt(8), q1sq(8), q2sq(8)
       double precision aq1(0:3,8), aq2(0:3,8), ak1(0:3,8), ak2(0:3,8)
@@ -678,9 +677,8 @@ c
       common /gauge / bad_gauge,bad_gauge_sin,bad_gauge_isig
       
       ! test only:
-       double precision  qx(0:4),fqal(0:4,4)
-       double complex psial(2,-1:1,4), jout0(0:5,-1:1,2),jvout(0:5,-1:1,2)
-      
+
+
       double complex dotcc
       external dotcc
       

@@ -38,8 +38,7 @@ c  helicity selection
       COMMON /hcount / h
 
 
-
-      complex*16 zero, z1
+      complex*16 zero
       parameter (zero=(0d0,0d0))
 
 c declare external functions
@@ -52,15 +51,15 @@ c declare external functions
 c declare local variables
 
       real*8 q_sf
-      integer init/0/, I, J, mu, nu, id
+      integer init/0/, I, mu
       save init
 
 c declare variables for summation process
 
       INTEGER ires
 
-      integer FSIGN(2+n_v), physToDiag(2), nmin, nmax, nproc(4)
-      save nmax, nproc
+      integer FSIGN(2+n_v), physToDiag(2), nmin, nmax
+      save nmax
 c
 c store contributions from subprocess ip in res(ip) where
       real*8 res(maxnumsubproc)
@@ -106,8 +105,6 @@ c variables for leshouches interface
          enddo
       endif
 
-   
-
 
 c...Les Houches interface
 
@@ -128,9 +125,8 @@ c for WA->2l+A precalculate W->WA leptonic tensors
 
       CALL OXXXXX(v(0,1,1),ZERO ,-1,1,wve(1,1)) !W(1,3)       !ve
       CALL IXXXXX(v(0,2,1),ZERO ,1,-1,wep(1,1)) !W(1,4)       !e+          
-      CALL VXXXXX(v(0,3,1),ZERO ,it,1,an(1,1))  !W(1,5)       !A   
+      CALL VXXXXX(v(0,3,1),ZERO ,it,1,an(1,1))  !W(1,5)       !A
 
-      
 
       do mu = 0,3
          qp(mu,1) = v(mu,1,1)+v(mu,2,1)   !W+
@@ -155,12 +151,9 @@ c leptonic tensors
        endif
 
 
-
-
 c later you need the an: wp: w+->e+ve
 
       CALL JIOXXX(wep(1,1),wve(1,1),GWF ,WMASS,WWIDTH,wp(1,1)) !!W+
-
 
 
 c if desired, print output information
@@ -319,11 +312,11 @@ c local variables
       integer iflav(4), diagToPhys(2), FL_VV
       external dotrr, FL_VV
 
-      logical ChargedCurrent, sametype, oneAntiparticle
+
       logical ldebug
       parameter (ldebug=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,icc1,j,k,mu
+      integer i,if1,k,mu
 
       udwa = 0d0 
       udwa2 = 0d0
@@ -372,10 +365,8 @@ c local variables
 #endif
 
 
-
       NCmatrixelt(0,0)=udwa
-     
-    
+
 
       do if1=2,(nfl/2)*2,2
          if (bos.eq.31) then
@@ -403,15 +394,13 @@ c
 c*****************************************************************
 
 
-
-
       subroutine DIBOSwtowa_reset
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "tensor.inc"
       complex*16 zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,mu
 
       do mu = 0,3
          do j = 1,3

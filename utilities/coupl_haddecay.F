@@ -89,8 +89,7 @@
       END SELECT
 
       RETURN
-      END 
-
+      END
 
 
       SUBROUTINE setZtouu
@@ -108,8 +107,7 @@
       Ztodd = .false.
 
       RETURN
-      END 
-
+      END
 
 
       SUBROUTINE setZtodd
@@ -127,8 +125,7 @@
       Ztodd = .true.
 
       RETURN
-      END 
-
+      END
 
 
       subroutine hadDecayFactor_Z(finalquarks_in, QSQ_had, N_gen_up, N_gen_down, fac_Z_up, fac_Z_down)
@@ -239,7 +236,6 @@
 
       return
       end
-
 
 
       subroutine hadDecayFactor_W(finalquarks_in, QSQ_had, N_gen_W, fac_W)

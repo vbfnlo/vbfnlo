@@ -32,9 +32,9 @@ c*******************************************************************************
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       Real*8 psq(4)
-        Real*8   p1sq, p1p2, p1p3, p1p4
-       Real*8   p2sq, p2p3, p2p4
-       Real*8   p3sq, p3p4
+        Real*8   p1sq
+       Real*8   p2sq
+       Real*8   p3sq
        Real*8   p4sq
 
        Real*8   s12
@@ -255,8 +255,6 @@ c$$$       print*, 'Minus jtemp', jtemp
       endif
 
 
-
-
       do i=0,3 
       p1_QUAD(i)=ptemp(i,1)
       p2_QUAD(i)=ptemp(i,2)
@@ -369,7 +367,6 @@ c       p4p5=dble(p4p5_QUAD)
        B024=DCMPLX(B024R,B024I)
 
 
-
        call C0fin_QUAD(p1sq_QUAD,p2sq_QUAD,s12_QUAD,musq_QUAD,C0123_QU
      -   AD)
        call tens_red3_new_Re_Com_QUAD(p1sq_QUAD,p2sq_QUAD,s12_QUAD,B02
@@ -408,7 +405,6 @@ c       p4p5=dble(p4p5_QUAD)
        call  From_CijR_QUAD_to_Dbl(C0134R,C0134I,C134R,C134I,C0134R_QU
      -   AD,C0134I_QUAD,C134R_QUAD,C134I_QUAD)
        C0134=DCMPLX(C0134R,C0134I)
-
 
 
        call D0fin_QUAD(s12_QUAD,s23_QUAD,p1sq_QUAD,p2sq_QUAD,p3sq_QUAD

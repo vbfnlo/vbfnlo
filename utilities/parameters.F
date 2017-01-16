@@ -119,7 +119,6 @@
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -219,13 +218,14 @@ c$$$
 c$$$      end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
 ***  Subroutine that sets all (non-ewscheme) parameters 
 
       subroutine setparams(G2)
+          use globalvars, only: lglobalprint, ldoblha
+          use readinput
 
       implicit none
 
@@ -1436,8 +1436,7 @@ c$$$      end
 **** END of parameters section  ****
 
 
-      end 
-
+      end
 
 
 *******************************************************************************
@@ -1458,6 +1457,7 @@ c$$$      end
      &     MUE,
      &     Atau, At, Ab, Amu, Ac, As, Ae, Au, Ad,
      &     M_1, M_2, M_3, MSusy, slha_switch, bench, debug)
+          use readinput
 
       implicit none
 
@@ -2035,7 +2035,6 @@ c$$$      end
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -2043,6 +2042,7 @@ c$$$      end
 *** .dat input files, or via an internal calculation.  
 
       logical function replace(para,calc)
+          use globalvars, only: ldoblha
 
       implicit none
 
@@ -2125,7 +2125,6 @@ c$$$         end if
 
 
       end
-
 
 
 ********************************************************************************
@@ -2220,7 +2219,6 @@ c$$$         end if
       COMMON /BRANCH/ BWNE,BWUD,BWTB,BZNN,BZEE,BZUU,BZDD,BZTT,
      &                BHWW,BHZZ,BHGG,BHTT,BHBB,BHCC,BHTAU,BHMU,
      &                BHGAM, BHGAMZ, XGW, XGZ, XGH, GAMT
-
 
 
       SELECT CASE(procID)
@@ -2350,7 +2348,7 @@ c$$$         end if
       END SELECT
 
 
-      end 
+      end
 
 
 

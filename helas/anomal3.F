@@ -151,8 +151,6 @@ c      endif
       end
 
 
-
-
       subroutine jwpawm_anomal3(a, wm, jvv)
 c
 c This subroutine computes an off-shell vector current attached to a W+
@@ -290,8 +288,6 @@ c     Propagator
 
       return
       end
-
-
 
 
       subroutine jwmwpa_anomal3(wp, a, jvv)
@@ -433,8 +429,6 @@ c     Propagator
       end
 
 
-
-
       subroutine jaww_anomal3(wm, wp, jvv)
 c
 c This subroutine computes an off-shell vector current attached to an A
@@ -455,9 +449,8 @@ c where all the bosons are defined by the flowing-OUT quantum number.
       implicit none
       double complex wm(6), wp(6), jvv(6), j12(4), dg, dotcc, dotrc
       double complex epsccrmu, epscrrmu, epscrrr, epsccrr
-      double complex cm2        ! mass**2- I Gamma mass (Fabio)
       double precision pwm(4),pwp(4),q(4),s
-      double precision vm2, dotrr, epsrrrmu
+      double precision dotrr, epsrrrmu
       integer i
       external dotcc, dotrc, dotrr, epsccrmu, epscrrmu, epscrrr, epsccrr, epsrrrmu
 
@@ -580,11 +573,6 @@ c     Propagator
 
       return
       end
-
-
-
-
-
 
 
 CCCCCCCCCCCCCCCCC
@@ -719,8 +707,6 @@ c      endif
 
       return
       end
-
-
 
 
       subroutine jwpzwm_anomal3(z, wm, jvv)
@@ -869,7 +855,6 @@ c     Propagator
       end
 
 
-
       subroutine jwmwpz_anomal3(wp, z, jvv)
 c
 c This subroutine computes an off-shell vector current attached to a W-
@@ -1014,7 +999,6 @@ c     Propagator
 
       return
       end
-
 
 
       subroutine jzww_anomal3(wm, wp, jvv)
@@ -1307,7 +1291,7 @@ c
 c where all the bosons are defined by the flowing-OUT quantum number.
 
       implicit none
-      double complex v1(6),v2(6),hvv(3),dg, dotrc, dotcc, epsccrr
+      double complex v1(6),v2(6),hvv(3), dotrc, dotcc, epsccrr
       double precision p1(4),p2(4),q(4),q2, dotrr, cos2w
       external dotcc, dotrc, dotrr, epsccrr
 
@@ -1508,7 +1492,6 @@ c      endif
       end
 
 
-
       subroutine jhaz_anomal3(a, z, hvv)
 c
 c This subroutine computes an off-shell scalar current from the vector-
@@ -1524,7 +1507,7 @@ c
 c where all the bosons are defined by the flowing-OUT quantum number.
 
       implicit none
-      double complex a(6),z(6),hvv(3),dg, dotrc, dotcc, epsccrr
+      double complex a(6),z(6),hvv(3), dotrc, dotcc, epsccrr
       double precision pa(4),pz(4),q(4),q2, dotrr, cos2w
       external dotcc, dotrc, dotrr, epsccrr
 
@@ -1706,7 +1689,7 @@ c
 c where all the bosons are defined by the flowing-OUT quantum number.
 
       implicit none
-      double complex v1(6),v2(6),hvv(3),dg, dotrc, dotcc, epsccrr
+      double complex v1(6),v2(6),hvv(3), dotrc, dotcc, epsccrr
       double precision p1(4),p2(4),q(4),q2, dotrr, cos2w
       external dotcc, dotrc, dotrr, epsccrr
 
@@ -1847,7 +1830,6 @@ c      endif
       end
 
 
-
       subroutine jhww_anomal3(v1,v2 , hvv)
 c
 c This subroutine computes an off-shell scalar current from the vector-
@@ -1863,7 +1845,7 @@ c
 c where all the bosons are defined by the flowing-OUT quantum number.
 
       implicit none
-      double complex v1(6),v2(6),hvv(3),dg, dotrc, dotcc, epsccrr
+      double complex v1(6),v2(6),hvv(3), dotrc, dotcc, epsccrr
       double precision p1(4),p2(4),q(4),q2, dotrr
       external dotcc, dotrc, dotrr, epsccrr
 

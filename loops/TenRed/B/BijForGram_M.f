@@ -8,8 +8,8 @@ c    Declaration of variables
 c************************************************************************************
 c************************************************************************************
        Implicit none
-       Real*8 p1sq,m0,m1,m0sq
-       Complex*16 B012,A2,A1,A202,A402,A602,A802,A1002,A1202
+       Real*8 p1sq,m0,m0sq
+       Complex*16 B012,A2,A1,A202,A402,A602,A802,A1002
        Complex*16 B12(6,11)
         Real*8 Inv2,Inv5,Inv6,Inv8,Inv12,Inv18,Inv20,Inv24,Inv36,Inv48,Inv60
         Real*8 Inv72,Inv192,Inv300,Inv360,Inv600,Inv1344,Inv1440,Inv1470,Inv1920
@@ -21,7 +21,7 @@ c*******************************************************************************
         Real*8 Invp1sq
         real*8 inv11,inv14,inv22,inv35,inv63,inv80,inv99
         real*8 inv294,inv308,inv648,inv900,inv1210,inv1584,inv21780
-        integer index(11),i1,i2
+
 c FC %       index(1)=1
 c FC %       index(2)=2
 c FC %       index(3)=2

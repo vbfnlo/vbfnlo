@@ -68,7 +68,7 @@ c  helicity selection
       PARAMETER (zero=(0d0,0d0))
 
       DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -287,7 +287,6 @@ c contribute ( = 0: all diagrams, = 1: no non resonant diagrams)
       end select
 
 
-
 #ifdef WITH_MADGRAPH
       if (ldebug_ltens) then
          print*, ""
@@ -332,7 +331,6 @@ c contribute ( = 0: all diagrams, = 1: no non resonant diagrams)
          read(*,*)
       endif
 #endif
-
 
 
 c     distributions in the incoming (anti)protons.
@@ -480,7 +478,6 @@ c*****************  end of process evaluation  *********************
 
       if (init.eq.1) then
          init = init+1
- 199     format(a,4i5)
       endif
 
       SELECT CASE(procid)
@@ -600,7 +597,7 @@ c local variables
       logical ldebug
       parameter (ldebug=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,j,k,mu
+      integer i,if1,k,mu
 
       LOGICAL ldebug_ltens
       PARAMETER (ldebug_ltens=.false.)

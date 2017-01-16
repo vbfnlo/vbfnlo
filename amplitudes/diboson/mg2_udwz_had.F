@@ -477,6 +477,6 @@ c          print*,UDWPhadZL
       Enddo
 C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN) 
       END
-       
+
 
 

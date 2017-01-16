@@ -16,7 +16,6 @@ c
 c***************************************************************************
 
 
-
 ****************************************************************************
       LOGICAL FUNCTION Resonance(xm2, xmg, rm2min, rm2max, R, weight, qsq)
 ****************************************************************************
@@ -191,8 +190,6 @@ c 1/q^2 behaviour
       END
 
 
-
-
 ****************************************************************************
       LOGICAL FUNCTION ResonanceVbos(xm2, xmg, rm2min, rm2max, nowidth, bos, R, weight, qsq)
 ****************************************************************************
@@ -240,7 +237,6 @@ c 1/q^2 behaviour
 
       RETURN 
       END
-
 
 
 ****************************************************************************
@@ -577,13 +573,12 @@ c generate outgoing momenta in CMS and boost back
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
 
-      INTEGER I, J, II, JJ, MU, ic, NW
 
-      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, mw, m2
+      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq
       DOUBLE PRECISION P_in(0:4), QL1(0:3), QL2(0:3), QL3(0:3)
 
-      DOUBLE PRECISION dotrr
-      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, A1, A2, D, x1, x2
+
+      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, D
       DOUBLE PRECISION alpha, gamma, cosa, cosb, cosg, sina, sinb, sing
 
       DOUBLE PRECISION R(4), RN
@@ -714,13 +709,13 @@ c Additional weight factors ******************************************
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
 
-      INTEGER I, J, II, JJ, MU, ic, NW
+      INTEGER MU, NW
 
       DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, mw, m2
       DOUBLE PRECISION P_in(0:4), q1_out(0:3), q2_out(0:3), q3_out(0:3)
 
-      DOUBLE PRECISION dotrr
-      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, A1, A2, D
+
+      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, D
       DOUBLE PRECISION alpha, gamma, cosa, cosb, cosg, sina, sinb, sing
 
       DOUBLE PRECISION R(7), RN
@@ -966,7 +961,6 @@ c Additional weight factors ******************************************
       END
 
 
-
 ***************************************************************************
       LOGICAL FUNCTION ThreeBodyDecay3Higgs(R, P_in, q1_out, q2_out,
      &                 q3_out, m1sq, m2sq, m3sq, w, NW)
@@ -1001,13 +995,13 @@ c Additional weight factors ******************************************
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
 
-      INTEGER I, J, II, JJ, MU, ic, NW
+      INTEGER MU, NW
 
-      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, mw, m2
+      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq
       DOUBLE PRECISION P_in(0:4), q1_out(0:3), q2_out(0:3), q3_out(0:3)
 
-      DOUBLE PRECISION dotrr
-      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, A1, A2, D
+
+      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, D
       DOUBLE PRECISION alpha, gamma, cosa, cosb, cosg, sina, sinb, sing
 
       DOUBLE PRECISION R(8)
@@ -1299,7 +1293,6 @@ c Additional weight factors ******************************************
       END
 
 
-
 ***************************************************************************
       LOGICAL FUNCTION ThreeBodyDecayPlain(R, P_in, q1_out, q2_out, 
      &                  q3_out, m1sq, m2sq, m3sq, w, NW)
@@ -1333,13 +1326,13 @@ c Additional weight factors ******************************************
       COMMON /BKOPOU/ CLR(4,5,-1:1), XM2(6), XMG(6),
      1                B(6,6,6), VE(4,5), A(4,5)
 
-      INTEGER I, J, II, JJ, MU, ic, NW
+      INTEGER MU, NW
 
-      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq, mw, m2
+      DOUBLE PRECISION m1sq, m2sq, m3sq, m12sq, m23sq
       DOUBLE PRECISION P_in(0:4), q1_out(0:3), q2_out(0:3), q3_out(0:3)
 
-      DOUBLE PRECISION dotrr
-      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, A1, A2, D, x1, x2
+
+      DOUBLE PRECISION M, E1, E2, E3, Abs1, Abs3, C, D
       DOUBLE PRECISION alpha, gamma, cosa, cosb, cosg, sina, sinb, sing
 
       DOUBLE PRECISION R(8)
@@ -1677,7 +1670,6 @@ c Additional weight factors ******************************************
       END
 
 
-
 ****************************************************************************
       LOGICAL FUNCTION TwoToJetsPlusX(N,R,RN,ECM,PTmin,XQ2,
      1                                K1,K2,X1,X2,Q,P,weight)
@@ -1838,7 +1830,13 @@ c  may cause numerical problems
 C  Next get the center of mass rapidity YCM
       QV = SQRT(XQ2)
       XMJ = SQRT(PNJ(4))
-      YBAR = 0.5D0*LOG( (PNJ(0)+PNJ(3))/(PNJ(0)-PNJ(3)) )
+      if (PNJ(0).le.PNJ(3)) then
+        ybar = 100
+      elseif (PNJ(0).le.-PNJ(3)) then
+        ybar = -100
+      else
+        YBAR = 0.5D0*LOG( (PNJ(0)+PNJ(3))/(PNJ(0)-PNJ(3)) )
+      endif
       PJT2 = PNJ(1)**2+PNJ(2)**2
       SHA = (S-(QV+XMJ)**2-4*PJT2) / (4*(PNJ(4)+PJT2)) 
       IF (SHA.LE.0D0) THEN
@@ -2003,7 +2001,7 @@ c local variables
       DOUBLE PRECISION k(0:3)
       DOUBLE PRECISION s, ptmax, y2_border, temp, pt, ET, y_border, y, y2
       DOUBLE PRECISION phi, sinhy2, coshy2, abs_p, pL, tau
-      DOUBLE PRECISION A, ptc, ptmin
+      DOUBLE PRECISION A, ptc
 
 c test variables
       COMMON /ptdistr/ pt
@@ -2313,7 +2311,7 @@ c local variables
       double precision s,ptmax,y2_border,temp,pt,ET,y_border,y,y2
       double precision phi,sinhy2,coshy2,abs_p,pL,tau
 
-      double precision A,B,zmax,mass1,zc,z,lambda
+      double precision z,lambda
       parameter(lambda = 1.7d0)
       double precision gamma, kappa
       parameter(gamma = 2.5d0)
@@ -2383,8 +2381,7 @@ c calculate y*
          tau=((coshy2*ET+sqrt(coshy2**2*ET**2+xq2))**2)/s
          weight = weight * pT/(sqrt(tau*s))
          weight = weight/(sqrt(coshy2**2*ET**2+xq2))
-         
-         
+
 
          y_border = log(1/tau)
          y = y_border*( R(3) - 0.5d0 ) !y
@@ -2444,7 +2441,6 @@ c boost in lab frame
       END
 
 
-
       SUBROUTINE BWBORDERS(M12,MG1,M22,MG2,lower,upper)
       IMPLICIT NONE
 
@@ -2468,7 +2464,6 @@ c boost in lab frame
 
       return
       end
-      
 
 
       subroutine MultiResonancesInit(MultiResNumber, M2_X_in, MG_X_in, F_X_in, M2_i_in, MG_i_in, F_i_in, N_res_in)
@@ -2490,7 +2485,7 @@ c boost in lab frame
       integer          N_res_in, i, j, iMin, MultiResNumber
       logical          resonance_erased
       double precision M2_X_in, MG_X_in, F_X_in, M2_i_in(1:max_res), MG_i_in(1:max_res), F_i_in(1:max_res)
-      double precision swap, Fsum, c_low, c_high, newwidth
+      double precision swap, Fsum, c_low, c_high
 
       logical ldebug
       parameter (ldebug = .false.)
@@ -2642,7 +2637,6 @@ c boost in lab frame
 
       return
       end
-
 
 
       LOGICAL function MultiResonance(MultiResNumber, rd, rm2minx, rm2maxx, W, QSQ)

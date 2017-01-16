@@ -29,9 +29,9 @@ c************** Calling the Fa functions*************************
        Real*8   p3sq 
        Real*8   p4sq 
        Real*8   p5sq 
-       Real*8   s12, s13, s14, s15 
-       Real*8   s23, s24, s25 
-       Real*8   s34, s35 
+       Real*8   s12 
+       Real*8   s23 
+       Real*8   s34 
        Real*8   s45 
        Real*8   s234,m1,m1sq,m3,m3sq,m4,m4sq
       Complex*16 Fa(3196),F(4476)

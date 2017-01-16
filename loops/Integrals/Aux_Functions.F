@@ -45,9 +45,7 @@ c        else return -1
       external theta
       eta3 = theta(-im_a)*theta(-im_b)*theta(im_ab)
      #     - theta(im_a)*theta(im_b)*theta(-im_ab)
-      end      
-
-
+      end
 
 
 ***********************************************************************
@@ -127,12 +125,7 @@ c        else return -1
      *					  )/4D0
 	    ENDIF
 	ENDIF
-        END                                                            
-
-                 
-
-
-
+        END
 
 
 ***********************************************************************

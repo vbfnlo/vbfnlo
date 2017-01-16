@@ -10,10 +10,10 @@ C     triangle and box diagrams
 
       implicit none
       integer divMax
-      logical Ward1,Ward2,WardTest,doWardTest1,doWardTest2
+      logical Ward1,WardTest
       integer isig1max
       double precision scale
-      integer isig1,isig2,div,comp,gluon_hel,i
+      integer isig1,isig2,div,comp,i
       double precision p1(0:3),p2(0:3),pjext(0:3),pbos1(0:3),pbos2(0:3)
       double complex PSI1(2,-1:1),PSI2(2,-1:1),extbos1(6),extbos2(6)
       double complex mat21(8,-1:1,0:3,0:2), ! check dime
@@ -33,7 +33,6 @@ c
       double precision pi2o3,cvirtc,pi
       parameter (pi=3.141592653589793d0)
       parameter (pi2o3=pi**2/3d0)
-
 
 
       if(comp.eq.1) then
@@ -60,7 +59,6 @@ c$$$
 c$$$      do isig1 = -1,1,2
 c$$$         print*,(jext(i,isig1),i=0,3)
 c$$$      enddo
-  
 
 
 c     V1 V2 j
@@ -215,8 +213,6 @@ cfc           jvirt(5,isig1)= -DCMPLX(pjext(1),pjext(2))
 cfc           jborn(4,isig1)= -DCMPLX(pjext(0),pjext(3))
 cfc           jborn(5,isig1)= -DCMPLX(pjext(1),pjext(2))
 cfc      enddo
- 
-
 
 
       end
@@ -229,21 +225,10 @@ c-----------------------------------------------------------------------------
      $     mat21g(3,-1:1,0:3,0:2), 
      $     mat21gb(3,-1:1,0:3,0:2), 
      $     mat21b(-1:1,0:3,0:2)
-      integer i,div, isig1,  divmax
+      integer divmax
 
-      do div = 0,divmax
-         do i=0,3
-            do isig1=-1,1,2
-                  do j=1,8
-                     mat21(j,isig1,i,div)=0
-                  enddo
-                  do j=1,3
-                     mat21g(j,isig1,i,div)=0
-                     mat21gb(j,isig1,i,div)=0
-                  enddo
-                  mat21b(isig1,i,div)=0
-            enddo               !isig1
-         enddo                  !i
-      enddo    
-
+      mat21(1:8,-1:1:2,0:3,0:divmax)=0
+      mat21g(1:3,-1:1:2,0:3,0:divmax)=0
+      mat21gb(1:3,-1:1:2,0:3,0:divmax)=0
+      mat21b(-1:1:2,0:3,0:divmax)=0
       end

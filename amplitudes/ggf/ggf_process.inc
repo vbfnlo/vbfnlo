@@ -8,7 +8,7 @@ c  modified : 03.03.2011 (MK)
       logical subprQQ,subprQG,subprGG
 
 ******************* Higgs coupling type parameters ********************
-      integer Q_loop,SQ_loop
+      integer Q_loop
       logical AloopTop,AloopBottom,HloopTop,HloopBottom,
      &        Aeff,Heff,
      &        sHloopTop,sHloopBottom,bHloopTop,bHloopBottom

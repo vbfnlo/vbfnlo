@@ -80,30 +80,30 @@ c*******************************************************************************
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       Real*8   p1t(0:3),p2t(0:3),p3t(0:3),p4t(0:3)
        Complex*16 barpsi_p3(2),psi_p1(2),mup2(0:3),mup4(0:3)
-       Real*8   p1sq, p1p2, p1p3, p1p4, p2sq, p2p3, p2p4, p3sq, 
+       Real*8   p1sq, p1p2, p1p3, p2sq, p2p3, p2p4, p3sq, 
      -          p3p4, p4sq
-       Real*8   s12, s13, s14, s23, s24, s34
+       Real*8   s12, s23
        Complex*16   p1mup2, p1mup4, p2mup2, p2mup4, p3mup2, p3mup4, 
      -          p4mup2, p4mup4
        Complex*16 mup2mup4
        Real*8 dotrr
        Complex*16 B0fin,C0fin,D0fin
        EXTERNAL dotrr,B0fin,C0fin,D0fin
-       Complex*16 B012,B013,B014,B023,B024,B034
+
       Real*8 B012R,B013R,B014R,B023R,B024R,B034R
       Real*8 B012I,B013I,B014I,B023I,B024I,B034I
-       Complex*16 C0123,C0124,C0134,C0234
+
        Real*8 C0123R,C0124R,C0134R,C0234R
        Real*8 C0123I,C0124I,C0134I,C0234I
        Real*8 Cij123R(4,2),Cij124R(4,2),Cij134R(4,2),Cij234R(4,2)
        Real*8 Cij123I(4,2),Cij124I(4,2),Cij134I(4,2),Cij234I(4,2)
-       Complex*16 D01234
+
         Real*8 D01234R
         Real*8 D01234I
         Real*8 Dij1234R(13,3)
         Real*8 Dij1234I(13,3)
        Complex*16 SMB(4),SMG(4) ,Fa(3),F(17)
-      Real*8 FI(17),FR(17),FaI(3),FaR(3)
+      Real*8 FI(17),FR(17)
       Complex*16 SC1r,SC1c,SC3rcc,dotrc,dotcc,result
        Complex*16 resultgauge(2) 
        Real*8 musq,Is12,Is23,Is12s23,P(35) 
@@ -433,8 +433,6 @@ c*******************************************************************************
      -   3mup4,p4mup2, p4mup4,mup2mup4,Fa)
 
 
-
-
 c************************************************************************************
 c************************************************************************************
 c************************************************************************************
@@ -535,8 +533,6 @@ c       write(*,'(a7,E26.18,E26.18)') "SMG(1)=", SMG(1)
 c       write(*,'(a7,E26.18,E26.18)') "SMG(2)=", SMG(2)
 c       write(*,'(a7,E26.18,E26.18)') "SMG(3)=", SMG(3)
 c       write(*,'(a7,E26.18,E26.18)') "SMG(4)=" ,SMG(4)
-
-
 
 
 c************************************************************************************

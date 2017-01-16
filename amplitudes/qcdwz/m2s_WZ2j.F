@@ -13,6 +13,9 @@ c ******************************************************************************
      &                   Nbos, ! 32 = WpZ, 42 = WmZ
      &                   nlo
      &                        )
+
+      use globalvars, only: ldoblha
+
       implicit none
 c
 c declare input/output variables
@@ -21,6 +24,7 @@ c
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/loops/Utilities/GaugeTest.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "common.inc"
       integer nbos
       real*8 xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), m2s,rn3(3)
@@ -37,7 +41,7 @@ c declare local variables
 c
       real*8 q_sf
 
-      integer init/0/, I, J, mu, nu
+      integer init/0/, I
       save init
 c
 c declare variables for summation process
@@ -47,7 +51,7 @@ c
 c
 c store contributions from subprocess ip in res(ip) where
       real*8 res(maxNumSubProc)
-      real*8 weight, rn, RandomNumber 
+      real*8 weight, rn 
 c
 c declare parton distribution variables
 c
@@ -55,7 +59,7 @@ c
       real*8 xiFinColl(2,2)
       
 !       real*8 ampborntemp(0:2,3:4,0:2)
-      real*8 pMG(0:3,7)
+
 !       integer temphel(9)
 !       logical lokt(16)
 
@@ -79,7 +83,7 @@ c local variables
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
 
 
-      if ( init .eq. 0 ) then 
+      if ( (init .eq. 0) .and. (.not. ldoblha) ) then
 
          write(6,*) " "
         if(nbos .eq. 32) then
@@ -104,6 +108,8 @@ c local variables
          write(6,*) "precision for gauge test:   ",GaugeAccuracy
          write(6,*) "-----------------------------------------------"
          
+      else if ( (init .eq. 0) .and. ldoblha ) then
+        init = 1
       endif
       
       if(nlo.ne.0) then
@@ -149,7 +155,7 @@ c
 !        rn3(3)=5.415290594100952E-002
 
 
-
+      if (.not.ldoblha) then
 c     
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
@@ -184,6 +190,8 @@ c pdfs for fin. coll.
         call CScolAmpGNewReset
       endif
 
+      endif !ldoblha 
+
 !       pdf=1d0
 !       als=1d0
 !       print*,rn3
@@ -203,7 +211,6 @@ c random helicity
       rn3(1) = 2d0*rn3(1)
       hel(2) = (-1)**INT(rn3(1))
       rn3(1) = rn
-      
 
 
 #ifdef NINH_COMPARE
@@ -307,7 +314,6 @@ c gg ->ub d
       fsign=-1
       fsign(3)=1
       call getRes2Q2GWZ(p,xiFinColl,id,fsign,pdf,nbos,2,hel,rn3(3),res) 
-      pause
       
 c u db -> cb c
       id(1) = 1
@@ -324,7 +330,6 @@ c u db -> cb c
       pMG(:,5:7) = v(:,1:3,1)
       call Smatrixggudenua(pMG,rn3(3))
       print*,rn3(3)
-      pause
       return
 
 c u db -> uu
@@ -389,6 +394,25 @@ c            9
 c            6
 c            9
 c   g2 96969696969696 g4
+
+       if (ldoblha) then
+c id is diagtoPhys in standard VBFNLO terminology
+         id(blha_physdiagmap(1,blha_cursubproc,blha_curproc))=1
+         id(blha_physdiagmap(2,blha_cursubproc,blha_curproc))=2
+         id(blha_physdiagmap(3,blha_cursubproc,blha_curproc))=3
+         id(blha_physdiagmap(4,blha_cursubproc,blha_curproc))=4
+         fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+         fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+         fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+         fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+
+         if ((blha_idsubproc(blha_cursubproc,blha_curproc)/100) .eq. 1) then
+           call getRes2Q2GWZ(p,xiFinColl,id,fsign,pdf,nbos,nlo,hel,rn3(3),res)
+         else if ((blha_idsubproc(blha_cursubproc,blha_curproc)/100) .eq. 2) then
+           call getRes4QWZ(res,p,xiFinColl,fsign,id,pdf,nbos,nlo,rn3(3) )
+         endif
+         return
+       endif
 
 c*****  2.  ********
 c**Diagram**********  q1 g2 --->  q3  g4 W Z   **********************
@@ -581,7 +605,7 @@ c
 c  end of subprocess evaluation
 c
 c
- 123  continue
+      continue
 
       ires_max = numcolor
       if(init.lt.sub_number) then
@@ -615,7 +639,6 @@ c select subprocess for lha output
       m2s_QCDwz2j =m2s
 #ifdef NINH_COMPARE      
       print*,m2s,m2s/2d0
-      pause
 #endif
 
 !       print*,m2s, hel,rn3(3)
@@ -623,11 +646,14 @@ c select subprocess for lha output
       END
 
 
-
       subroutine getRes2Q2GWZ(p,xiFinColl,id,fsign,pdf,Nbos,nlo,hel,rn,res)
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
       real*8 p(0:3,max_p,max_kin), pdf(-6:6,2,2), xiFinColl(2,2),rn! for gauge test
       integer id(4), fsign(4),nbos,nlo,hel(2)
       real*8 res(maxNumSubProc)  !out: subprocess cross-sections
@@ -635,32 +661,39 @@ c select subprocess for lha output
       integer FL4qcdVV
       external FL4qcdVV
       
-      real*8 amp(0:2), polcol,amptemp(0:2)
+      real*8 amp(0:2), polcol, ampDiag(0:2,0:2,0:2)
       integer colstr,d,u,i,k
       LOGICAL ldebug
       parameter (ldebug=.false.)
       integer iflav(1:4)
-      real*8 tempamp(0:2,-1:1, -1:1), temp2,mjj2
+
       real*8 QCDVVjjFinCollBornKin
       external randomnumber
-      integer j
+
 
       complex*16 epsW(0:3,7),epsWV(0:3,-1:1,7) 
       complex*16 epsV(0:3,-1:1,3:4,-1:1,7) ! ( , mu-hel, u/d , quark-hel), coupl. const to quarks included
       complex*16 epsA(0:3,-1:1),epsZ(0:3,-1:1)
       real*8 momV(0:4,7),momW(0:4,7),momWV(0:4,7)
       common /qcdwznew/ epsW, epsWV, epsV,epsA,epsZ,momV,momW,momWV
- 
 
 
       if(nlo.eq.0) then
 !         hel sum
 	if(nbos.gt.10) then
 #ifdef WITH_QCDVV
-          call ug2dgwzBornnew(p,id,fsign,nbos,0,amp)
+          if (ldoblha) then
+            call ug2dgwzCSnew(p,1,id,fsign,nbos,0,.false.,ampDiag)
+          else
+            call ug2dgwzBornnew(p,id,fsign,nbos,0,amp)
+          endif
 #endif
 	else
-	  call ug2dgwBorn(p,id,fsign,nbos,amp)
+          if (ldoblha) then
+            call ug2dgwCS(p,1,id,fsign,nbos,ampDiag)
+          else
+	    call ug2dgwBorn(p,id,fsign,nbos,amp)
+	  endif
 	endif
 
 
@@ -714,14 +747,30 @@ c select subprocess for lha output
 #ifdef WITH_NLO
 	if(nbos.gt.10) then
 #ifdef WITH_QCDVV
-	  call ug2dgwzVirt(P,id,fsign,nbos,nlo,0,hel(1),hel(2),rn,amp)
+          if (ldoblha) then
+            do i=-1,1,2
+            do k=-1,1,2
+              call ug2dgwzVirt(P,id,fsign,nbos,1,0,i,k,rn,amp)
+            enddo
+            enddo
+          else
+	    call ug2dgwzVirt(P,id,fsign,nbos,nlo,0,hel(1),hel(2),rn,amp)
+          endif
           do i=0,2
             amp(i)=amp(i)*4
           enddo
 
 #endif
 	else
-	  call ug2dgwVirt(P,id,fsign,nbos,nlo,hel(1),hel(2),amp)
+          if (ldoblha) then
+            do i=-1,1,2
+            do k=-1,1,2
+              call ug2dgwVirt(P,id,fsign,nbos,1,i,k,amp)
+            enddo
+            enddo
+          else
+	    call ug2dgwVirt(P,id,fsign,nbos,nlo,hel(1),hel(2),amp)
+          endif
           do i=0,2
             amp(i)=amp(i)*4
           enddo
@@ -731,6 +780,9 @@ c select subprocess for lha output
 
       endif
 
+      if (ldoblha) then
+        return
+      endif
 
 c get pol. sum/avg.
       polcol = 0.25d0
@@ -781,9 +833,13 @@ c sum over q flavors and colors
 
 
       subroutine getRes4QWZ(res,p,xiFinColl,fsign,id,pdf,Nbos,nlo,rn)
+
+      use globalvars, only: ldoblha
+
       implicit none
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "common.inc"
       real*8 res(1:maxNumSubProc) !out: subprocess cross-sections
       real*8 p(0:3,max_p,max_kin), xiFinColl(2,2),rn
@@ -795,29 +851,31 @@ c sum over q flavors and colors
       external FL4qcdVV,di
 
       real*8 POLCOL, polcol0    ! ave over intial polarizations and colors
-      integer colstr,d,u,q,j,i,k,temp
+      integer colstr,d,u,q,j,k,temp
       integer iflav(1:4)
       integer family,flav
       logical ldebug
       parameter (ldebug = .false.)
       real*8 amp(0:2,3:4,0:2),QCDVVjjFinCollBornKin
-      real*8 amptemp(0:2,3:4,0:2)
+
 
       complex*16 epsW(0:3,7),epsWV(0:3,-1:1,7) 
       complex*16 epsV(0:3,-1:1,3:4,-1:1,7) ! ( , mu-hel, u/d , quark-hel), coupl. const to quarks included
       complex*16 epsA(0:3,-1:1),epsZ(0:3,-1:1)
       real*8 momV(0:4,7),momW(0:4,7),momWV(0:4,7)
       common /qcdwznew/ epsW, epsWV, epsV,epsA,epsZ,momV,momW,momWV
-      
-      logical ltemp(2)
-      real*8 restemp(0:1,0:2,3:4,-1:1,-1:1)
-      
+
+
       polcol0 = 1.0d0/(4.0d0 * 9.0d0)
       
       if(nlo.eq.0) then
 	if(nbos.gt.10) then
 #ifdef WITH_QCDVV
+         if (ldoblha) then
+          call amp4qwzCS(p,1,id,fsign,nbos,0,amp)
+         else
 	  call amp4qwzBorn(p,id,fsign,nbos,0,0,amp)
+         endif
 #ifdef NINH_COMPARE
 !           call amp4qwzBorn(p,id,fsign,nbos,0,1,amp)
 !           call amp4qwzBorn(p,id,fsign,nbos,0,-1,amptemp)
@@ -827,7 +885,11 @@ c sum over q flavors and colors
 #endif
 #endif
 	else ! W+ or W-
+         if (ldoblha) then
+          call amp4qwCS(p,1,id,fsign,nbos,0,amp)
+         else
 	  call amp4qwBorn(p,id,fsign,nbos,0,amp)
+	 endif
 	endif
       elseif(nlo.le.2) then
 #ifdef WITH_NLO
@@ -849,7 +911,9 @@ c sum over q flavors and colors
 #endif
       endif
 	
-
+      if (ldoblha) then
+        return
+      endif
 
 c sum over all quark combinations
       do j = 1,2  ! W emitting Quark family
@@ -972,7 +1036,6 @@ c      integer,save :: numresets
       FL4qcdVV   = listp ! outputed function
 c
       end
-
 
 
 	subroutine fillColoredPartonsQCDVV(iflav,id,colstr,listp1)
@@ -1135,17 +1198,21 @@ c     WZ:  Z  > mu+ mu-
 c     WA:  A  > mu+ mu-
 c     WWV: W+ > e+ ve mu+ mu-
 c     2. Index = spin of mu+, mu-
+
+      use globalvars, only: ldoblha
+
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 #include "common.inc"
 
       real*8 v(0:3,max_v,max_kin)
       logical lokt(max_kin)
-      complex*16 WA(6), WZ(6), WW(6),WWV(6)
+      complex*16 WA(6), WZ(6), WW(6)
       complex*16 WWeA(6), WWeZ(6),WWnZ(6),WWWA(6), WWWZ(6), WWnW(6)
-      complex*16 EL(6), VE(6), MUP(6),MUM(6),MUP2(6,2),MUM2(6,2)
+      complex*16 EL(6), VE(6), MUP(6),MUM(6)
       complex*16 TEMP(6)
 
       integer hel,i,j,k, kin, mu,maxkin,bos!,sig
@@ -1306,6 +1373,18 @@ c     W -> W Z, W A
 	  epsA(mu,0) = phase*epsA(mu,-1)+conjg(phase)*epsA(mu,1)
 	  epsZ(mu,0) = phase*epsZ(mu,-1)+conjg(phase)*epsZ(mu,1)
 	endif
+        if (ldoblha) then
+          epsWV(mu,0,kin) = (2-blha_ranhelcomb)*epsWV(mu,+1,kin) + (blha_ranhelcomb-1)*epsWV(mu,-1,kin)
+          do k=-1,1,2
+          do j=3,4
+            epsV(mu,0,j,k,kin) = (2-blha_ranhelcomb)*epsV(mu,+1,j,k,kin) + (blha_ranhelcomb-1)*epsV(mu,-1,j,k,kin)
+          enddo
+          enddo
+          if(kin.eq.1) then ! only needed for fermion loop contributions
+            epsA(mu,0) = (2-blha_ranhelcomb)*epsA(mu,+1)+(blha_ranhelcomb-1)*epsA(mu,-1)
+            epsZ(mu,0) = (2-blha_ranhelcomb)*epsZ(mu,+1)+(blha_ranhelcomb-1)*epsZ(mu,-1)
+          endif
+        endif
 	momV (mu,kin) = v(mu,3,kin)+v(mu,4,kin)
 	momW (mu,kin) = v(mu,1,kin)+v(mu,2,kin)
 	momWV(mu,kin) = momV(mu,kin)+momW(mu,kin)

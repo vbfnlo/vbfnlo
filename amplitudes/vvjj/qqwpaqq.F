@@ -6,6 +6,7 @@ c---------------------------------------------------------------------------
       
       subroutine qqwpaqq(pbar,sign, nlo, L,bos,ps_number,
      1     ans1,ans2,ans3,ans4)
+          use globalvars, only: ldoblha
       implicit none
 c     
 c     Nicolas Kaiser <Nicolas.Kaiser@student.kit.edu>  
@@ -54,66 +55,55 @@ c     alfas, scales etc
 c     
 c     variables for the main part of the program
 c     
-      double precision  pbar(0:3,4+max_v), musq
+      double precision  pbar(0:3,4+max_v)
       double precision ans1, ans2, ans3, ans4,res(4),resv(4),
      1     uucs, ddcs, udcc, udss, mgres(4)
       double precision tree(6)
       double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), pew(0:4),
      1     pa(0:4), pwa(0:4)
-      integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk, id,
-     1     isig, isig1, isig3,bos,h,ps_number
+      integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk,
+     1     isig, isig1, isig3,bos,ps_number
       integer  ifl(4,6), js1, js3, L, Lold, is1, is3
       double complex prop21(4), prop43(4)
       double complex mat(4,-1:1,-1:1,9), matv(4,-1:1,-1:1,9,0:2)
       double complex mm(4,-1:1,-1:1),
      1     mv12(4,-1:1,-1:1,0:2), mv34(4,-1:1,-1:1,0:2)
       double complex maw,mzw,mwa,mwz
-      double complex m1,m2,m3,m4,rat,mvbf,mmgr
-      double complex mw(2),mvw(2)
+      double complex rat
+      double complex mw(2)
       double complex mbwa(2,3:4,-1:1,-1:1),mbaw(2,3:4,-1:1,-1:1),
      1     mbvwa(2,3:4,-1:1,-1:1,2,0:2),mbvaw(2,3:4,-1:1,-1:1,2,0:2),
      1     zwa(-1:1,-1:1,3),zaw(-1:1,-1:1,3),
      1     zvwa(2,3:4,-1:1,-1:1,3,2,0:2),zvaw(2,3:4,-1:1,-1:1,3,2,0:2),
      1     mbwv,mbvw,gbwv,gbvw,mbvwv,mbvvw,gbvwv,gbvvw
-      double complex m5(3,3,3,-1:1,-1:1),mv5(3,3,3,-1:1,-1:1,0:2),mv5debug(3,3,3,-1:1,-1:1)
-      double complex m1ae,m1ze,z1ze,mw1ae,mw1ze,m2ae,m2ze,mw2ae,mw2ze,
-     1     m3ae,m3ze,z3ze,mw3ae,mw3ze,m4ae,m4ze,mw4ae,mw4ze,
+      double complex m5(3,3,3,-1:1,-1:1),mv5(3,3,3,-1:1,-1:1,0:2)
+      double complex 
+     1     
      1     m1we,m2we,m3we,m4we,w1we,w2we,w3we,w4we,
      2     m1e,m2e,m3e,m4e,
-     3     m1aau,m1azu,m1zau,m1zzu,z1azu,z1zzu,
-     4     mw1aau,mw1azu,mw1zau,mw1zzu,
-     3     m2aau,m2azu,m2zau,m2zzu,
-     4     mw2aau,mw2azu,mw2zau,mw2zzu,
-     3     m3aau,m3azu,m3zau,m3zzu,z3azu,z3zzu,
-     4     mw3aau,mw3azu,mw3zau,mw3zzu,
-     3     m4aau,m4azu,m4zau,m4zzu,
-     4     mw4aau,mw4azu,mw4zau,mw4zzu,
+     3     m1aau,m1azu,z1azu,
+     4     mw1aau,mw1azu,
+     3     m2aau,m2azu,
+     4     mw2aau,mw2azu,
+     3     m3aau,m3azu,z3azu,
+     4     mw3aau,mw3azu,
+     3     m4aau,m4azu,
+     4     mw4aau,mw4azu,
      2     m1u,m2u,m3u,m4u,
-     2     m1awu,m1zwu,z1awu,z1zwu,m1wau,m1wzu,
-     2     m2awu,m2zwu,m2wau,m2wzu,
-     2     m3awu,m3zwu,z3awu,z3zwu,m3wau,m3wzu,
-     2     m4awu,m4zwu,m4wau,m4wzu
-      double complex mvw1ae,mvw1ze,mv2ae,mv2ze,mvw2ae,mvw2ze,
-     1     mvw3ae,mvw3ze,mv4ae,mv4ze,mvw4ae,mvw4ze,
-     2     mv1e,mv2e,mv3e,mv4e,
-     3     mvw1aau,mvw1azu,mvw1zau,mvw1zzu,
-     3     mvw2aau,mvw2azu,mvw2zau,mvw2zzu,
-     3     mvw3aau,mvw3azu,mvw3zau,mvw3zzu,
-     3     mvw4aau,mvw4azu,mvw4zau,mvw4zzu,
-     2     mv1u,mv2u,mv3u,mv4u,
-     2     mv1wau,mv1wzu,mv2wau,mv2wzu,
-     2     mv3wau,mv3wzu,mv4wau,mv4wzu
-      integer id1,id2,id3
+     2     m1awu,z1awu,m1wau,
+     2     m2awu,m2wau,
+     2     m3awu,z3awu,m3wau,
+     2     m4awu,m4wau
+
       double complex psi(2,-1:1,4), jqq(0:5,-1:1,2) 
       double complex psiwe(2,-1:1,4),psia(2,-1:1,4),
      1     jew(0:5,-1:1,4),ja(0:5,-1:1,4)
 
       double complex bkjqq(2,-1:1,-1:1,4)
       double complex jw(0:5,-1:1,-1:1,4), 
-     1     jvw(0:5,-1:1,-1:1,4),
      2     psiw(2,-1:1,-1:1,4)
-      double complex j5wa(0:3,3,-1:1,2), j5aw(0:3,3,-1:1,2)
-      double complex epsaa(0:3),epsaz(0:3),epsza(0:3),epszz(0:3),epsww(0:3),
+
+      double complex epsww(0:3),
      1     epsaw(0:3),epszw(0:3),epswa(0:3),epswz(0:3),
      1     epsawe(0:3,-1:1,3:4,2), epszwe(0:3,-1:1,3:4,2),
      1     epswae(0:3,-1:1,3:4,2), epswze(0:3,-1:1,3:4,2),
@@ -122,17 +112,15 @@ c
      1     epsweekk(0:3,-1:1,3:4,2), epswwakk(0:3,-1:1,3:4,2),
      1     qepswee(3:4),qepszwe(3:4),qepswze(3:4),
      1     qepswwa(3:4)
-      double complex epsaw1(0:3,-1:1),epsaw2(0:3,-1:1),epszw1(0:3,-1:1),
-     1     epszw2(0:3,-1:1),epswa1(0:3,-1:1),epswa2(0:3,-1:1),
-     1     epswz1(0:3,-1:1),epswz2(0:3,-1:1)
+
       double precision fqwe(0:4,4),fqa(0:4,4)
       double precision fq(0:4,4),qee(0:4),qaa(0:4),dummy(0:4)
       double complex zm2i(2:4)
       double complex jj21we(-1:1),jj43we(-1:1),jj21ae(-1:1),jj43ae(-1:1)
-      double complex z1
+
       double complex propt1(-1:1,-1:1,4,2), propt2(-1:1,-1:1,4,2),
      1     propw(2),
-     1     propt(-1:1,-1:1,5:6,2), prop_ee(3), prop_aa(3)
+     1     prop_ee(3), prop_aa(3)
 c     
       double complex psiwg,jwg(2,-1:1,-1:1,3),jvwg(2,-1:1,-1:1,3,0:2),ratio
       integer kb,kp
@@ -149,19 +137,14 @@ c
 c     lvirtratio: box- and penlines compute the 1/eps and 1/eps^2 pole 
 c     terms of the virt. contributions
 c     these terms are proportional to the born: mvirt(div=i)/mborn = const
-      
 
 
-      double complex mvwz,mvzw,mvwa,mvaw,xvwz,xvzw,xvwa,xvaw
-      
       parameter (ldebugv=.false., ldebugvf=.false.)
       save ifl, Lold, zm2i, linit
       save jw,psiw,fq
       double complex  zero
       parameter (zero = (0d0,0d0) )
-      integer ii,ll
-      
-      integer icountmax
+
 
       logical lbornkkterms,lvirtkkterms
       parameter(lbornkkterms=.true.,lvirtkkterms=.true.)
@@ -175,7 +158,7 @@ c
       parameter (pi2o3=pi**2/3d0)
       double precision lnmusqp1p2, lnmusqp3p4
       
-      logical lnlo, lbox, lpent, lpt, lpq,
+      logical lnlo, lbox, lpent, lpt,
      1     lwardtest(40),lward,lwardBox,lwardPent,lwardPent2
       DOUBLE COMPLEX mboxgauge(2,-1:1,-1:1,2,0:2), 
      1     mbox(5,-1:1,-1:1,2,0:2),mboxgaugeborn(2,-1:1,-1:1,2,0:2), 
@@ -184,14 +167,14 @@ c
      3     mpent(8,-1:1,-1:1,6,0:2),mpentgaugeborn(3,-1:1,-1:1,6,0:2), 
      4     mpentborn(-1:1,-1:1,6,0:2),jvirtcalc(0:3,-1:1),
      5     wtowakk(0:3)
-      double precision  pvirtcalc(0:3,5),ptempsq
+      double precision  pvirtcalc(0:3,5)
 
 c     color parameters for scale check
-      real*8 NF,tf,CF,eulergamma,mans
+      real*8 tf,CF,eulergamma
       parameter (tf=1d0/2d0)
       parameter (eulergamma=5.772156649015328D-1)
       parameter (CF=4.0d0/3.0d0)
-      complex*16 cfc,cnf,K_contcheck,convfact,K_contcheck4
+      complex*16 cfc,cnf,K_contcheck
       parameter (cnf=(4d0,0d0))
       parameter (cfc=(CF,0d0))
 
@@ -639,6 +622,7 @@ c     gauge term for Z/W propagator:
       enddo                     ! isig1  
 
       
+#if WITH_NLO
       if(lbox) then
 !     W+ from upper line:
          do i = 0,3
@@ -783,6 +767,7 @@ c     gauge term for Z/W propagator:
             endif
          enddo                  !k
       endif                     !lbox	
+#endif
 
 
 c------------------------------------------------------------
@@ -1032,8 +1017,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             endif
          enddo
       endif                     !lbox
-#endif	
-
+#endif
 
 
 c     -----------------------------------------------------------------------
@@ -1045,7 +1029,6 @@ c     from the current wtowa(mu)
 c     
 c     NOTE: the wtowa currents are NOT conserved. Hence it is necessary 
 c     to consider q^mu * q^nu/m_W^2  terms in the W boson propagator
-
 
 
       if (lws(js1) .or. L.ne.Lold) then
@@ -1148,6 +1131,7 @@ c     wtowa(mu)             with momentum    pwa
       enddo                     !isig3	    
 
 
+#ifdef WITH_NLO          
       if(lbox) then
 !     box correction to upper line
 
@@ -1194,6 +1178,7 @@ c     wtowa(mu)             with momentum    pwa
          enddo                  ! div
          
       endif                     ! lbox
+#endif
       
 c     ------------------	    
       
@@ -1242,6 +1227,7 @@ c     aww/zww(mu)         with momentum    pzz
       enddo                     !isig1	    
 
 
+#ifdef WITH_NLO          
       if(lbox) then
 !     box correction to lower line
          do i = 0,3
@@ -1417,6 +1403,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
          enddo
 c     end of kk term calculation
       endif                     !lbox
+#endif
 
 
 c     ------------------------------------------------------------------------------
@@ -1480,6 +1467,7 @@ c     for the q^mu*q^nu/M_V^2 terms in the gauge boson propagators we need
       enddo                     !isig1
 
 
+#ifdef WITH_NLO          
       if(lbox) then
 c     W from upper line, A from lower line, box correction to upper line
          do idl = 3,4
@@ -1783,6 +1771,7 @@ c     end of kk term calculation
 
          enddo                  ! idu
       endif                     !lbox
+#endif
 
 c     -----------------------------
 c     
@@ -1883,6 +1872,7 @@ c     --------------
       
 c     ----------------------
       
+#ifdef WITH_NLO          
       if (lbox) then
          
          do div = 0,divMax,divStep
@@ -1979,6 +1969,7 @@ c     --------------
             enddo               !isig3
          enddo                  !div
       endif                     !lbox
+#endif
       
 c     
 c     ------------------------------------------------------------------------------
@@ -2017,6 +2008,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
 
       enddo                     ! isig3
 
+#ifdef WITH_NLO          
       if (lpent) then	
          do i = 0,3
             pvirtcalc(i,1) = -1d0 * p(i,1)
@@ -2037,7 +2029,6 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
      $        mpentgaugeborn(1,-1,-1,1,0),mpentborn(-1,-1,1,0),lwardPent)
 
 
-
          do div = 0,divMax,divStep
             do isig3=-1,1,2
                isig1=-1
@@ -2050,7 +2041,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
             enddo
          enddo
       endif                     !lpent
-
+#endif
 
 
       do isig3 = -1,1,2 
@@ -2067,6 +2058,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
      2           +m5(3,3,kb,isig1,isig3)*clr(7-ifl(1,k),kb,isig1)
      3           +m5(3,kb,3,isig1,isig3)*clr(ifl(1,k),kb,isig1))
             
+#ifdef WITH_NLO          
             if (lpent) then 
                do div = 0,divMax,divStep
                   matv(k,isig1,isig3,7,div) = matv(k,isig1,isig3,7,div) + 
@@ -2076,6 +2068,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
      4                 +mv5(3,kb,3,isig1,isig3,div)*clr(ifl(1,k),kb,isig1))
                enddo
             endif
+#endif
 
             k = 2
             
@@ -2085,6 +2078,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
      2           +m5(1,kb,3,isig1,isig3)*clr(7-ifl(2,k),kb,isig1)
      3           +m5(2,kb,3,isig1,isig3)*clr(ifl(1,k),kb,isig1))
             
+#ifdef WITH_NLO          
             if (lpent) then 
                do div = 0,divMax,divStep
                   matv(k,isig1,isig3,7,div) = matv(k,isig1,isig3,7,div) 
@@ -2094,6 +2088,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
      4                 +mv5(2,kb,3,isig1,isig3,div)*clr(ifl(1,k),kb,isig1))
                enddo
             endif               !lpent
+#endif
             
          endif                  !isig3
          
@@ -2110,6 +2105,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
      6              +m5(3,3,kb,isig1,isig3)*clr(7-ifl(1,k),kb,isig1)*clr(ifl(2,k),kp,isig1)
      7              +m5(3,kb,3,isig1,isig3)*clr(ifl(1,k),kb,isig1)*clr(ifl(2,k),kp,isig1))
 
+#ifdef WITH_NLO          
                if (lpent) then
                   do div = 0,divMax,divStep
                      matv(k,isig1,isig3,7,div) = matv(k,isig1,isig3,7,div) + 
@@ -2122,6 +2118,7 @@ c     eps1=v1,eps2=v2,eps3=j43 with v3 arbitrary
      7                    +mv5(3,kb,3,isig1,isig3,div)*clr(ifl(1,k),kb,isig1)*clr(ifl(2,k),kp,isig1))
                   enddo
                endif
+#endif
 
             enddo               !kp
          enddo                  !k
@@ -2156,6 +2153,7 @@ c     eps1=v1,eps2=v2,eps3=j21 with v3 arbitrary
 
       enddo                     !isig1
 
+#ifdef WITH_NLO          
       if (lpent) then	
          do i = 0,3
             pvirtcalc(i,1) = p(i,3)
@@ -2190,7 +2188,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             enddo               ! isig1
          enddo                  !div
       endif                     !lpent
-
+#endif
 
 
       do isig1 = -1,1,2 
@@ -2207,6 +2205,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      2           +m5(3,3,kb,isig1,isig3)*clr(7-ifl(3,k),kb,isig3)
      3           +m5(3,kb,3,isig1,isig3)*clr(ifl(3,k),kb,isig3))
             
+#ifdef WITH_NLO          
             if (lpent) then
                do div = 0,divMax,divStep
                   matv(k,isig1,isig3,8,div) = matv(k,isig1,isig3,8,div) 
@@ -2216,6 +2215,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      4                 +mv5(3,kb,3,isig1,isig3,div)*clr(ifl(3,k),kb,isig3))
                enddo
             endif
+#endif
 
             k = 4
             
@@ -2224,6 +2224,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      2           +m5(1,kb,3,isig1,isig3)*clr(7-ifl(4,k),kb,isig3)
      3           +m5(2,kb,3,isig1,isig3)*clr(ifl(3,k),kb,isig3))
             
+#ifdef WITH_NLO          
             if (lpent) then
                do div = 0,divMax,divStep
                   matv(k,isig1,isig3,8,div) = matv(k,isig1,isig3,8,div) 
@@ -2233,6 +2234,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      4                 +mv5(2,kb,3,isig1,isig3,div)*clr(ifl(3,k),kb,isig3))
                enddo
             endif
+#endif
          endif                  !isig1
          
          do k= 1,2
@@ -2249,6 +2251,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      7              +m5(3,kb,3,isig1,isig3)*clr(ifl(3,k),kb,isig3)*clr(ifl(4,k),kp,isig3))
 
                
+#ifdef WITH_NLO          
                if (lpent) then 
                   do div = 0,divMax,divStep
                      matv(k,isig1,isig3,8,div) = matv(k,isig1,isig3,8,div) + 
@@ -2261,6 +2264,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      7                    +mv5(3,kb,3,isig1,isig3,div)*clr(ifl(3,k),kb,isig3)*clr(ifl(4,k),kp,isig3))
                   enddo
                endif
+#endif
 
             enddo               !kp
 
@@ -2272,6 +2276,7 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 c----------------------------------------------------------------------------------------
 
+#ifdef WITH_NLO          
       if(lbox) then
          do i = 1,wardIndex-1
             lwardBox = lwardBox.and.lwardtest(i)
@@ -2295,6 +2300,7 @@ c-------------------------------------------------------------------------------
       endif
 
       lward = lwardBox .and. lwardPent
+#endif
 
 
 c     ------------------------------------------------------------------------------

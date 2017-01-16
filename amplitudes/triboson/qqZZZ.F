@@ -52,26 +52,20 @@ c     electroweak couplings are taken from KOPPLN
       double precision  uuzzz, ddzzz, res(2),resv(2)
       double precision  p(0:3,2+n_v), fqze(0:4,2), fqzmu(0:4,2)
       double precision  fqztau(0:4,2)
-      integer  sign(2+n_v), nlo, mu, i, j, k, isig, N
+      integer  sign(2+n_v), nlo, mu, i, k, isig, N
       integer  ifl(2)
       double complex psize(2,-1:1,2), psiae(2,-1:1,2),
      1               psizmu(2,-1:1,2), psiamu(2,-1:1,2),
      2               psiztau(2,-1:1,2), psiatau(2,-1:1,2)
       double complex jae(0:5,-1:1,2), jam(0:5,-1:1,2),jat(0:5,-1:1,2),
      1               jze(0:5,-1:1,2),jzm(0:5,-1:1,2), jzt(0:5,-1:1,2)
-      double complex jvae(0:5,-1:1,2),jvam(0:5,-1:1,2),jvat(0:5,-1:1,2)
-      double complex jvze(0:5,-1:1,2),jvzm(0:5,-1:1,2),jvzt(0:5,-1:1,2)
-      double complex jvwp(0:5,-1:1,2), jvwm(0:5,-1:1,2)
-      double complex j5a1a2(0:3,-1:1,3),j5a2a1(0:3,-1:1,3)
-      double complex j5z1z2(0:3,-1:1,3),j5z2z1(0:3,-1:1,3)
-      double complex j5a1z2(0:3,-1:1,3),j5a2z1(0:3,-1:1,3)
-      double complex j5z1a2(0:3,-1:1,3),j5z2a1(0:3,-1:1,3)
+
       double complex temp, temp1
       double complex mat(2,-1:1,7), matv(2,-1:1,7)
       double complex madgr(7,-1:1,2)
       double complex mm(2,-1:1), mv(2,-1:1), zero
       double complex ma, mz, m1, m2, m3, m4
-      double complex mva, mvz, mv1(3), mv2(3), mv3, mv4
+      double complex mv1(3), mv2(3), mv3, mv4
       double complex psi(2,-1:1,2), jqq(0:5,-1:1)
       double complex dotcc, s1c, dotrc
       double precision dotrr, psumsq
@@ -80,8 +74,6 @@ c     electroweak couplings are taken from KOPPLN
       parameter (zero = (0d0,0d0) )
 
 c variable for q_mu q_nu terms in the propagators of the massive vector bosons
-      double complex zm2i(2:3)
-      save zm2i
 
 c  helicity selection
       INTEGER h
@@ -122,13 +114,13 @@ c variables for virtual corrections
       parameter(ldebugm = .false., ldebug=.false.)
 
 c variables for test purposes
-      integer penttrue, pentfalse, boxfalse, boxvar
+      integer penttrue, pentfalse, boxfalse
       double precision deti1, deti2, deti3, deti4, deti5, deti6
       common /Gramdet/ deti1, deti2, deti3, deti4, deti5, deti6
-      double precision qmu(0:3), sc, q1sqc, q2sqc, tc, p1p2
-      double precision psq, qsq, lsq, tsq, pq, pl, pt, ql, qt, lt, pps
+
+      double precision pps
       common /invariants/ pps
-      logical gaugetest(-1:1,8), bad_gauge
+      logical bad_gauge
       save penttrue, pentfalse, boxfalse
       integer NW !NW = 1 means Narrow width approximaion
                  !NW = 0 means full calculation

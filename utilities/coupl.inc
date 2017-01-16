@@ -30,7 +30,7 @@ c
      &                     gw, gwwa, gwwz
 
       double complex       gwfc(2),  gwfs(2)
-      common /coupl_ckm/   gwfc,     gwfs	
+      common /coupl_ckm/   gwfc,     gwfs
 
       double complex       gwwh, gzzh, gwwhh, gzzhh, ghhh, ghhhh,
      &                     gwwh2, gzzh2
@@ -64,5 +64,5 @@ c settings for two-Higgs model
      &                        with_secondhiggs, use_secondhiggs
 
 c  switch for MadGraph comparison in MHLM
-      logical              mgtest	
+      logical              mgtest
       parameter (mgtest = .false.)

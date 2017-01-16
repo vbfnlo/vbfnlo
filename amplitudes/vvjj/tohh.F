@@ -25,9 +25,9 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, MU, NU
+      INTEGER I, MU, NU
       COMPLEX*16 AMP(NGRAPHS)
-      COMPLEX*16 W(6,NWAVEFUNCS),WX1(6),WX2(6)
+      COMPLEX*16 W(6,NWAVEFUNCS)
       INTEGER NHEL(3:4), ihel
       DATA (NHEL(IHEL),IHEL=3,4) / +1,+1/ ! do not care
       Save NHEL
@@ -105,9 +105,9 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, MU, NU
+      INTEGER I, MU, NU
       COMPLEX*16 AMP(NGRAPHS)
-      COMPLEX*16 W(6,NWAVEFUNCS),WX1(6),WX2(6)
+      COMPLEX*16 W(6,NWAVEFUNCS)
       INTEGER NHEL(3:4), ihel
       DATA (NHEL(IHEL),IHEL=3,4) / +1,+1/ ! do not care
       Save NHEL

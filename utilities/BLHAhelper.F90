@@ -23,6 +23,7 @@
 !     SUBROUTINE OLP_Polvec(p, q, eps)
 !     SUBROUTINE OLP_Info(version, message)
 !     SUBROUTINE VBFNLO_BLHA2Amp(pp)
+!     LOGICAL FUNCTION VBFNLO_ClosestOnshell(v,proc,subproc)
 !     SUBROUTINE BLHA_initialize()
 !     SUBROUTINE BLHA_start()
 !     SUBROUTINE BLHA_dorecomp()
@@ -39,6 +40,8 @@
 !*************************************************************************  
 
       SUBROUTINE BLHA_initialize()
+          use globalvars, only: lglobalprint, ldoscales, ldoblha
+          use readinput, only: inputpath, pdfpath
 !*************************************************************************
 !     Initialize variables
 !*************************************************************************
@@ -48,7 +51,6 @@
 #include "VBFNLO/utilities/process.inc"
 #include "VBFNLO/utilities/koppln.inc"
 #include "VBFNLO/utilities/mssm.inc"
-#include "VBFNLO/utilities/readinput.inc"
 #include "VBFNLO/utilities/BLHAhelper.inc"
       integer pdflib
       COMMON/PDFparameters/pdflib
@@ -72,6 +74,7 @@
         blha_numproc = 0
         blha_lastprocID = 0
         blha_Nc = 3
+        blha_pssubproc = 1
 
         ldoscales = .false.
         lglobalprint = .false.
@@ -178,6 +181,7 @@
 !*************************************************************************  
 
       SUBROUTINE OLP_SetParameter_VBFNLO(para, re, im, ierr)
+          use readinput, only: usedefaults
 !*************************************************************************
 !     Pass parameters
 !*************************************************************************
@@ -186,7 +190,6 @@
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/process.inc"
 #include "VBFNLO/utilities/koppln.inc"
-#include "VBFNLO/utilities/readinput.inc"
 #include "VBFNLO/utilities/BLHAhelper.inc"
 
       character(*) para
@@ -196,58 +199,58 @@
       call BLHA_initialize()
 
 !cc mass
-      if ((para(1:len_trim(para)).eq."mass(1)") .or. &
-          (para(1:len_trim(para)).eq."mass(2)") .or. &
-          (para(1:len_trim(para)).eq."mass(3)") .or. &
-          (para(1:len_trim(para)).eq."mass(11)") .or. &
-          (para(1:len_trim(para)).eq."mass(12)") .or. &
-          (para(1:len_trim(para)).eq."mass(13)") .or. &
-          (para(1:len_trim(para)).eq."mass(14)") .or. &
-          (para(1:len_trim(para)).eq."mass(15)") .or. &
-          (para(1:len_trim(para)).eq."mass(21)") .or. &
-          (para(1:len_trim(para)).eq."mass(22)")) then
+      if ((trim(para).eq."mass(1)") .or. &
+          (trim(para).eq."mass(2)") .or. &
+          (trim(para).eq."mass(3)") .or. &
+          (trim(para).eq."mass(11)") .or. &
+          (trim(para).eq."mass(12)") .or. &
+          (trim(para).eq."mass(13)") .or. &
+          (trim(para).eq."mass(14)") .or. &
+          (trim(para).eq."mass(15)") .or. &
+          (trim(para).eq."mass(21)") .or. &
+          (trim(para).eq."mass(22)")) then
 ! must be massless
         if (re.ne.0d0) then
           ierr = 0
           write(*,*) "VBFNLO error in OLP_SetParameter: Parameter", &
-            para(1:len_trim(para))
+            trim(para)
           write(*,*) "  Particle must be massless."
         else
           ierr = 1
         endif
         return
-      elseif (para(1:len_trim(para)).eq."mass(4)"  .or. &
-              para(1:len_trim(para)).eq."charm_mass") then ! charm
+      elseif (trim(para).eq."mass(4)"  .or. &
+              trim(para).eq."charm_mass") then ! charm
         ierr = 1
         if (re .eq. xmc) return
         xmc = re
-      elseif (para(1:len_trim(para)).eq."mass(5)" .or. &
-              para(1:len_trim(para)).eq."bottom_mass") then ! bottom
+      elseif (trim(para).eq."mass(5)" .or. &
+              trim(para).eq."bottom_mass") then ! bottom
         ierr = 1
         if (re .eq. xmb) return
         xmb = re
-      elseif (para(1:len_trim(para)).eq."mass(6)" .or. &
-              para(1:len_trim(para)).eq."top_mass") then ! top
+      elseif (trim(para).eq."mass(6)" .or. &
+              trim(para).eq."top_mass") then ! top
         ierr = 1
         if (re .eq. xmt) return
         xmt = re
-      elseif (para(1:len_trim(para)).eq."mass(16)" .or. &
-              para(1:len_trim(para)).eq."tau_mass") then ! tau
+      elseif (trim(para).eq."mass(16)" .or. &
+              trim(para).eq."tau_mass") then ! tau
         ierr = 1
         if (re .eq. xmtau) return
         xmtau = re
-      elseif (para(1:len_trim(para)).eq."mass(23)" .or. &
-              para(1:len_trim(para)).eq."Z_mass") then ! Z
+      elseif (trim(para).eq."mass(23)" .or. &
+              trim(para).eq."Z_mass") then ! Z
         ierr = 1
         if (re .eq. blha_xmz) return
         blha_xmz = re
-      elseif (para(1:len_trim(para)).eq."mass(24)" .or. &
-              para(1:len_trim(para)).eq."W_mass") then ! W
+      elseif (trim(para).eq."mass(24)" .or. &
+              trim(para).eq."W_mass") then ! W
         ierr = 1
         if (re .eq. blha_xmw) return
         blha_xmw = re
-      elseif (para(1:len_trim(para)).eq."mass(25)" .or. &
-              para(1:len_trim(para)).eq."H_mass") then ! H
+      elseif (trim(para).eq."mass(25)" .or. &
+              trim(para).eq."H_mass") then ! H
         ierr = 1
         if (re .eq. blha_xmh) return
         blha_xmh = re
@@ -256,53 +259,53 @@
         ierr = 2
         return
 !cc width
-      elseif ((para(1:len_trim(para)).eq."width(1)") .or. &
-              (para(1:len_trim(para)).eq."width(2)") .or. &
-              (para(1:len_trim(para)).eq."width(3)") .or. &
-              (para(1:len_trim(para)).eq."width(11)") .or. &
-              (para(1:len_trim(para)).eq."width(12)") .or. &
-              (para(1:len_trim(para)).eq."width(13)") .or. &
-              (para(1:len_trim(para)).eq."width(14)") .or. &
-              (para(1:len_trim(para)).eq."width(15)") .or. &
-              (para(1:len_trim(para)).eq."width(21)") .or. &
-              (para(1:len_trim(para)).eq."width(22)")) then
+      elseif ((trim(para).eq."width(1)") .or. &
+              (trim(para).eq."width(2)") .or. &
+              (trim(para).eq."width(3)") .or. &
+              (trim(para).eq."width(11)") .or. &
+              (trim(para).eq."width(12)") .or. &
+              (trim(para).eq."width(13)") .or. &
+              (trim(para).eq."width(14)") .or. &
+              (trim(para).eq."width(15)") .or. &
+              (trim(para).eq."width(21)") .or. &
+              (trim(para).eq."width(22)")) then
 ! must have zero width
         if (re.ne.0d0) then
           ierr = 0
-          write(*,*) "VBFNLO error in OLP_SetParameter: Parameter",para(1:len_trim(para))
+          write(*,*) "VBFNLO error in OLP_SetParameter: Parameter",trim(para)
           write(*,*) "  Particle is massless and must have zero width."
         else
           ierr = 1
         endif
         return
-      elseif (para(1:len_trim(para)).eq."width(4)" .or. &
-              para(1:len_trim(para)).eq."charm_width") then ! charm
+      elseif (trim(para).eq."width(4)" .or. &
+              trim(para).eq."charm_width") then ! charm
         ierr = 2
         return
-      elseif (para(1:len_trim(para)).eq."width(5)" .or. &
-              para(1:len_trim(para)).eq."bottom_width") then ! bottom
+      elseif (trim(para).eq."width(5)" .or. &
+              trim(para).eq."bottom_width") then ! bottom
         ierr = 2
         return
-      elseif (para(1:len_trim(para)).eq."width(6)" .or. &
-              para(1:len_trim(para)).eq."top_width") then ! top
+      elseif (trim(para).eq."width(6)" .or. &
+              trim(para).eq."top_width") then ! top
         ierr = 2
         return
-      elseif (para(1:len_trim(para)).eq."width(16)" .or. &
-              para(1:len_trim(para)).eq."tau_width") then ! tau
+      elseif (trim(para).eq."width(16)" .or. &
+              trim(para).eq."tau_width") then ! tau
         ierr = 2
         return
-      elseif (para(1:len_trim(para)).eq."width(23)" .or. &
-              para(1:len_trim(para)).eq."Z_width") then ! Z
+      elseif (trim(para).eq."width(23)" .or. &
+              trim(para).eq."Z_width") then ! Z
         ierr = 1
         if (re .eq. blha_zwidth) return
         blha_zwidth = re
-      elseif (para(1:len_trim(para)).eq."width(24)" .or. &
-              para(1:len_trim(para)).eq."W_width") then ! W
+      elseif (trim(para).eq."width(24)" .or. &
+              trim(para).eq."W_width") then ! W
         ierr = 1
         if (re .eq. blha_wwidth) return
         blha_wwidth = re
-      elseif (para(1:len_trim(para)).eq."width(25)" .or. &
-              para(1:len_trim(para)).eq."H_width") then ! H
+      elseif (trim(para).eq."width(25)" .or. &
+              trim(para).eq."H_width") then ! H
         ierr = 1
         if (re .eq. blha_hwidth) return
         blha_hwidth = re
@@ -311,51 +314,51 @@
         ierr = 2
         return
 !cc CKM matrix 
-      elseif ((para(1:len_trim(para)).eq."VV12") .or.  &
-              (para(1:len_trim(para)).eq."VV13") .or.  &
-              (para(1:len_trim(para)).eq."VV21") .or.  &
-              (para(1:len_trim(para)).eq."VV23") .or.  &
-              (para(1:len_trim(para)).eq."VV31") .or.  &
-              (para(1:len_trim(para)).eq."VV32")) then  
+      elseif ((trim(para).eq."VV12") .or.  &
+              (trim(para).eq."VV13") .or.  &
+              (trim(para).eq."VV21") .or.  &
+              (trim(para).eq."VV23") .or.  &
+              (trim(para).eq."VV31") .or.  &
+              (trim(para).eq."VV32")) then  
         if ((re.ne.0d0) .or. (im.ne.0d0)) then
           ierr = 0
           write(*,*) "VBFNLO error in OLP_SetParameter: Parameter", &
-            para(1:len_trim(para))
+            trim(para)
           write(*,*) "  Non-diagonal CKM matrix not supported."
         else
           ierr = 1
         endif
         return
-      elseif ((para(1:len_trim(para)).eq."VV11") .or.  &
-              (para(1:len_trim(para)).eq."VV22") .or.  &
-              (para(1:len_trim(para)).eq."VV33")) then  
+      elseif ((trim(para).eq."VV11") .or.  &
+              (trim(para).eq."VV22") .or.  &
+              (trim(para).eq."VV33")) then  
         if ((re.ne.1d0) .or. (im.ne.0d0)) then
           ierr = 0
-          write(*,*) "VBFNLO error in OLP_SetParameter: Parameter",para(1:len_trim(para))
+          write(*,*) "VBFNLO error in OLP_SetParameter: Parameter",trim(para)
           write(*,*) "  Non-diagonal CKM matrix not supported."
         else
           ierr = 1
         endif
         return
 !cc EW parameters
-      elseif (para(1:len_trim(para)).eq."sw2" .or. &
-              para(1:len_trim(para)).eq."sin_th_2") then
+      elseif (trim(para).eq."sw2" .or. &
+              trim(para).eq."sin_th_2") then
         ierr = 1
         if (re .eq. blha_sin2w) return
         blha_sin2w = re
-      elseif (para(1:len_trim(para)).eq."vev") then
+      elseif (trim(para).eq."vev") then
         ierr = 1
         if (re .eq. blha_vev) return
         blha_vev = re
-      elseif (para(1:len_trim(para)).eq."Gf") then
+      elseif (trim(para).eq."Gf") then
         ierr = 1
         if (re .eq. blha_gf) return
         blha_gf = re
-      elseif (para(1:len_trim(para)).eq."alpha") then
+      elseif (trim(para).eq."alpha") then
         ierr = 1
         if (re .eq. blha_alpha) return
         blha_alpha = re
-      elseif (para(1:len_trim(para)).eq."ewfactor") then
+      elseif (trim(para).eq."ewfactor") then
 ! must be a positive number
         if (re.le.0d0) then
           ierr = -2
@@ -364,12 +367,12 @@
         ierr = 1
         if (re .eq. blha_ewfac) return
         blha_ewfac = re
-      elseif (para(1:len_trim(para)).eq."alphas") then
+      elseif (trim(para).eq."alphas") then
         ierr = 1
         if (re .eq. blha_alphas) return
         blha_alphas = re
 !cc Process ID
-      elseif (para(1:len_trim(para)).eq."process") then
+      elseif (trim(para).eq."process") then
         process = re
         procID = re
         ierr = 1
@@ -377,17 +380,17 @@
         return
 !cc Phase space dimension (# of random numbers required)
 !cc -- not a settable parameter
-      elseif (para(1:len_trim(para)).eq."PSdimension") then
+      elseif (trim(para).eq."PSdimension") then
         ierr = -2
         return
 !cc centre-of-mass energy
-      elseif (para(1:len_trim(para)).eq."sqrtS") then
+      elseif (trim(para).eq."sqrtS") then
         ierr = 1
         if (re .eq. ecm) return
         ecm = re
         blha_lastPhaseSpace = 0
 !cc random helicity summation
-      elseif (para(1:len_trim(para)).eq."ranhelsum") then
+      elseif (trim(para).eq."ranhelsum") then
         if (re .eq. 0) then
           blha_ranhelsum = .false.
         else
@@ -395,12 +398,12 @@
         endif
         ierr = 1
         return
-      elseif (para(1:len_trim(para)).eq."HelicityRN") then
+      elseif (trim(para).eq."HelicityRN") then
         blha_helrand = re
         ierr = 1
         return
 !cc anomalous couplings
-      elseif (para(1:len_trim(para)).eq."anomcoupl") then
+      elseif (trim(para).eq."anomcoupl") then
         if (re .eq. 0) then
           blha_anomcoupl = .false.
           blha_lastprocID = 0
@@ -415,7 +418,7 @@
         endif
         return
 !cc number of colours
-      elseif (para(1:len_trim(para)).eq."Nc") then
+      elseif (trim(para).eq."Nc") then
         call BLHA_setNc(int(re))
         ierr = 1
         return
@@ -459,150 +462,150 @@
       call BLHA_dorecomp()
 
 !cc mass
-      if ((para(1:len_trim(para)).eq."mass(1)") .or. &
-          (para(1:len_trim(para)).eq."mass(2)") .or. &
-          (para(1:len_trim(para)).eq."mass(3)") .or. &
-          (para(1:len_trim(para)).eq."mass(11)") .or. &
-          (para(1:len_trim(para)).eq."mass(12)") .or. &
-          (para(1:len_trim(para)).eq."mass(13)") .or. &
-          (para(1:len_trim(para)).eq."mass(14)") .or. &
-          (para(1:len_trim(para)).eq."mass(15)") .or. &
-          (para(1:len_trim(para)).eq."mass(21)") .or. &
-          (para(1:len_trim(para)).eq."mass(22)")) then
+      if ((trim(para).eq."mass(1)") .or. &
+          (trim(para).eq."mass(2)") .or. &
+          (trim(para).eq."mass(3)") .or. &
+          (trim(para).eq."mass(11)") .or. &
+          (trim(para).eq."mass(12)") .or. &
+          (trim(para).eq."mass(13)") .or. &
+          (trim(para).eq."mass(14)") .or. &
+          (trim(para).eq."mass(15)") .or. &
+          (trim(para).eq."mass(21)") .or. &
+          (trim(para).eq."mass(22)")) then
 ! must be massless
         re = 0d0
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."mass(4)"  .or. &
-              para(1:len_trim(para)).eq."charm_mass") then ! charm
+      elseif (trim(para).eq."mass(4)"  .or. &
+              trim(para).eq."charm_mass") then ! charm
         re = xmc 
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."mass(5)" .or. &
-              para(1:len_trim(para)).eq."bottom_mass") then ! bottom
+      elseif (trim(para).eq."mass(5)" .or. &
+              trim(para).eq."bottom_mass") then ! bottom
         re = xmb
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."mass(6)" .or. &
-              para(1:len_trim(para)).eq."top_mass") then ! top
+      elseif (trim(para).eq."mass(6)" .or. &
+              trim(para).eq."top_mass") then ! top
         re = xmt
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."mass(16)" .or. &
-              para(1:len_trim(para)).eq."tau_mass") then ! tau
+      elseif (trim(para).eq."mass(16)" .or. &
+              trim(para).eq."tau_mass") then ! tau
         re = xmtau
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."mass(23)" .or. &
-              para(1:len_trim(para)).eq."Z_mass") then ! Z
+      elseif (trim(para).eq."mass(23)" .or. &
+              trim(para).eq."Z_mass") then ! Z
         re = xmz 
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."mass(24)" .or. &
-              para(1:len_trim(para)).eq."W_mass") then ! W
+      elseif (trim(para).eq."mass(24)" .or. &
+              trim(para).eq."W_mass") then ! W
         re = xmw
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."mass(25)" .or. &
-              para(1:len_trim(para)).eq."H_mass") then ! H
+      elseif (trim(para).eq."mass(25)" .or. &
+              trim(para).eq."H_mass") then ! H
         re = xmh
         ierr = 1
       elseif (para(1:min(len_trim(para),5)).eq."mass(") then
 ! unknown particle
         ierr = 2
 !cc width
-      elseif ((para(1:len_trim(para)).eq."width(1)") .or. &
-              (para(1:len_trim(para)).eq."width(2)") .or. &
-              (para(1:len_trim(para)).eq."width(3)") .or. &
-              (para(1:len_trim(para)).eq."width(11)") .or. &
-              (para(1:len_trim(para)).eq."width(12)") .or. &
-              (para(1:len_trim(para)).eq."width(13)") .or. &
-              (para(1:len_trim(para)).eq."width(14)") .or. &
-              (para(1:len_trim(para)).eq."width(15)") .or. &
-              (para(1:len_trim(para)).eq."width(21)") .or. &
-              (para(1:len_trim(para)).eq."width(22)")) then
+      elseif ((trim(para).eq."width(1)") .or. &
+              (trim(para).eq."width(2)") .or. &
+              (trim(para).eq."width(3)") .or. &
+              (trim(para).eq."width(11)") .or. &
+              (trim(para).eq."width(12)") .or. &
+              (trim(para).eq."width(13)") .or. &
+              (trim(para).eq."width(14)") .or. &
+              (trim(para).eq."width(15)") .or. &
+              (trim(para).eq."width(21)") .or. &
+              (trim(para).eq."width(22)")) then
 ! must have zero width
         re = 0d0
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."width(4)" .or. &
-              para(1:len_trim(para)).eq."charm_width") then ! charm
+      elseif (trim(para).eq."width(4)" .or. &
+              trim(para).eq."charm_width") then ! charm
         ierr = 2
-      elseif (para(1:len_trim(para)).eq."width(5)" .or. &
-              para(1:len_trim(para)).eq."bottom_width") then ! bottom
+      elseif (trim(para).eq."width(5)" .or. &
+              trim(para).eq."bottom_width") then ! bottom
         ierr = 2
-      elseif (para(1:len_trim(para)).eq."width(6)" .or. &
-              para(1:len_trim(para)).eq."top_width") then ! top
+      elseif (trim(para).eq."width(6)" .or. &
+              trim(para).eq."top_width") then ! top
         ierr = 2
-      elseif (para(1:len_trim(para)).eq."width(16)" .or. &
-              para(1:len_trim(para)).eq."tau_width") then ! tau
+      elseif (trim(para).eq."width(16)" .or. &
+              trim(para).eq."tau_width") then ! tau
         ierr = 2
-      elseif (para(1:len_trim(para)).eq."width(23)" .or. &
-              para(1:len_trim(para)).eq."Z_width") then ! Z
+      elseif (trim(para).eq."width(23)" .or. &
+              trim(para).eq."Z_width") then ! Z
         re = xmg(2)/sqrt(xm2(2))
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."width(24)" .or. &
-              para(1:len_trim(para)).eq."W_width") then ! W
+      elseif (trim(para).eq."width(24)" .or. &
+              trim(para).eq."W_width") then ! W
         re = xmg(3)/sqrt(xm2(3))
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."width(25)" .or. &
-              para(1:len_trim(para)).eq."H_width") then ! H
+      elseif (trim(para).eq."width(25)" .or. &
+              trim(para).eq."H_width") then ! H
         re = xmg(6)/sqrt(xm2(6))
         ierr = 1
       elseif ((para(1:min(len_trim(para),6)).eq."width(")) then
 ! unknown particle
         ierr = 2
 !cc CKM matrix 
-      elseif ((para(1:len_trim(para)).eq."VV12") .or.  &
-              (para(1:len_trim(para)).eq."VV13") .or.  &
-              (para(1:len_trim(para)).eq."VV21") .or.  &
-              (para(1:len_trim(para)).eq."VV23") .or.  &
-              (para(1:len_trim(para)).eq."VV31") .or.  &
-              (para(1:len_trim(para)).eq."VV32")) then  
+      elseif ((trim(para).eq."VV12") .or.  &
+              (trim(para).eq."VV13") .or.  &
+              (trim(para).eq."VV21") .or.  &
+              (trim(para).eq."VV23") .or.  &
+              (trim(para).eq."VV31") .or.  &
+              (trim(para).eq."VV32")) then  
         re = 0d0
         ierr = 1
-      elseif ((para(1:len_trim(para)).eq."VV11") .or.  &
-              (para(1:len_trim(para)).eq."VV22") .or.  &
-              (para(1:len_trim(para)).eq."VV33")) then  
+      elseif ((trim(para).eq."VV11") .or.  &
+              (trim(para).eq."VV22") .or.  &
+              (trim(para).eq."VV33")) then  
         re = 1d0
         ierr = 1
 !cc EW parameters
-      elseif (para(1:len_trim(para)).eq."sw2" .or. &
-              para(1:len_trim(para)).eq."sin_th_2") then
+      elseif (trim(para).eq."sw2" .or. &
+              trim(para).eq."sin_th_2") then
         re = sin2w
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."vev") then
+      elseif (trim(para).eq."vev") then
         re = 1d0/sqrt(sqrt(2d0)*gf) 
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."Gf") then
+      elseif (trim(para).eq."Gf") then
         re = gf
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."alpha") then
+      elseif (trim(para).eq."alpha") then
         re = alfa 
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."ewfactor") then
+      elseif (trim(para).eq."ewfactor") then
         re = blha_ewfac 
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."alphas") then
+      elseif (trim(para).eq."alphas") then
         re = alfas 
         ierr = 1
 !cc Process ID
-      elseif (para(1:len_trim(para)).eq."process") then
+      elseif (trim(para).eq."process") then
         re = process
         ierr = 1
 !cc Phase space dimension (# of random numbers required)
-      elseif (para(1:len_trim(para)).eq."PSdimension") then
+      elseif (trim(para).eq."PSdimension") then
         re = PS_dimension
         ierr = 1
 !cc centre-of-mass energy
-      elseif (para(1:len_trim(para)).eq."sqrtS") then
+      elseif (trim(para).eq."sqrtS") then
         re = ecm 
         ierr = 1
 !cc random helicity summation
-      elseif (para(1:len_trim(para)).eq."ranhelsum") then
+      elseif (trim(para).eq."ranhelsum") then
         if (blha_ranhelsum) then
           re = 1
         else
           re = 0
         endif
         ierr = 1
-      elseif (para(1:len_trim(para)).eq."HelicityRN") then
+      elseif (trim(para).eq."HelicityRN") then
         re = abs(blha_helrand) 
         ierr = 1
 !cc anomalous couplings
-      elseif (para(1:len_trim(para)).eq."anomcoupl") then
+      elseif (trim(para).eq."anomcoupl") then
         if (blha_anomcoupl) then
           re = 1
         else
@@ -610,7 +613,7 @@
         endif
         ierr = 1
 !cc number of colours
-      elseif (para(1:len_trim(para)).eq."Nc") then
+      elseif (trim(para).eq."Nc") then
         re = blha_Nc
         ierr = 1
 !cc Unknown parameter
@@ -816,19 +819,37 @@
       else if ((nparton .eq. 5) .and. (orderAlphas .eq. 1)) then
 ! VBF+j
         call MomMapping_VBF5(pdgparton,mapparton)
+      else if ((nparton .eq. 2) .and. (orderAlphas .eq. 0)) then
+! QCD+0j
+        call MomMapping_QCD(pdgparton, mapparton, nparton)
+      else if ((nparton .eq. 3) .and. (orderAlphas .eq. 1)) then 
+! QCD+1j
+        call MomMapping_QCD(pdgparton, mapparton, nparton)
+      else if ((nparton .eq. 4) .and. (orderAlphas .eq. 2)) then
+! QCD+2j
+        call MomMapping_QCD4(pdgparton,mapparton)
+      else if ((nparton .eq. 5) .and. (orderAlphas .eq. 3)) then
+! QCD+3j
+        call MomMapping_QCD5(pdgparton,mapparton)
       else
 ! not yet supported
         procok = 0
         return
       endif
+      call MomMapping_EW(nparton,nelweak,pdgelweak,mapelweak, &
+                         orderAlphas,orderAlpha)
 ! create diagphysmap
       do i=1,nparton
         do j=1,blha_numsubproc(blha_numproc)
           blha_diagphysmap(blha_physdiagmap(i,j,blha_numproc),j,blha_numproc) = i
         enddo
       enddo
-      call MomMapping_EW(nparton,nelweak,pdgelweak,mapelweak, &
-                         orderAlphas,orderAlpha)
+! create invmap
+      do i=1,nparton+nelweak
+        do j=1,blha_numsubproc(blha_numproc)
+          blha_invmap(blha_particlemap(i,j,blha_numproc),j,blha_numproc) = i
+        enddo
+      enddo
 
       blha_numptcl(blha_numproc)   = nparticles
       blha_numparton(blha_numproc) = nparton
@@ -1011,18 +1032,21 @@
       integer i,mu,ps_number
 
 ! external
-      logical Choose_PS
-      external Choose_PS
+      logical Choose_PS, VBFNLO_ClosestOnshell
+      external Choose_PS, VBFNLO_ClosestOnshell
 
 
-! XXX cannot deal with multiple processes yet, always takes first subproc
-      subproc = 1
-
-! but only if it exists
+! do something only if subprocesses exist
       if (blha_numsubproc(proc) .lt. 1) then
         weight = 0
         return
       endif
+
+! cycle through subprocesses
+      blha_pssubproc(proc) = &
+        mod( blha_pssubproc(proc)+blha_pssubstep(proc)-1,  &
+             blha_numsubproc(proc) ) + 1
+      subproc = blha_pssubproc(proc)
 
 ! re-initialize process if necessary
       procId=blha_procsubproc(subproc,proc)
@@ -1049,6 +1073,13 @@
       call phasespace(r, p, x, v, ps_number, weight)
       weight = weight*PS_Loops
       if (.not. Choose_PS(ps_number, v, 1)) weight = 0d0
+
+! check phase-space selection -- skip if only one ew subproc
+      if ( (weight .gt. 0d0) .and.                                 &
+           (blha_numsubproc(proc) .gt. blha_pssubstep(proc)) .and. &
+           .not. VBFNLO_ClosestOnshell(v,proc,subproc))            &
+        weight = 0d0
+      weight = weight * blha_numsubproc(proc)/blha_pssubstep(proc)
 
 ! remove flux factor and conversion into fb
       if (weight .gt. 0d0) then
@@ -1112,6 +1143,8 @@
 !*************************************************************************  
 
       SUBROUTINE OLP_Info(version, message)
+        use VBFNLOVersion, only: &
+          vbfnloversionstring, setVersion, vbfnloreference
 !*************************************************************************
 !     Pass parameters
 !*************************************************************************
@@ -1123,13 +1156,13 @@
       character*15 version
       character*255 message
 
-      call PrintVBFNLOVersion(-1)
+      call setVersion
       version = vbfnloversionstring
       message =  &
-        vbfnloreference(1)(1:len_trim(vbfnloreference(1)))//achar(10)// &
-        vbfnloreference(2)(1:len_trim(vbfnloreference(2)))//achar(10)// &
+        trim(vbfnloreference(1))//achar(10)// &
+        trim(vbfnloreference(2))//achar(10)// &
         'and process-specific references'//achar(10)// &
-        vbfnloreference(3)(1:len_trim(vbfnloreference(3)))
+        trim(vbfnloreference(3))
 
       return
       end
@@ -1231,6 +1264,89 @@
       end
 
 !*************************************************************************  
+
+      LOGICAL FUNCTION VBFNLO_ClosestOnshell(v,proc,subproc)
+!*************************************************************************
+!     check for subprocess closest to on-shell
+!*************************************************************************
+      implicit none
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/koppln.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
+      double precision v(0:3,max_v,max_kin)
+      integer proc,subproc
+! local variables
+      integer bos,sub,smallest
+      double precision minv(0:max_subproc)
+      character*255 errmsg
+! external
+      double precision mjj2
+      external mjj2
+
+! get product of inverse Breit-Wigners for each subproc
+      do sub=1,blha_numsubproc(proc),blha_pssubstep(proc)
+        minv(sub) = 1
+        do bos=1,blha_numbosons(proc)
+          if (abs(blha_bosons(bos,sub,proc)) .eq. 23) then
+            minv(sub) = minv(sub) *                                  &
+              ( (mjj2(v(0,blha_invmap(                               &
+                            blha_particlemap(                        &
+                              blha_numparton(proc)+2*bos-1,          &
+                              subproc,proc),                         &
+                            sub,proc)-blha_numparton(proc)           &
+                         ,1),                                        &
+                      v(0,blha_invmap(                               &
+                            blha_particlemap(                        &
+                              blha_numparton(proc)+2*bos,            &
+                              subproc,proc),                         &
+                            sub,proc)-blha_numparton(proc)           &
+                         ,1))                                        &
+                 -xmz**2)**2 + (xmz*xgz)**2 )
+          else if (abs(blha_bosons(bos,sub,proc)) .eq. 24) then
+            minv(sub) = minv(sub) *                                  &
+              ( (mjj2(v(0,blha_invmap(                               &
+                            blha_particlemap(                        &
+                              blha_numparton(proc)+2*bos-1,          &
+                              subproc,proc),                         &
+                            sub,proc)-blha_numparton(proc)           &
+                         ,1),                                        &
+                      v(0,blha_invmap(                               &
+                            blha_particlemap(                        &
+                              blha_numparton(proc)+2*bos,            &
+                              subproc,proc),                         &
+                            sub,proc)-blha_numparton(proc)           &
+                         ,1))                                        &
+                 -xmw**2)**2 + (xmw*xgw)**2 )
+          else
+            write(errmsg,'(A,I2)')  &
+             "Unknown boson in phase-space: ", blha_bosons(bos,sub,proc)
+            call BLHA_error(errmsg,__FILE__,__LINE__)
+          endif
+        enddo
+      enddo
+
+! look for smallest
+      minv(0) = minv(1)
+      smallest = 1
+      do sub=1+blha_pssubstep(proc),blha_numsubproc(proc),blha_pssubstep(proc)
+        if ( minv(sub) .lt. minv(0) ) then
+          smallest = sub
+          minv(0) = minv(sub)
+        endif
+      enddo
+
+      if (smallest .eq. subproc) then
+        VBFNLO_ClosestOnshell = .true.
+      else
+        VBFNLO_ClosestOnshell = .false.
+      endif
+
+      return
+      end
+
+!*************************************************************************
 
       SUBROUTINE BLHA_setDR(DR)
 !*************************************************************************
@@ -1450,7 +1566,7 @@
 ! local variables
       character*255 errmsg
 
-      write(errmsg,'(A,I2)'),  &
+      write(errmsg,'(A,I2)')  &
        "Function called with wrong amplitude type number ", amptype
       call BLHA_error(errmsg,filename,lineno)
 

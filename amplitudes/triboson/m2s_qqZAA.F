@@ -35,7 +35,7 @@ c declare global variables
 c declare input/output variables
       INTEGER bos, nlo, ps_number
       DOUBLE PRECISION xi(nx), p(0:3,max_p), v(0:3,n_v,3), rn(1), m2s
-      DOUBLE PRECISION q12(0:4,3), q34(0:4,3) !check if I really need these
+      DOUBLE PRECISION q34(0:4,3) !check if I really need these
 
 c declare external functions
       DOUBLE PRECISION dotrr
@@ -52,7 +52,7 @@ c  helicity selection
       PARAMETER (zero=(0d0,0d0))
 
       DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -376,7 +376,7 @@ c local variables
       logical ldebug
       parameter (ldebug=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,j,k,mu
+      integer i,if1,k,mu
 
       uuzaa = 0d0
       uuzaa2 = 0d0
@@ -456,7 +456,7 @@ c*****************************************************************
 #include "tensor.inc"
       complex*16 zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,mu
 
       do mu = 0,5
          do j = 1,3

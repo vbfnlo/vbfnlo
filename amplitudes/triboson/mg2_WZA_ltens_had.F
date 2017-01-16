@@ -816,7 +816,6 @@ c
       END
 
 
-
 c ------------------------------------------------------------
 
       subroutine tribosWPTOWA_mg2_had(v,N,h,wpa,NW)
@@ -1071,8 +1070,6 @@ C ----------
       wmatens(5) = dcmplx(q(1),q(2))
 c
       END
-
-
 
 
 c
@@ -1438,7 +1435,6 @@ C ----------
 c
       return
       END
-
 
 
       subroutine tribosATOZA_mg2_had(v,N,h,za,NW)

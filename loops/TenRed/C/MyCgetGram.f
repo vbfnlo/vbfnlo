@@ -19,12 +19,9 @@ c Returns C0 and Cij
       integer jjinit
       common/Decide/tempjj,tempkl,IX,Zmax,jjinit
       Save/Decide/
-      Real*8  CijR2(4,2),CijI2(4,2),C0R2,C0I2
-       Real*8 zz11,zz12,zz22
-       complex*16 ten2g,test2g,ten2p1p2,test2p1p2
-       complex*16 ten2p1p2_Dble,ten2g_Dble
-       real*8 r1, r2r1, p1p2
-       real*8 musq,C0R,C0I,Cijr(4,2),CijI(4,2)
+
+
+       real*8 musq,C0R,C0I
        integer jj,k,l,order
        
 c       print*, "musq",musq

@@ -2,7 +2,6 @@
 !!! THIS IS A FORTRAN 90 FILE: CONTINUATION LINES AND COMMENTS HAVE A DIFFERENT SYNTAX !!!
 
 
-
 !*************************************************************************
       SUBROUTINE InitPDFs(nlo)
 !*************************************************************************
@@ -10,6 +9,8 @@
 !     There should be two pdfsets defined. One for the LO and one for the
 !     NLO calculation. 
 !*************************************************************************
+          use globalvars, only: lglobalprint
+          use readinput
       implicit none
 
       character*250 pdfname1, pdfname2, pdfname
@@ -23,6 +24,8 @@
       logical isSingleMemberPDF
 
       integer nlo, nmem
+
+#include "global.inc"
 
 !      call loadfile("pdfs.dat")
       call loadfile("vbfnlo.dat",.false.)
@@ -75,7 +78,7 @@
       END SELECT
      
       call closefile
-      
+
       if (nlo.eq.0) then
          pdfnumber = pdfnumber1
          pdfname = pdfname1
@@ -89,10 +92,10 @@
       SELECT CASE(pdflib)
       CASE(0)
          if (value .eq. 6) then
-            write(*,*)'Initializing PDF set cteq6l1'
+             if (lglobalprint) write(*,*)'Initializing PDF set cteq6l1'
            Call SetCtq6(pdfnumber)
          else if (value .eq. 10) then
-            write(*,*)'Initializing PDF set CT10'
+             if (lglobalprint) write(*,*)'Initializing PDF set CT10'
            Call SetCT10(pdfnumber)
          else 
            print *,"Unknown type of PDFs (value=",value,") in pdfsets.F"
@@ -147,10 +150,10 @@
            ! and FORTRAN 95 does not have an exception handling...
            ! The existence of the PDF is checked by getLHAPDFname, which also strips the file ending,
            ! providing shortpdfname .
-           if (pdfwithpath(1:len_trim(pdfwithpath)).ne."") then
+           if (trim(pdfwithpath).ne."") then
               call InitPDFsetbyName(shortpdfname)
            else
-              print*, "Error: The PDF named ", shortpdfname(1:len_trim(shortpdfname)), " could not be found."
+              print*, "Error: The PDF named ", trim(shortpdfname), " could not be found."
               print*, "The PDFs are expected to reside"
               if ("@LHAPDFPATH@".ne."") print*, "in the folder @LHAPDFPATH@ or"
               print*, "in a folder given by the environmental variable $LHAPDF_DATA_PATH ."
@@ -159,12 +162,12 @@
            endif
 #else
            ! The path to the PDF is checked by getLHAPDFname.
-           if (pdfwithpath(1:len_trim(pdfwithpath)).ne."") then
+           if (trim(pdfwithpath).ne."") then
               ! found correct PDF file name myself
               call InitPDFset(pdfwithpath)
            else
               ! maybe LHAPDF itself is more lucky ...
-              print*, "Warning: VBFNLO could not find the PDF named ", shortpdfname(1:len_trim(shortpdfname)), "."
+              print*, "Warning: VBFNLO could not find the PDF named ", trim(shortpdfname), "."
               print*, "The PDFs are expected to reside"
               if ("@LHAPDFPATH@".ne."") print*, "in the folder @LHAPDFPATH@ or"
               print*, "in a folder given by the environmental variable $LHAPATH ."
@@ -229,7 +232,6 @@
 !*************************************************************************
       implicit none
       real*8 x,q,pdf(-6:6)
-      real*8 upv,dnv,usea,dsea,str,chm,bot,top,glu
 
       integer pdflib, mu, valueLHA
       COMMON/PDFparameters/pdflib, valueLHA
@@ -337,7 +339,6 @@
       end
 
 
-
 #ifdef WITH_LHA
 
 
@@ -363,14 +364,14 @@
 
 
 ! get the PDF name without path (and for LHAPDF6 without file ending)
-      pdfname = pdfname_in(1:len_trim(pdfname_in))
+      pdfname = trim(pdfname_in)
 #ifdef WITH_LHAPDF6
       ! remove file extensions from pdfname if any. full path name not supported here, so no need to remove it
       lp = INDEX(pdfname,".LHgrid")
       if (lp.gt.0) pdfname = pdfname(1:lp-1)
       lp = INDEX(pdfname,".LHpdf")
       if (lp.gt.0) pdfname = pdfname(1:lp-1)
-      if (pdfname(1:len_trim(pdfname)).eq."cteq6ll") pdfname = "cteq6l1"      ! for this pdf set: filename != pdf name in LHAPDF<6
+      if (trim(pdfname).eq."cteq6ll") pdfname = "cteq6l1"      ! for this pdf set: filename != pdf name in LHAPDF<6
 #else
       ! remove path from pdfname if any
       lp = INDEX(pdfname,"/",.true.)
@@ -382,40 +383,40 @@
       pdfFound = .false.
 #ifdef WITH_LHAPDF6
       call getenv("LHAPDF_DATA_PATH",fullpath)      ! "prefered" variable of LHAPDF 6
-      if (fullpath(1:len_trim(fullpath)) .ne. "") then
-         fullpath = fullpath(1:len_trim(fullpath)) //"/"// pdfname(1:len_trim(pdfname)) &
-                   //"/"// pdfname(1:len_trim(pdfname)) // ".info"
+      if (trim(fullpath) .ne. "") then
+         fullpath = trim(fullpath) //"/"// trim(pdfname) &
+                   //"/"// trim(pdfname) // ".info"
          INQUIRE(FILE=fullpath,EXIST=pdfFound)
       endif
       if (.not.pdfFound) then
 !         call getenv("LHAPATH",fullpath)            ! "backup" variable, common for LHAPDF <6, does not seem to work any longer
-!         if (fullpath(1:len_trim(fullpath)) .ne. "") then
-!            fullpath = fullpath(1:len_trim(fullpath)) //"/"// pdfname(1:len_trim(pdfname)) &
-!                      //"/"// pdfname(1:len_trim(pdfname)) // ".info"
+!         if (trim(fullpath) .ne. "") then
+!            fullpath = trim(fullpath) //"/"// trim(pdfname) &
+!                      //"/"// trim(pdfname) // ".info"
 !            INQUIRE(FILE=fullpath,EXIST=pdfFound)
 !         endif
          if (.not.pdfFound) then                    ! if not found yet use PDFPATH from configure stage
             fullpath = "@LHAPDFPATH@"
-            fullpath = fullpath(1:len_trim(fullpath)) //"/"// pdfname(1:len_trim(pdfname)) &
-                      //"/"// pdfname(1:len_trim(pdfname)) // ".info"
+            fullpath = trim(fullpath) //"/"// trim(pdfname) &
+                      //"/"// trim(pdfname) // ".info"
             INQUIRE(FILE=fullpath,EXIST=pdfFound)
         endif
       endif
 #else
       ! try pdfname as it is
-      fullpath =  pdfname_in(1:len_trim(pdfname_in))
+      fullpath =  trim(pdfname_in)
       INQUIRE(FILE=fullpath,EXIST=pdfFound)
       if (.not.pdfFound) then
          ! prepend $LHAPATH
          call getenv("LHAPATH",fullpath)
          ! but only if it is set
-         if (fullpath(1:len_trim(fullpath)) .ne. "") then
-            fullpath = fullpath(1:len_trim(fullpath))//'/'//pdfname_in(1:len_trim(pdfname_in))
+         if (trim(fullpath) .ne. "") then
+            fullpath = trim(fullpath)//'/'//trim(pdfname_in)
             INQUIRE(FILE=fullpath,EXIST=pdfFound)
          endif
          if (.not.pdfFound) then
             ! prepend PDFPATH from configure stage
-            fullpath = "@LHAPDFPATH@/" // pdfname_in(1:len_trim(pdfname_in))
+            fullpath = "@LHAPDFPATH@/" // trim(pdfname_in)
             INQUIRE(FILE=fullpath,EXIST=pdfFound)
          endif
       endif
@@ -427,35 +428,35 @@
       pdfindexFound = .false.
 #ifdef WITH_LHAPDF6
       call getenv("LHAPDF_DATA_PATH",pdfindex)      ! "prefered" variable of LHAPDF 6
-      if (pdfindex(1:len_trim(pdfindex)) .ne. "") then
-         pdfindex = pdfindex(1:len_trim(pdfindex))//"/pdfsets.index"
+      if (trim(pdfindex) .ne. "") then
+         pdfindex = trim(pdfindex)//"/pdfsets.index"
          INQUIRE(FILE=pdfindex,EXIST=pdfindexFound)
       endif
       if (.not.pdfindexFound) then
 !         call getenv("LHAPATH",pdfindex)            ! "backup" variable, common for LHAPDF <6, does not seem to work with LHAPDF6
-!         if (pdfindex(1:len_trim(pdfindex)) .ne. "") then
-!            pdfindex = pdfindex(1:len_trim(pdfindex))//"/pdfsets.index"
+!         if (trim(pdfindex) .ne. "") then
+!            pdfindex = trim(pdfindex)//"/pdfsets.index"
 !            INQUIRE(FILE=pdfindex,EXIST=pdfindexFound)
 !         endif
          if (.not.pdfindexFound) then               ! if not found yet use PDFPATH from configure stage
             pdfindex = "@LHAPDFPATH@"
-            pdfindex = pdfindex(1:len_trim(pdfindex))//"/pdfsets.index"
+            pdfindex = trim(pdfindex)//"/pdfsets.index"
             INQUIRE(FILE=pdfindex,EXIST=pdfindexFound)
         endif
       endif
 #else
       call getenv("LHAPATH",pdfindex)               ! try environment variable first
-      if (pdfindex(1:len_trim(pdfindex)) .ne. "") then
+      if (trim(pdfindex) .ne. "") then
          lp = INDEX(pdfindex,"PDFsets")             ! the PDFsets.index is not in the PDFsets folder, but in the parent folder
          pdfindex = pdfindex(1:lp-1)
-         pdfindex = pdfindex(1:len_trim(pdfindex))//"/PDFsets.index"
+         pdfindex = trim(pdfindex)//"/PDFsets.index"
          INQUIRE(FILE=pdfindex,EXIST=pdfindexFound)
       endif
       if (.not.pdfindexFound) then                  ! if not found yet use PDFPATH from configure stage
          pdfindex = "@LHAPDFPATH@"
          lp = INDEX(pdfindex,"PDFsets")             ! the PDFsets.index is not in the PDFsets folder, but in the parent folder
          pdfindex = pdfindex(1:lp-1)
-         pdfindex = pdfindex(1:len_trim(pdfindex))//"/PDFsets.index"
+         pdfindex = trim(pdfindex)//"/PDFsets.index"
          INQUIRE(FILE=pdfindex,EXIST=pdfindexFound)
       endif
 #endif
@@ -496,9 +497,9 @@
 
 #ifdef WITH_LHAPDF6
       ! check lhaglue number from "SetIndex" in .info file, PDFsets.index, and check "NumMembers" for isSingleMemberPDF
-      if (pdfwithpath(1:len_trim(pdfwithpath)).eq."") return
+      if (trim(pdfwithpath).eq."") return
       ! Open file
-      open (unit=iunit, file=pdfwithpath(1:len_trim(pdfwithpath)), status="old", iostat=io_error)
+      open (unit=iunit, file=trim(pdfwithpath), status="old", iostat=io_error)
       if (io_error.eq.0) then
          do
             read(iunit,"(a100)",iostat=io_error) line
@@ -528,15 +529,15 @@
       endif
 #else
       ! check lhaglue number from PDFsets.index, afterwards check if lhaglue+1 still corresponds to the same pdf set
-      if (pdfindex(1:len_trim(pdfindex)).eq."") return
+      if (trim(pdfindex).eq."") return
       ! Open file
-      open (unit=iunit, file=pdfindex(1:len_trim(pdfindex)), status="old", iostat=io_error)
+      open (unit=iunit, file=trim(pdfindex), status="old", iostat=io_error)
       if (io_error.eq.0) then
          ! get lhaglue number
          do
             read(iunit,"(a100)",iostat=io_error) line
             if (io_error.ne.0) exit
-            lk=INDEX(line,shortpdfname(1:len_trim(shortpdfname)))
+            lk=INDEX(line,trim(shortpdfname))
             if (lk .ne. 0) then
                ! 1st entry of line is PDF number with trailing whitespace
                li=INDEX(line," ")
@@ -559,14 +560,14 @@
                   line=line(li+1:len_trim(line))
                   lf=INDEX(line," ")
                   templine=line(1:lf-1)
-                  if (templine(1:len_trim(templine)).ne."") then
+                  if (trim(templine).ne."") then
                      read(templine,*) nextvalue
                   else
                      nextvalue=0
                   endif
                   ! check if lhaglue+1 still corresponds to the same pdf set
                   if (nextvalue.eq.(value+1)) then
-                     lk=INDEX(line,shortpdfname(1:len_trim(shortpdfname)))
+                     lk=INDEX(line,trim(shortpdfname))
                      if (lk .ne. 0) then
                         ! lhaglue+1 still corresponds to the same pdf set
                         isSingleMemberPDF = .false.

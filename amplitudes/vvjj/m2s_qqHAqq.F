@@ -41,27 +41,26 @@ c
       real*8 RandomNumber
       external RandomNumber
 
-      double precision tree(6)
+
 c
 c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
 
-      real*8 q12(0:4,3), q34(0:4,3)
+
 c
 c declare local variables
 c
       real*8 q_sf
 
-      integer init/0/, I, J, mu
+      integer init/0/, I, J
       save init
 c
 c declare variables for summation process
 c
-      INTEGER ires, nmaxold
-      save nmaxold
+      INTEGER ires
 
       integer FSIGN(6), gsign, physToDiag(5), nlo, nmin, nmax
-      integer nlosusy
+
       save nmin, nmax
 c
 c store contributions from subprocess ip in res(ip,ID) where
@@ -394,7 +393,7 @@ c
      4       ddss(0:max_kin), udsc(0:max_kin), ducs(0:max_kin)
       real*8 pbar(0:3,6), qbar(0:4),gsub(2:max_kin), 
      1       e_in(2), dotrr, polcolq, polcolg
-      real*8 xa
+
       double precision NCborn(0:1,0:1,max_kin),tree(6)
       double precision CCborn(0:1,max_kin)
       double precision NCreal(0:1,0:1)
@@ -404,7 +403,7 @@ c
       external dotrr, FL_ZHg
 
       logical ChargedCurrent, sametype, oneAntiparticle
-      logical loldp, ldebug, lres,ldebug1,ldebug2
+      logical loldp, ldebug,ldebug1,ldebug2
       parameter (ldebug=.false.)
       parameter (ldebug1=.false.,ldebug2=.false.)
       data e_in/0d0,0d0/
@@ -429,8 +428,7 @@ c
       data idip /3,4,3,4,3,4,1,1,2,2,1,2/ ! emitter
       data jdip /4,3,1,1,2,2,3,4,3,4,2,1/ ! spectator
 
-      double precision fac
-      
+
       do j = 0,max_kin
          uucc(j) = 0d0
          uuss(j) = 0d0

@@ -196,9 +196,9 @@ C                                                               30 - 33
         IU= NextUn()
 c add input file path to filename
         path=GetPdfsetsPath()
-        path = path(1:len_trim(path))//"/"//Tablefile
+        path = trim(path)//"/"//Tablefile
         Open(IU, File=path, Status='OLD', Err=100)
- 21     Call Readpds0 (IU)
+        Call Readpds0 (IU)
         Close (IU)
         Isetold=Iset
         Isetch=1

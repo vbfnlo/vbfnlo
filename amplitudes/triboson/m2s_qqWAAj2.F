@@ -57,7 +57,7 @@ c  helicity selection
       PARAMETER (zero=(0d0,0d0))
 
       DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -399,17 +399,17 @@ c alfas, scales etc
 c local variables
       DOUBLE PRECISION udwaa, duwaa, udwaa2, duwaa2
       DOUBLE PRECISION pbar(0:3,n_p+n_v), qbar(0:4), dotrr, polcolq, polcolg
-      double precision pfafc(2,7)
+
       DOUBLE PRECISION NCmatrixelt(0:1)
       DOUBLE COMPLEX zero
       INTEGER iflav(4), diagToPhys(3), FL_VVVg
       EXTERNAL dotrr, FL_VVVg
 
-      LOGICAL ChargedCurrent, sametype, oneAntiparticle
+
       LOGICAL ldebug
       PARAMETER (ldebug=.false.)
       PARAMETER (zero = (0d0,0d0) )
-      INTEGER i,if1,if2,icc1,j,k,mu
+      INTEGER i,if1,j,k,mu
       do  i=1,3
          physToDiag1(i)=physToDiag(i)
       enddo

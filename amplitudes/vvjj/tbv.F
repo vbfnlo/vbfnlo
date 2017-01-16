@@ -92,7 +92,7 @@ c
      &                epem,epev,emev, c1,c2,c3,c4, 
      &                spvpm(0:3),spv12(0:3),e1vpm,e2vpm,emv12,epv12
       double precision  q1q2,q1q3, xlam(2),xlamt(2)
-      double precision facG, facK, facL, fac
+      double precision fac
       double precision lamb2i!, lamb2iG, lamb2iK, lamb2iL
       double precision  zero
       parameter( zero = 0.0d0 )

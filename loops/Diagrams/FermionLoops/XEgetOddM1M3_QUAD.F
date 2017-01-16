@@ -230,7 +230,6 @@ c       external A0finG,B0finG,C0finG,D0finG,E0finG
 
        s234=s15
 
- 
 
         A01=A0finG_QUAD(M5,musq)  
         A01R=REAL(A01)   
@@ -637,10 +636,6 @@ cfc       write(*,*)"E12345",E012345R_d,E012345I_d
 cfc       write(*,*)"E12345",E012345R,E012345I
 cfc       call print_EijR(DCMPLX(E012345),E12345R_d,E12345I_d)
 cfc       endif
-
-
-
-
 
 
        return

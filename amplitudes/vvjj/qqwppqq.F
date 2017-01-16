@@ -1,5 +1,6 @@
       
       subroutine qqwppqq(pbar,sign, nlo, L,bos,ans)
+          use globalvars, only: ldoblha
       implicit none
 c
 c	Barbara Jaeger, <bjaeger@physik.uni-wuerzburg.de>
@@ -82,7 +83,7 @@ c
       integer ide,idu
       double complex mb(4,4),maeu,mzeu,maue,mzue
       double complex mbv(4,4,2),maeuv(2),mzeuv(2),mauev(2),mzuev(2)
-      double complex mveu,mvue,xveu,xvue
+
       double complex mv5eu(2),mv5ue(2)
       
       double complex contract_Tjj, dotcc, dotrc, s1c
@@ -97,8 +98,15 @@ c
       logical linit
       data linit /.true./
       
-      logical ldebug
-      data ldebug /.false./
+      logical ldebug,ldebugv
+      data ldebug /.false./,ldebugv /.false./
+c      data ldebug /.true./,ldebugv /.false./
+      
+      logical vvdebug,bbdebug,vbdebug,pdebug
+      parameter (vvdebug = .false.,bbdebug = .false.,
+     &  	 pdebug = .false.,vbdebug = .false.) 
+c      parameter (vvdebug = .true.,bbdebug = .true.,
+c     &  	 pdebug = .true.,vbdebug = .true.) 
      
 c variables for virtual corrections
 c   
@@ -159,7 +167,7 @@ c
          linit = .false.	 
       endif
     
-      if (ldebug) then
+      if ((ldebug.or.ldebugv)) then
          print*,' ' 
          print*,' enter qqwppqq '
       endif
@@ -247,6 +255,27 @@ c
       mww = contract_Tjj(wppwpp(0,0,L),jqq(0,isig1,1),jqq(0,isig3,2))
       mat(isig1,isig3,1) = mww*clr(ifl(1),3,isig1)*clr(ifl(3),3,isig3)
       matv(isig1,isig3,1) = (0d0,0d0)
+
+      if (vvdebug) then
+         print*,'start vvdebug:'
+         m1 = 0
+         do i = 49,63
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 70,78
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 85,93
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         print*,'fsign=',sign
+         print*,' vv for isig=',isig1,isig3
+         if (m1.ne.0d0) then 
+            print*,' res:',mat(isig1,isig3,1),m1
+            print*,' rat:',mat(isig1,isig3,1)/m1
+            print*
+         endif
+      endif                     !vvdebug
   
 c
 c -------------------------------------------------------------------
@@ -481,7 +510,38 @@ c Wu from upper line, We from lower line:
 #endif
 
 c -------------------------------
-	 	   
+	
+      if (bbdebug) then
+         print*,'start bbdebug:'
+         m1 = 0
+         do i = 1,2
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 4,5
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 11,14
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 22,25
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 31,32
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 34,35
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+c     
+         print*,' bb for isig=',isig1,isig3
+         if (m1.ne.0d0) then 
+            print*,' res (my,mg):',mat(isig1,isig3,6),m1
+            print*,' rat:',mat(isig1,isig3,6)/m1
+            print*
+            print*, ' ======================================= '
+         endif
+      endif                     !bbdebug
+ 	   
 c ------------------------------------------------------------------------------
 c
 c  next do the vertex-box graphs 
@@ -671,7 +731,37 @@ c gauge boson from lower quark line:
       endif                     !lbox
 #endif
 	  
-	  	      	      
+	  	      	    
+      if (vbdebug) then
+         print*,'start vbdebug:'
+         m1 = 0
+         do i = 6,10
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 16,20
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 26,30
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 36,48
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 64,69
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+         do i = 79,84
+            m1 = m1 + tamwp(i,isig1,isig3,1)
+         enddo
+c     print*,'fsign=',sign
+         print*,' vb for isig=',isig1,isig3
+         if (m1.ne.0d0) then 
+            print*,' res:',(mat(isig1,isig3,2)+mat(isig1,isig3,3)),m1
+            print*,' rat:',(mat(isig1,isig3,2)+mat(isig1,isig3,3))/m1
+            print*
+         endif
+      endif                     !vbdebug
+      
 c---------------------------------------------------------- c
 c
 c compute pentagon contributions, i.e. three bosons emitted 
@@ -897,6 +987,20 @@ c
 #endif
  	
 cccccccccc
+
+      if (pdebug) then
+         print*,'start pdebug:'
+         m1 = tamwp(3,isig1,isig3,1) + tamwp(21,isig1,isig3,1) + 
+     &        tamwp(15,isig1,isig3,1) + tamwp(33,isig1,isig3,1)
+c     print*,'fsign=',sign
+         print*,' p for isig=',isig1,isig3
+         if (m1.ne.0d0) then 
+            print*,' res:',(mat(isig1,isig3,7)+mat(isig1,isig3,8)),m1
+            print*,' rat:',(mat(isig1,isig3,7)+mat(isig1,isig3,8))/m1
+            print*
+         endif
+      endif                     !pdebug
+  
 c -------------------------------------------------------------------
 c ------------------------------------------------------------------------------
      

@@ -57,12 +57,12 @@ c alfas, scales etc
       real*8 x1,x2
       real*8 lnQomu(2:3), omxi(2:3), 
      &       Ax(2:3), Bx(2:3), Cx(2:3), Dxi(2:3), tgs2oqsq(2:3), 
-     &       ln1mxi, lnrat, z, lnz, qsq
+     &       ln1mxi, lnrat, z, lnz
 
 c declare local variables
 
-      real*8 q_sf, wtot(0:3)
-      real*8 qa3,qa5,q35, dotrr
+      real*8 q_sf
+      real*8 dotrr
       external dotrr
 
       integer init/0/, I, J, mu
@@ -70,11 +70,10 @@ c declare local variables
 
 c declare variables for summation process
 
-      INTEGER ires, nmaxold, FSIGN(3+n_v), gsign
-      save nmaxold
+      INTEGER ires, FSIGN(3+n_v), gsign
 
-      integer physToDiag(3), nlo, nmin, nmax, nproc(8)
-      save nmin, nmax, nproc
+      integer physToDiag(3), nlo, nmin, nmax
+      save nmin, nmax
 
       integer N_gen_W
       real*8 fac_W, mjj2
@@ -105,11 +104,7 @@ c if first iteration, output acceptance cuts and fix constant input
 c parameters for call of qqVVj.f
 
       if ( init .ne. 0) then
-         do i = 1,nmax
-            do j=0,3
-               res(i,j) = 0
-            enddo
-         enddo
+         res(1:nmax,0:3) = 0
       else if (init.eq.0) then
          if (bos.eq.34 .or. bos.eq.43) then
             write(6,*) " "
@@ -122,11 +117,7 @@ c parameters for call of qqVVj.f
          print*," "
          print*," creal = ",crealVV," cvirtual = ",cvirtVV
          init = 1
-         do i = 1,maxnumsubproc
-            do j = 0,3
-               res(i,j) = 0
-            enddo
-         enddo
+         res(1:maxnumsubproc,0:3) = 0
       endif
 
 c ------------------------------------------------------------------- 
@@ -497,24 +488,21 @@ c  helicity selection
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 c
       real*8 uuwwb(2,2:3), ddwwb(2,2:3),
-     &       uuww, ddww, uuwwg, ddwwg,
-     &       uuwwr(0:3), ddwwr(0:3)
+     &       uuww, ddww, uuwwg, ddwwg
       real*8 uuww2, ddww2
-      real*8 pbar(0:3,3+n_v), qbar(0:4), y,q2,v2,q3,v3,sub(2:3), 
+      real*8 pbar(0:3,3+n_v), qbar(0:4),q2,v2,sub(2:3), 
      1       e_in(2), dotrr, gs2(2:3), polcolq, polcolg
-      real*8 xa
-      double precision NCmatrixelt(0:1,3,2), temp, temp2
+      double precision NCmatrixelt(0:1,3,2), temp
       integer iflav(3), diagToPhys(3), FL_VVg
       external dotrr, FL_VVg
 
       complex*16 zero
       parameter (zero=(0d0,0d0))
 
-      logical ChargedCurrent, sametype, oneAntiparticle
-      logical loldp, ldebug, lres
+      logical ldebug
       data e_in/0d0,0d0/
-      save e_in,loldp, gs2,polcolq,polcolg, uuwwb,ddwwb
-      integer i,if1,icc1,j,k,mu, fc(6), fcb(6)
+      save e_in, gs2,polcolq,polcolg, uuwwb,ddwwb
+      integer i,if1,j,k,mu
       
       parameter (ldebug=.false.)
 
@@ -918,7 +906,7 @@ c  subroutine fillColorless.
       
       integer iflav(3),id1,id2,id3,listposition,i,i1
       integer iflavour(3),colstruc
-      double precision prob1, prob2, rn, RandomNumber
+
       logical ldebug
       parameter (ldebug=.false.)
 

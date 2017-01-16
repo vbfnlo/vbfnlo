@@ -9,32 +9,32 @@
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/coupl.inc"
 
-      integer k,mu,i,photpolin,photin,glupolin,gluin,signw(2),signspinor(2),map(2),nlo,
+      integer k,mu,photpolin,photin,glupolin,gluin,signspinor(2),map(2),nlo,
      &   badpointspent,badpointspentnoab,badpointsbox,incross,mapspin1(2),mapspin2(2),badpoints
-      real*8 weightevent
+
 
       common /badpointsWPAG/ badpointspent,badpointsbox,badpoints
       common /badpointsnoabWPAG/ badpointspentnoab
 
 
-      double precision photmom(0:4),glumom(0:4),wmom(0:3),ubmom(0:3),
-     &  dmom(0:3),pentmom(0:3,5),
-     &  wdecmom(0:3,2),wdecmomhel(0:3,2),spinormomhel(0:3,2),
-     &  spinormom(0:3,2),mur,m2s(6),q_sf,
+      double precision photmom(0:4),glumom(0:4),wmom(0:3),
+     &  pentmom(0:3,5),
+     &  wdecmom(0:3,2),
+     &  spinormom(0:3,2),mur,m2s(6),
      &  boxmom(0:3,4),CF,CA,NF,TR,m2sborn(6),m2sbornwopdf(6),m2stest(6),
-     &  sumresult,boxmomtilde(0:3,4),logdiff,
-     &  sumresultalt,ratio,fincol(6,4),testcol(12),fincolg(3:6,-4:4),
+     &  sumresult,boxmomtilde(0:3,4),
+     &  sumresultalt,
      &  finiteubd,s,t,u,mursq1,rn,
      &  finiteubg,finiteubgcr,finiteqg,s15,eulergamma,inv2,inv3,musq,tf,
      &  finiteubdf,bornelement
       double complex photpol(0:3), glupol(0:3), wpol(0:3), 
-     &  photwpol(0:3),psi(2,-1:1,2),
-     &  psiw(2,-1:1,2),resultgauge(3),result(6),resultgaugeb(3),temp(6),
+     &  psi(2,-1:1,2),
+     &  resultgauge(3),result(6),resultgaugeb(3),temp(6),
      &  resultb(6),virt,ampborn,cte,penresult(8),cfc,cac,cfcac,
      &  boxresult(5),test(11),testb(11),
      &  ancont,storephotpol(0:3,-1:1),storewpol(0:3),
      &  storewphotpol(0:3,-1:1),testgauge1,
-     &  testgauge2,pic2,im,cacgraph,fact,penresultc,penborn,factnew,
+     &  testgauge2,pic2,im,cacgraph,fact,penresultc,
      &  factfigy,resultgauge2(3),resultgauge3(3)
 
       double precision accuracy,accuracyres
@@ -52,7 +52,7 @@
       parameter (eulergamma=5.772156649015328D-1)
 
       double precision p(0:3,max_p,max_kin), v(0:3,max_v,max_kin),
-     &  xi(nx),pdf(-6:6,2),pdftmp(-6:6,2)
+     &  xi(nx),pdf(-6:6,2)
 
       double precision helastestmom(0:3,6),testh,m2s_qqwgaglu_hel
 
@@ -75,7 +75,6 @@
       gadlocal(2)=gau(2)
       gaulocal(1)=gad(1)
       gaulocal(2)=gad(2)
-
 
 
       im=dcmplx(0d0,1d0)
@@ -737,7 +736,6 @@ C W
      -     test(3)+test(4)+test(5)
      &    +test(6)+test(7)+test(8)+test(9)+test(10)+test(11))*gg(1)**3*
      -     gwf(1))*conjg(ampborn))/9.
-
 
 
       enddo  !loop over initial state exchanged
@@ -1911,7 +1909,6 @@ C W
       badgauge=ubd(1).and.ubd(2).and.ubg(1).and.ubg(2).and.
      &   dg(1).and.dg(2)
       if (.not.badgauge) badpoints=badpoints+1
-
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

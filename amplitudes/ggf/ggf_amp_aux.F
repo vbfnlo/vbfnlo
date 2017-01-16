@@ -24,7 +24,7 @@ c... prepares all Eij coefficients for pentagon topologies
       COMMON/auxiliary_calculation_GG/q_dot_ep,ep_dot_ep,ep,q_dot_q,
      &                                det,Xi
 
-      real*8 p1,p2,p3,p4,p1p2,p1p3,p1p4,p2p3,p2p4,p3p4,m,msq,eps,p5
+      real*8 p1,p2,p3,p4,p1p2,p1p3,p1p4,p2p3,p2p4,p3p4,m
       complex*16 Eij(4,46)
 
       real*8 psq,qsq,lsq,tsq,pq,pl,pt,ql,qt,lt

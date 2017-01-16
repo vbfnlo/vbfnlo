@@ -13,6 +13,7 @@ c
      7                   v,	!in:  momenta associated with WW decay fermions
      8                   xuz,   !in:  x, u, z for subtraction terms
      9                   m2s  )  !out: |M|^2*pdf1*pdf2 
+          use VBFNLO_HIGGSTO, only: VBFNLO_HIGGSTO_gridHt
       implicit none
 c
 c declare input/output variables
@@ -33,10 +34,6 @@ c
 
 c alfas, scales etc
 #include "VBFNLO/utilities/scales.inc"
-      double precision x1,x2
-      double precision s13,s24,s15,s25,tgs2oqsq(2:3),
-     $     Ax(2),Bx(3),Cx(3),Dxi(3)
-      double precision omxi
 
 c declare local variables
       double precision q_sf
@@ -44,8 +41,7 @@ c declare local variables
       save init
 
 c declare variables for summation process
-      INTEGER LFLAVR(5:6), ires, nmaxold
-      save LFLAVR, nmaxold
+      INTEGER ires
 
       integer FSIGN(4+max_v), gsign(2), physToDiag(6), 
      $     nlo, nd,fs(6+max_v)
@@ -57,10 +53,9 @@ c  ID = 1  : the real emission |M|^2 * pdf
 c     = 2,3: sutraction terms for emision off 12 or 34 line
 c     = 0  : subtracted result which drives integration, i.e
 c res(*,0) = res(*,1)+res(*,2)+res(*,3)+...+res(*,max_kin)
-      double precision res(maxnumsubproc,0:max_kin) 
-      double precision m2s_gg(0:max_kin)
-      double precision m2s_qqnc(0:max_kin)
-      double precision m2s_qqcc(0:max_kin)
+      double precision res(maxnumsubproc,0:max_kin)
+
+
       double precision sum,delta
       double precision dot0p
       external dot0p
@@ -69,7 +64,7 @@ c declare parton distribution variables
       double precision pdf(-6:6,2,5) 
 
 c define program switches
-      logical ldebug,lskip,ldebug1,linfo
+      logical lskip,ldebug1,linfo
       logical lchsb,lcoll,ldebugc
       parameter (lchsb=.false.,lcoll=.false.)
       parameter (lskip=.false.)
@@ -787,10 +782,7 @@ c
      $     udsc_c(3),ducs_c(3)
       double precision uucc(0:6),uuss(0:6),ddcc(0:6),ddss(0:6),
      $     udsc(0:6),ducs(0:6)
-      double precision uuccbb,uussbb,ddccbb,ddssbb,
-     $     udscbb,ducsbb
-      double precision uuccbb1,uussbb1,ddccbb1,ddssbb1,
-     $      udscbb1,ducsbb1     !testing purposes
+      double precision udscbb1     !testing purposes
 c wbf_h4j calls the amplitude square routines 
 c             qqhqqgg_mg    for qq-->qqggH     for bos=6
 c for the subtraction terms for the NLO cross section calculation
@@ -819,7 +811,7 @@ c alfas, scales etc
 #include "color.inc"
 c
       integer ip(2:max_kin),kp(2:max_kin),jp(2:max_kin),nd,Nmx
-      double precision pbar(0:3,4+max_v),qbar(0:4,2) ,temp(0:3,6)
+      double precision pbar(0:3,4+max_v),qbar(0:4,2) 
       double precision polcolgg,polcolgq,polcolqq,polcolab 
       double precision NCmatrix_r(0:1,0:1,0:6)
       double precision CCmatrix_r(0:1,0:6)
@@ -829,15 +821,15 @@ c
       double precision CCmatrix_v(0:1,2,2:max_kin)
       double precision sub(4,2:max_kin),subv(2:max_kin),qvec(0:3,2:max_kin)
       double precision msq_b(0:2,2:max_kin),msq_v(0:2,2:max_kin),dip(2:max_kin)
-      double precision msq_cc(2)
-      integer iflav(6), diagToPhys(6), flavp(6)
-      integer physToDiagbrn(6),diagbrntophys(6),ICOL
+
+      integer iflav(6), diagToPhys(6)
+      integer ICOL
       double precision dot0p
       integer FL_H4j
       external FL_H4j
       external dot0p
       logical ChargedCurrent, sametype, oneAntiparticle
-      logical loldp, ldebug, lres,ldebug1
+      logical ldebug,ldebug1
       logical ldebug2,ldebug1n
       parameter (ldebug=.false.) 
       parameter(ldebug1=.false.,ldebug2=.false.)
@@ -1816,7 +1808,7 @@ c  subroutine fillColorless.
 
       integer iflav(6),listposition,i,i1
       integer iflavour(6),colstruc
-      double precision prob1, prob2, rn, RandomNumber
+
       integer cid(2,6),diagToPhys(6),Ngluon
       logical ldebug,IsFinalGluon,IsQuark
       parameter (ldebug=.false.)
@@ -2033,9 +2025,6 @@ c
          endif
 
       endif
-
-
-      
 
 
       if(ldebug)then

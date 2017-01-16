@@ -80,7 +80,3 @@ libVBFNLOPhasespace_la_LIBADD = $(GSLLIBS)
 libVBFNLOPhasespace_la_SOURCES += \
 ps_tribos_kk.F
 endif
-
-if WITH_SPIN2
-libVBFNLOPhasespace_la_FFLAGS += -DWITH_SPIN2
-endif

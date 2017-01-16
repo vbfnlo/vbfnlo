@@ -60,7 +60,6 @@ c***************************************************************************
 ****************************************************************************
 
 
-
 c***************************************************************************
       function dotrr(p1,p2)
 c***************************************************************************
@@ -126,7 +125,7 @@ c     dot0p(p1,p2) = p1.p2
 c
 c***************************************************************************
       implicit none
-      double precision dot0p,p1(0:3),p2(0:3), pt(3),fac
+      double precision dot0p,p1(0:3),p2(0:3)
       dot0p = p1(0)*p2(0) - p1(1)*p2(1) - p1(2)*p2(2) - p1(3)*p2(3)
 c$$$      if (abs(dot0p).lt.0.01*abs(p1(0)*p2(0))) then !section for small p1.p2
 c$$$*         print*," old dotp = ",dot0p," ratio = ",dot0p/p1(0)/p2(0)
@@ -450,9 +449,8 @@ c***************************************************************************
       real*8 k1(0:3),k2(0:3)
 
 c local variables
-      
-      integer mu,nu
-      
+
+
       call epscrr(J2p,J2,k1,k2)
       J2pJ1 = J2p(0)*J1(0)-J2p(1)*J1(1)-J2p(2)*J1(2)-J2p(3)*J1(3)
 c
@@ -482,9 +480,8 @@ c***************************************************************************
       real*8 k1(0:3),k2(0:3),k12
  
 c local variables
-      
-      integer mu,nu
-      
+
+
 c     dot products
       k12 = k1(0)*k2(0)-k1(1)*k2(1)-k1(2)*k2(2)-k1(3)*k2(3)
 
@@ -1133,7 +1130,7 @@ c include the momenta
       integer mu
       double complex epsccrmu,a(0:3),b(0:3)
       double complex ab01,ab02,ab03,ab12,ab13,ab23
-      double precision c(0:3),det
+      double precision c(0:3)
       ab01= a(0)*b(1)-a(1)*b(0)
       ab02= a(0)*b(2)-a(2)*b(0)
       ab03= a(0)*b(3)-a(3)*b(0)
@@ -1153,8 +1150,7 @@ c include the momenta
        epsccrmu= -c(0)*ab12 +c(1)*ab02 -c(2)*ab01
       endif
       END
-c***************************************************************************    
-
+c***************************************************************************
 
 
 c****************************************************************************
@@ -1170,7 +1166,7 @@ cMK this differs compared to the conventions in FeynCalc and FormCalc, where eps
       integer mu
       double complex epscrrmu,a(0:3)
       double complex ab01,ab02,ab03,ab12,ab13,ab23
-      double precision b(0:3),c(0:3),det
+      double precision b(0:3),c(0:3)
       ab01= a(0)*b(1)-a(1)*b(0)
       ab02= a(0)*b(2)-a(2)*b(0)
       ab03= a(0)*b(3)-a(3)*b(0)
@@ -1204,7 +1200,7 @@ cMK this differs compared to the conventions in FeynCalc and FormCalc, where eps
       integer mu
       double precision epsrrrmu
       double precision ab01,ab02,ab03,ab12,ab13,ab23
-      double precision a(0:3),b(0:3),c(0:3),det
+      double precision a(0:3),b(0:3),c(0:3)
       ab01= a(0)*b(1)-a(1)*b(0)
       ab02= a(0)*b(2)-a(2)*b(0)
       ab03= a(0)*b(3)-a(3)*b(0)
@@ -1582,7 +1578,7 @@ c
 c***************************************************************************
 
       implicit none
-      double complex j1(0:3), resv(0:3)
+      double complex j1(0:3)
       integer mu
 
       contract_grjcj = j1(0)*dconjg(j1(0))

@@ -3,25 +3,25 @@ c************** Calling the Fa functions*************************
      &   3mup4,p4mup3,p4mup4,p5mup3,p5mup4,p6mup3,p6mup4,mup3mup4,Fa5
      &   )
        IMPLICIT NONE
-      Complex*16   p1mup2, p1mup3, p1mup4, p1mup6, p2mup2, p2mup3, 
-     -          p2mup4, p2mup6, p3mup2, p3mup3, p3mup4, p3mup6, 
-     -          p4mup2, p4mup3, p4mup4, p4mup6, p5mup2, p5mup3, 
-     -          p5mup4, p5mup6, p6mup2, p6mup3, p6mup4, p6mup6
-       Complex*16   mup2mup3, mup2mup4, mup2mup6, mup3mup4, mup3mup6, 
-     -          mup4mup6
+      Complex*16   p1mup3, p1mup4, p2mup3, 
+     -          p2mup4, p3mup3, p3mup4, 
+     -          p4mup3, p4mup4, p5mup3, 
+     -          p5mup4, p6mup3, p6mup4
+       Complex*16   mup3mup4
+
         common/HexBoxCross1FhlFunctions/F
        COMMON/HexBoxCross1Invariants/p1sq,p2sq,p3sq,p4sq,p5sq,p6sq,s12
      &   ,s23,s34,s45,s56,s16,s123,s234,s345
-       Real*8   p1sq, p1p2, p1p3, p1p4, p1p5,p1p6 
-       Real*8   p2sq, p2p3, p2p4, p2p5 
-       Real*8   p3sq, p3p4, p3p5 
-       Real*8   p4sq, p4p5 
-       Real*8   p5sq, p5p6 
+       Real*8   p1sq 
+       Real*8   p2sq 
+       Real*8   p3sq 
+       Real*8   p4sq 
+       Real*8   p5sq 
        Real*8   p6sq 
-       Real*8   s12, s13, s14, s15, s16 
-       Real*8   s23, s24, s25,s26 
-       Real*8   s34, s35,s36 
-       Real*8   s45,s46 
+       Real*8   s12, s16 
+       Real*8   s23 
+       Real*8   s34 
+       Real*8   s45 
        Real*8   s56 
        Real*8   s123,s234,s345
       Complex*16 Fa(272),F(1461)

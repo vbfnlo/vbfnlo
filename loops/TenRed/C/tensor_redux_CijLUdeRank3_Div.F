@@ -35,7 +35,7 @@ c
 
       implicit none
       real * 8  p1sq, p2sq, s12
-      complex*16 B0_23, B0_13, B0_12, C0
+      complex*16 C0
       real*8 r1, r2r1, det,p1p2
       real*8 B1r_12,B1r_13,B1r_23,Cijr(6,3)
       real*8 B1I_12,B1I_13,B1I_23,CijI(6,3)
@@ -43,7 +43,7 @@ c
       real*8 B0I_23, B0I_13, B0I_12, C0I 
       real*8 z11,z12,z21,z22,iz11,iz22
       real*8 Rr(2),RI(2),PRr(2),PRI(2)
-      REAL*8 dettemp,detabs,deter
+      REAL*8 detabs,deter
       Integer i,jjinit
       real*8 para
       real*8 tempjj,tempkl,IX,Zmax
@@ -89,7 +89,6 @@ CCCCCCC
          endif
 
 
-
       C0r=Dble(C0)
       C0I=DImag(C0)
 
@@ -120,8 +119,6 @@ CCCCCCC
 *********************************************
 
 
-
-
       If(abs(p1sq).gt.abs(p1p2)) then
           z11=2d0*p1sq
           iz11=1d0/z11
@@ -134,7 +131,7 @@ c          iorder(2)=2
           det=z11*z22 
 
 c 1-2
- 100   PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
+       PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
        PRr(2) = (B0r_12 - B0r_13 - C0r*r2r1)
    
        Rr(2)=(PRr(2)-z21*PRr(1))*iz22 
@@ -295,7 +292,7 @@ c          iorder(2)=1
           det=-z11*z22
 
 c 1-2
- 200   PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
+       PRr(1) = (B0r_13 - B0r_23 - C0r*r1)
        PRr(2) = (B0r_12 - B0r_13 - C0r*r2r1)
    
        Rr(2)=(PRr(1)-z21*PRr(2))*iz22 

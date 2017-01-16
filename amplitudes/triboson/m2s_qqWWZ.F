@@ -55,7 +55,7 @@ c  helicity selection
       PARAMETER (zero=(0d0,0d0))
 
       DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -575,7 +575,7 @@ c local variables
       INTEGER iflav(2), diagToPhys(2), FL_VVV
       EXTERNAL dotrr, FL_VVV
 
-      LOGICAL ChargedCurrent, sametype, oneAntiparticle
+
       LOGICAL ldebug, ldebug_ltens
       PARAMETER (ldebug=.false.)
       PARAMETER (ldebug_ltens=.false.)
@@ -583,7 +583,7 @@ c local variables
 c  helicity selection, for debugging
       INTEGER h
       COMMON /hcount / h
-      INTEGER i,if1,if2,icc1,j,k,mu
+      INTEGER i,if1,k,mu
 
       uuwwz = 0d0
       uuwwz2 = 0d0
@@ -783,10 +783,10 @@ c  include files
 #include "VBFNLO/utilities/process.inc"
 
 c  input parameters
-      INTEGER iflav(2),id1,id2,id3,id4,listposition
+      INTEGER iflav(2),id1,id2,listposition
 
 c  local variables
-      INTEGER i
+
       
       id1=iflav(1)
       id2=iflav(2)
@@ -855,7 +855,7 @@ c*****************************************************************************
 
       COMPLEX*16 zero
       PARAMETER (zero=(0d0,0d0))
-      INTEGER j,jj,mu,nu
+      INTEGER j,mu
 
       do mu = 0,5
          do j = 1,3

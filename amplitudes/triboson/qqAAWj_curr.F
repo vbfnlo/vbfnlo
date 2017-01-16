@@ -33,53 +33,30 @@ c     electroweak couplings are taken from KOPPLN
 c variables for the main part of the program      
 
       double complex final(0:3)
-      double precision  pbar(0:3,n_p+n_v), q(0:3)
+      double precision  pbar(0:3,n_p+n_v)
       double precision  momin(0:3,n_p+n_v)
-      double precision  uuwwaj, ddwwaj, res(2), resv(2)
+
       double precision  p(0:3,n_p+n_v),fq0(0:4,2),fqa1(0:4,2),fqa2(0:4,2)
       double precision  fq0a1(0:4,2),fq0a2(0:4,2),fqa1a2(0:4,2)
       double precision  fq0a1a2(0:4,2)
 
-      integer  sign(n_p+n_v), mu, i, j, k, isig, N
+      integer  sign(n_p+n_v), mu, i, k, N
       integer fsign(n_p+n_v)
-      integer  ifl(2), lh, l, bos
+      integer  bos
 
-      double precision fqm(0:4,2), fqp(0:4,2), fqz(0:4,2)
-      double precision pq(0:4,2), pgZ(0:4,2), pZg(0:4,2)
-      double precision pgA1(0:4,2), pA1g(0:4,2)
-      double precision pgA2(0:4,2), pA2g(0:4,2)
-      double precision pgw0(0:4,2), pw0g(0:4,2)
-      double precision pgWP(0:4,2), pgWM(0:4,2), pWPg(0:4,2)
-      double precision pWMg(0:4,2), pwpz(0:3), pwmz(0:3) 
+
       double precision pwa1(0:4), pwa2(0:4), pwa1a2(0:4)
       double precision eps(0:3,2) ! g in kartesian basis
-      double complex psi(2,-1:1,2), psiWM(2,-1:1,2), psiWP(2,-1:1,2)
-      double complex psia(2,-1:1,2), psiz(2,-1:1,2)
-      double complex psia1g(2,-1:1,2,2), psia2g(2,-1:1,2,2)
-      double complex psiw0g(2,-1:1,2,2)
-      double complex braketg(2,-1:1,2,2)
-      double complex braketgw0(2,-1:1,2,2)
-      double complex braketgWP(2,-1:1,2,2), braketgWM(2,-1:1,2,2)
-      double complex braketgA(2,-1:1,2,2), braketgZ(2,-1:1,2,2)
-      double complex braketgA1(2,-1:1,2,2), braketgA2(2,-1:1,2,2)
-      double complex psiWPg(2,-1:1, 2,2), psiWMg(2,-1:1, 2,2)
+      double complex psi(2,-1:1,2)
+
+
       double complex psiw0(2,-1:1, 2),psia1(2,-1:1, 2),
      1               psia2(2,-1:1, 2)
       double complex psiw0a1(2,-1:1, 2),psiw0a2(2,-1:1, 2),
      1               psia1a2(2,-1:1, 2)
       double complex psiw0a1a2(2,-1:1, 2)
-      double complex psiAg(2,-1:1,2,2), psiZg(2,-1:1,2,2)
-      double complex mat(2,-1:1,2,3), madgr(3,-1:1,-1:1,2)
-      double complex matv(2,-1:1,2,3)
-      double complex mm(2, -1:1,2), mv(2, -1:1,2)
-      double complex m1kb(2,-1:1,3), m2kb(2,-1:1,3), temp, temp1
-      double complex m1(3,2), m2(3,2), m3(3,2), m4(3,2)
-      double complex ma, mz
-      double complex janew(0:5,-1:1,14,2)
-      double complex ja(0:5,-1:1,4,2), jz(0:5,-1:1,4,2)
-      double complex jwm(0:5,-1:1,4,2), jwp(0:5,-1:1,4,2)
-      double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2)
-      double complex jqqa(0:5,-1:1,2)
+
+
       double complex jcurr(0:5,-1:1)
    
       real*8 dotrr,theta
@@ -88,7 +65,6 @@ c variables for the main part of the program
       double complex zero 
       external dotcc, s1c, dotrc,dotrr,theta
       integer u(2),d(2)
-      save ifl
       parameter (im = (0d0,1d0))
       parameter (zero = (0d0,0d0) )
 
@@ -103,7 +79,7 @@ c  helicity selection
       COMMON /hcount / h
 
       logical ldebug, ldebugm, linit, christophmods
-      logical lnlo, lbox, lpq, lpt, lpent,lhex
+
       data linit /.true./
       save linit
       parameter(ldebugm = .false., ldebug=.false., christophmods=.false.)

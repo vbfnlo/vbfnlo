@@ -6,6 +6,7 @@ c	Initial version:  1995 March 25
 c	Last modified:  2003 March 20
 c
       subroutine def_ps_vnj(bos)
+       use globalvars, only: lglobalprint, ldoblha
       implicit none 
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/cuts.inc"
@@ -45,7 +46,7 @@ C collinear cutoff: for numerical purposes only
       else
          rm2 = xm2(bos)
          rmg = xmg(bos)
-      end if
+      endif
       if (bos.eq.1) then 
          rm2min = 1d-3
          rm2max = s/2d0
@@ -106,7 +107,7 @@ C collinear cutoff: for numerical purposes only
  73   format ( " boson ",i2," has mass ",f6.2," GeV" )
  80   format ( " Minimal mom.transfer or mass for parton pair: ",f8.2,
      1         " MeV" )
-      if (.not.ldoblha) then
+      if (.not.ldoblha .and. lglobalprint) then
         write(6,*)
         write(6,*) "       phase space generator information  "
         write(6,*) "-----------------------------------------------"
@@ -145,7 +146,7 @@ c
       DOUBLE PRECISION TPI
       PARAMETER (N1=max_p-nx, NRANDLG=N1*3, nrandl=(N1+1)*3, TPI=2D0*PI )
       DOUBLE PRECISION R(NRANDL),RD(*),RN,
-     1       K1(0:3),K2(0:3),Q(0:4),D1(0:3),D2(0:3),P(0:3,N1),
+     1       K1(0:3),K2(0:3),Q(0:4),P(0:3,N1),
      2       X1,X2,W
 C
 C Phase space generator for production of boson + N jets at hadron colliders
@@ -189,9 +190,9 @@ C
 C  local variables
       DOUBLE PRECISION RS,FAC,DELY,XMIN,XMAX,X,DELX,COSHY,SINHY,M2,dotrr,
      1       YCM,YMIN,YMAX, SUMPST,Q0ST,RSHAT,PCM(0:3),
-     2       STH,CTH,PHID, XMJ,QV,YBAR,PJT2,SHA,ACM
+     2       XMJ,QV,YBAR,PJT2,SHA,ACM
       external dotrr
-      INTEGER I,J,II,JJ,BOS
+      INTEGER I,J,II,JJ
       DO 1 I = 1,N*3
          R(I) = RD(I)
  1    CONTINUE
@@ -835,7 +836,6 @@ C  finally put in flux factor for the parton collisions and conversion to fb
       END
 
 
-
 C
 C**********************  LIPSN   ****************************************
 C
@@ -849,8 +849,8 @@ c
       REAL*8 TPI
       PARAMETER (N1=max_p-nx, NRANDLG=N1*3, nrandl=(N1+1)*3, TPI=2D0*PI )
       REAL*8 R(NRANDL),RG,RN,
-     1       K1(0:3),K2(0:3),Q(0:4),D1(0:3),D2(0:3),D3(0:3),P(0:3,N1),tmp(0:3),
-     2       X1,X2,W, rthreebod(5),rnthree,md1,md2,md3,n3b
+     1       K1(0:3),K2(0:3),Q(0:4),D1(0:3),D2(0:3),D3(0:3),P(0:3,N1),
+     2       X1,X2,W
 C
 C Phase space generator for production of boson + N jets at hadron colliders
 C
@@ -897,10 +897,10 @@ C
 C  local variables
       REAL*8 RS,FAC,DELY,XMIN,XMAX,X,DELX,COSHY,SINHY,M2,dotrr,
      1       YCM,YMIN,YMAX, SUMPST,Q0ST,RSHAT,PCM(0:3),
-     2       STH,CTH,PHID, XMJ,QV,YBAR,PJT2,SHA,ACM,WTEMP
+     2       XMJ,QV,YBAR,PJT2,SHA,ACM,WTEMP
 
       INTEGER I,J,II,JJ,BOS
-      logical threebod
+
 
       external dotrr
 

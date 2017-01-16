@@ -267,7 +267,6 @@
       if (replace(DBLE(M_2),0)) M_2 = MSoft_M2
       M_3 = ExtPar_M3
       if (replace(DBLE(M_3),0)) M_3 = MSoft_M3
-      
 
 
 ** Debugging info:
@@ -378,7 +377,6 @@
       end if
 
 
-
 ** Now for the decay widths and branching ratios
 ** NOTE: VSLHADecay(slhadata, parentID, no. children, child ID1, child ID2)
 
@@ -485,7 +483,6 @@
 
 
       end
-
 
 
 ********************************************************************************
@@ -688,7 +685,6 @@
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -707,7 +703,7 @@
 
 
 ** Dummy parameters used to diagonalise the matrices
-      integer p, q, j, rev, pi(3)
+      integer p, q, j, pi(3)
       double precision red, off, thresh
       double precision t, dv, dw, xv, xw, invc
       double complex x, y, ssv, ssw, tv, tw, evp, evq, f
@@ -911,7 +907,6 @@
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -986,7 +981,6 @@
             neuMinit(p,q) = neuM(p,q)
          end do
       end do
-      
 
 
 ** The following calculates the mass eigenvalues and the mixing matrices:
@@ -1162,8 +1156,7 @@
       enddo
 
 
-      end      
-
+      end
 
 
 ********************************************************************************
@@ -1200,7 +1193,6 @@
       end
 
 
-
 ********************************************************************************
 
 ********************************************************************************
@@ -1218,7 +1210,7 @@
 ** The main subroutine reads the SLHA file, and files all the information in 
 ** the array sd
 
-      subroutine VSLHAReadFile(error, sd, filename, abort)
+      subroutine VSLHAReadFile(error, slhain, filename, abort)
 
       implicit none
 
@@ -1227,8 +1219,12 @@
 #include "SLHAIntern.h"
 
       integer error, abort      
-      double precision sd(*)
+      double complex slhain(nslhadata)
       character*(*) filename
+
+      double complex slhadata(nslhadata)
+      double precision sd(2*nslhadata)
+      equivalence (slhadata,sd)
 
       integer VSLHATokens
       external VSLHATokens
@@ -1265,6 +1261,8 @@ read(line, *, err=997, end=997)
 
 #include "SLHAReadBlocks.h"
 
+      slhadata = slhain
+
       error = 0
       block = 0
       pdgno = 0
@@ -1272,7 +1270,7 @@ read(line, *, err=997, end=997)
 
 
 *      if( filename(1:lnblnk(filename)) .eq. "-" ) then
-      if( filename(1:len_trim(filename)) .eq. "-" ) then
+      if( trim(filename) .eq. "-" ) then
          unit = 5
          if( lineno .ne. 0 ) goto 501
       else
@@ -1920,13 +1918,14 @@ tecys	Scan val, n, (id(i), i = 1, n)
       goto 500
 
  998  error = 2
+      slhain = slhadata
       if( unit .eq. 5 ) return
 
  999  close(unit)
 
+      slhain = slhadata
 
       end
-
 
 
 ********************************************************************************
@@ -1937,19 +1936,24 @@ tecys	Scan val, n, (id(i), i = 1, n)
 **     nchildren = number of particles parent decays into
 **     childX_id = PDG id of decay product
 
-      double precision function VSLHADecay(sd, parent_id,
+      double precision function VSLHADecay(slhain, parent_id,
      &     nchildren, child1_id, child2_id, child3_id, child4_id)
 
       implicit none
 
 #include "SLHAIntern.h"
 
-      double precision sd(*)
+      double complex slhain(nslhadata)
       integer parent_id
       integer nchildren, child1_id, child2_id, child3_id, child4_id
 
       integer decay, id(4), i, j, p, nextparent, nextchild
       
+      double complex slhadata(nslhadata)
+      double precision sd(2*nslhadata)
+      equivalence (slhadata,sd)
+
+      slhadata = slhain
 
 ** The BR is set to -999 if it's not present in the SLHA file     
       VSLHADecay = invalid
@@ -2008,13 +2012,15 @@ tecys	Scan val, n, (id(i), i = 1, n)
          decay = nextchild
       enddo
 
+      slhain = slhadata
+
       return
 
  1    VSLHADecay = Decay(decay + 1)
 
+      slhain = slhadata
 
       end
-
 
 
 ********************************************************************************
@@ -2054,7 +2060,6 @@ tecys	Scan val, n, (id(i), i = 1, n)
 
 
       end
-
 
 
 ********************************************************************************

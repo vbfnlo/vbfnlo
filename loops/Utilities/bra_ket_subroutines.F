@@ -98,7 +98,6 @@ c     antifermion => v(p)
       end
 
 
-
 c                           ( ris(1))
 c gives p_slash |ket,hel> = (       )
 c                           ( ris(2))
@@ -176,7 +175,6 @@ c      dimension list_mom(0:3,n)
       end
 
 
-
 C this subroutine adds the emission of a gluon/photon to a fermionic line 
 c that has only ONE intermediate propagator!!!  This means that, BEFORE 
 c emitting the gluon/phot, the expression of the line is
@@ -220,7 +218,6 @@ c emissione dalla gamba esterna bra
      #     dotcc(local_list(0,4),local_list(0,4))
 
 
-
 c emissione dal propagatore interno
       do mu=0,3
          local_list(mu,1) = list_mom(mu,1)
@@ -248,7 +245,6 @@ c emissione dalla gamba esterna ket
       
       ris = ris1+ris2+ris3
       end
-
 
 
 c <bra, helbra| slash_p_1 slash_p_2 ... slash_p_n |ket, helket>
@@ -283,7 +279,6 @@ c      dimension list_mom(0:3,n)
       enddo
       ris = b(1)*k(1)+b(2)*k(2)     
       end
-
 
 
 c the helicity of the bra and the ket are the same, otherwise this is zero!
@@ -358,7 +353,6 @@ c   <bra, pbra, hel| gamma^mu, (pket-pglu)_slash, eps_slash |ket, pket, hel>
       enddo
 
 
-
       do mu=0,3
          list_mom(mu,2) = pket(mu)-pglu(mu)
          list_mom(mu,3) = eps(mu)
@@ -389,9 +383,6 @@ c   <bra, pbra, hel| gamma^mu, (pket-pglu)_slash, eps_slash |ket, pket, hel>
       end
 
 
-
-
-
 *-- Author :    F. James, modified by Mike Seymour
 C-----------------------------------------------------------------------
       FUNCTION random2(iseed1,iseed2)
@@ -413,8 +404,6 @@ C-----------------------------------------------------------------------
 c      RANDOM2=DBLE(IZ)*4.656613001013252D-10
 C--->                (4.656613001013252D-10 = 1.D0/2147483589)
       end
-
-
 
 
       subroutine from_p6_to_p(p1,p2,p3,p4,p5,p6,p)
@@ -498,7 +487,6 @@ C--->                (4.656613001013252D-10 = 1.D0/2147483589)
          pnew(mu,i) = tmp(mu)
       enddo
       end
-      
 
 
       subroutine write_p(p,num_part)
@@ -526,7 +514,6 @@ c     -        (plong(mu,i),mu=0,7)
       enddo
       end
 
-      
 
 c Program to read numbers from strings
       subroutine reads(string,nstr,rarr,narr,karr)
@@ -625,7 +612,7 @@ c find next blank
 c value
       num=0
       js=istart
- 10   if(string(js:js).eq."-") then
+      if(string(js:js).eq."-") then
          isign=-1
          js=js+1
       elseif(string(js:js).eq."+") then
@@ -647,7 +634,7 @@ c value
        if(karr.eq.narr) goto 999
        if(iend.lt.nstr) goto 1
        goto 999
- 998   continue
+       continue
        stop
  999   end
 
@@ -663,14 +650,12 @@ c program to read numbers from input line
        end
 
 
-
-
       subroutine read_all_results()
       implicit none
       integer event1,event2
       integer k
       real * 8 r1,r2
-      character *3 string
+
 
       open(unit=10,file="all_results.txt",status="old")
       do k=1,1000000
@@ -695,9 +680,6 @@ c         write(*,*) event1,r1,r2
       end
 
 
-      
-
-
 c if quark_type=1 it computes the counterterm with incoming quark in the Born
 c if quark_type=2 it computes the counterterm with incoming antiquark 
 c     in the Born
@@ -712,7 +694,7 @@ c p7 = out ubar
       implicit none
       real * 8 p(0:3,7)
       integer quark_type
-      real * 8 amp2    
+
       real * 8 rescaledp(0:3,6)
       real * 8 p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3),p7(0:3)
       real * 8 q(0:3)

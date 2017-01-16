@@ -40,9 +40,6 @@ c*******************************************************************************
        End
 
 
-
-
-
        subroutine penlineNoAbe_pTQ(p1,p2,p3,p4,p5,barpsi_p4,psi_p1,mu
      -   p2,mup3,mup5,alpha,musqIn,ngluon,posgluon,gaugetest,comp,resul
      -   tgauge,result,Div)
@@ -79,7 +76,7 @@ c cccccccccccccccccccccccccccccccccccccc
        integer jtemp
        real*8 accuracy
        logical gaugetrue
-       logical wardidtest_Q(0:8),wardpAbe(2)
+       logical wardpAbe(2)
        common/wardpenNoAbe/wardpAbe
 
         
@@ -195,7 +192,6 @@ c to rescue Dble precision
        endif ! gaugetrue
 
        End
-
 
 
 #ifdef WITH_QUAD

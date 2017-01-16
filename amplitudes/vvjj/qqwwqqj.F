@@ -5,6 +5,7 @@ c---------------------------------------------------------------------------
 
       subroutine qqwwqqj(pbar,sign,qbar,gsign,
      1                  uucc,uuss,ddcc,ddss,udsc,ducs)
+          use globalvars, only: ldoblha
       implicit none
 c
 c	Barbara Jaeger, <baj@particle.physik.uni-karlsruhe.de>
@@ -69,9 +70,9 @@ c
      1                  pq(0:4,4),pwp(0:4),pwm(0:4),pww(0:4),
      2			qpm(0:4,2:3),qmp(0:4,2:3)!,
 c     2			qpml(0:4,2:3),qmpl(0:4,2:3)
-      integer  sign(4+max_v),gsign, mu, i, j, k, kk, id,
+      integer  sign(4+max_v),gsign, mu, i, j, k, kk,
      1         isig, isig1, isig3,is,ka,kb,kf
-      integer  ifl(4,6), js1, js3 !, is1, is3 taken from "tensor.inc"
+      integer  ifl(4,6) !, is1, is3 taken from "tensor.inc"
       integer  l   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
       integer jmin, jmax
       logical jlog2,jlog3
@@ -978,9 +979,8 @@ c--------
 	   enddo !j
            enddo ! l
          enddo !isig
-	 
-	 
-	 
+
+
 c -----------------------	 
 	 
 c and same for the CC processes (W attached to j43 or j21 current)
@@ -1180,7 +1180,6 @@ c
       mat(k,-1,isig,3,l,2) = clr(3,3,-1)**2 * (m1l+m2l+z1l)
 
 
-      
 c ------------
       
       k = 6                     !ducs, g from upper line
@@ -1524,10 +1523,9 @@ c compute reference result from individual madgraph diagrams tampr(i,...):
 	    do j = 2,3
 	    	m1haj(lh,j) = 0d0  ! graphs with A exchange
 	    	m1hzj(lh,j) = 0d0  !		 Z exchange
-           enddo  
+           enddo
 
-		
-		
+
 	    do m = 1,20
 		i = listba2(m)
 		m1haj(lh,2) = m1haj(lh,2) + tampr(i,-1,-1,lh,k) 
@@ -1562,10 +1560,9 @@ c compute reference result from individual madgraph diagrams tampr(i,...):
              endif
 	  
 	  
-	  enddo ! end of lh loop 	  
+	  enddo ! end of lh loop
 
-	    
-		    
+
     ! compute m1 in kartesian basis:
 	    
 	    do l = 1,2
@@ -1635,7 +1632,6 @@ c    jqq(mu,isig3,2,is3,l) = j43  with momentum    p43        and
 c    aww/zww(mu)         	  with momentum    pww
 
 
-      
 c attach V=A/Z to f1:
 	 
        
@@ -1700,8 +1696,7 @@ c attach V=A/Z to f1:
 	    enddo  !mu
 
    	 enddo ! l = 1,2
-	 
- 					 
+
 
   ! gluon radiation from the non-i line:
   	 do l = 1,2
@@ -1755,7 +1750,6 @@ c attach V=A/Z to f3:
      	    call curr6(1,braketg(1,-1,i+1,l),pq(0,i+1),
      $	    				psia(1,-1,is3,i),fq(0,i),jg0)
 
- 
 
       	    call curr6(1,psi(1,-1,i+1),p(0,i+1),
      $	    				braketgZ(1,-1,l),pgz(0,i),jzg)  		       
@@ -1778,8 +1772,7 @@ c attach V=A/Z to f3:
 	    enddo ! mu	
 
    	 enddo  ! l=1,2 loop
-	 
- 					 
+
 
   ! gluon radiation from the non-i line:
   	 do l = 1,2
@@ -1835,7 +1828,6 @@ c attach V=A/Z to f2:
      	    call curr6(1,psia(1,-1,is1,i+1),fq(0,i+1),
      $	    			braketg(1,-1,i,l),pq(0,i),jg0)
 
-  		
 
       	    call curr6(1,braketgZ(1,-1,l),pgz(0,i+1),
      $	    				psi(1,-1,i),p(0,i),jzg)		       
@@ -1866,9 +1858,8 @@ c attach V=A/Z to f2:
             call curr6(1,psiz(1,-1,is1,i+1),fq(0,i+1),
      1              psi(1,-1,i),p(0,i), jz(0,-1,is1,i+1,0) )
      	 enddo
-        
-     
-    
+
+
 c ------------------------------------      
 c
 c attach V=A/Z to f4:
@@ -2555,7 +2546,6 @@ c compute reference result from individual madgraph diagrams tampr(i,...):
 		m1hc(lh) = m1hc(lh) + tampr(i,-1,-1,lh,k) 
 	    enddo
 
-	     
 
 	    if (k.ne.3) then  ! for incoming g: no g emission from other line
 		      if(.not.jlog2) m1hj(lh,2) = 0d0
@@ -2822,8 +2812,7 @@ c  eps1=j43,eps2=wp,eps3=wm, g from upper line
 	 gd = -s1c(psiwm(1,2),wp,.true.,-1,gbkjqq(1,-1,isig3,1,2,l))         
 	 
 	 m5(1,3,2,l) = ga+gb+gc+gd
-	
-	
+
 
 c WW from f1:
 c  eps1=wp,eps2=wm,eps3=j43, g from lower line
@@ -2909,9 +2898,8 @@ c ----------------
      1                    ( m5(1,ifl(2,k),j,l)+m5(3,ifl(1,k),j,l) )
        enddo !j
       enddo !k
-       	
 
-       
+
        enddo !l
       enddo !isig3
 
@@ -2945,9 +2933,8 @@ c lower line:
      #		 eps(0,l),bkjqqg(1,-1,isig1,3,3,l),dummy)
          call bra2r(bkjqq(1,-1,isig1,4,3,0),.false.,bq(0,4),-1,q,
      #		 eps(0,l),bkjqqg(1,-1,isig1,4,3,l),dummy)
-          
 
-    
+
 c wp, wm from different fermion line (f3/f4)     
 c  eps1=wp,eps2=j21,eps3=wm, g from upper line
          m5(2,3,2,l) = -s1c(psiwm(1,4),jqq(0,isig1,1,is1,l),.true.,
@@ -3012,7 +2999,6 @@ c  eps1=wm,eps2=j21,eps3=wp, g from lower line
      #	 		    -1,braketgWM(1,-1,3,l))
      
          m5(2,4,3,l) = ga+gb+gc+gd
-
 
 
 c wp, wm from f4     
@@ -3283,8 +3269,7 @@ c compute reference result from individual madgraph diagrams tampr(i,...):
 		i = listpl3(m)
 		m1hl(lh,3) = m1hl(lh,3) + tampr(i,-1,-1,lh,k) 
 	    enddo
-	    
-	     
+
 
 	   if (k.eq.5) then  ! for incoming g: no g emission from other line
 		     if(.not.jlog2) m1hu(lh,2) = 0d0

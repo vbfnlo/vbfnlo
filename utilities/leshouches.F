@@ -13,7 +13,7 @@ c------------------------------------------------------------------------------
       integer k
 
       integer imode
-      integer i1,i11,istop,ier
+      integer i1,istop
       integer pdflib, valueLHA
 
       character*250 procfile
@@ -22,7 +22,7 @@ c------------------------------------------------------------------------------
       character*250 sampleinfoFile
       character*7 istr 
       character*250 line
-      logical doprint
+      logical lglobalprint
       
       real*8 xwgtup_max_partial
       real*8 contribOverweightSum(maxContribs), preAcceptedNormalEvents(maxContribs)
@@ -33,14 +33,14 @@ c------------------------------------------------------------------------------
       COMMON/PDFparameters/pdflib,valueLHA
 
       if (hepmc) then
-          sampleFile = hepmcFile(1:LEN_TRIM(hepmcFile))//".tmp"
-          sampleFilePartial = hepmcFile(1:LEN_TRIM(hepmcFile))//"_partial.tmp"
-          sampleinfoFile = hepmcFile(1:LEN_TRIM(hepmcFile))//".info"
+          sampleFile = trim(hepmcFile)//".tmp"
+          sampleFilePartial = trim(hepmcFile)//"_partial.tmp"
+          sampleinfoFile = trim(hepmcFile)//".info"
       endif
       if (lha) then
-          sampleFile = lhaFile(1:LEN_TRIM(lhaFile))//".tmp"
-          sampleFilePartial = lhaFile(1:LEN_TRIM(lhaFile))//"_partial.tmp"
-          sampleinfoFile = lhaFile(1:LEN_TRIM(lhaFile))//".info"
+          sampleFile = trim(lhaFile)//".tmp"
+          sampleFilePartial = trim(lhaFile)//"_partial.tmp"
+          sampleinfoFile = trim(lhaFile)//".info"
       endif
 
       if(imode.eq.-1) then    
@@ -154,7 +154,7 @@ c         close(31)
         endif
 #endif
          
-         doprint = .false.
+         lglobalprint = .false.
 c...open procinfo file
          procfile = "procinfo.dat"
          call GetInputFile(55,procfile,*77)
@@ -168,15 +168,15 @@ c...open procinfo file
  50      continue
          read(55,"(a100)",end=99,err=99) line
 
-         if (index(line,"##").eq.1) doprint = .false.
+         if (index(line,"##").eq.1) lglobalprint = .false.
 
          if (index(line,istr).eq.1) then 
-            doprint = .true.
+            lglobalprint = .true.
             goto 50
          endif
-         if (doprint.and.lha) write(33,"(A)") line(1:len_trim(line))
+         if (lglobalprint.and.lha) write(33,"(A)") trim(line)
 #ifdef WITH_HEPMC
-         if (doprint.and.hepmc) call HepMCHeader2(line);
+         if (lglobalprint.and.hepmc) call HepMCHeader2(line);
 #endif
          goto 50
  99      continue      
@@ -513,13 +513,13 @@ c------------------------------------------------------------------------------
       double precision pinv, RandomNumber
 
       integer iput,gnlo  
-      integer i1,i11,istop,i2
+      integer i1,i11,i2
       integer idflav(6),listposition
-      double precision alphas5,pinv1,pinv2, renscale
+
       double precision p(0:3,max_p,max_kin)
       double precision v(0:3,max_v,max_kin)
       double precision vv(4),pp1(4),pp2(4),ncms1(3),ncms2(3)
-      double precision lpp1, lpp2, s, mtau, pp, rn
+      double precision lpp1, lpp2, mtau, pp, rn
       double precision  alfas, xmt, alfa, xmz, xmw, sin2w, xmh, gf, alfas_lo
       common /bkopin/ alfas, xmt, alfa, xmz, xmw, sin2w, xmh, gf, alfas_lo
 
@@ -842,7 +842,7 @@ c------------------------------------------------------------------------------
 #include "global.inc"
 #include "process.inc"
 
-      integer idflav(6),i1, i
+      integer idflav(6), i
 
       select case(procID)
       case(Hjj_tau, HAjj_tau, Hjjj_tau, GFHjj_tau) 
@@ -859,7 +859,7 @@ c------------------------------------------------------------------------------
          idflav(2)= 13
       case(Hjj_WW, Hjjj_WW,WPWMjj, Hjj_ZZ_ll, Hjjj_ZZ_ll,ZZjj_ll, 
      1     Hjj_ZZ_lnu,Hjjj_ZZ_lnu, 
-     2     ZZjj_lnu,Zjj_l, Zjj_nu, WPjj, WMjj, 
+     2     ZZjj_lnu,Zjj_l, Zjj_nu, WPjj, WMjj, QCDZjj_l, QCDZjj_nu,
      3     WWZ, ZZWP, ZZWM, ZZZ, WW, GFWW, WpZ, WmZ, ZZ, GFZZ, 
      &     WWj, GFWWj, ZZj, GFZZj,
      &     WWWP, WWWM, WPZjj, WMZjj,
@@ -1068,7 +1068,7 @@ c...particle identity code
          lidup(n_p+3,listposition)= 22
       case(Ajj)
          lidup(n_p+1,listposition)= 22
-      case(Zjj_l, Zjj_nu)   !Z
+      case(Zjj_l, Zjj_nu, QCDZjj_l, QCDZjj_nu)   !Z
          lidup(n_p+1,listposition)= 23
       case(WPjj,QCDWPjj)   !W+
          lidup(n_p+1,listposition)= 24 
@@ -1149,7 +1149,8 @@ c...particle identity code
          lidup(n_p+1,listposition)=-24
          lidup(n_p+2,listposition)= 23
       case(ZZ,GFZZ, !ZZ
-     &     ZZhad,GFZZhad)
+     &     ZZhad,GFZZhad,
+     &     QCDZZjj_ll,QCDZZjj_lnu)
          lidup(n_p+1,listposition)= 23
          lidup(n_p+2,listposition)= 23
       case(WpA) !W+A

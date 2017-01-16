@@ -37,8 +37,8 @@
 *	local variables
 *
 	integer i,j,k,ier0,ier1,inx43(6,4),sgn43(6,4),isgnsa,idotsa
-	DOUBLE PRECISION del2pi(4),d0,xmu,absc
-	DOUBLE PRECISION h,del3sp(4),del2ij,xpi3(6),dl2pij(6,6)
+	DOUBLE PRECISION del2pi(4),absc
+	DOUBLE PRECISION xpi3(6),dl2pij(6,6)
 	DOUBLE COMPLEX cd4pppp(3,3,3,3),cd4ppdel(3,3),cd4deldel,
      +		cd3ppp(3,3,3),cd3pdel(3),cd2pp(3,3),cd2del,
      +		cc0i(4),cb0ij(4,4),ca0i(4),cc

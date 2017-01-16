@@ -15,7 +15,7 @@ c
       implicit none
       double complex w1(6), a2(6), uwa(18)
 
-      integer i, j, k, l, m, n, a, s
+      integer i, j, k, l, m, n
 
       double complex ywa(6,4)
       double precision p1(4), p2(4), pT(4), p1p2, pT2
@@ -82,8 +82,6 @@ c      with upper and lower indices:
 
 
       p1p2 = p1(1)*p2(1)-p1(2)*p2(2)-p1(3)*p2(3)-p1(4)*p2(4)
-
- 
 
 
       do i = 1,4

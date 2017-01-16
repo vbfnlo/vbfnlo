@@ -61,9 +61,9 @@ c declare external functions
 
 c alfas, scales etc
       DOUBLE PRECISION x1,x2
-      DOUBLE PRECISION q12(0:4,3), q34(0:4,3), lnQomu(2:3), omxi(2:3), 
+      DOUBLE PRECISION lnQomu(2:3), omxi(2:3), 
      &       Ax(2:3), Bx(2:3), Cx(2:3), Dxi(2:3), tgs2oqsq(2:3), 
-     &       ln1mxi, lnrat, z, lnz, qsq
+     &       ln1mxi, lnrat, z, lnz
 
 c declare local variables
       DOUBLE PRECISION q_sf
@@ -74,8 +74,7 @@ c declare local variables
       SAVE init
 
 c declare variables for summation process
-      INTEGER ires, nmaxold, FSIGN(3+n_v), gsign
-      SAVE nmaxold
+      INTEGER ires, FSIGN(3+n_v), gsign
 
       INTEGER physToDiag(3), nlo, nmin, nmax
       SAVE nmin, nmax
@@ -712,18 +711,18 @@ c  helicity selection
 
       DOUBLE PRECISION uuwwzb(2,2:3), ddwwzb(2,2:3), uuwwz, ddwwz
       DOUBLE PRECISION uuwwz2, ddwwz2, uuwwzg, ddwwzg
-      DOUBLE PRECISION pbar(0:3,3+n_v), qbar(0:4), y,q2,v2,q3,v3,sub(2:3), 
+      DOUBLE PRECISION pbar(0:3,3+n_v), qbar(0:4),q2,v2,sub(2:3), 
      1       dotrr, gs2(2:3), polcolq, polcolg
-      DOUBLE PRECISION NCmatrixelt(0:1,3,2), temp, temp2
+      DOUBLE PRECISION NCmatrixelt(0:1,3,2)
       INTEGER iflav(3), diagToPhys(3), FL_VVVg
       EXTERNAL dotrr, FL_VVVg
 
       COMPLEX*16 zero
       PARAMETER (zero=(0d0,0d0))
 
-      LOGICAL loldp, ldebug, lres
+      LOGICAL ldebug
       SAVE gs2,polcolq,polcolg,uuwwzb,ddwwzb
-      INTEGER i,if1,icc1,j,k,mu
+      INTEGER i,if1,j,k,mu
       
       PARAMETER (ldebug=.false.)
 
@@ -1156,7 +1155,7 @@ c*****************************************************************************
       
       integer iflav(3),id1,id2,id3,listposition,i,i1
       integer iflavour(3),colstruc
-      double precision prob1, prob2, rn, RandomNumber
+
       logical ldebug
       parameter (ldebug=.false.)
 

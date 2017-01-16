@@ -48,7 +48,7 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3)
         Complex*16 result
        Real*8 musq,m,resultgauge
-        integer gauge,i,comp,Div
+        integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionVertCoupling(za1,za2,za3,zb1,zb2,zb3,m,p1,p2,p3
@@ -67,7 +67,7 @@ cccccccccccccccccccc    Even PART cccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p1(0:3),p2(0:3),p3(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(4),resultZERO(4)
+       Complex*16 result,resultn(4),resultZERO(4)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3
        complex*16 rg1,rg2,rg3
        integer gauge,i,comp
@@ -96,21 +96,21 @@ c Call for Gauge
      &     p1,p2,p3,mup1,mup2,mup3test,musq,-1,rg3,resultZERO)
 
 c Gauge 1
-          if (abs(rg1).gt.1d-7) then
+          if (abs(rg1).gt.1d-7 .and. abs(resultn(2)).gt.1d-7) then
           temp1=abs(rg1/(resultn(2)) -1d0)
           else
           temp1=abs(rg1-resultn(2))   
           endif
 
 c Gauge 2
-         if (abs(rg2).gt.1d-7) then
+         if (abs(rg2).gt.1d-7 .and. abs(resultn(3)).gt.1d-7) then
           temp2=abs(rg2/resultn(3) -1d0) 
           else
           temp2=abs(rg2 -resultn(3)  ) 
           endif
 
 c Gauge 3
-         if (abs(rg3).gt.1d-7) then
+         if (abs(rg3).gt.1d-7 .and. abs(resultn(4)).gt.1d-7) then
           temp3=abs(rg3/resultn(4) -1d0 )
           else
              temp3=abs(rg3  -resultn(4) )
@@ -134,7 +134,6 @@ c FC %c	read(*,*)
         end
 
 
-
 cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
@@ -145,9 +144,9 @@ cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccc
        Real*8 p1(0:3),p2(0:3),p3(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3)
 
-       Complex*16 result,resulttemp,resulttemp2
+       Complex*16 result
        Real*8 musq,m,resultgauge
-         integer gauge,i,comp,Div
+         integer gauge,comp,Div
 
        If (Div.eq.0) then
        call FermionVertCouplingO(za1,za2,za3,zb1,zb2,zb3,m,p1,p2,p3
@@ -166,7 +165,7 @@ cccccccccccccccccccc    ODD PART ccccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p1(0:3),p2(0:3),p3(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(4),resultZERO(4)
+       Complex*16 result,resultn(4),resultZERO(4)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3
        complex*16 rg1,rg2,rg3
        integer gauge,i,comp
@@ -216,7 +215,6 @@ c Gauge 3
          endif
 
 
-      
 c FC %          print*, "rg1O",rg1
 c FC %          print*, "rg2O",rg2
 c FC %          print*, "rg3O",rg3

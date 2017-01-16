@@ -36,8 +36,8 @@ c
 c declare local variables
 c
       real*8 q_sf
-      real*8 p_mg(0:3,8)
-      integer init/0/, I, J, mu, nu,q,h,k,l
+
+      integer init/0/, I, mu,q,h
       save init
 c
 c declare variables for summation process
@@ -47,14 +47,14 @@ c
 c
 c store contributions from subprocess ip in res(ip) where
       real*8 res(maxNumSubProc)
-      real*8 weight, RandomNumber
+      real*8 weight
 c
 c declare parton distribution variables
 c
-      real*8 pdf(-6:6,2,2),amp(0:2,3:4,3:4,0:2),ampg(0:2,3:4),ampgtemp(0:2,3:4),amptemp(0:2,3:4,3:4,0:2)
+      real*8 pdf(-6:6,2,2)
 
-      logical finalVboson
-      double precision XM2s(6),XMGs(6), XGW, XGZ, XGH, GAMT,
+
+      double precision XGW, XGZ, XGH, GAMT,
      & BWNE,BWUD,BWTB,BZNN,BZEE,BZUU,BZDD,BZTT,
      & BHWW,BHZZ,BHGG,BHTT,BHBB,BHCC,BHTAU,BHMU,BHGAM,BHGAMZ
       COMMON /BRANCH/ BWNE,BWUD,BWTB,BZNN,BZEE,BZUU,BZDD,BZTT,
@@ -66,32 +66,26 @@ c
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),VV(4,5),A(4,5)
 
 
-
 c local variables
       integer FL4qcdVV, ires_min,ires_max
       save ires_min, ires_max
       real*8 mass2,mjj2
       external FL4qcdVV,mass2,mjj2,dotcc
-      logical ldebug,allsub,lokt(0:17)
+      logical ldebug,allsub
       parameter (ldebug = .false., allsub=.false.)
       complex*16 phase1,phase2,dotcc
-      real*8 RNcom,temp
+      real*8 RNcom
       common /QCDewPhase / RNcom
       
-      real*8 pMG(0:3,8)
+
 ! #include "temp.inc" 
       integer hel/1/, nhel
       save hel
-      real*8 debugsum,vh
+
       real*8 xiFinColl(2,2)
-      
-      integer kin
-      complex*16 lepton(6,3)
-      real timearray(2)
-      real dT(2)
-      integer timeIteration
-      complex*16 gzlc(2),clrc(4,5,-1:1)
-      complex*16 gV,gA,gL,gR,qf,t3,csin2w,ec V currents
+
+
+      complex*16 ec V currents
 
 
 c V1/V2/V12,
@@ -169,9 +163,6 @@ c
          write(6,*) "xi(1), xi(2) =", xi
          write(6,*) "mu_f =",sqrt(mufsq(1,1)),sqrt(mufsq(2,1))
       end if
-
-
-
 
 
 c call PDF subroutine in order to determine parton
@@ -599,14 +590,10 @@ c add A and Z current including couplings to u and d quarks
       else ! Zn
         epsV(:,:,:,3,0,1) = epsV(:,:,:,3,1,1)
       endif
-      
-      
-
 
 
 c reset subprocess counter
-      ires_min = FL4QCDVV(id,id,-100000) +1 
-
+      ires_min = FL4QCDVV(id,id,-sub_number) +1
 
 
 ! c different family
@@ -918,7 +905,7 @@ c select subprocess
       iprocess =0
       weight = 0d0
       i=ires_min
-      do while((i.le.ires_max).and.(iprocess.eq.0))
+      do while((m2s.gt.0d0).and.(i.le.ires_max).and.(iprocess.eq.0))
          weight = weight+res(i)/m2s
          if(weight.ge.rn4(1)) then
             iprocess = i
@@ -936,8 +923,6 @@ c select subprocess
       END
 
 
-
-
       subroutine getRes2Q2GZZ(p,xiFinColl,id,fsign,pdf,Nbos,nlo,rn2,res)
       implicit none
 #include "VBFNLO/utilities/lha.inc"
@@ -949,7 +934,7 @@ c select subprocess
       integer FL4qcdVV
       external FL4qcdVV
       
-      real*8 amp(0:2,3:4),amptemp(0:2,3:4,4), polcol
+      real*8 amp(0:2,3:4), polcol
       integer colstr,q,i,k,j,qt
       LOGICAL ldebug
       parameter (ldebug=.false.)
@@ -1028,9 +1013,11 @@ c sum over q flavors and colors
         iflav(id(3)) = q*fsign(3)
         qt=3+mod(q,2)
         do colstr = 1,2
+          iflav(id(2)) = 21
+          iflav(id(4)) = 21
+          k = FL4qcdVV(iflav,id,colstr)
           iflav(id(2)) = 0
           iflav(id(4)) = 0
-          k = FL4qcdVV(iflav,id,colstr)
           if(nlo.eq.3) then
             res(k) = 0d0
             if(colstr.eq.1) res(k) = QCDVVjjFinCollBornKin(p,xiFinColl,id,fsign,iflav,0,nbos,pdf) ! born is included here
@@ -1060,13 +1047,13 @@ c sum over q flavors and colors
 
       real*8 POLCOL, polcol0    ! ave over intial polarizations and colors
       real*8 xiFinColl(2,2)
-      integer colstr,j,i,k
+      integer j,i,k
       integer iflav(1:4),q1,q2
-      integer family,flav,temp
+      integer temp
       logical ldebug,idFl
       parameter (ldebug = .false.)
-      real*8 amp(0:2,3:4,3:4,0:2),amptemp(0:2,3:4,3:4,0:2,4),QCDVVjjFinCollBornKin,randomnumber
-      real dt(2), timearray(2)
+      real*8 amp(0:2,3:4,3:4,0:2),QCDVVjjFinCollBornKin
+
       external QCDVVjjFinCollBornKin
       
       polcol0 = 1.0d0/(4.0d0 * 9.0d0)
@@ -1210,20 +1197,20 @@ c      flavour: 2: diff family (only u channel), q1 corresponds to qline q2>q3
       integer kin, id(4),fsign(4),lephel
       logical lnlo,luseprecalc
       
-      real*8 pbar(0:3,4),pdia(0:3,4),momTemp(0:4),pbartemp(0:3,1:8)
+      real*8 pbar(0:3,4),pdia(0:3,4),momTemp(0:4)
       complex*16 psitemp(2,-1:1,4)
       complex*16 currij(0:3,-1:1,1:2,3:4), currVij(0:3,-1:1,3:4,1:2,3:4,3)
       complex*16 amp(2)
-      complex*16 gluWij(0:3,1:2,3:4,2),temp
+
       complex*16 tempCurr(0:3,-1:1,4)
-      complex*16 s1c, dotcc, dotrc
-      complex*16 MGtemp(18,4)
-      real*8 mass2,qjj2,qsq(1:2,3:4,0:1)
-      real*8 squared(2,2), tempR
+      complex*16 dotcc
+
+      real*8 qjj2,qsq(1:2,3:4,0:1)
+      real*8 squared(2,2)
 
       
-      integer i,j,mu,nu,tempi4(4), lepkin,colstr,tempi8(4),h1,h2,q,q1,q2
-      integer minhel, maxhel, ikin, in,out,qid(4),iAZ,iV,hel,iV2,iAZ2,in2,out2
+      integer mu,tempi4(4), lepkin,colstr,h1,h2,q,q1,q2
+      integer ikin, in,out,iV,hel,iV2,in2,out2
 
 #include "VBFNLO/utilities/scales.inc"
       real*8  alphas, xmt, alfa, xmz, xmw,s2w, xmh
@@ -1442,12 +1429,12 @@ c       res(0:2): amplitude for specified hel. configuration or summed if ghel_i
       real*8 pbar(0:3,2),pdia(0:4,4),mpdia(0:4,4),momtemp(0:4),epsGG(0:3,2,2)
 
       complex*16  amp(2,2,2),psitemp(2,-1:1,2)
-      complex*16 s1c, dotcc, dotrc,s1r
-      real*8 mass2,dotrr,mjj2
+      complex*16 s1c,s1r
+      real*8 dotrr,mjj2
       
       complex*16 psiVGlocal(2,-1:1,3:4,2,5,2)
-      integer i,j,mu,nu, pol1,pol2,pol(2), tempi2(2), lepkin,colstr,qtype(2),idg1,idg2
-      integer minhel, maxhel, glu1,glu2,iV,iV2, q, hel
+      integer i,j,mu, pol1,pol2,pol(2), tempi2(2), lepkin,idg1,idg2
+      integer glu1,glu2,iV,iV2, q, hel
 
 c V currents
 c V1/V2/V12,
@@ -1460,7 +1447,6 @@ c       AZ=3,4 : V coupling to u/d quark with qhel inclouding couplings
       common /QCDZZcurrents/ epsV(0:3,-1:1,4,3,0:4,7),w4l,momV(0:4,3,7)
       logical lAZ(0:2,3) ! V.or.A A V,    V1 V2 V12
       common /QCDZZcacheL/ lAZ
-      
 
 
       lnlo = .true.
@@ -1494,8 +1480,7 @@ c -pdia for bosons !!!!!
       mpdia = -pdia
 
       if(.not. lusePreCalc) then
-      
-      
+
 
 c get bra and ket 
       tempi2(1) = merge(1,-1,id(1).le.2)

@@ -54,7 +54,7 @@ c     electroweak couplings are taken from KOPPLN
       double precision  qqWZZ, res(2),resv(2)
       double precision  p(0:3,2+n_v), pwz1(0:4), pwz2(0:4),
      1                  fw(0:4,2),fqze(0:4,2), fqzmu(0:4,2)
-      integer  sign(2+n_v), nlo, mu, i, j, k, isig, N
+      integer  sign(2+n_v), nlo, mu, i, k, isig, N
       integer  u(2), d(2)
       double complex psize(2,-1:1,2), psiae(2,-1:1,2),
      1               psizmu(2,-1:1,2), psiamu(2,-1:1,2),
@@ -62,9 +62,7 @@ c     electroweak couplings are taken from KOPPLN
       double complex jae(0:5,-1:1,2), jam(0:5,-1:1,2),
      1               jze(0:5,-1:1,2),jzm(0:5,-1:1,2),
      2               jw(0:5,-1:1,2) 
-      double complex jvae(0:5,-1:1,2), jvam(0:5,-1:1,2),
-     1               jvze(0:5,-1:1,2),jvzm(0:5,-1:1,2),
-     2               jvw(0:5,-1:1,2)
+
       double complex temp, temp1
       double complex mat(2,-1:1,10), matv(2,-1:1,10), mborn
       double complex madgr(10,-1:1,2)
@@ -107,7 +105,7 @@ c variables for pacos implementation of the pentagon routine
       double complex j5a1z2(3), j5a2z1(3), j5z1a2(3), j5z2a1(3)
       double complex jbz1z2(3), jbz2z1(3), jba1a2(3), jba2a1(3)
       double complex jba1z2(3), jba2z1(3), jbz1a2(3), jbz2a1(3)
-      double complex resultgauge, resultgaugeb, test(3), test2(3)
+      double complex test(3), test2(3)
       double precision minus_qz1(0:3),minus_qz2(0:3),minus_qw(0:3)
       double precision minus_qzz(0:3),minus_qz1w(0:3),minus_qz2w(0:3)
       double precision p1(0:3), p2(0:3) 

@@ -41,20 +41,20 @@ c     electroweak couplings are taken from KOPPLN
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),
      1                  V(4,5),A(4,5)
       double precision  pbar(0:3,2+n_v)
-      double precision  udwa, ddww, res(2),resv(2)
-      double precision  p(0:3,2+n_v), p21(0:4),
-     1                  fqp(0:4,2), fqm(0:4,2),fqz(0:4,2),fqa(0:4,2)
-      integer  sign(2+n_v), nlo, mu, i, j, jj, k, kk, id,
-     1         isig, isig1, N
-      integer  ifl(2), js1, js3, bos
-      double complex psiwp(2,2), psiwm(2,2), psizn(2,2) , psian(2,2), 
-     1               jwp(0:5,-1:1), jwm(0:5,-1:1),jzn(0:5,-1:1),jan(0:5,-1:1)
-      double complex temp, temp1
-      double complex mat(2,-1:1,3), matv(2,-1:1,3), mborn1, mborn2, mborn3, mborn4
-      double complex madgr(3,-1:1,2)
+      double precision  udwa, res(2),resv(2)
+      double precision  p(0:3,2+n_v),
+     1                  fqp(0:4,2),fqa(0:4,2)
+      integer  sign(2+n_v), nlo, mu, i, k,
+     1         isig1, N
+      integer  ifl(2), bos
+      double complex psiwp(2,2) , psian(2,2), 
+     1               jwp(0:5,-1:1),jan(0:5,-1:1)
+
+      double complex mat(2,-1:1,3), matv(2,-1:1,3), mborn1
+
       double complex mm(2,-1:1), mv(2,-1:1), zero
-      double complex mwp, m11, m12, m21, m22 
-      double complex mv1,mv2
+      double complex mwp, m12, m22 
+
       double complex psi(2,-1:1,4), jqq(0:5,-1:1,2)
       double complex dotcc, s1c
       double precision dotrr
@@ -68,10 +68,10 @@ c variables for virtual corrections
       parameter (c2=4d0/3d0, c2o4pi=c2/4d0/pi)
       logical lnlo, lbox, ldebugm, linit
       double precision p1(0:3), p2(0:3) 
-      double precision minus_qp(0:3),minus_qz(0:3),minus_qa(0:3)
-      integer wardidtest1, wardidtest2, wardidtest3, wardidtest4
-      double complex gaugebox1(2),gaugebox1_born(2)
-      double complex gaugebox2(2), gaugebox2_born(2)
+      double precision minus_qp(0:3),minus_qa(0:3)
+      integer wardidtest3, wardidtest4
+
+
       double complex gaugebox3(2), gaugebox3_born(2)
       double complex gaugebox4(2), gaugebox4_born(2)
       double complex result(4),result_born(4)
@@ -136,8 +136,7 @@ c------- T-CHANNEL ----------------------------------------------
 
 
       mat(1,-1,1) = clr(ifl(2),3,-1)* clr(ifl(1),1,-1) * m12 
-     1            + clr(ifl(2),1,-1)* clr(ifl(2),3,-1) * m22 
-   
+     1            + clr(ifl(2),1,-1)* clr(ifl(2),3,-1) * m22
 
 
 c       clr( ferm , bos , hel )
@@ -157,7 +156,6 @@ C  The helicity indices are  -1: lefthanded
 C                            +1: righthanded
 
 
-
 c-------  S-CHANNEL --------------------------------------!
 
 c get the f-fbar currents J21^mu=jqq(mu,*,1) 
@@ -173,8 +171,7 @@ c contract with wtowz tensor
             mat(1,-1,2) = mwp*clr(3,3,-1)
             
             matv(1,-1,1) = (0d0,0d0)
-         
- 
+
 
 c****************************************************************
 c
@@ -240,7 +237,6 @@ c
 #endif
 
 
-
 c sum the graphs, square them and map them onto udwa 
       
 
@@ -280,7 +276,6 @@ c  of the pdfs (see also D(x) in m2s_qqVVj.f)
 
            resv(1) =   2d0*dreal( mm(1,-1)   *
      1              conjg( mv(1,-1) ) )
-         
 
 
          if (nlo.ge.0) then
@@ -295,8 +290,6 @@ c  of the pdfs (see also D(x) in m2s_qqVVj.f)
 
       return
       end
-
-
 
 
 

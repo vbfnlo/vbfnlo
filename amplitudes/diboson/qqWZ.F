@@ -28,33 +28,38 @@ c*********************************************************************
 
       subroutine qqWZ(pbar, sign, nlo, N, udwz, bos)
 
+      use globalvars, only: ldoblha
+
       implicit none
 
 #include "VBFNLO/utilities/global.inc"
 #include "tensor.inc"
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/coupl.inc"
-
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
 c     electroweak couplings are taken from KOPPLN
       double precision  clr, xm2, xmg, b, v, a
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),
      1                  V(4,5),A(4,5)
       double precision  pbar(0:3,2+n_v)
-      double precision  udwz, ddww, res(2),resv(2)
-      double precision  p(0:3,2+n_v), p21(0:4),
-     1                  fqp(0:4,2), fqm(0:4,2),fqz(0:4,2),fqa(0:4,2)
-      integer  sign(2+n_v), nlo, mu, i, j, jj, k, kk, id,
-     1         isig, isig1, N
-      integer  ifl(2), js1, js3, bos
-      double complex psiwp(2,2), psiwm(2,2), psizn(2,2) , psian(2,2), 
-     1               jwp(0:5,-1:1), jwm(0:5,-1:1),jzn(0:5,-1:1),jan(0:5,-1:1)
-      double complex temp, temp1
-      double complex mat(2,-1:1,3), matv(2,-1:1,3), mborn1, mborn2, mborn3, mborn4
-      double complex madgr(3,-1:1,2)
+      double precision  udwz, res(2),resv(2)
+      double precision tree(2)
+      double precision lnmusqp1p2
+
+      double precision  p(0:3,2+n_v), 
+     1                  fqp(0:4,2),fqz(0:4,2),fqa(0:4,2)
+      integer  sign(2+n_v), nlo, mu, i, k,
+     1         isig1, N
+      integer  ifl(2), bos
+      double complex psiwp(2,2), psizn(2,2) , psian(2,2), 
+     1               jwp(0:5,-1:1),jzn(0:5,-1:1),jan(0:5,-1:1)
+
+      double complex mat(2,-1:1,3), matv(2,-1:1,3), mborn1
+
       double complex mm(2,-1:1), mv(2,-1:1), zero
       double complex mwp, m11, m12, m21, m22 
-      double complex mv1,mv2
+
       double complex psi(2,-1:1,4), jqq(0:5,-1:1,2)
       double complex dotcc, s1c
       double precision dotrr
@@ -179,7 +184,8 @@ c****************************************************************
 
 #ifdef WITH_NLO
       if (lbox) then
-         scale = -2d0*dotrr(p(0,1),p(0,2))
+         ! "-" because p has fsign in it, pbar*pbar > 0 , p*p<0
+         scale = -2d0*dotrr(p(0,1),p(0,2)) ! choose mur = -s such that logs vanish
 
 c calculate born matrix element and store it in mborn for gauge check:
          mborn1=mat(1,-1,1)+mat(1,-1,2)
@@ -192,7 +198,7 @@ c calculate born matrix element and store it in mborn for gauge check:
             minus_qa(mu) = -p1(mu)-p2(mu)+qp(mu,1)
          enddo
 
-         cte=(3*pi*(0d0,1d0)-4.0d0*pi**2/3.0d0+7.0d0)
+         cte=(3*pi*(0d0,1d0)-4.0d0*pi**2/3.0d0+7.0d0) ! depends on choice of cvirtVV 
 
          call boxlinemm(p1,minus_qp,minus_qz,p2,
      1    psi(1,-1,2),psi(1,-1,1),wp(1,1), zn(1,1),
@@ -255,7 +261,6 @@ c
 #endif
 
 
-
 c sum the graphs, square them and map them onto udwz 
       
            resv(1) = 0
@@ -296,6 +301,7 @@ c  of the pdfs (see also D(x) in m2s_qqVVj.f)
      1              conjg( mv(1,-1) ) )
          
          if (nlo.ge.0) then
+            tree(1) = res(1)*3d0
             res(1) = (res(1)+resv(1))*3d0      ! 3 is the color sum factor
          else
             res(1) = resv(1)*3d0               ! 3 is the color sum factor
@@ -304,11 +310,60 @@ c  of the pdfs (see also D(x) in m2s_qqVVj.f)
 
       udwz = res(1)
 
+      if (ldoblha) then
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          ! blha_amp(1)=blha_amp(1)+
+       ! &      res(blha_idsubproc(blha_cursubproc,blha_curproc))
+          blha_amp(1)=blha_amp(1)+res(1)
+
+        else if (blha_amptype(blha_curproc).eq.1) then ! loop
+          lnmusqp1p2 = log(blha_scale**2/(-2d0*dotrr(p(0,1),p(0,2)) ))
+
+          ! eps**-2
+          blha_amp(1)=blha_amp(1)+
+     &      blha_CF/(2d0*pi)*2d0*
+     &       als(1,1)*(-1d0)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+          ! eps**-1
+          blha_amp(2)=blha_amp(2)+
+     &      1d0/(2d0*pi)*2d0*
+     &       als(1,1)*(-blha_gammaQuark-blha_CF*lnmusqp1p2)*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+c this is more complicated than necessary, 
+c but should work for other VBF processes as well
+          ! eps**0
+            ! idsubproc = 1 here
+         blha_amp(3)= blha_amp(3)+
+     &      resv(1)*blha_CA ! loop + I (no tree)
+     &      + (-(als(1,1))/2d0/pi*                        ! -I
+     &          (blha_CF*cvirtVV+  ! our cvirt contribution to I operator
+     &            2d0*(blha_KQuark+blha_gammaQuark+ ! K, gamma from CS (C.28)
+     &                 blha_tgammaQuark+ ! catani convention to I operator
+     &                  (pi**2/6d0-1)*blha_CF) ) ! difference 1/Gamma(1-e) vs. Gamma(1+e)
+     &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
+     &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
+     &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+         ! tree
+          blha_amp(4)= blha_amp(4)+
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      -blha_CF*
+     &       tree(blha_idsubproc(blha_cursubproc,blha_curproc))
+     &    )
+
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+
+
+      endif
+      
 
       return
       end
-
-
 
 
 

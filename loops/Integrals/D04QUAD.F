@@ -221,8 +221,7 @@ c        IF( DIMAG(R(I,J)).EQ.0D0 ) THEN
 	   RS(I,J)=R(I,J)
 	ENDIF
 11	CONTINUE
- 
-        
+
 
 	SS(1)=RS(1,2)
 	SS(2)=RS(2,3)
@@ -289,9 +288,6 @@ c   and LOG(A2) for A2=0. At that points also ETA_QUAD(-X(I,J),1D0/SS(J))
 c   or ETA_QUAD(-X(I,J),SS(J) are 0. (Michael Kubocz)
 
 13	CONTINUE
-        
-        
-        
 
 
 c        print*,'DIMAG(R(1,3))',DIMAG(R(1,3))
@@ -347,11 +343,6 @@ c$$$     *		       *ETAS_QUAD(-XX(I),-R(1,3)/R(2,4),-RS(1,3)/RS(2,4))   )
             D04QUAD1=D04QUAD1+(3q0-2q0*I)*(D1+D2+D3+D4)
 c   The enquiry avoids occurrence of NANs causing by LOG(0). At that points 
 c   also ETA(...) and ETAS_QUAD(...) are 0. (Michael Kubocz)
-
-
-         
-
-         
 
 
 14	CONTINUE
@@ -556,7 +547,6 @@ C	****** ONLY MM2 AND MM3 ARE ZERO ******
 	D04QUAD1 = D04QUAD1/M(1)/M(2)/M(3)/M(4)/AA/(XX(1)-XX(2))
 
 	RETURN
-
 
 
 	END

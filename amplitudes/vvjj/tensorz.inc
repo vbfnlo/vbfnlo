@@ -41,7 +41,6 @@ c  leptonic tensors
      8		      lzs(8)
 
 
-
 cc  lzs remembers whether or not an fsign combination needs to be calculated 
 cc     lzs(1) = .false.      fsign(1)=fsign(2) = -1 has been calcd and stored
 cc     lzs(2) = .false.      fsign(1)=fsign(2) = +1 has been calcd and stored
@@ -56,8 +55,8 @@ cc     lzs(8) = .false.      fsign(3) = +1 fsign(4) = -1 has been calcd ...
 
 
 c for testing purposes
-      double complex tampz,tamprz,tamprzh
-      integer ipz,iprz,isz1,isz3
+      double complex tampz,tamprz
+      integer ipz,iprz
 c      integer is1,is3
       common /zztest/  tampz(600,-1:1,-1:1,6), ipz
       common /zzrtest/ tamprz(3000,-1:1,-1:1,-1:1,6), iprz               

@@ -17,7 +17,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
        real*8 p1,p2,p3,p4,p5,p1p2,p1p3,p1p4,p2p3,p2p4,p3p4
 
        real*8 s12,s23,s34,s45,s15
-       real*8  d,Id,I2,I3,I4,d2,d3,d4
+       real*8  d,Id,I2,I3,I4,d3
        real*8  x(1:4,0:4), Y(4,4,4)
 
        real*8 YY(30),P(780)
@@ -36,7 +36,7 @@ c FC%      complex*16 F(80,5)
        real*8 p12,p22,p32,p42,p52,s12s,s23s,s34s,s45s,s15s
        real*8 eps
        Parameter(eps=1d-07)
-       Integer i,j 
+
 
        real*8 Id2,Id3,Id4,Id5,inv2,inv3,inv4,inv5
        real*8 inv48
@@ -55,9 +55,6 @@ c      inv48=1d0/48d0
       m2sq=m2*m2
       m3sq=m3*m3
       m4sq=m4*m4
-
-
-
 
 
 c s_ij=(p_i+p_j)^2

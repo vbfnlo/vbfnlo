@@ -15,7 +15,7 @@ ccccccccccccccccccccc    Even PART ccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(5),resultZERO(5)
+       Complex*16 result,resultn(5),resultZERO(5)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
        complex*16 rg1,rg2,rg3,rg4
        integer gauge,i,comp,Div
@@ -85,7 +85,6 @@ c	read(*,*)
         end
 
 
-
 ccccccccccccccccccccc    Odd PART ccccccccccccccccccccccccccccccccccccccccccccccccccc
 
        subroutine FermionBoxCouplingO_Div(za1,za2,za3,za4,zb1,zb2,zb3,zb4,
@@ -96,7 +95,7 @@ ccccccccccccccccccccc    Odd PART cccccccccccccccccccccccccccccccccccccccccccccc
        Real*8   p12(0:3),p14(0:3),p23(0:3),p34(0:3)
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(5),resultZERO(5)
+       Complex*16 result,resultn(5),resultZERO(5)
        Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4
        complex*16 rg1,rg2,rg3,rg4
        integer gauge,i,comp,Div

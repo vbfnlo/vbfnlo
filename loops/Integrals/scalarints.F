@@ -82,8 +82,6 @@ c      D0fin = D04(s2,s1,s4,s3,s,t,M3,M2,M1,M4) - D0ms
       endif
 
 
-
- 
 c FC %      PRINT*, 'fc d0MS', d0MS
 c FC %      PRINT*, 'fc d0FIN', d0FIN
       endif
@@ -123,8 +121,8 @@ c-------------------------
       complex*16 ieps,sbar,tbar,s3bar,s4bar,s2bar
       parameter (ieps=(0d0,1d-16))
       double precision M1,M2,M3,M4,m1s,m2s,m3s,m4s
-      double complex tri0m,tri2m,tri3m,D0fin,D0ms ! mass regulated D0
-      double complex tri0dreg(-2:0), tri2dreg(-2:0), tri3dreg(-2:0)
+      double complex tri2m,tri3m,D0fin,D0ms ! mass regulated D0
+      double complex tri2dreg(-2:0), tri3dreg(-2:0)
       double complex D0dreg(-2:0)
       integer ep
       double complex D04,C1i2e,C0i2e
@@ -209,11 +207,11 @@ cccc
       complex*16 ieps,sbar,tbar,s3bar,s4bar,s2bar
       parameter (ieps=(0d0,1d-16))
       double precision M1,M2,M3,M4,m1s,m2s,m3s,m4s
-      double complex tri0m,tri2m,tri3m,D0fin,D0ms ! mass regulated D0
-      double complex tri0dreg(-2:0), tri2dreg(-2:0), tri3dreg(-2:0)
+      double complex tri2m,tri3m,D0fin,D0ms ! mass regulated D0
+      double complex tri2dreg(-2:0), tri3dreg(-2:0)
       double complex D0dreg(-2:0)
       integer ep
-      double complex D04,C1i2e,C0i2e
+      double complex D04,C1i2e
       external D04
       complex*16 VLI2
       external VLI2
@@ -527,7 +525,7 @@ c ------------------------------------------------------------------------
       implicit none
       
       double precision s,mus
-      double precision fpm
+
       double complex sbar
       double complex c1e,b1e,a1e
         
@@ -612,7 +610,7 @@ c ------------------------------------------------------------------------
       implicit none
       
       double precision s1,s2,mus
-      double precision fpm
+
       double complex s1bar,s2bar
       double complex c2e,b2e,a2e
         
@@ -724,11 +722,9 @@ c ------------------------------------------------------------------------
          stop
       endif
       
-      end      
-     
-       
-     
-         
+      end
+
+
 c---------  scalar triangle function: massive internal lines  --------------
 c
       complex*16 function C1i1e(s,mis,mus,id) 
@@ -774,7 +770,7 @@ c ------------------------------------------------------------------------
       implicit none
       
       double precision s,mis,mus
-      double precision fpm
+
       double complex sbar
       double complex c1,b1
       integer id
@@ -810,10 +806,9 @@ c ------------------------------------------------------------------------
          stop
       endif
 
-      end      
-      
-       
-         
+      end
+
+
 c---------  scalar triangle function: massive internal lines  --------------
 c
       complex*16 function C1i2e(s1,s2,mis,mus,id) 
@@ -860,7 +855,7 @@ c ------------------------------------------------------------------------
       implicit none
       
       double precision s1,s2,mis,mus
-      double precision fpm
+
       double complex s1bar,s2bar
       double complex c1,a1,b1
       
@@ -902,10 +897,9 @@ c ------------------------------------------------------------------------
          stop
       endif
 		            
-      end      
-     
-   
-         
+      end
+
+
 c---------  scalar triangle function: massive internal lines  --------------
 c
       complex*16 function C1d2e(s1,s2,mis,mus,id) 
@@ -951,7 +945,7 @@ c ------------------------------------------------------------------------
       implicit none
       
       double precision s1,s2,mis,mus
-      double precision x0,fpm
+      double precision x0
       double complex x1bar,s1bar
       double complex c1
       integer id
@@ -1121,7 +1115,7 @@ c
 c ------------------------------------------------------------------------
       implicit none
       
-      double precision s1,s2,s3,m3s,m2s,mis,mus
+      double precision s1,s2,s3,m3s,m2s,mus
       double complex x0bar,x1bar,s1bar,s2bar
       double complex xp,xm,etap,etam
       double complex gki,c1
@@ -1342,8 +1336,7 @@ c ------------------------------------------------------------------------
       
       rfunc = VLI2(dcmplx(z1))-VLI2(dcmplx(z2))+eta1*log(z1)-eta2*log(z2)
 
-      
-		            
+
       return
       end      
          

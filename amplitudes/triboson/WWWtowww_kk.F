@@ -436,7 +436,7 @@ C
 #include "VBFNLO/utilities/kkcoupl.inc"
       COMPLEX*16 KK1(6,1:kkz),KK2(6,1:kkz),AMPK1(1:kkz),AMPK2(1:kkz)
       COMPLEX*16 KK3(6,1:kka),KK4(6,1:kka),AMPK3(1:kka),AMPK4(1:kka)
-      COMPLEX*16 KK5(6,1:kkz),KK6(6,1:kkz),KK7(6,1:kka),KK8(6,1:kka)
+
 	COMPLEX*16 kkh1(6,1:kkh), AMPKH1(1:kkh) 
 	COMPLEX*16 kkh2(6,1:kkh), AMPKH2(1:kkh)
 	COMPLEX*16 h1(6), AMPH1, h2(6), AMPH2

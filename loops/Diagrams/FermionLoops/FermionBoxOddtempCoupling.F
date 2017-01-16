@@ -2356,7 +2356,7 @@ c************** Calling the Fa functions****************************************
        IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
        Complex*16   mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,result
+       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR
        Real*8 EPSRRRR
       EXTERNAL   EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,EPSRRRR
       Complex*16 Fa(35)

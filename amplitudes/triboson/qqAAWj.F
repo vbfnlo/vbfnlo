@@ -57,45 +57,45 @@ c variables for the main part of the program
       PARAMETER (fpi=4d0*pi)
 
       double precision  pbar(0:3,n_p+n_v), qbar(0:4), q(0:3)
-      double precision  uuwwaj, ddwwaj, res(2), resv(2), final
+      double precision  res(2), resv(2), final
       double precision  p(0:3,n_p+n_v),fq0(0:4,2),fqa1(0:4,2),fqa2(0:4,2)
 
       integer  sign(n_p+n_v), gsign, mu, i, j, k, isig, nlo, N
-      integer  ifl(2), lh, l, sbos,bos
+      integer  lh, l, sbos,bos
 
-      double precision fqm(0:4,2), fqp(0:4,2), fqz(0:4,2)
-      double precision pq(0:4,2), pgZ(0:4,2), pZg(0:4,2)
+
+      double precision pq(0:4,2)
       double precision pgA1(0:4,2), pA1g(0:4,2)
       double precision pgA2(0:4,2), pA2g(0:4,2)
       double precision pgw0(0:4,2), pw0g(0:4,2)
-      double precision pgWP(0:4,2), pgWM(0:4,2), pWPg(0:4,2)
-      double precision pWMg(0:4,2), pwpz(0:3), pwmz(0:3) 
+
+
       double precision pwa1(0:4), pwa2(0:4) 
       double precision pqqw(0:4), minus_pqqw(0:4)
       double precision eps(0:3,2) ! g in kartesian basis
-      double complex psi(2,-1:1,2), psiWM(2,-1:1,2), psiWP(2,-1:1,2)
-      double complex psia(2,-1:1,2), psiz(2,-1:1,2)
+      double complex psi(2,-1:1,2)
+
       double complex psia1g(2,-1:1,2,2), psia2g(2,-1:1,2,2)
       double complex psiw0g(2,-1:1,2,2)
       double complex braketg(2,-1:1,2,2)
       double complex braketgw0(2,-1:1,2,2)
-      double complex braketgWP(2,-1:1,2,2), braketgWM(2,-1:1,2,2)
-      double complex braketgA(2,-1:1,2,2), braketgZ(2,-1:1,2,2)
+
+
       double complex braketgA1(2,-1:1,2,2), braketgA2(2,-1:1,2,2)
-      double complex psiWPg(2,-1:1, 2,2), psiWMg(2,-1:1, 2,2)
+
       double complex psiw0(2,-1:1, 2),psia1(2,-1:1, 2),
      1               psia2(2,-1:1, 2)
-      double complex psiAg(2,-1:1,2,2), psiZg(2,-1:1,2,2)
+
       double complex mat(2,-1:1,2,3), madgr(3,-1:1,-1:1,2),matb(2,-1:1,2,3)
       double complex matv(2,-1:1,2,3)
       double complex mm(2, -1:1,2), mv(2, -1:1,2)
       double complex mmb(2, -1:1,2)
       double complex m1kb(2,-1:1,3), m2kb(2,-1:1,3), temp, temp1
-      double complex m1(3,2), m2(3,2), m3(3,2), m4(3,2)
-      double complex ma, mz
+      double complex m1(3,2), m2(3,2)
+      double complex ma
       double complex janew(0:5,-1:1,14,2)
-      double complex ja(0:5,-1:1,4,2), jz(0:5,-1:1,4,2)
-      double complex jwm(0:5,-1:1,4,2), jwp(0:5,-1:1,4,2)
+
+
       double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2)
       double complex jqqa(0:5,-1:1,2)
       double complex jqqw(0:5,-1:1)
@@ -106,7 +106,7 @@ c variables for the main part of the program
       double complex zero 
       external dotcc, s1c, dotrc,dotrr,theta
       integer u(2),d(2)
-      save ifl,u,k,d
+      save u,k,d
       parameter (im = (0d0,1d0))
       parameter (zero = (0d0,0d0) )
 
@@ -122,7 +122,7 @@ c  helicity selection
       COMMON /icount / ie,iu,it
 
       logical ldebug, ldebugm, linit, christophmods
-      logical lnlo, lbox, lpq, lpt, lpent,lhex,lbox2
+      logical lnlo, lbox, lpt, lpent,lhex,lbox2
       logical addkmuknu
       data linit /.true./
       save linit
@@ -189,7 +189,7 @@ c Variables for hexagons
       complex*16 rgva1a2g(4,4),rgba1a2g(4,4)
       complex*16 rva2a1g(13,4,2),rba2a1g(4,2)
       complex*16 rgva2a1g(4,4),rgba2a1g(4,4)
-      Integer Div,Gauge,PerformGauge,mutemp
+      Integer Div,PerformGauge,mutemp
       complex*16 mv1CA,mv2CA,mv3CA,mv1b,mv2b,mv3b
       complex*16 rvZERO(4,4),rbZERO(4,4)
       complex*16 lns,lnt,lnu,cteEps1
@@ -201,11 +201,10 @@ c Variables for fermion loops
       double precision mf(3)
       double complex rfbox(6,3,2)
       double precision rgfbox(6,3,2) 
-      double precision fcresult, fctreeresult
-      integer*8 fchelicities, thirtytwo
-      integer fcflags
-      double complex fcamp(-2:2), fckamp(2)
-      double complex fctreeamp(-2:2), fcktreeamp(-2:2)
+
+      integer*8 thirtytwo
+
+
       parameter(thirtytwo=32)
 c      
       Logical wardidtest1,wardidtest2,wardidtest3,wardidtest4
@@ -467,7 +466,6 @@ c qq -> A W(-> W A) g
 
          call curr6(-1,braketg(1,-1,2,l),pq(0,2),
      &              psiA2(1,-1,1),fqA2(0,1),janew(0,-1,6,l) )
-
 
 
          call curr6(-1,psiA1(1,-1,2),fqA1(0,2),
@@ -1597,16 +1595,13 @@ C*****************************************************************
 	Print*, 'fac*mv5+fac**2*mv6',clr(u(k),1,-1)/clr(d(k),1,-1)*(mv5+
      2	clr(u(k),1,-1)/clr(d(k),1,-1)*mv6)
 	Print*, 'ratio             ',-mv4/(clr(u(k),1,-1)/clr(d(k),1,-1)*(mv5+
-     2	clr(u(k),1,-1)/clr(d(k),1,-1)*mv6))	
-	
-	
+     2	clr(u(k),1,-1)/clr(d(k),1,-1)*mv6))
+
 
 	endif
 
-	
-	
-	endif ! Warditest
 
+	endif ! Warditest
 
 
 	If(wardidtest1) then
@@ -2344,9 +2339,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 	cfcac=cfc
 	wardidtest1=.True.
 	endif
-	
-	
-	
+
+
          if (.not.wardidtest1) then
 	    do  l=1,2
                 do i = 1,3
@@ -2573,7 +2567,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 	Print*, ''
 	endif
 	endif ! Warditest
-
 
 
 	If(wardidtest1) then
@@ -3182,7 +3175,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc
 	Print*, ''
 	endif
 	endif ! Warditest
-
 
 
 	If(wardidtest1) then

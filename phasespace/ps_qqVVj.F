@@ -9,6 +9,7 @@ c
 
 
       subroutine def_ps_qqVVj(bos1,bos2)
+          use globalvars, only: ldoblha
 
 
       implicit none
@@ -151,7 +152,6 @@ c      ptjmin = 0.0d0
       end
 
 
-
 C**********************  LIPSVVJ   ****************************************
 C
       SUBROUTINE LIPSVVJ(N,RD,RN,
@@ -164,7 +164,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=(1+3)*3, TPI=2D0*PI )
       real*8 RD(*),RN
-      real*8 K1(0:3),K2(0:3),V(0:3,4),X1,X2,W,K(0:3)
+      real*8 K1(0:3),K2(0:3),V(0:3,4),X1,X2,W
       real*8 PJET(0:3,N)
 
 C Phase space generator for production of 2 bosons + 1 jet at hadron colliders
@@ -184,7 +184,6 @@ C           P(0:3)    4-vector for the jet, assumed massless
 C           W         the weight of the phase space point
 c           NW         NW = 1 corresponds to Narrow Width Approximation,
 c                      NW = 0 means Full calculation
-
 
 
 C  INPUT INFORMATION on the phase space region is transferred via the
@@ -214,22 +213,17 @@ C   PTJMIN         minimal PT values      REAL*8 Y,PT,PHI,PNJ
 
 C  OUTPUT INFORMATION is transferred via the common block /DIBOSLIPSO/
 
-      REAL*8 PT,PHI
 
 C  local variables
 
-      INTEGER I,J,II,JJ,MU,ic
+      INTEGER I,MU
 
-      real*8 xmin1, xmax1, delx1, tanx1, xval1
-      real*8 xmin2, xmax2, delx2, tanx2, xval2
-      real*8 xminx, xmaxx, delxx, tanxx, xx
-      real*8 coshy2, sinhy2, temp, test, rf
-      real*8 y, y_border, tau, q(0:4,2), ql(0:4,2), y2
-      real*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      real*8 phi2, costheta2, sintheta2
-      real*8 phi3, costheta3, sintheta3
-      real*8 pTmax, pTmin, pL, y2_border, ET
-      real*8 abs_p, abs_p2, abs_p3
+
+      real*8 test, rf
+      real*8 y, tau, q(0:4,2), y2
+      real*8 pX(0:4)
+
+
       double precision dotrr
       external dotrr
 

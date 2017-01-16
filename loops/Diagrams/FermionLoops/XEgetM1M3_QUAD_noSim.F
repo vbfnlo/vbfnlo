@@ -626,14 +626,8 @@ cfc       call print_EijR(DCMPLX(E012345),E12345R_d,E12345I_d)
 cfc       endif
 
 
-
-
-
-
        return
        end
-
-
 
 
 

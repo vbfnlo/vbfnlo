@@ -24,7 +24,7 @@ c
 #include "VBFNLO/utilities/coupl.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "common.inc"
-      integer bos,nbos
+      integer nbos
       real*8 xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), m2s(0:max_kin)
       real*8 xyuz(2,2:max_kin)
       logical lokt(max_kin), lnlo
@@ -38,7 +38,7 @@ c declare local variables
 c
       real*8 q_sf
 
-      integer init/0/, I, J, k, l, m,n, mu, nu
+      integer init/0/, I, J, k, mu
       save init
 c
 c declare variables for summation process
@@ -47,13 +47,13 @@ c
       integer id(5) ! id(diagram index) = ps index
 c
 c store contributions from subprocess ip in res(ip) where
-      real*8 col(0:8), res(maxNumSubProc)
-      real*8 weight, rn, RandomNumber
+      real*8 res(maxNumSubProc)
+      real*8 weight, rn
 
 c
 c declare parton distribution variables
 c
-      real*8 pdf(-6:6,2,22),xxa
+      real*8 pdf(-6:6,2,22)
 c local varriables
       integer FL5QCDWZ, ires_min, ires_max, kin
       save ires_min, ires_max
@@ -63,22 +63,15 @@ c local varriables
       logical SkipIdFl
       logical ldebug
 !       parameter (ldebug=.false.)
-      integer nhel(9), HelFactor ! hel with diagram index
+      integer nhel(9) ! hel with diagram index
       logical skip (0:2,2) 
-      real*8 dotrr, mjj2
+      real*8 mjj2
       integer qcdVVjjkin
       
-      real*8 temp(0:6), temp2,temp3, sd(2) /0d0,0d0/
+      real*8 temp3 /0d0/
       integer NN /0/
-      integer fileStat(13),time,ghel
-      real timearray(2)
-      real dT(2)
-      integer timeiter
-      real*8 tempQAmp(0:4,3:4,0:1)
-      complex*16 tempAmpC(0:2,-1:1,-1:1)
-      real*8 tempSame(0:4), tempDIFF(0:4),tempamp(0:4,0:1)
-      real*8 pMG(0:3,9),debugsum
-      integer hel1, hel2
+
+
       complex*16 lepton(6,3)
       logical allsub
 
@@ -386,7 +379,6 @@ c reset borncache
       if(sub_number.eq.3.or.allsub) call getRes4Q1GWW(p,xi,id,fsign,SkipIdFl,pdf,nbos,lnlo,lokt,xyuz,res )
 
 
-
 c*****  4.  ********
 c**Diagram**********  q1 qb4 ---> q3 qb2 g W Z   **********************
 c**Diagram**********  qb4 q1 ---> q3 qb2 g W Z   **********************
@@ -558,7 +550,6 @@ c
       end
 
 
-
       subroutine getRes4Q1GWW(p,xi,id,fsign,SkipIdFl,pdf,Nbos,lnlo,lokt,xyuz,res)
 c hel summation, if rn < 0
       implicit none
@@ -567,7 +558,7 @@ c hel summation, if rn < 0
       real*8 res(1:maxNumSubProc) !out: subprocess cross-sections
       real*8 p(0:3,max_p,max_kin),xi(2)
       integer fsign(5), id(5)
-      real*8 pdf(-6:6,2,22), xyuz(2,2:max_kin), rn
+      real*8 pdf(-6:6,2,22), xyuz(2,2:max_kin)
       logical lnlo,lokt(max_kin)
       logical idFl, skipIdFl
       integer nbos,difffamily
@@ -578,23 +569,20 @@ c hel summation, if rn < 0
       double precision  alphas, xmt, alfa, xmz, xmw,s2w, xmh
       common /bkopin/   alphas, xmt, alfa, xmz, xmw, s2w, xmh
 
-      integer j,i,k,in,colstr
+      integer j,i,k,colstr
       integer iflav(5)
-      integer kin,emit,spect, qcdVVjjkin,tempSing(2)
+      integer kin,emit,spect, qcdVVjjkin
       logical ldebug
       parameter (ldebug = .false.)
-      real*8 amp(0:4,0:2),dip(3:4,0:2,4,5,5),tempdip(3:4,0:2)
+      real*8 amp(0:4,0:2),dip(3:4,0:2,4,5,5)
       double precision polcol(2000)
-      real*8 temp(0:4,0:2),temp2,mjj2,QCDVVjjFinColl
+
       common /polcolz/ polcol
       external CScolAmpQNew
 
 c  nloContrib 11: only calc RE+Dip
 c  nloContrib 12: only calc finColl
       
-      
- 234     format(3(E20.8),F18.8)
- 235     format(5(E20.8))
       
       if(ldebug) then
 	print*,'new subprocess'
@@ -725,9 +713,9 @@ c fill flavor information for pdf and lha output
       complex*16 s1c, dotcc, dotrc
       real*8 mass2,qjj2,dotrr
       
-      real*8 squared(2,2), tempR,colsq(0:4,2)
+      real*8 tempR,colsq(0:4,2)
       
-      integer i,j,k,l,m,mu,nu,tempi4(4),in,out
+      integer i,j,k,l,m,mu,tempi4(4),in,out
       integer minhel, maxhel
       external s1c,dotcc,dotrc,mass2,qjj2,minhel,maxhel,dotrr
 
@@ -805,7 +793,6 @@ c W and glu emissions emission
         enddo
       enddo
       enddo
-
 
 
 c calculate glu currents

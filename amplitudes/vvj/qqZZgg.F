@@ -11,7 +11,7 @@
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
 
-      integer bos, nlo,j,i,k,l,mu,nu,isig,l1,l2
+      integer bos,j,i,k,l,mu,isig,l1,l2
       integer sign(4),polmap(2)
 
       double precision p(0:3,max_p), v(0:3,max_v), m2s(2)

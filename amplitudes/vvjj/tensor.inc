@@ -46,9 +46,6 @@ c for testing purposes
       common /wwrtest/ tampr(900,-1:1,-1:1,-1:1,6), ipr
 
 
-
-
-
 c  leptonic tensors
       double complex wppwpp,wmmwmm, 
      #		       awen,zwen,waen,wzen,

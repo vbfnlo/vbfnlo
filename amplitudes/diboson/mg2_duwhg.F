@@ -277,7 +277,6 @@ C ----------
       CALL IOVXXX(W(1,10  ),W(1,2   ),W(1,6   ),GG ,AMP(2   ))             
       JAMP(   1) = -AMP(   1)-AMP(   2)
 
-      
 
 !     CALL OXXXXX(PBAR(0,1   ),ZERO ,NHEL(1   )*FSIGN(1),FSIGN(1   ),W(1,1   ))        
 !     CALL IXXXXX(PBAR(0,2   ),ZERO ,NHEL(2   )*FSIGN(2),FSIGN(2   ),W(1,2   ))        

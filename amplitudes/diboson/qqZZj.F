@@ -76,16 +76,15 @@ c variables for the main part of the program
       double complex psiZ2g(2,-1:1,2,2)
       double complex psiA1g(2,-1:1,2,2)
       double complex psiA2g(2,-1:1,2,2)
-      double complex ja1(0:5,-1:1,4,2)
-      double complex ja2(0:5,-1:1,4,2)
+
+
       double complex mat(2,-1:1,2,2), madgr(-1:1,-1:1,2)
-      double complex matt(2,-1:1,2)
+
       double complex m1kb(2,-1:1), m2kb(2,-1:1), temp, temp1
       double complex mm(2,-1:1,2), zero
-      double complex ma, mz, m1, m2, m3, m4
+      double complex m1, m2, m3, m4
       double complex psi(2,-1:1,2), jqq(0:5,-1:1,2)
-      double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2)
-      double complex jqqa(0:5,-1:1,2)
+
 
       double complex im
       double complex dotcc, s1c, dotrc
@@ -109,8 +108,8 @@ c      parameter(ldebugm = .false.)
 
 
       logical ldebug, ldebugm, linit, christophmods
-      logical lnlo, lbox, lpq, lpt, lpent,lhex,lbox2,lhiggs,lvert
-      logical addkmuknu
+      logical lnlo, lbox, lpt, lpent,lbox2,lhiggs,lvert
+
       data linit /.true./
       save linit
       parameter(ldebugm = .false., ldebug=.false., christophmods=.false.)
@@ -141,27 +140,16 @@ c Variables for boxes
 c Variables for pentagons      
       real*8 mqa2(0:3)
       real*8 mqz(0:3)
-      complex*16 cmqz(0:3)
+
       real*8 p1(0:3),p2(0:3)
-      real*8 mpg(0:3),mpz(0:3)
+      real*8 mpg(0:3)
       complex*16 pentcontr1(3),pentcontr1b(3)
       complex*16 pentcontr2(3),pentcontr2b(3)
       complex*16 pentcontr3(3),pentcontr3b(3)
       complex*16 pentcontr4(3),pentcontr4b(3)
       complex*16 pentcontr5(3),pentcontr5b(3)
       complex*16 pentcontr6(3),pentcontr6b(3)
-      complex*16 pentcontr7(3),pentcontr7b(3)
-      complex*16 pentcontr8(3),pentcontr8b(3)
-c
-      complex*16 j5a2g(8,4,2,-1:1),jba2g(4,2,-1:1)
-      complex*16 j5ga2(8,4,2,-1:1),jbga2(4,2,-1:1)
-      complex*16 j5a2g1(8,4,2,-1:1),jba2g1(4,2,-1:1)
-      complex*16 j5ga21(8,4,2,-1:1),jbga21(4,2,-1:1)
 
-      complex*16 j5zg(8,4,2,-1:1),jbzg(4,2,-1:1)
-      complex*16 j5gz(8,4,2,-1:1),jbgz(4,2,-1:1)
-      complex*16 j5zg1(8,4,2,-1:1),jbzg1(4,2,-1:1)
-      complex*16 j5gz1(8,4,2,-1:1),jbgz1(4,2,-1:1)
       complex*16 j5zg1T(8,4,2,-1:1),jbzg1T(4,2,-1:1)
       complex*16 j5gz1T(8,4,2,-1:1),jbgz1T(4,2,-1:1)
       complex*16 j5zg1T2(8,4,2,-1:1),jbzg1T2(4,2,-1:1)
@@ -178,10 +166,8 @@ c      complex*16 j5ma2g1(8,4,2,-1:1),jbma2g1(4,2,-1:1)
 c      complex*16 j5mga21(8,4,2,-1:1),jbmga21(4,2,-1:1)
 
 c NoAbe
-      complex*16 jg5a2(2,2,-1:1)
-      complex*16 jg5z(2,2,-1:1)
-      complex*16 jg5a21(2,2,-1:1)
-      complex*16 jg5z1(2,2,-1:1)
+
+
       complex*16 jg5z1T(2,2,-1:1)
       complex*16 jg5z1T2(2,2,-1:1)
 
@@ -204,8 +190,8 @@ c  Colors Parameters
       real*8 mans,mant,manu,musq
 c     Variables for virtual
       complex*16 mv1,mv2,mv3,mv4,mv5,mv6
-      complex*16 mmv2,mmv3,ratioFACT,mmv2b,mmv3b
-      Complex*16 mmv2CA,mmv3CA,mmv4
+      complex*16 mmv2,mmv3,ratioFACT,mmv2b
+      Complex*16 mmv2CA,mmv4
       complex*16 mmv1,mmv1b,mmv1CA
       complex*16 Myeps(0:3,2) ! g in kartesian basis
 c  Compare born from penlines, hexline,boxline 
@@ -219,13 +205,13 @@ C  For adding Christoph factor from cancellation of 1/eps  divergences
        complex*16 finiteubd,factortoadd,finiteubgcr,finiteubg
        real*8 s,t,mmu,mursq1
        complex*16 check(2,-1:1,2),check1(2,-1:1,2)
-       integer GaugeAbe,GaugeNoAbe
+
 c
        integer isig2,comp
        double complex cnf
-      Integer Div,Gauge,PerformGauge,mutemp
+      Integer Div,PerformGauge,mutemp
       complex*16 mv1CA,mv2CA,mv3CA,mv1b,mv2b,mv3b
-      complex*16 rvZERO(4,4),rbZERO(4,4)
+
       complex*16 lns,lnt,lnu,cteEps1
 
       Logical wardidtest1,wardidtest2,wardidtest3,wardidtest4
@@ -240,27 +226,26 @@ c variable for q_mu q_nu terms in the propagators of the massive vector bosons
       integer nlo, N, ps_number
 
 c Variables for fermion loops
-      integer flgauge, flcomp
+
       double precision mf(4)
       integer cpl(4)
-      double precision vv, temp_m2s
+      double precision vv
       double complex rfbox(6,4,4,2,2)
       double precision rgfbox(6,4,4,2,2) 
       double complex rfvert(2,3,4,2,2)
       double precision rgfvert(2,3,4,2,2) 
-      double precision fcresult, fctreeresult
-      integer*8 fchelicities, thirtytwo
-      integer fcflags
-      double complex fcamp(-2:2,-2:2), fckamp(2,2)
+
+      integer*8 thirtytwo
+
+
       parameter(thirtytwo=32)
 
-      real*8 p12(0:3),s12
+      real*8 p12(0:3)
       real*8 minus_qa1z(0:3),minus_qa2z(0:3),minus_qaa(0:3)
-      double complex result(-1:1,4,2),result_born(-1:1,4,2)
       integer poln
       external deltakro
       real*8 deltakro
-      complex*16 v1(0:3), curr1(0:3,2),curr2(0:5,-1:1)
+      complex*16 curr1(0:3,2),curr2(0:5,-1:1)
       double precision p12c(0:4,-1:1)
       integer l1,l2
       external sc1c
@@ -271,7 +256,6 @@ c Variables for fermion loops
 
       complex*16 eff_curr1(0:3,-1:1),eff_curr2(0:3,-1:1)
       complex*16 eff_curr3(0:3,-1:1),eff_curr4(0:3,-1:1)
-
 
 
 c---------------------------- BEGIN CODE -----------------------
@@ -340,9 +324,6 @@ c define flavors of external quarks for the 2 NC subprocesses
       mv1b=0d0
       mv2b=0d0
       mv3b=0d0
-
-
-
 
 
 c define the internal momenta
@@ -545,7 +526,6 @@ c print results from checks:
          enddo
 
       endif ! end of debugging block
-
 
 
 c**************************************************************
@@ -843,9 +823,6 @@ C This allows us to reduce the CPU time by a factor 2
        enddo
 
 
-
-
-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
 ! Check gauge invariance
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -878,14 +855,6 @@ c A2
             eff_curr4(mu,1)=mqa2(mu)
 	 enddo
        endif
-
-
-
-
-
-
-
-
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCC
@@ -1318,7 +1287,6 @@ c     1    wp(1,1),atau2(1,1),Myeps(0,1),-1,scale,
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-
 !
 cFC      PRINT*, "wardidtest1",wardidtest1
 cFC      PRINT*, "wardidtest2",wardidtest2
@@ -1332,7 +1300,6 @@ cFC      PRINT*, "wardidtest8",wardidtest8
        wardidtest1=wardidtest1.and.wardidtest2.and.wardidtest3.and.
      1 wardidtest4.and.wardidtest5.and.wardidtest6
        wardidtest1=wardidtest1.and.wardidtest7.and.wardidtest8
-     
 
 
         If(Div.ne.0) then
@@ -1345,9 +1312,8 @@ cFC      PRINT*, "wardidtest8",wardidtest8
 	cfcac=cfc
 	wardidtest1=.True.
 	endif
-	
-	
-	
+
+
          if (.not.wardidtest1) then
           do isig=-1,1,2  
 	    do  isig2=1,2
@@ -1489,8 +1455,7 @@ cFC     1     (mv1b)*clr(4,2,isig)**2
 cFC     1    + (mv2b)*clr(4,2,isig)*clr(4,1,isig)
 cFC     2    +(mv3b)* clr(4,1,isig)**2
 cFC       Print*,"matb(2,isig,isig2,1)",matb(2,isig,isig2,1)
-cFC    
-
+cFC
 
 
        mv2b=(
@@ -1688,7 +1653,6 @@ c	Print*, 'Gauge',-mv3/mv5-1d0
 	endif ! Warditest
 
 
-
 	If(wardidtest1) then
 	
 	If(Div.ne.0) then
@@ -1718,8 +1682,7 @@ cFC     2  +j5ga21(2,1,isig2,isig)+j5ga21(2,2,isig2,isig)+j5ga21(2,3,isig2,isig)
 ! dd 
        mv3CA=(
      1  +j5zg1T2(2,1,isig2,isig)+ j5zg1T2(2,2,isig2,isig)+j5zg1T2(2,3,isig2,isig)
-     2  +j5gz1T2(2,1,isig2,isig)+j5gz1T2(2,2,isig2,isig)+j5gz1T2(2,3,isig2,isig))    
-
+     2  +j5gz1T2(2,1,isig2,isig)+j5gz1T2(2,2,isig2,isig)+j5gz1T2(2,3,isig2,isig))
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1896,7 +1859,6 @@ c      Print*,'matv(k,-1,l,2)', matv(k,-1,l,2)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	enddo ! end isig2 loop
 	enddo ! end isig loop
-
 
 
 !  Check renormalization invariance using K_contcheck      
@@ -2404,7 +2366,6 @@ c	Print*, 'Gauge',-mv3/mv5-1d0
 !        stop
 	endif
 	endif ! Warditest
-
 
 
 	If(wardidtest1) then
@@ -3288,14 +3249,6 @@ c              print*, "NO GUAGE BOX2",ps_number, box2countm,box2countps(ps_numb
          endif ! lvert
 
 
-
-
-
-
-
-
-
-
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       endif !lbox
 
@@ -3303,12 +3256,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
 #endif   ! with NLO
-
-
-
-
-
-
 
 
 c-----------------------------------------------------

@@ -25,7 +25,7 @@ c
       double complex ga(6),gb(6),gc(6),gd(6),vertex
       double complex dv1(0:3),dv2(0:3),dv3(0:3),dv4(0:3),
      &     dvertx,v12,v13,v14,v23,v24,v34
-      double precision pga(0:3),pgb(0:3),pgc(0:3),pgd(0:3),g
+      double precision g
 
       save dv1,dv2,dv3, dv4
 c      save dv1,dv2,dv3,dv4,dvertx,v12,v13,v14,v23,v24,v34

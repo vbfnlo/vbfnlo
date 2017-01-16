@@ -15,7 +15,7 @@ c
       implicit none
       double complex z1(6), z2(6), uzz(18)
 
-      integer i, j, k, l, m, n, a, s
+      integer i, j, k, l, m, n
 
       double complex yzz(6,4)
       double precision p1(4), p2(4), pT(4), p1p2

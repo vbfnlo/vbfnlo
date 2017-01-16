@@ -11,51 +11,35 @@
       double precision  clr, xm2, xmg, b
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6)
 
-      integer bos, nlo,j,i,k,l,mu,nu,ep,isig1,isig2,ihel(7),ipart(7),chi,
-     &        graphsign(2),colormap(2),colormapg(2)
-      integer photonhel,sign(4),iflavu,iflavd,polmap(2)
+      integer j,i,k,l,mu,ep,isig1,isig2
 
-      double complex currwma(0:3,0:3), currwmz(0:3,0:3), currfwma(0:3,0:3,4),
-     &       currfwmz(0:3,0:3,4),currwmahel(0:3,0:3,-1:1), currwmzhel(0:3,0:3,-1:1),
-     &       currw(0:3,2),curra(0:3,2),currz(0:3,2),currup(0:3,2),currdwn(0:3,2),waveglu(6,3)
-      double precision p(0:3,max_p), v(0:3,max_v), rn(1),m2s, cpl(5)
-      double precision Q1(0:3),Q2(0:3),pbar(0:3,4),
-     &       fermpphot(0:4,4),fermpphotw(0:4,8),threegbinputmom(0:3,2,2),threegbcurr(0:3,2),
-     &       threegbcurrgu(0:3,2),threegbcurrgd(0:3,2),threegbcurrab(0:3,2),
-     &       imp(0:3,2),Q1uaw(0:3),Q1daw(0:3),Q2uaw(0:3),Q2daw(0:3),Q1a(0:3),Q2a(0:3),
-     &       Q2uza(0:3),Q2dza(0:3),qbar(0:3,4),gluvec(0:4,2),gluvecb(0:4,2),glumom(0:4),
-     &       fermpphotww(0:4,4),fermpphotwa(0:4,6)
+      integer sign(4),polmap(2)
 
-      double complex psi(2,-1:1,4), jqqu(0:5,-1:1,2), jqqd(0:5,-1:1,2),
-     &       jqqaw(0:5,-1:1,2),jqqawmw(0:5,-1:1,2),jqqawmz(0:5,-1:1,2),
-     &       psiwmaz(2,-1:1,4),jqqwa(0:5,-1:1,2),jqqwamw(0:5,-1:1,2),jqqwamz(0:5,-1:1,2),
-     &       jqqawr(0:5,-1:1,2),testcurr(6,0:3,2,2),ubububdb(2,-1:1,-1:1,-1:1,-1:1),
-     &       curflephel(0:3),wafpol2(0:3,-1:1),testvec1(6),testvec2(6),jqqggg(0:5,-1:1,8),
-     &       fourgbcurr(0:3,2),ubdgg(3),jqqgggtmp(0:5,-1:1,11),jqqgggoff(0:5,-1:1,8),
+
+      double precision p(0:3,max_p), v(0:3,max_v),m2s, cpl(5)
+      double precision pbar(0:3,4),
+     &       qbar(0:3,4),gluvec(0:4,2),gluvecb(0:4,2),glumom(0:4)
+
+
+      double complex psi(2,-1:1,4), ubdgg(3),
      &       psiv(2,-1:1,2,5),psivv(2,-1:1,2,5,5),psivvv(2,-1:1,2,5,5,5),psivvvv(2,-1:1,2,4,4,4,4),
      &       jv(1:6,-1:1,5:5,2),
      &       jvv(1:6,-1:1,5,5,3), jvvv(1:6,-1:1,5,5,5,4), jvvvv(1:6,-1:1,4,4,4,4,5),
-     &       gluwave(6),gluwavetmp(6,2),effgluhel(0:3),wtoevea(0:3,-1:1),
-     &       jqqza(0:5,-1:1,2),jqqaz(0:5,-1:1,2),jqqzamz(0:5,-1:1,2),jqqazmz(0:5,-1:1,2),
-     &       jqqww(0:5,-1:1,2),psiww(2,-1:1,4),propww(2),propw(2),jqqvw(0:5,-1:1,4),propwa(2),
-     &       propwz(2),psiwwa(2,-1:1,8),jqqwwa(0:5,-1:1,7),jqqwwaoff(0:5,-1:1,2),threev(6,2),
-     &       jqqwaa(0:5,-1:1,20),psiwaa(2,-1:1,6),propa(2),propz(2),jqqwaaoff(0:5,-1:1,4),
-     &       threevert(0:3,0:3),jqqthreev(0:5,-1:1,2)
+     &       effgluhel(0:3)
+
       double precision pmomv(0:4,2,5),pmomvv(0:4,2,5,5),pmomvvv(0:4,2,5,5,5),pmomvvvv(0:4,2,4,4,4,4)
       logical ldebug
       parameter (ldebug=.false.)
     
-      double precision helastestmom(0:3,7),m2helastest,q_sf,pdf(-6:6,2)
-      double precision m2s_qqwgaglu,help1,help2,m2s_wgaglu,test1
-      double complex contract_Tjj,dotcc,help1c,help2c
-      double precision dotrr
-      double complex temp,test,test2,test3,test4,test5,dotrc
-      double complex temp1,temp2,temp3,temp4,temp5,temp6,temp7,temp8
+      double complex dotcc
+
+      double complex temp,dotrc,temp1
+
 
       DOUBLE PRECISION fpials(2:3), fpi
       PARAMETER (fpi=4d0*pi)
 
-      integer selc,selid
+      integer selc
 
       double precision pall(0:3,8), mg2res
       integer fsign(8)

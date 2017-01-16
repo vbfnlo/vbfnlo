@@ -3,7 +3,6 @@
 !!! CONTINUATION LINES ARE NOT ALLOWED, COMMENTS HAVE TO START WITH AN !
 
 
-
 !*****************************************************
 !***                                               ***
 !***  The photon PDF value.                        ***

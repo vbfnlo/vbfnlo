@@ -7,21 +7,20 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup5test(0:3)
+
        Complex*16 barpsi_p6(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
-       Complex*16 resultf(13),resultfg(13),resultborn,resultg(4)
+       Complex*16 resultf(13),resultborn,resultg(4)
        Complex*16 resultbg(4)
-       Complex*16 borntemp,F(5930)
+       Complex*16 F(5930)
        Real*8 P(11674)
        COMMON/test_FhlFunctionsABE/F
        Save/test_FhlFunctionsABE/
        COMMON/test_PFunctionsABE/P
        Integer Div,Gauge
 
- 
 
        musq=musqIn
 
@@ -53,20 +52,20 @@ cfc
 #include "VBFNLO/loops/Utilities/GaugeTest.inc"
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup5test(0:3)
+
        Complex*16 barpsi_p6(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
-       Complex*16 resultf(13),resultfg(13),resultborn,resultg(4)
+       Complex*16 resultf(13),resultborn,resultg(4)
        Complex*16 resultbg(4)
-       Complex*16 borntemp,F(5930)
+       Complex*16 F(5930)
        Real*8 P(11674)
        COMMON/test_FhlFunctionsABE/F
        Save/test_FhlFunctionsABE/
        COMMON/test_PFunctionsABE/P
        Integer Div,Gauge
-       Logical WardH,WardP
+       Logical WardH
        logical printGaugePrec
        parameter (printGaugePrec = .false.)
        real*8 comGaugePrec
@@ -78,12 +77,11 @@ cfc
        common/ hexgaugeValue/t
        real*8 t,tdble,tquad
        logical gaugetrue
-       logical wardidtest_Q(0:8),wardpAbe(2)
+       logical wardpAbe(2)
        common/wardHexAbe/wardpAbe       
 
         tdble=1d8
         tquad=1d8
-
 
 
        if(gauge.gt.0.and.gauge.lt.6) then
@@ -181,7 +179,6 @@ c to rescue Dble precision
          if(tquad.lt.GaugeAccuracyHexL) wardpAbe(2)=.true.
 
 
-
           resultborn= resultborn_Q
         do jtemp=1,13
            resultf(jtemp)=resultf_Q(jtemp)
@@ -214,21 +211,20 @@ c       print*, "HexQ:0g", tquad
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup5test(0:3)
+
        Complex*16 barpsi_p6(2),psi_p1(2)
-       Integer comp,alpha, ngluon, posgluon,i 
+       Integer comp,alpha, ngluon, posgluon 
        Real*8 musqIn,musq
        Common/musqInv/musq
-       Complex*16 resultf(13),resultfg(13),resultborn,resultg(4)
+       Complex*16 resultf(13),resultborn,resultg(4)
        Complex*16 resultbg(4)
-       Complex*16 borntemp,F(5930)
+       Complex*16 F(5930)
        Real*8 P(11674)
        COMMON/test_FhlFunctionsABE/F
        Save/test_FhlFunctionsABE/
        COMMON/test_PFunctionsABE/P
        Integer Div,Gauge
 
- 
 
        musq=musqIn
 

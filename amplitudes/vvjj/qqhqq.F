@@ -10,6 +10,7 @@ C
 C========================================================================
 C
       subroutine qqhqqi( bosdec)  ! >0  includes matrix elements and coupl.
+          use globalvars, only: ldoblha
       implicit none                !        for H -> xx (based on bbar)
       integer bosdec               !  0  means the driver does a *|M_dec|^2
 
@@ -94,13 +95,13 @@ c
       double precision loop(6)
       double precision tree(6)
       double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), p65(0:4),
-     1                  p87(0:4), ph(0:4), p57, p68, den
+     1                  p87(0:4), ph(0:4)
       integer  sign(4+max_v), nlo
       double complex  psi(2,-1:1,4), j21(0:3,-1:1), j43(0:3,-1:1)
       double complex  j21j43(-1:1,-1:1), zmm(2)
       double complex mma(6,4,2)
       double complex  prop21(1:4), prop43(1:4)
-      double precision  betah, lamb, fac
+      double precision  lamb, fac
 * split 'fac' into 'fac' (prop.) and 'QCDfac' (qcd nlo)
       double precision QCDfac
 
@@ -206,7 +207,6 @@ c
       enddo
 
 
-      
       if (with_anomHiggs) call qqhqqai(0)
       return
 c
@@ -310,6 +310,7 @@ c (where the propagator factor is fac above)
 c Higgs is final-state - no decays (real or simulated for technical reasons)
         fac = 1d0
       endif
+
 *sophy: took out 'colour factor' and turned into QCDfac
       if (doVirtuals .and. nlo .eq. 1) then
          QCDfac = ( 1d0+(als(1,1)+als(2,1))*c2o2pi*cvirt )
@@ -607,9 +608,6 @@ c but should work for other VBF processes as well
       end
 
 
-
-
-
 C
 C********************  qqhqqg  ***********************************
 C
@@ -621,7 +619,7 @@ C
 #include "VBFNLO/utilities/koppln.inc"
 #include "VBFNLO/utilities/mssm.inc"
 
-      double precision  fpi, xmmu
+      double precision  fpi
       parameter ( fpi=4d0*pi)
 C
 C  QQHQQ calculates the matrix elements**2 for light Higgs production by
@@ -688,7 +686,7 @@ C  Variables for the main part of the program
       real*8 pbar(0:3,4+max_v),qbar(0:4),uucc,uuss,ddcc,ddss,udsc,ducs,
      1       p(0:3,4+max_v),q(0:4),p21(0:4),p43(0:4),p65(0:4),eps(0:3,2),
      2       p21g(0:4),p43g(0:4), res(6,2), l21, l43,
-     3       p87(0:4), ph(0:4), p57, p68, den
+     3       p87(0:4), ph(0:4)
       real*8 uucc_c(3),uuss_c(3),ddcc_c(3),ddss_c(3),udsc_c(3),ducs_c(3)
       integer sign(4+max_v), gsign
       complex*16 psi(2,-1:1,4), braket(2,-1:1,4,2), 
@@ -698,9 +696,13 @@ C  Variables for the main part of the program
      4        mm21(6,4,2), mm43(6,4,2),mm21a(6,4,2),mm43a(6,4,2)
       real*8 pk(0:4,4)
       complex*16 prop21(1:4), prop43(1:4), prop21g(1:4), prop43g(1:4)
-      real*8 betah, lamb, fac
+      real*8 lamb, fac
       logical lcol
 
+      
+      logical upline, lowline, initial
+      common/uplow/ upline, lowline, initial      
+      
 c CPS scheme
       double precision qgammaq
       common /VBFNLO_HIGGS_CPS/ qgammaq
@@ -922,6 +924,8 @@ C  combination isig
                  if(with_anomHiggs) then
                      mm43(k,isig,i) = mm43(k,isig,i) +
      1                                       mm43a(k,isig,i)
+
+
                   endif
                enddo
             else
@@ -954,6 +958,10 @@ c
 c for initial gluon, i.e. gsign=-1, eliminate diagrams with V-->q qbar decay
       l21 = fpi*als(1,1)
       l43 = fpi*als(2,1)
+      
+      if(upline.and.(.not.initial)) l43 = 0
+      if(lowline.and.(.not.initial)) l21=0
+
       if (gsign.eq.-1) then
          if (sign(1).eq.-sign(2) .and. 
      1       sign(3).eq.sign(4) ) then
@@ -978,6 +986,21 @@ c for initial gluon, i.e. gsign=-1, eliminate diagrams with V-->q qbar decay
          res(k,2) = res(k,2)*fac              
 C   *p65(4)/xm2(6)
       enddo
+
+
+      if(with_anomHiggs) then
+c  set NC processes to zero if photon virtuality falls below cutoff
+        if ( abs(p21(4)).lt.qsqAmin ) then
+           do k = 1,4
+              res(k,1) = 0      ! no graphs with gluon on lower line
+           enddo
+        endif
+        if ( abs(p43(4)).lt.qsqAmin ) then
+           do k = 1,4
+              res(k,2) = 0      ! no graphs with gluon on upper line
+           enddo
+        endif
+      endif
 
 C  Assign the final results for the subprocesses
       if (lcol) then

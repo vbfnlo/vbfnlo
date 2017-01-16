@@ -26,7 +26,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
       INTEGER NHEL(2:5), ihel
@@ -133,7 +133,7 @@ C
 C  
 C LOCAL VARIABLES 
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
       INTEGER NHEL(2:5), ihel

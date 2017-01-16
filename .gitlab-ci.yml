@@ -1,0 +1,92 @@
+---
+
+image: particlekit/opensuse-gfortran:42.2
+
+cache:
+  # Cache build results to speedup compilation
+  paths:
+    - build
+  # For details on caching see
+  # https://docs.gitlab.com/ce/ci/yaml/README.html#cache
+  # CI_BUILD_REF_NAME: "master" name of branch name
+  # CI_BUILD_NAME: "compile:foo" name of job
+  # ensures that the same configure/make job on the same branch uses the cache but nothing else
+  key: "$CI_BUILD_NAME/$CI_BUILD_REF_NAME"
+
+compile:opensuse:
+  stage: build
+  script:
+    - mkdir -p build inst
+    - autoreconf -vi
+    - cd build
+    - ../configure --enable-NLO --enable-processes=all
+      --enable-kk --enable-madgraph --enable-quad --with-LHAPDF
+      --prefix=$(realpath $PWD/../inst)
+    - make
+    - make install
+  variables:
+    # enable debug flags to better catch crashes
+    FCFLAGS: "-Wno-all -Wno-extra -Wno-tabs -Wno-unused -fimplicit-none -fcheck=all -fbacktrace -g"
+    # use gcc-5, since it is about 25% faster than gcc-4.9
+    FC: "gfortran-5"
+    CC: "gcc-5"
+    CXX: "g++-5"
+    LD: "ld.gold"
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - inst
+      - config.log
+
+compile:ubuntu:
+  image: particlekit/ubuntu-gfortran
+  stage: build
+  only:
+    - master
+  script:
+    - mkdir -p build inst
+    - autoreconf -vi
+    - cd build
+    - ../configure --enable-NLO --enable-processes=all
+      --enable-kk --enable-madgraph --enable-quad
+      --prefix=$(realpath $PWD/../inst)
+    - make
+    - make install
+  variables:
+    FCFLAGS: "-Wno-all -Wno-extra -fimplicit-none -fcheck=all -fbacktrace -g"
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - config.log
+
+compile:opensuse:gcc48:
+  stage: build
+  only:
+    - master
+  script:
+    - mkdir -p build inst
+    - autoreconf -vi
+    - cd build
+    - ../configure --enable-NLO --enable-processes=all
+      --enable-kk --enable-madgraph --enable-quad
+      --prefix=$(realpath $PWD/../inst)
+    - make
+    - make install
+  variables:
+    FCFLAGS: "-Wno-all -Wno-extra -fimplicit-none -fcheck=all -fbacktrace -g"
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - config.log
+
+regress:lowstat:
+  stage: test
+  dependencies:
+    - compile:opensuse
+  script:
+    - cd regress
+    - py.test -vv -rsx
+  variables:
+    # path to binary, absolute or relative to the regress directory
+    VBFNLOPATH: '../inst/bin/'
+    RUNALLPROCESSES: 'yes'

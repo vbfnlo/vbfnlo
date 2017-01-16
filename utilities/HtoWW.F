@@ -80,10 +80,8 @@ c
 c
 
 
-
 ********************************************************************************
 ********************************************************************************
-
 
 
 c     sum over chiralities tau1,tau3 =-1,+1
@@ -102,7 +100,7 @@ c     possible combinations for hadronic decay:
 c     
 
       implicit none
-      integer bos1, bos2, flav1, flav3, i, j, h_index, helicity_up(4)
+      integer bos1, bos2, flav1, flav3, i, helicity_up(4)
       real*8 L(0:3,4), m2s, m2s_up, m2s_down, rnumb, rnumb2, RandomNumber, QSQ_had
       external RandomNumber
       real*8 mjj2
@@ -143,7 +141,6 @@ c
          print*, "In Hjj_ZZhad the first Z has to decay hadronically!"
          stop
       endif
-
 
 
 c...Les Houches interface - set decay particles for hadronic decay
@@ -212,7 +209,6 @@ c...Les Houches interface - set decay particles for hadronic decay
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -269,7 +265,6 @@ c
 
       return
       end
-
 
 
 ********************************************************************************

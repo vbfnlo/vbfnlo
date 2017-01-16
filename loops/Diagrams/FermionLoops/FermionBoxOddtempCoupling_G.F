@@ -47,7 +47,7 @@ c*******************************************************************************
         Real*8 D1234I(22,4)
       Complex*16 F(802)
       Real*8 FI(802),FR(802),P(248)
-      Real*8 za1,za2,za3,za4,zb1,zb2,zb3,zb4
+
       Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
       Complex*16 dotrc,dotcc,result,resultn(5)
        Real*8 musq,m1,m2,m3,m4,m1sq,m2sq,m3sq,m4sq,Cpl(8)
@@ -5513,7 +5513,7 @@ c************** Calling the Fa functions****************************************
        IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
        Complex*16   mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,result
+       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR
        Real*8 EPSRRRR
       EXTERNAL   EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,EPSRRRR
       Complex*16 Fa(35)

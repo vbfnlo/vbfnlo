@@ -32,6 +32,7 @@ c***************************************************************************
 c     Initialization of renormalization and factorization scales
 c     and printout for scales.
 ****************************************************************************
+          use globalvars, only: lglobalprint, ldoscales
 
       implicit none
 #include "scales.inc"
@@ -40,10 +41,9 @@ c     and printout for scales.
 #include "process.inc"
 
       real*8 qsq
-      integer mu
+
       real*8 alphas5, alphas5_hardwired
       external alphas5, alphas5_hardwired
-
 
 ** clrCT is the counterterm for qqV
       double complex clrCT
@@ -54,10 +54,12 @@ c     and printout for scales.
 
       if (ldoscales) then
 
-      print*," "
-      print*,"Information on scale setting in InitScales "
-      print*,"-------------------------------------------"
-      print*," "
+         if (lglobalprint) then
+            print*," "
+            print*,"Information on scale setting in InitScales "
+            print*,"-------------------------------------------"
+            print*," "
+         endif
 
 c-------------------------------      
 c   factorization scale
@@ -66,7 +68,7 @@ c-------------------------------
 c user defined constant scale 
       CASE(0)
          qsq = muf_user**2 * xif**2
-         print*,"Constant factorization scale chosen: mu_F =",
+         if (lglobalprint) print*,"Constant factorization scale chosen: mu_F =",
      1                   sqrt(qsq)," GeV "
 c dynamic scale = momentum transfer of W/Z
       CASE(1)
@@ -79,8 +81,8 @@ c dynamic scale = momentum transfer of W/Z
      5        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
      6        Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad, WPhadWPjj, WMhadWMjj,
      7        WPAjj, WMAjj, ZAjj, ZAjj_n)
-            print*,"Dynamical factorization scale chosen:"
-            print*,"        momentum transfer of W/Z  "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"        momentum transfer of W/Z  "
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_muf = ",id_muf
@@ -101,8 +103,8 @@ c dynamic scale = min(pt_j)
      8        Sp2jj_WW, Sp2jj_ZZ_ll, Sp2jj_ZZ_lnu, WPAjj, WMAjj, ZAjj, ZAjj_n)
 
 
-            print*,"Dynamical factorization scale chosen:"
-            print*,"              mu_F = min(pt_j)"
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"              mu_F = min(pt_j)"
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_muf = ",id_muf
@@ -113,15 +115,15 @@ c dynamic scale = invariant primary boson mass
       CASE(3,4)
          SELECT CASE(procID)
          CASE (WP_only,WM_only,WPJ,WMJ)
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      invariant V mass "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      invariant V mass "
          CASE (
      5     WPH, WPH_AA, WPH_mu, WPH_tau, WPH_bbar, WPH_WW, WPH_ZZ_ll,  WPH_ZZ_lnu,
      5     WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar, WMH_WW, WMH_ZZ_ll,  WMH_ZZ_lnu,
      5     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll,  WPHJ_ZZ_lnu,
      5     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll,  WMHJ_ZZ_lnu)
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      invariant VH mass "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      invariant VH mass "
          CASE (WW, GFWW, WPZ, WMZ, WPA, WMA, ZZ, GFZZ, ZA, GFZA, AA, GFAA,
      1        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
      2        ZZhad,GFZZhad,
@@ -129,15 +131,15 @@ c dynamic scale = invariant primary boson mass
      4        WPAJ, WMAJ, WPZJ, WMZJ,
      5        WWJ, GFWWj, ZZJ, GFZZj
      6     )       
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      invariant VV mass "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      invariant VV mass "
          CASE(ZZWP, ZZWM, WWZ, WWWP, WWWM, ZZZ, WWA, ZZA, ZZnA, WPZA, WMZA,
      1        WPAA, WMAA, ZAA,ZnAA, AAA, WPAAj, WMAAj,
      2        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, 
      3        ZZWMhad, WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
      4        WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      invariant VVV mass "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      invariant VVV mass "
          CASE DEFAULT
             print *,"unreasonable scale choice for this process:
      1            id_muf = ",id_muf
@@ -147,10 +149,10 @@ c dynamic scale = invariant primary boson mass
 c dynamic scale = sqrt(pt_j1*pt_j2)
       CASE(5)
          SELECT CASE(procID)
-         CASE(GFHjj, GFHjj_AA, GFHjj_mu, GFHjj_tau, GFHjj_bbar, 
+         CASE(GFHjj, GFHjj_AA, GFHjj_mu, GFHjj_tau, GFHjj_bbar,
      -        GFHjj_WW, GFHjj_ZZ_ll, GFHjj_ZZ_lnu)
-            print*,"Dynamical factorization scale chosen:"
-            print*,"              mu_F = sqrt(pt_j1*pt_j2)"
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"              mu_F = sqrt(pt_j1*pt_j2)"
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_muf = ",id_muf
@@ -160,7 +162,7 @@ c dynamic scale = sqrt(pt_j1*pt_j2)
 c constant scale = higgs mass
       CASE(6)
          qsq = xmh**2 * xif**2
-         print*,"Constant factorization scale chosen: mu_F = MH = ",
+         if (lglobalprint) print*,"Constant factorization scale chosen: mu_F = MH = ",
      1                   sqrt(qsq)," GeV "
 
 c dynamic scale = minimal ET
@@ -179,16 +181,16 @@ c dynamic scale = minimal ET
      &        WWJ, GFWWj, ZZJ, GFZZj,
      &        WPJ,WMJ
      &       )
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      mu_F = min(ET_V) "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      mu_F = min(ET_V) "
          CASE(
      5     WPH, WPH_AA, WPH_mu, WPH_tau, WPH_bbar, WPH_WW, WPH_ZZ_ll,  WPH_ZZ_lnu,
      5     WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar, WMH_WW, WMH_ZZ_ll,  WMH_ZZ_lnu,
      5     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll,  WPHJ_ZZ_lnu,
      5     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll,  WMHJ_ZZ_lnu
      &       )
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      mu_F = min(ET_V, ET_H) "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      mu_F = min(ET_V, ET_H) "
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_muf = ",id_muf
@@ -198,7 +200,7 @@ c dynamic scale = minimal ET
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(8)
          SELECT CASE(procID)
-         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,
      &        QCDZAjj_l,QCDZAjj_n, ZAjj, ZAjj_n,
      &        WPZ,WMZ, WPZJ, WMZJ,
@@ -207,8 +209,8 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
      2        ZZ,ZZJ,GFZZ,GFZZj,
      2        ZA,GFZA,
      2        AA,GFAA )
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      mu_F = ( sum(pT partons) + sum( ET V ) )/2 "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      mu_F = ( sum(pT partons) + sum( ET V ) )/2 "
        CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_muf = ",id_muf
@@ -218,12 +220,12 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
 c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
       CASE(9)
          SELECT CASE(procID)
-         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n,
      2        ZAjj, ZAjj_n)
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      mu_F = ( sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) )/2"
-            print*,"( see arXiv 1311.6738 ) "
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      mu_F = ( sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) )/2"
+            if (lglobalprint) print*,"( see arXiv 1311.6738 ) "
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_muf = ",id_muf
@@ -233,17 +235,16 @@ c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(10)
          SELECT CASE(procID)
-         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n,
      2         ZAjj, ZAjj_n)
-            print*,"Dynamical factorization scale chosen:"
-            print*,"      mu_F = ( ET(jj) + ET(VV) )/2"
+            if (lglobalprint) print*,"Dynamical factorization scale chosen:"
+            if (lglobalprint) print*,"      mu_F = ( ET(jj) + ET(VV) )/2"
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_muf = ",id_muf
             STOP
          END SELECT
-
 
 
       CASE DEFAULT
@@ -260,11 +261,10 @@ c user defined constant scale
       CASE(0)
          qsq = mur_user**2 * xir**2
          als(1,1) = alphas5(qsq,1)
-         print*,"Constant value for alphas chosen: alphas(NLO) =",als(1,1)
+         if (lglobalprint) print*,"Constant value for alphas chosen: alphas(NLO) =",als(1,1)
          call InitPDFs(0)
          als(1,1) = alphas5(qsq,0)
-         print*,"Constant value for alphas chosen: alphas(LO) =",als(1,1)
-
+         if (lglobalprint) print*,"Constant value for alphas chosen: alphas(LO) =",als(1,1)
 c dynamic scale = momentum transfer of W/Z
       CASE(1)
          SELECT CASE(procID)
@@ -276,10 +276,10 @@ c dynamic scale = momentum transfer of W/Z
      5        WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj, ZZhadjj,
      6        Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad, WPhadWPjj, WMhadWMjj,
      7        WPAjj, WMAjj, ZAjj, ZAjj_n)
-            print*,"Dynamical value for alphas chosen:"
-            print*,"alphas = alpha(momentum transfer of W/Z)"   
+            if (lglobalprint) print*,"Dynamical value for alphas chosen:"
+            if (lglobalprint) print*,"alphas = alpha(momentum transfer of W/Z)"   
          CASE DEFAULT
-            print *,"unreasonable scale choice for this process: 
+            if (lglobalprint) print *,"unreasonable scale choice for this process: 
      1            id_mur = ",id_mur
             STOP
          END SELECT
@@ -298,8 +298,8 @@ c dynamic scale alpha(min(pt_j))
      8        WPAjj, WMAjj, ZAjj,ZAjj_n)
 
 
-            print*,"Dynamical scale for alphas chosen:"
-            print*,"              alphas = alpha(min(pt_j))"
+            if (lglobalprint) print*,"Dynamical scale for alphas chosen:"
+            if (lglobalprint) print*,"              alphas = alpha(min(pt_j))"
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_mur = ",id_mur
@@ -310,31 +310,31 @@ c dynamic scale = invariant VV mass
       CASE(3,4)
          SELECT CASE(procID)
          CASE(WP_only,WM_only,WPJ,WMJ)
-            print*,"Dynamical value for alphas chosen:"
-            print*,"alphas = alpha(invariant V mass)"
+            if (lglobalprint) print*,"Dynamical value for alphas chosen:"
+            if (lglobalprint) print*,"alphas = alpha(invariant V mass)"
          CASE(
      5        WPH, WPH_AA, WPH_mu, WPH_tau, WPH_bbar, WPH_WW, WPH_ZZ_ll,  WPH_ZZ_lnu,
      5        WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar, WMH_WW, WMH_ZZ_ll,  WMH_ZZ_lnu,
      5        WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll,  WPHJ_ZZ_lnu,
      5        WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll,  WMHJ_ZZ_lnu
      &       )
-            print*,"Dynamical value for alphas chosen:"
-            print*,"alphas = alpha(invariant VH mass)"
+            if (lglobalprint) print*,"Dynamical value for alphas chosen:"
+            if (lglobalprint) print*,"alphas = alpha(invariant VH mass)"
          CASE(WW, GFWW, WPZ, WMZ, WPA, WMA, ZZ, GFZZ, ZA, GFZA, AA, GFAA,
      &        WPhadWMlep,WPlepWMhad,GFWPhadWMlep,GFWPlepWMhad,
      &        ZZhad,GFZZhad,
      &        WPhadZ,WPZhad,WMhadZ,WMZhad,
      &        WPAJ, WMAJ, WPZJ, WMZJ,
      &        WWJ, GFWWj, ZZJ, GFZZj)
-            print*,"Dynamical value for alphas chosen:"
-            print*,"alphas = alpha(invariant VV mass)"
+            if (lglobalprint) print*,"Dynamical value for alphas chosen:"
+            if (lglobalprint) print*,"alphas = alpha(invariant VV mass)"
          CASE(ZZWP, ZZWM, WWZ, WWWP, WWWM, ZZZ, WWA, ZZA, ZZnA, WPZA, WMZA,
      1        WPAA, WMAA, ZAA, ZnAA,AAA, WPAAj, WMAAj,
      2        WPhadWMZ, WPWMhadZ, WWZhad, ZZhadWP, ZZWPhad, ZZhadWM, 
      3        ZZWMhad, WPhadWMWP, WPWMhadWP, WMhadWPWM, WMWPhadWM, ZZZhad,
      4        WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
-            print*,"Dynamical value for alphas chosen:"
-            print*,"alphas = alpha(invariant VVV mass)"
+            if (lglobalprint) print*,"Dynamical value for alphas chosen:"
+            if (lglobalprint) print*,"alphas = alpha(invariant VVV mass)"
          CASE DEFAULT
             print *,"unreasonable scale choice for this process:
      1            id_mur = ",id_mur
@@ -346,8 +346,8 @@ c dynamic scale alpha(pt_j1) * alpha(pt_j2) * alpha(m_H)^2
          SELECT CASE(procID)
          CASE(GFHjj, GFHjj_AA, GFHjj_mu, GFHjj_tau, GFHjj_bbar,
      1        GFHjj_WW, GFHjj_ZZ_ll, GFHjj_ZZ_lnu, WPZjj, WMZjj)
-            print*,"Dynamical scale for alphas chosen:"
-            print*,"   alphas = alpha(pt_j1)*alpha(pt_j2)* alpha(m_H)^2"
+            if (lglobalprint) print*,"Dynamical scale for alphas chosen:"
+            if (lglobalprint) print*,"   alphas = alpha(pt_j1)*alpha(pt_j2)* alpha(m_H)^2"
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_mur = ",id_mur
@@ -358,10 +358,10 @@ c constant scale = higgs mass
       CASE(6)
          qsq = xmh**2 * xir**2
          als(1,1) = alphas5(qsq,1)
-         print*,"Constant value for alphas chosen: alphas(NLO) =",als(1,1)
+         if (lglobalprint) print*,"Constant value for alphas chosen: alphas(NLO) =",als(1,1)
          call InitPDFs(0)
          als(1,1) = alphas5(qsq,0)
-         print*,"Constant value for alphas chosen: alphas(LO) =",als(1,1)
+         if (lglobalprint) print*,"Constant value for alphas chosen: alphas(LO) =",als(1,1)
 
 c dynamic scale = minimal ET
       CASE(7)
@@ -377,15 +377,15 @@ c dynamic scale = minimal ET
      &        WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA,
      &        WPAJ, WMAJ, WPZJ, WMZJ, WPJ, WMJ,
      &        WWJ, GFWWj, ZZJ, GFZZj)
-            print*,"Dynamical value for alphas chosen:"
-            print*,"alphas = alpha(min(ET_V))"   
+            if (lglobalprint) print*,"Dynamical value for alphas chosen:"
+            if (lglobalprint) print*,"alphas = alpha(min(ET_V))"   
          CASE(
      5     WPH, WPH_AA, WPH_mu, WPH_tau, WPH_bbar, WPH_WW, WPH_ZZ_ll,  WPH_ZZ_lnu,
      5     WMH, WMH_AA, WMH_mu, WMH_tau, WMH_bbar, WMH_WW, WMH_ZZ_ll,  WMH_ZZ_lnu,
      5     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll,  WPHJ_ZZ_lnu,
      5     WMHJ, WMHJ_AA, WMHJ_mu, WMHJ_tau, WMHJ_bbar, WMHJ_WW, WMHJ_ZZ_ll,  WMHJ_ZZ_lnu)
-            print*,"Dynamical value for alphas chosen:"
-            print*,"alphas = alpha(min(ET_V, ET_H))"   
+            if (lglobalprint) print*,"Dynamical value for alphas chosen:"
+            if (lglobalprint) print*,"alphas = alpha(min(ET_V, ET_H))"   
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_mur = ",id_mur
@@ -395,7 +395,7 @@ c dynamic scale = minimal ET
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(8)
          SELECT CASE(procID)
-         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,
      &        QCDZAjj_l,QCDZAjj_n,ZAjj,ZAjj_n,
      &        WPZ,WMZ, WPZJ, WMZJ,
@@ -404,8 +404,8 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
      2        ZZ,ZZJ,GFZZ,GFZZj,
      2        ZA,GFZA,
      2        AA,GFAA )
-            print*,"Dynamical renormalization scale chosen:"
-            print*,"      mu_R = ( sum(pT partons) + sum( ET V ) )/2 "
+            if (lglobalprint) print*,"Dynamical renormalization scale chosen:"
+            if (lglobalprint) print*,"      mu_R = ( sum(pT partons) + sum( ET V ) )/2 "
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_mur = ",id_mur
@@ -415,13 +415,13 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
 c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
       CASE(9)
          SELECT CASE(procID)
-         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n,
      &        ZAjj,ZAjj_n)
 
-            print*,"Dynamical renormalization scale chosen:"
-            print*,"      mu_R = ( sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) )/2"
-            print*,"( see arXiv 1311.6738 ) "
+            if (lglobalprint) print*,"Dynamical renormalization scale chosen:"
+            if (lglobalprint) print*,"      mu_R = ( sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) )/2"
+            if (lglobalprint) print*,"( see arXiv 1311.6738 ) "
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_mur = ",id_mur
@@ -431,12 +431,12 @@ c dynamical scale sum(pT_j*exp(|y_j-y12|)) + sum( ET V ) ( see arXiv 1311.6738 )
 c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
       CASE(10)
          SELECT CASE(procID)
-         CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+         CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1        QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n
      2        ,ZAjj,ZAjj_n)
 
-            print*,"Dynamical renormalization scale chosen:"
-            print*,"      mu_R = ( ET(jj) + ET(VV) )/2"
+            if (lglobalprint) print*,"Dynamical renormalization scale chosen:"
+            if (lglobalprint) print*,"      mu_R = ( ET(jj) + ET(VV) )/2"
          CASE DEFAULT
             print *,"unreasonable scale choice for this process: 
      1            id_mur = ",id_mur
@@ -453,24 +453,23 @@ c dynamical scale HT/2,  HT = sum(pT partons) + sum( ET V )
 
       SELECT CASE(id_mur)
       CASE(0,6)
-         print*," "
+         if (lglobalprint) print*," "
       CASE DEFAULT
          call InitPDFs(0)
-         print*," "
+         if (lglobalprint) print*," "
       END SELECT
 
 
 ** Setting LO alfas(MZ)
       alfas_lo = alphas5(xmz**2D0,0)
 
-      else !ldoscales
+      else 
 c just some useful defaults
         alfas_lo = alphas5_hardwired(91.1876d0**2D0,0)
-      endif !ldoscales
+      endif
 
       RETURN
       END
-
 
 c*************************************************************************
       Subroutine Scales(p, v, jets, njets, leptons, nl, photons, 
@@ -567,7 +566,7 @@ c Gluon fusion
          call calcGGFScales(p)
 
 c QCD induced processes
-      CASE(QCDWPWMjj, QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
+      CASE(QCDWMWMjj,QCDWPWPjj,QCDWPjj,QCDWMjj,QCDWPZjj,QCDWMZjj,QCDAAjj,
      1 QCDZjj_l, QCDZjj_nu,QCDWPAjj,QCDWMAjj,QCDZZjj_ll,QCDZZjj_lnu,QCDZAjj_l,QCDZAjj_n)
          call calcQCDscales(p, v, jets, njets, leptons, nl, photons, 
      1                                            nphotons, Lmax, nlo)
@@ -613,21 +612,19 @@ c     input variables
       real*8 p(0:3,max_p,max_kin)
       real*8 v(0:3,max_v,max_kin)
       real*8 jets(0:7,max_jets,max_kin) 
-      real*8 leptons(0:8,max_v,max_kin),temp8(0:8)     
+      real*8 leptons(0:8,max_v,max_kin)     
       real*8 photons(0:7,max_v,max_kin)     
       integer Lmax, njets(max_kin), nl(max_kin), nphotons(max_kin), nlo
 
-      real*8 q12(0:4,max_kin), q34(0:4,max_kin), qsq, qsq2, pt(max_jets), exp
-      integer L, mu, i
+      real*8 q12(0:4,max_kin), q34(0:4,max_kin), qsq, pt(max_jets), exp
+      integer L, i
       real*8 alphas5,mass2,temp,transverseEnergy,tempvec(0:3),y12
       external alphas5,mass2,transverseEnergy
-
 
 c----------------------------      
 c   factorization scale
 c----------------------------      
       SELECT CASE(id_muf)
-
 c user defined constant scale 
       CASE(0)
          qsq = muf_user**2 * xif**2
@@ -893,7 +890,6 @@ c E_T(jj) + E_T(VV)
          enddo
 
 
-
       CASE DEFAULT
          print *,"unreasonable scale choice : id_mur = ",id_mur
          STOP
@@ -943,11 +939,10 @@ c     input variables
       real*8 photons(0:7,max_v,max_kin)     
       integer Lmax, njets(max_kin), nl(max_kin), nphotons(max_kin), nlo
 
-      real*8 q12(0:4,max_kin), q34(0:4,max_kin), qsq, qsq2, pt(max_jets), exp
-      integer L, mu, i
+      real*8 qsq, pt(max_jets)
+      integer L, i
       real*8 alphas5
       external alphas5
-
 
 c----------------------------      
 c   factorization scale
@@ -1048,7 +1043,6 @@ c constant scale = higgs mass
          print *,"unreasonable scale choice : id_mur = ",id_mur
          STOP
       END SELECT
-
 
 
       RETURN
@@ -1258,7 +1252,6 @@ c----------------------------
       end
 
 
-
       subroutine CalcVXjScale_helper(p, v, jets, njets, leptons, nl, photons, nphotons,
      &                               nlo, Lmax, xi, scaleid, mu_user, isRenScale, qsq)
 
@@ -1300,7 +1293,6 @@ c----------------------------
       COMMON /BKOPOU/ CLR, XM2, XMG, Bk, Vk, Ak
 
 
-
 c Get number of massive vector bosons (W,Z) and massless bosons (photons)
 c from n_lepton+n_decayquark and particle_IDs(n_lepton+n_decayquark+i).
 c In case of the VH(j)-processes all particles from 3..n_v are counted towards the higgs.
@@ -1322,7 +1314,6 @@ c In case of the VH(j)-processes all particles from 3..n_v are counted towards t
             if (particle_IDs(i).eq.22) n_photons = n_photons + 1
          enddo
       end select
-
 
 
 c----------------------------      
@@ -1407,8 +1398,7 @@ c default
       
 
       RETURN
-      END      
-
+      END
 
 
 ****************************************************************************
@@ -1445,11 +1435,11 @@ c     input variables
       real*8 photons(0:7,max_v,max_kin)     
       integer Lmax, njets(max_kin), nl(max_kin), nphotons(max_kin), nlo
       
-      integer L,i,mu,j
-      real*8 tempvec(0:3),y12, temp2
+      integer L,i
+      real*8 tempvec(0:3),y12
       real*8 transverseEnergy
       external transverseEnergy
-      real*8 temp,alphas5,mass2,temp8(0:8),mjj2
+      real*8 temp,alphas5,mass2,mjj2
       external alphas5,mass2,mjj2
       
 c----------------------------      
@@ -1534,8 +1524,6 @@ c E_T(jj) + E_T(VV)
             mufsq(1,L) = temp
             mufsq(2,L) = temp
          enddo
-
-
 
 
       end select
@@ -1672,7 +1660,7 @@ c E_T(jj) + E_T(VV)
 #include "global.inc"
 
       real*8 p(0:3,max_p,max_kin), v(0:3,max_v,max_kin)
-      real*8 q12(0:4,max_kin), q34(0:4,max_kin), qsq
+      real*8 q12(0:4,max_kin), q34(0:4,max_kin)
       integer Lmax, L, mu
 
       
@@ -1693,7 +1681,6 @@ c E_T(jj) + E_T(VV)
       END
 
 
-
 c*******************************************************************************
 c*** calculate transverse energy of four vector p
 c*** E_T = sqrt( p_T^2 + m^2 )
@@ -1706,9 +1693,6 @@ c*******************************************************************************
       transverseEnergy = sqrt(p(0)*p(0)-p(3)*p(3))
       return
       end
-
-
-
 
 
 ********************************************************************************
@@ -1885,8 +1869,7 @@ CASFIX
 casfix      alphas = 0.1185
 CASFIX
       RETURN                                                                  
-      END                                                                     
-
+      END
 
 
 ********************************************************************************

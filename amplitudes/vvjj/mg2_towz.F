@@ -65,7 +65,6 @@
             call wpto4l_had(v,h,wwv)
 
 
-
          do mu = 0,3
           do nu = 0,3
            mg2_tens_2d(mu,nu) = dcmplx(0.,0.)
@@ -80,7 +79,6 @@
          enddo
 
 
-
          print*, ""
          call wpto4l_mg2_had(v,h,mg2_tens_1d)
          sumtest = 0
@@ -90,7 +88,6 @@
            mg2_tens_1d(i) = dcmplx(0.,0.)
          enddo
          print*, "tensor W+ to WZ:", sumtest
-
 
 
 !         print*, ""
@@ -178,7 +175,6 @@
          print*, "tensor W+Z to W+ 3 had:", sumtest
 
 
-
 !         print*, ""
          call VVtomm_mg2_had(1,h,q12(0,j),v,mg2_tens_2d_comb(0,0,1),mg2_tens_2d_comb(0,0,2),
      &                                      mg2_tens_2d_comb(0,0,3),mg2_tens_2d_comb(0,0,4))    	 !emit W on lower
@@ -260,7 +256,6 @@
          print*, "tensor ZZ to VV 2:", sumtest
 
 
-
 !         print*, ""
          call WWtomm_mg2_had(1,h,q34(0,j),v,mg2_tens_2d(0,0))     !emit V->e nu on upper
          sumtest = 0
@@ -284,7 +279,6 @@
           enddo
          enddo
          print*, "tensor WW to Z 2:", sumtest
-
 
 
 !         print*, ""
@@ -335,16 +329,6 @@
          read(*,*)
 
 
-
-
-
-
-
-
-
-
-
-
          CASE(WMhadZjj, WMZhadjj)            ! semileptonic decay modes
 
             call anomal_formfactor(q12(0,j),q34(0,j),qe(0),qu(0))
@@ -379,8 +363,7 @@
             call WMVtoln_had(2,q12(0,j),v,awen(0,0,2,j),zwen(0,0,2,j))  !emit V->mu+mu- on lower
             call WMVtoln_had(1,q12(0,j),v,waen(0,0,2,j),wzen(0,0,2,j))  !emit V->mu+mu- on lower
             call WMVtoln_had(2,q34(0,j),v,waen(0,0,1,j),wzen(0,0,1,j))  !emit V->mu+mu- on upper
-            call wmto4l_had(v,h,wwv)	
-
+            call wmto4l_had(v,h,wwv)
 
 
          do mu = 0,3
@@ -397,7 +380,6 @@
          enddo
 
 
-
          print*, ""
          call WMto4l_mg2_had(v,h,mg2_tens_1d)
          sumtest = 0
@@ -407,7 +389,6 @@
            mg2_tens_1d(i) = dcmplx(0.,0.)
          enddo
          print*, "tensor W- to WZ:", sumtest
-
 
 
 !         print*, ""
@@ -495,7 +476,6 @@
          print*, "tensor W-Z to W- 3 had:", sumtest
 
 
-
 !         print*, ""
          call VVtomm_mg2_had(1,h,q12(0,j),v,mg2_tens_2d_comb(0,0,1),mg2_tens_2d_comb(0,0,2),
      &                                      mg2_tens_2d_comb(0,0,3),mg2_tens_2d_comb(0,0,4))    	 !emit W on lower
@@ -577,7 +557,6 @@
          print*, "tensor ZZ to VV 2:", sumtest
 
 
-
 !         print*, ""
          call WWtomm_mg2_had(2,h,q34(0,j),v,mg2_tens_2d(0,0))     !emit V->e nu on upper
          sumtest = 0
@@ -601,7 +580,6 @@
           enddo
          enddo
          print*, "tensor WW to Z 2:", sumtest
-
 
 
 !         print*, ""
@@ -652,43 +630,12 @@
          read(*,*)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
          end select
 
 #endif
 
 
       end
-
-
-
-
 
 
 c ------------------------------------------------------------	
@@ -789,7 +736,6 @@ C ----------
       CALL VCARTX(Q(0),wmass ,wwidth, MU,-1,W(1,1   ))
 
 
-
       if (procid.eq.wphadzjj) then
       
 
@@ -867,7 +813,6 @@ C ----------
       endif
 
 
-     
       enddo
              
       wp(4) = dcmplx(q(0),q(3))
@@ -875,7 +820,6 @@ C ----------
 
       return
       END
-      
 
 
 c ------------------------------------------------------------	
@@ -966,7 +910,6 @@ C ----------
       CALL VCARTX(Q(0),wmass ,wwidth, MU,-1,W(1,1   ))
 
 
-
       if (procid.eq.wmhadzjj) then
       
 
@@ -1044,7 +987,6 @@ C ----------
       endif
 
 
-     
       enddo
              
       wm(4) = dcmplx(q(0),q(3))
@@ -1176,7 +1118,6 @@ C ----------
             endif
 
 
-
          enddo
       enddo
 
@@ -1279,8 +1220,6 @@ c
             wpatens(mu,nu) = -(amp(1)*gal(1)/gzl(1)+amp(3)*gwwa/gwwz)
 
 
-
-
             if (procid.eq.wphadzjj) then
 
 
@@ -1295,8 +1234,6 @@ c
       wpztens(mu,nu) = -(+AMP(   1)+AMP(   2)+AMP(   3))
 
 
-
-
             CALL VCARTX(Q2(0),ZERO  ,ZERO  , NU,-1,W(1,2))
       CALL FVIXXX(W(1,3   ),W(1,2   ),GAD ,ZERO    ,ZERO    ,W(1,5   ))    
       CALL IOVXXX(W(1,5   ),W(1,4   ),W(1,1   ),GWF ,AMP(1   ))            
@@ -1308,7 +1245,6 @@ c
       wpatens(mu,nu) = -(+AMP(   1)+AMP(   2)+AMP(   3))
 
 
-
             endif
 
 
@@ -1316,9 +1252,6 @@ c
       enddo
 
       end
-
-
-
 
 
 c ------------------------------------------------------------	
@@ -1443,9 +1376,8 @@ C ----------
       CALL IOVXXX(W(1,6   ),W(1,4   ),W(1,2   ),GAL ,AMP(2   ))            
       
       aatens(mu,nu) = +AMP(   1)+AMP(   2)
- 
- 
- 
+
+
       if ( (procid.eq.wpzhadjj .or. procid.eq.wmzhadjj) .and. ztouu ) then
  
       CALL FVIXXX(W(1,3   ),W(1,2   ),GAU ,ZERO    ,ZERO    ,W(1,5   ))    
@@ -1569,7 +1501,6 @@ C ----------
       aztens(mu,nu) = +AMP(   1)+AMP(   2)
 
 
-
       if ( (procid.eq.wpzhadjj .or. procid.eq.wmzhadjj) .and. ztouu ) then
  
       CALL FVIXXX(W(1,3   ),W(1,2   ),GZU ,ZERO    ,ZERO    ,W(1,5   ))    
@@ -1591,8 +1522,6 @@ C ----------
       endif
 
 
-
-         
 	 enddo !nu
       enddo !mu
 
@@ -1694,7 +1623,6 @@ C ----------
       zztens(mu,nu) = +AMP(   1)+AMP(   2)
 
 
-
       if ( (procid.eq.wpzhadjj .or. procid.eq.wmzhadjj) .and. ztouu ) then
  
       CALL FVIXXX(W(1,3   ),W(1,2   ),GZU ,ZERO    ,ZERO    ,W(1,5   ))    
@@ -1722,10 +1650,7 @@ C ----------
       end
 
   
-c ------------------------------------------------------------	
-
-
-
+c ------------------------------------------------------------
 
 
       subroutine wwtomm_mg2_had(idb,h,Q,v,wll)
@@ -1843,7 +1768,6 @@ C ----------
       wll(mu,nu) = +AMP(   1)+AMP(   2)+AMP(   3)
 
 
-
       if ( (procid.eq.wpzhadjj .or. procid.eq.wmzhadjj) .and. ztouu ) then
  
       CALL FVIXXX(W(1,3   ),W(1,2   ),GWF ,ZERO    ,ZERO    ,W(1,5   ))    
@@ -1873,7 +1797,6 @@ C ----------
       endif
 
 
-         
 	 enddo !nu
       enddo !mu
 
@@ -2121,7 +2044,6 @@ C ----------
      &             +AMP(  46)
 
 
-
       elseif (procid.eq.wpzhadjj .and. ztouu) then
 
 
@@ -2246,7 +2168,6 @@ C ----------
      &             +AMP(  26)+AMP(  27)+AMP(  28)+AMP(  29)+AMP(  30)
      &             +AMP(  31)+AMP(  32)+AMP(  33)+AMP(  34)+AMP(  35)
      &             +AMP(  36)+AMP(  37)+AMP(  38)+AMP(  39)+AMP(  40)
-
 
 
       elseif (procid.eq.wpzhadjj .and. ztodd) then
@@ -2589,7 +2510,6 @@ C ----------
      &             +AMP(  41)+AMP(  42)+AMP(  43)+AMP(  44)
 
 
-
       elseif (procid.eq.wpzhadjj .and. ztouu) then
 
       CALL FVIXXX(W(1,3   ),W(1,2   ),GWF ,ZERO    ,ZERO    ,W(1,7   ))    
@@ -2689,7 +2609,6 @@ C ----------
      &             +AMP(  31)+AMP(  32)
 
 
-
       elseif (procid.eq.wpzhadjj .and. ztodd) then
 
       CALL FVIXXX(W(1,3   ),W(1,2   ),GWF ,ZERO    ,ZERO    ,W(1,7   ))    
@@ -2786,7 +2705,6 @@ C ----------
      &             +AMP(  21)+AMP(  22)+AMP(  23)+AMP(  24)+AMP(  25)
      &             +AMP(  26)+AMP(  27)+AMP(  28)+AMP(  29)+AMP(  30)
      &             +AMP(  31)+AMP(  32)
-
 
 
       endif
@@ -3037,7 +2955,6 @@ C ----------
      &             -AMP(  46)
 
 
-
       elseif (procid.eq.wmzhadjj .and. ztouu) then
 
       CALL FVOXXX(W(1,3   ),W(1,2   ),GWF ,ZERO    ,ZERO    ,W(1,7   ))    
@@ -3159,7 +3076,6 @@ C ----------
      &             -AMP(  26)-AMP(  27)-AMP(  28)-AMP(  29)-AMP(  30)
      &             -AMP(  31)-AMP(  32)-AMP(  33)-AMP(  34)-AMP(  35)
      &             -AMP(  36)-AMP(  37)-AMP(  38)-AMP(  39)-AMP(  40)
-
 
 
       elseif (procid.eq.wmzhadjj .and. ztodd) then
@@ -3285,7 +3201,6 @@ C ----------
      &             -AMP(  26)-AMP(  27)-AMP(  28)-AMP(  29)-AMP(  30)
      &             -AMP(  31)-AMP(  32)-AMP(  33)-AMP(  34)-AMP(  35)
      &             -AMP(  36)-AMP(  37)-AMP(  38)-AMP(  39)-AMP(  40)
-
 
 
       endif
@@ -3485,7 +3400,6 @@ C ----------
      &             -AMP(  41)-AMP(  42)-AMP(  43)-AMP(  44)
 
 
-
       elseif (procid.eq.wmzhadjj .and. ztouu) then
 
       CALL FVOXXX(W(1,3   ),W(1,2   ),GWF ,ZERO    ,ZERO    ,W(1,7   ))    
@@ -3582,7 +3496,6 @@ C ----------
      &             -AMP(  21)-AMP(  22)-AMP(  23)-AMP(  24)-AMP(  25)
      &             -AMP(  26)-AMP(  27)-AMP(  28)-AMP(  29)-AMP(  30)
      &             -AMP(  31)-AMP(  32)
-
 
 
       elseif (procid.eq.wmzhadjj .and. ztodd) then
@@ -3682,7 +3595,6 @@ C ----------
      &             -AMP(  21)-AMP(  22)-AMP(  23)-AMP(  24)-AMP(  25)
      &             -AMP(  26)-AMP(  27)-AMP(  28)-AMP(  29)-AMP(  30)
      &             -AMP(  31)-AMP(  32)
-
 
 
       endif

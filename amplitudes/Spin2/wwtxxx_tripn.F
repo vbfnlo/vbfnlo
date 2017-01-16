@@ -17,10 +17,10 @@ c
       double complex wp(6), wm(6), tc(18) , vertex
 
       double complex ft(6,4), mf(4)
-      double precision p1(4), p2(4), p1p2
+
       double precision MET(4,4), T3(4,4,4,4)
 
-      integer i, j, k, l, a, b
+      integer i, j, k, l
 
       double complex cZero
       double precision rZero, rTwo, rOne

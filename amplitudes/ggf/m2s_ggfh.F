@@ -20,18 +20,17 @@ c... date    :
 
 c... stability flag for Cijs and Dijs
       logical Singular 
-      integer counter(10),iteration 
-      COMMON/DetCount/counter,iteration, Singular
+      COMMON/DetCount/Singular
 
 c... declare input/output variables
-      real*8 xi(nx), p(0:3,max_p), ph(0:3), m2s
+      real*8 xi(nx), p(0:3,max_p), ph(0:3)
       real*8 rand(max_PS_dim)
 
 c... variables in the commom blocks    
       REAL*8 ALFAS,XMT,ALFA,XMZ,XMW,SIN2W,XMH, gf, alfas_lo, 
      &       CLR,XM2,XMG,B,V,A
       real*8 BRFAC,FKF
-      integer isubproc, icf
+      integer isubproc
 
       COMMON /BKOPIN/ ALFAS,XMT,ALFA,XMZ,XMW,SIN2W,XMH, gf, alfas_lo
       COMMON /BKOPOU/ CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),V(4,5),A(4,5)
@@ -43,37 +42,37 @@ c... arguments for call of Matrixelements
       REAL*8 PBAR(0:3,4), QBAR(0:3,4), PHbar(0:4)
       
 c... local variables 
-      real*8 pdf1(-6:6), pdf2(-6:6), x1p,x2p,w_ps,dsigjj,phi
+      real*8 pdf1(-6:6), pdf2(-6:6), x1p,x2p
       integer gpol(4)
-      REAL*8 W1,W,RES(9),reslha(9), SHAT, rh(0:3), srh(0:3), eps,
+      REAL*8 RES(9),reslha(9), rh(0:3), srh(0:3), eps,
      &       U1,D1,S1,C1,B1,G1, UB1,DB1,SB1,CB1,BB1,
      &       U2,D2,S2,C2,B2,G2, UB2,DB2,SB2,CB2,BB2,
      &       qqqqs, qqqqt, qqqqid
       DOUBLE PRECISION parton1(-6:6), parton2(-6:6), wsubproc, weight,
      &     rnumb
-      complex * 16 amp(3), ci_pent(3),ci_tri(3),ci_box(3),ci_tot(3)
-      complex*16 zamp(3,2,2,2,2),iz, samp(3), oamp(3)
+      complex * 16 amp(3), ci_pent(3),ci_tri(3),ci_box(3)
+      complex*16 iz, samp(3), oamp(3)
       parameter(iz=(0d0,1d0))
-      integer i1,i2,i3,i4
-      REAL*8 K1(0:3),K2(0:3),PJ(0:3,2),L1(0:3),L2(0:3),QV(0:4)
-      REAL*8 QSQDF1,QSQDF2,qfac,POLCOL, WQQ,WQg,Wgg,WTOT
-      real*8 xmb, betah, aux
-      real*8 rnaux, qqqq0, cth1, sth1, cth2, sth2, rat0, facdec
+
+      REAL*8 K1(0:3),K2(0:3),PJ(0:3,2)
+      REAL*8 qfac,POLCOL, WQQ,WQg,Wgg,WTOT
+
+
       real*8 RN8,rwgt 
       double precision rescale
 
-      INTEGER I,J,K,sigma,mu,IRES,I1CALL, icall, fpol(2)
+      INTEGER I,J,K,sigma,mu,I1CALL, icall, fpol(2)
 
       common/topmass/m
       real*8 m
       
       real*8 ran2
 
-      REAL*8 PT1,PT2, RandomNumber
+      REAL*8 RandomNumber
       EXTERNAL RandomNumber
 
       DATA I1CALL /0/, icall /0/
-      save icall, facdec
+      save icall
 
       INTEGER PERMCALL   ! for test purposes of the cached C0-function
       DATA PERMCALL/0/
@@ -880,7 +879,7 @@ c... date    : 03.03.2011
       common /counterc/ isubproc
 
       double precision weight
-      logical clockwise,iflavid
+      logical iflavid
 
 c     This subroutine fills the LHA HEPEUP common block
 c     with flavor and color information about the incoming/outgoing 
@@ -1053,9 +1052,8 @@ c     For four gluons, we can easily fill the tags:
             licolup(2,4,isubproc)=503
             licolup(1,4,isubproc)=504
          endif
-         
-         
-         
+
+
 c     This is the two-gluon case:
       elseif(gcount.eq.2)then
          do i=1,4

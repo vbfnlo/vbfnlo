@@ -42,17 +42,17 @@ c*******************************************************************************
        Complex*16 B0fin,C0fin,D0fin
        Complex*16 A0fin,B0t1,C0fin1M,D04
        EXTERNAL dotrr,A0fin,B0t1,C0fin1M,D04,B0fin,C0fin,D0fin
-       Complex*16 A0,B012,B013,B014,B023,B024,B034
-      Real*8 A0R,A0I,B012R,B013R,B014R,B023R,B024R,B034R
+
+      Real*8 B012R,B013R,B014R,B023R,B024R,B034R
       Real*8 B012I,B013I,B014I,B023I,B024I,B034I
       Real*8 B12R(2,2),B13R(2,2),B14R(2,2),B23R(2,2),B24R(2,2),B34R(2,2)
       Real*8 B12I(2,2),B13I(2,2),B14I(2,2),B23I(2,2),B24I(2,2),B34I(2,2)
-       Complex*16 C0123,C0124,C0134,C0234
+
        Real*8 C0123R,C0124R,C0134R,C0234R
        Real*8 C0123I,C0124I,C0134I,C0234I
        Real*8 C123R(6,3),C124R(6,3),C134R(6,3),C234R(6,3)
        Real*8 C123I(6,3),C124I(6,3),C134I(6,3),C234I(6,3)
-       Complex*16 D01234
+
         Real*8 D01234R
        Real*8 D01234I
        Real*8 D1234R(22,4)
@@ -107,10 +107,10 @@ ccccccccccccccccccccc For QUAD precission ccccccccccccccccccccccccc
        Real*16  p1_QUAD(0:3),p2_QUAD(0:3),p3_QUAD(0:3),p4_QUAD(0:3)
        Real*16 ptemp(0:3,4)
        Real*8 psq(4)
-       Integer i,jtemp,j
+       Integer i,jtemp
        Real*16   M_QUAD,msq_QUAD
-       integer j1,zaxis,j2,j3,j4,j5
-       real*16 c,d,e03,e04
+       integer j1,j2,j3,j4
+
       double precision     hmass, wmass, zmass, amass,
      &                     tmass, bmass, lmass, cmass
       common /COUPL_MASS/  hmass, wmass, zmass, amass,
@@ -324,9 +324,6 @@ cMK             enddo
 cMK
        endif
 
-          
-
-
 
 c      do i=0,3
 c      if(abs(ptemp(i,1)+ptemp(i,2)+ptemp(i,3)+ptemp(i,4)).gt.1d-14) then
@@ -385,9 +382,7 @@ c      enddo
        s14_QUAD = (p1sq_QUAD +p4sq_QUAD+ 2*p1p4_QUAD) 
        s23_QUAD = (p2sq_QUAD +p3sq_QUAD+ 2*p2p3_QUAD) 
        s24_QUAD = (p2sq_QUAD +p4sq_QUAD+ 2*p2p4_QUAD) 
-       s34_QUAD = (p3sq_QUAD +p4sq_QUAD+ 2*p3p4_QUAD) 
-      
-
+       s34_QUAD = (p3sq_QUAD +p4sq_QUAD+ 2*p3p4_QUAD)
 
 
        p1sq=p1sq_QUAD 
@@ -405,11 +400,7 @@ c      enddo
        s14=s14_QUAD 
        s23=s23_QUAD 
        s24=s24_QUAD 
-       s34=s34_QUAD 
-
-
-  
-
+       s34=s34_QUAD
 
 
         do i=0,3
@@ -420,7 +411,6 @@ c      enddo
            enddo
 
 
-
           If(abs(musq-s12).lt.10d-7) then
           musq_QUAD=s12_QUAD
           elseIf(abs(musq-s23).lt.10d-7) then
@@ -428,7 +418,6 @@ c      enddo
           else
           musq_QUAD=musq
           endif
-
 
 
 cfc       msq=m*m
@@ -470,7 +459,6 @@ c*******************************************************************************
    
        call XDget_1M_QUAD(M_QUAD,p1sq_QUAD,p2sq_QUAD,p3sq_QUAD,
      &   p1p2_QUAD,p1p3_QUAD,p2p3_QUAD,musq_QUAD)
-
 
 
          endif

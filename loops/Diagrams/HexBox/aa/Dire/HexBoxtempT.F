@@ -42,8 +42,6 @@ c or 2*hel1 + hel2 -> 3,1,-1,-3
        End
 
 
-
-
        subroutine HexBox66T(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_
      &   p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,resultn
      &   ,resultborn,Div)
@@ -102,10 +100,6 @@ c*******************************************************************************
        End
 
 
-
-
-
-
        subroutine HexBox67T(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_
      &   p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,resultn
      &   ,resultborn,Div)
@@ -135,7 +129,6 @@ c*******************************************************************************
 
        Return
        End
-
 
 
        subroutine HexBox76T(p1,p2,p3,p4,p5,p6,barpsi_p1,psi_p6,barpsi_

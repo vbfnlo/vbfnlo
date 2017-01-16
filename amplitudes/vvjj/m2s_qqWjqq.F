@@ -15,6 +15,7 @@ c
      &                   xuz,   !in:  x, u, z for subtraction terms
      &                   m2s    !out: |M|^2*pdf1*pdf2 
      &                        )
+          use globalvars, only: ldoblha
       implicit none
 c
 c declare input/output variables
@@ -58,8 +59,7 @@ c alfas, scales etc
      2       ln1mxi, lnrat, z, lnz
 c
 c for check only:
-      double precision  p21(0:4,2:3,3), p43(0:4,2:3,3)
-      integer l
+
 
 c declare local variables
 c
@@ -93,7 +93,7 @@ c
 c define program switches
 c
       logical ldebug,ldebug_sub
-      integer nq
+
       parameter (ldebug=.false.)
       data ldebug_sub /.false./		!output debug information
 
@@ -300,7 +300,6 @@ c     for W+ --> e+ ve mu+ mu-
 #endif
 
             elseif (with_spin2) then    
-#ifdef WITH_SPIN2
                do j = 2,3
                   
 c     for ZW+,AW+ -> e+ ve mu+ mu-:
@@ -331,7 +330,6 @@ c     for W+ --> e+ ve mu+ mu-
 	
                call wpto4l(v,h,wwv)	
                
-#endif	 	
 
             elseif (with_anom) then ! anomalous gauge boson couplings
 c     using global form factor for all tensors of one phase space point
@@ -529,7 +527,6 @@ c     for W- --> e- ve mu+ mu-
                call wmto4l(v,h,wwv)	
 
             elseif (with_spin2) then    
-#ifdef WITH_SPIN2
                do j = 2,3
 
 c     for ZW-,AW- -> e- ve~ mu+ mu-:
@@ -560,7 +557,6 @@ c
 c     for W- --> e- ve mu+ mu-
                
                call wmto4l(v,h,wwv)	
-#endif
                
                
             elseif (with_anom) then ! anomalous gauge boson couplings
@@ -652,7 +648,6 @@ c     combination (h=1:2)
          iu = sign(1,1-h)
 
 
-
 c...  Les Houches interface         
          if ((lha.or.hepmc).and..not.doNLO) then
             helicity(1)= ie
@@ -678,17 +673,7 @@ c...  Les Houches interface
 c     leptonic tensors:
 
 
-         if (with_kk) then
-#ifdef WITH_KK
-            
-#endif
-
-         elseif (with_spin2) then    
-#ifdef WITH_SPIN2
-            
-#endif	 	
-
-         elseif (with_anom) then ! anomalous gauge boson couplings
+         if (with_anom) then ! anomalous gauge boson couplings
 c     using global form factor for all tensors of one phase space point
 c     this ensures proper cancellations for anomalous contributions
 c     energy scale is invariant WA mass        
@@ -784,9 +769,6 @@ c     leptonic tensors:
             
 #endif
 
-         elseif (with_spin2) then    
-#ifdef WITH_SPIN2
-#endif
          elseif (with_anom) then ! anomalous gauge boson couplings
 c     using global form factor for all tensors of one phase space point
 c     this ensures proper cancellations for anomalous contributions
@@ -1317,7 +1299,6 @@ c for W- --> e- ve mu+ mu-
         endif
 
 
-
 C*******************  q1 q3 ---> q2 q4 g W (Z)   **********************
 
 c   physToDiag(ext.momentum label) = Feynman diagram label
@@ -1630,6 +1611,7 @@ c*****************************************************************
       subroutine wbf_w3j(xi,p,v,physToDiag,fsign,gsign,bos, 
      1                    nlo,lok,xuz,
      1                    pdf,res,nmin,nmax)
+          use globalvars, only: ldoblha
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
@@ -2165,8 +2147,6 @@ c                     else
 c                        print 118," iflav = ",iflav(1),iflav(3),
 c     &                                iflav(2),iflav(4),IFLAV(5)
 c                     endif
- 117                 format(a,3i3,2x,2i3)
- 118                 format(a,2i3,2x,3i3)
  119                 format(a,3i3,a,3g10.3)
                      print 119," called matrix element ",i1,i2,lw," j:",
      &  matr2sq(i1,i2,lw,2),matr2sq(i1,i2,lw,3),matr3sq(i1,i2,lw,j)

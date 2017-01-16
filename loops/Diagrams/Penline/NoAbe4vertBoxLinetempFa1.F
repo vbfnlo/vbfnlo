@@ -10,14 +10,14 @@ c************** Calling the Fa functions*************************
         common/NoAbe4vertBoxLineFhlFunctions/F
        COMMON/NoAbe4vertBoxLineInvariants/p1sq,p2sq,p3sq,p4sq,p5sq,s12
      &   ,s23,s34,s45,s15
-       Real*8   p1sq, p1p2, p1p3, p1p4, p1p5 
-       Real*8   p2sq, p2p3, p2p4, p2p5 
-       Real*8   p3sq, p3p4, p3p5 
-       Real*8   p4sq, p4p5 
+       Real*8   p1sq 
+       Real*8   p2sq 
+       Real*8   p3sq 
+       Real*8   p4sq 
        Real*8   p5sq 
-       Real*8   s12, s13, s14, s15 
-       Real*8   s23, s24, s25 
-       Real*8   s34, s35 
+       Real*8   s12, s15 
+       Real*8   s23 
+       Real*8   s34 
        Real*8   s45
       Complex*16 Fa(27),F(21)
       Real*8 P(3) 

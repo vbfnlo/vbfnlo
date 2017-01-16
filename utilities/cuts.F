@@ -17,6 +17,8 @@ c***************************************************************************
 ****************************************************************************
 c*************************************************************************
       SUBROUTINE InitCuts
+          use globalvars, only: lglobalprint
+          use readinput
 c*************************************************************************
 c     Reads in the values for the cuts.
 c*************************************************************************
@@ -26,8 +28,7 @@ c*************************************************************************
 #include "cuts.inc"
 #include "lha.inc"
 
-      integer LSP, i, n_lcharged, n_photon
-      common /LSP_def/ LSP
+      integer i, n_lcharged, n_photon
 
 c     logical variable that checks if process is a VBF process
 c     (common block tagjetdef in cuts.inc)
@@ -43,7 +44,7 @@ c     (common block tagjetdef in cuts.inc)
      &     GFHjj_WW, GFHjj_ZZ_ll, GFHjj_ZZ_lnu, 
      &     QCDWPWPjj,QCDWMWMjj,QCDWPZjj,QCDWMZjj,QCDZZjj_ll,QCDZZjj_lnu,QCDAAjj,
      &     QCDWPjj, QCDWPAjj, QCDWMAjj,QCDWMjj, QCDZjj_l,QCDZAjj_l,QCDZAjj_n,
-     &     QCDZjj_nu, QCDWPWMjj, 
+     &     QCDZjj_nu,
      &     Hjjj, Hjjj_AA, Hjjj_mu,
      &     Hjjj_tau, Hjjj_bbar, Hjjj_WW, Hjjj_ZZ_ll, Hjjj_ZZ_lnu,
      &     WPhadWMjj, WPWMhadjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj,
@@ -215,7 +216,6 @@ c semileptonic decay cuts
       endif
 
 
-
       ! minimal number of jets: set in process.F to njet_min
       ! min_jets is used as minimum number of jets within cut routine and defineJets
       ! can be different from njet_min for semileptonic decays
@@ -245,6 +245,7 @@ c semileptonic decay cuts
       enddo
 
 c print information on cuts
+      if (lglobalprint) then
       print *,""
       print *,"         information on cut parameters"
       print *,"-----------------------------------------------"
@@ -315,6 +316,7 @@ c print information on cuts
       endif
       print *,""
 
+
       if ((qsqAmin.gt.0d0 .and. photoncut_vbf) .or. 
      &    (qsqAmin_had.gt.0d0 .and. zdecay_had .and. procID.ne.Hjj_ZZhad)) then
          print *,""
@@ -335,21 +337,8 @@ c print information on cuts
       endif
  171  format(a,f10.1,a)
 
-c      if (model.eq.2) then
-c        print *,""
-c        print *,"definition of Lightest Supersymmetric Particle "
-c        print *,"-----------------------------------------------"
-c        print *,""
-c        call loadfile("susy.dat",.true.)
-c        call read_Int("LSP",LSP,9999)
-c        call closefile
-c      else
-c        LSP=9999
-c      endif
-** Lightest susy particle - no effect yet!
-      LSP = 9999
-      
-      RETURN
+      endif 
+
       END
 
 c*************************************************************************
@@ -431,8 +420,6 @@ c additional central jet for the VBF processes
 
       RETURN
       END
-
-
 
 
 c*************************************************************************
@@ -554,7 +541,6 @@ c     input variables
       END
 
 
-
 c*************************************************************************
       LOGICAL FUNCTION BASIC_CUTS(partons, npartons, jets, njets,
      1                  leptons, nl, invisible, ninv, photons, nphotons,
@@ -575,10 +561,10 @@ c     input variables
       real*8 invisible(0:8,max_v)      
       real*8 photons(0:7,max_v)
       integer npartons, njets, nl, nphotons, ninv
-      real*8 pt,y,phi
-      integer i, j,  k, kk, kmax, mu, nveto, maxnjet
-      real*8 ylepmax,ylepmin,m2,mjj2,mll,mlA,yvetomax,yvetomin,mjj
-      real*8 yphotmax, yphotmin,MT2
+
+      integer i, j,  k, kk, kmax
+      real*8 mjj2,mll,mlA,mjj
+
       real*8 mom(0:3), vectorbosonmass
       logical fatDecayJet
 
@@ -587,7 +573,7 @@ c     input variables
       double precision RSEPS
       external RSEPS
 c     photon isolation stuff
-      double precision ptsum,factor
+
       double precision delta(npartons)
       double precision dlist(npartons,nphotons)
       double precision ptlist(npartons,nphotons)
@@ -596,7 +582,7 @@ c     photon isolation stuff
 c pt-ordered leptons and photons
       double precision ptlepton(max_v)
       double precision ptphoton(max_v)
-      real*8 temp(0:7),mass2
+      real*8 mass2
       external mass2
   
       logical ldebug
@@ -616,8 +602,6 @@ c pt-ordered leptons and photons
       endif
 
 
-
-
 c   JET CUTS
 c=================
 
@@ -635,7 +619,6 @@ c...jet-jet r-separation
      &      ( RSEPS(jets(6,i),jets(7,i),jets(6,j),jets(7,j)).gt.rjjmin)
          enddo
       enddo
-
 
 
 c   LEPTON CUTS
@@ -779,7 +762,6 @@ c$$$      endif
 !          print*
 
 
-
 c   ADDITIONAL CUTS
 c=================================
 c...jet-lepton r-separation
@@ -832,7 +814,6 @@ c...minimal missing transverse momentum
          enddo
       enddo
       pass_cuts = pass_cuts .and. (sqrt(mom(1)**2+mom(2)**2).ge.ptmiss_min)
-
 
 
 c...reconstruct mass of hadronically decaying jet
@@ -889,12 +870,10 @@ cfcc      if (.not.temp(4).ge.mza_min) print*, "pass_cuts2", temp(4)
 cfc      end select
 
 
-      
       BASIC_CUTS = pass_cuts
       
       RETURN
       END
-
 
 
 c*************************************************************************
@@ -914,12 +893,12 @@ c     input variables
       integer njets, nl, nphotons
       real*8 leptons(0:8,max_v)
       real*8 photons(0:7,max_v)
-      real*8 pt,y,phi
-      integer i, j, mu, nveto
-      real*8 ylepmax,ylepmin,m2,mjj2,mll,yvetomax,yvetomin
+
+      integer i
+      real*8 ylepmax,ylepmin,m2,mjj2
       real*8 yphotmax, yphotmin
 
-      integer tempjet, jetc
+      integer jetc
 
       logical pass_cuts
 
@@ -1022,7 +1001,6 @@ c...minimal pt for tagging jets
       END
 
 
-
 c*************************************************************************
       LOGICAL FUNCTION JetVeto_Cuts(jets, njets, leptons, nl, photons, 
      -     nphotons, jetc)
@@ -1041,10 +1019,10 @@ c     input variables
       integer njets, nl, nphotons
       real*8 leptons(0:8,max_v)
       real*8 photons(0:7,max_v)
-      real*8 pt,y,phi
-      integer i, j, mu, nveto, maxnjet
-      real*8 ylepmax,ylepmin,m2,mjj2,mll,yvetomax,yvetomin
-      real*8 yphotmax, yphotmin
+
+      integer i, nveto, maxnjet
+      real*8 yvetomax,yvetomin
+
 
       logical pass_cuts
       
@@ -1091,12 +1069,10 @@ C... veto jet cut
 
       endif
       
-      
       JetVeto_cuts = pass_cuts
       
       RETURN
       END
-
 
 
 c*************************************************************************
@@ -1154,7 +1130,6 @@ c     calculate rapidity, pt, phi-angle for the leptons
 
       RETURN
       END
-     
 
 
 c*************************************************************************
@@ -1218,8 +1193,6 @@ c*************************************************************************
       real*8 v(0:3,max_v,max_kin)
       real*8 invisible(0:8,max_v,max_kin)
       integer n_invisible(max_kin), Lmax
-      integer LSP
-      common /LSP_def/ LSP
       real*8 pt,y,phi
       integer i, l, mu
 
@@ -1239,7 +1212,7 @@ c     get invisible particles out of decay_particles
 cfc   if ( (.not.lneutrinoCut) .and.((abs(particle_IDs(i)).eq.12) ! check if it is a neutrino
 cfc     &           .or.(abs(particle_IDs(i)).eq.14)
 cfc     &           .or.(abs(particle_IDS(i)).eq.16))
-     &           .or.(abs(particle_IDS(i)).eq.LSP)) then
+     &           ) then
                n_invisible(l)=n_invisible(l)+1
                do mu = 0,3      ! transfer to "invisible"
                   invisible(mu,n_invisible(l),l) = v(mu,i,l)

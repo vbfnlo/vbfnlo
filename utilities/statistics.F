@@ -15,8 +15,8 @@ c include global variables via include-files, e.g. "procID"
 #include "VBFNLO/utilities/scales.inc"
 
 c     variables for the integration loops
-      integer iteration, seed
-      integer*8 Ncall, i, two
+      integer iteration
+      integer*8 Ncall, two
       integer ps_number
       parameter (two = 2)
       common/Ncall1/Ncall,iteration
@@ -28,6 +28,9 @@ c     variables for the integration loops
         Ncall = two**Ncall
 	return
       endif
+
+      if (.not.lreaddata) then
+c            print*,'lreaddata',lreaddata
 
       Select Case(procID)
       CASE(QCDWPWPjj,QCDWMWMjj)
@@ -182,7 +185,7 @@ c     variables for the integration loops
             Ncall = two**( N_points(0)  - N_iterations1 + iteration )
          endif
       CASE(WPAAj,WMAAj)
-c     print*,'here',ps_number,sub_number,N_iterations1,iteration,Ncall
+c         print*,'here',ps_number,sub_number,N_iterations1,iteration,Ncall
          if ((N_iterations1-iteration).eq.0) then
             if (ps_number.eq.1) then
                if (sub_number.gt.4) then
@@ -247,10 +250,9 @@ c     print*,'here',ps_number,sub_number,N_iterations1,iteration,Ncall
       CASE DEFAULT
          Ncall = two**( N_points(0) - N_iterations1 + iteration )
       END SELECT
-
+      endif
 c     print*,'here2',ps_number,sub_number,N_iterations1,iteration,Ncall
       return
-
       end
 
 
@@ -270,8 +272,8 @@ c include global variables via include-files, e.g. "procID"
 
 c     variables for the integration loops
       integer ps_number
-      integer iteration, seed
-      integer*8 Ncall, i, two
+      integer iteration
+      integer*8 Ncall, two
       parameter (two = 2)
       common/Ncall1/Ncall,iteration
       integer gnlo
@@ -285,8 +287,9 @@ c     variables for the integration loops
 	return
       endif
 
+      if (.not.lreaddata) then
 c          print*,'here',ps_number,sub_number,Ncall
-      Select Case(procID)
+         Select Case(procID)
       CASE(QCDWPWPjj,QCDWMWMjj)
 ! 	endif
 	if(sub_number.eq.1) then
@@ -492,11 +495,9 @@ c          print*,'here',ps_number,sub_number,Ncall
       CASE DEFAULT
          Ncall = two**N_points(gnlo)
       END SELECT
-
-c      print*,'here1',ps_number,sub_number,Ncall
-
+      endif
+c     print*,'here1',ps_number,sub_number,Ncall
       return
-
       end
       
 
@@ -515,8 +516,8 @@ c include global variables via include-files, e.g. "procID"
 #include "VBFNLO/utilities/scales.inc"
 
       integer ps_number
-      integer iteration, seed
-      integer*8 Ncall, i, two
+      integer iteration
+      integer*8 Ncall, two
       parameter (two = 2)
       common/Ncall1/Ncall,iteration
 
@@ -530,7 +531,8 @@ c include global variables via include-files, e.g. "procID"
 	return
       endif
 
-      Select Case(procID)
+      if (.not.lreaddata) then
+         Select Case(procID)
       CASE(QCDWPAjj,QCDWMAjj,QCDZAjj_l)
 	select case(ps_number)
 	case(2)
@@ -551,7 +553,7 @@ c include global variables via include-files, e.g. "procID"
          else
             Ncall = two**( N_points(-1)+1 - N_iterations2 + iteration )
          endif
-      CASE(WPAA, WMAA, ZAA)
+      CASE(WPAA, WMAA,ZAA)
          if (ps_number.eq.1) then
             Ncall = two**( N_points(-1)+ 1 - N_iterations2 + iteration )
             Ncall = two**( N_points(-1)+1) ! - N_iterations2 + iteration )
@@ -594,35 +596,35 @@ c include global variables via include-files, e.g. "procID"
       CASE DEFAULT
          Ncall = two**( N_points(-1) - N_iterations2 + iteration )
       END SELECT
+      endif
       
       return
       
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
       subroutine statistics_proc_FLoops(ps_number)
-
       implicit none
-
 c include global variables via include-files, e.g. "procID"
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/tau_hel.inc"
 #include "VBFNLO/utilities/process.inc"
 #include "VBFNLO/utilities/scales.inc"
-
 c     variables for the integration loops
-      integer iteration, seed
-      integer*8 Ncall, i, two
+      integer iteration
+      integer*8 Ncall, two
       integer ps_number
       parameter (two = 2)
       common/Ncall1/Ncall,iteration
 
-      Select Case(procID)
+      if (.not.lreaddata) then
+c            print*,'lreaddata',lreaddata
+
+         Select Case(procID)
       CASE(WW,WPhadWMlep,WPlepWMhad,AA)
          Ncall = two**( N_points(0) -6 - N_iterations1 + iteration )
       CASE(ZZ,ZZhad,ZA)
@@ -630,8 +632,8 @@ c     variables for the integration loops
       CASE DEFAULT
          Ncall = two**( N_points(0) - N_iterations1 + iteration )
       END SELECT
+      endif
       return
-
       end
 
       subroutine AddToXsec(xsec,sdev2,time,sub,ps,nlo)
@@ -674,4 +676,4 @@ c     variables for the integration loops
         final_time(0,0,0) = final_time(0,0,0) + time
       endif
       end
-      
+

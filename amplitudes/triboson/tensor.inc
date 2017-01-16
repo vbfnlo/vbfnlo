@@ -37,7 +37,6 @@ c  lepton spinors, polarization vectors, momenta
      5                   qz(0:4,11), qww(0:4,11), qwwz(0:4,11)
 
 
-
       common /zzzspinor/ zep(6,11), zem(6,11), zmm(6,11), zmp(6,11),
      1                   ae(6,11), ze(6,11), amu(6,11), zmu(6,11),
      2                   qze(0:4,11), qzmu(0:4,11), qztau(0:4,11), 
@@ -117,7 +116,6 @@ c  lepton spinors and W+,W-, Z/A polarization vectors
      3                    w2pm(6,11), xm1, xmm2, x1p, x2p,q1p(0:4,11),
      4                    qm1(0:4,11),qm2(0:4,11),qwpwm1(0:4,11),qwpwm2(0:4,11),
      5                    qwpwmwm(0:4,11),qwwwm(0:4,11)
-
 
 
 c---------------------leptonic tensors for w+w-w+/- --------------------------

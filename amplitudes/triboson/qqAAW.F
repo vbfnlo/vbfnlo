@@ -51,43 +51,30 @@ c     electroweak couplings are taken from KOPPLN
       COMMON /BKOPOU/   CLR(4,5,-1:1),XM2(6),XMG(6),B(6,6,6),
      1                  V(4,5),A(4,5)
       DOUBLE PRECISION  pbar(0:3,2+n_v)
-      DOUBLE PRECISION  uuwwa, ddwwa, res(2),resv(2),final
-      DOUBLE PRECISION  p(0:3,2+n_v), pwpz(0:4), pwmz(0:4),
-     1                  pwm(0:4), pww(0:4), fqp(0:4,2), fqm(0:4,2),
-     2                  fqz(0:4,2), fq(0:4,2),
+      DOUBLE PRECISION  res(2),resv(2),final
+      DOUBLE PRECISION  p(0:3,2+n_v),
      2                  fqa1(0:4,2), fqa2(0:4,2),
      3                  pwa1(0:4),pwa2(0:4),
-     4                  fq0(0:4,2),fa1(0:4,2),fa2(0:4,2)
-      DOUBLE PRECISION  fqmz(0:4,2), fqmp(0:4,2), fqzm(0:4,2)
-      INTEGER sign(2+n_v), nlo, mu, i, j, k, isig, N,ps_number
-      INTEGER  ifl(2), bos
-      DOUBLE COMPLEX psiwp(2,-1:1,2), psiwm(2,-1:1,2),
-     1               psia(2,-1:1,2), psiz(2,-1:1,2),
-     2               jwp(0:5,-1:1,2), jwm(0:5,-1:1,2),
-     3               ja(0:5,-1:1,2), jz(0:5,-1:1,2),
-     3               ja1(0:5,-1:1,2), ja2(0:5,-1:1,2),
+     4                  fq0(0:4,2)
+
+      INTEGER sign(2+n_v), nlo, mu, i, k, isig, N,ps_number
+      INTEGER  bos
+      DOUBLE COMPLEX ja1(0:5,-1:1,2), ja2(0:5,-1:1,2),
      4               psiw0(2,-1:1,2),psia1(2,-1:1,2),psia2(2,-1:1,2)
-      DOUBLE COMPLEX psiwmz(2,-1:1,2), psiwmwp(2,-1:1,2),
-     1               psizwm(2,-1:1,2), 
-     2               jwmz(0:5,-1:1,2), jwmwp(0:5,-1:1,2),
-     3               jzwm(0:5,-1:1,2)
-      DOUBLE COMPLEX jva(0:5,-1:1,2), jvz(0:5,-1:1,2)
-      DOUBLE COMPLEX jvwp(0:5,-1:1,2), jvwm(0:5,-1:1,2)
+
       DOUBLE COMPLEX j5a1a2(3),j5a2a1(3), jba1a2(3), jba2a1(3)
-      DOUBLE COMPLEX j55pm(0:3,3,-1:1),j55mp(0:3,3,-1:1)
-      DOUBLE COMPLEX j5za1(3), j5za2(3)
       DOUBLE COMPLEX temp, temp1
-      DOUBLE COMPLEX mat(2,-1:1,3), matv(2,-1:1,6), mborn1, mborn2
+      DOUBLE COMPLEX mat(2,-1:1,3), matv(2,-1:1,6)
       DOUBLE COMPLEX madgr(10,-1:1,2)
       DOUBLE COMPLEX mm(2), mv(2), zero
-      DOUBLE COMPLEX ma, mz, m1, m2, m3, m4
-      DOUBLE COMPLEX mva, mvz, mv1, mv2, mv3, mv4
+      DOUBLE COMPLEX ma, m1, m2, m3, m4
+      DOUBLE COMPLEX mv1, mv2, mv3, mv4
       DOUBLE COMPLEX psi(2,-1:1,2), jqq(0:5,-1:1)
       DOUBLE COMPLEX dotcc, s1c, dotrc
       DOUBLE PRECISION dotrr, psumsq
       EXTERNAL dotcc, s1c, dotrr, dotrc, psumsq
       integer u(2),d(2)
-      SAVE ifl,u,k,d
+      SAVE u,k,d
       PARAMETER (zero = (0d0,0d0) )
 
 c variable for q_mu q_nu terms in the propagators of the massive vector bosons
@@ -107,27 +94,26 @@ c variables for virtual corrections
       logical lnlo, lbox, lpq, lpt, lpent, ldebug, ldebugm, linit
       logical wardidtest1, wardidtest2, wardidtest3
       logical wardidtest4, wardidtest5, wardidtest6
-      logical gaugetest(2)
+
       data linit /.true./
       save linit
       parameter(ldebugm = .false., ldebug=.false.)
 
 c variables for implementation of the pentagon routine
-      double complex resultgauge, resultgaugeb, borntest(3), penttest(3)
+
       double precision minus_qa1(0:3),minus_qa2(0:3),minus_qw(0:3)     
-      double precision minus_qp(0:3),minus_qm(0:3),minus_qz(0:3)
-      double precision minus_qa1w(0:3), minus_qa2w(0:3), minus_qwpz(0:3)
-      double precision p1(0:3), p2(0:3),ratioD 
-      double complex pentgauge1(1:3), pentgauge2(1:3)
+
+      double precision minus_qa1w(0:3), minus_qa2w(0:3)
+      double precision p1(0:3), p2(0:3) 
+
       double complex pentcontr1(3), pentcontr2(3), pentcontr3(3)
       double complex pentcontr4(3), pentcontr5(3), pentcontr6(3)
       double complex pentcontr1b(3), pentcontr2b(3), pentcontr3b(3)
       double complex pentcontr4b(3), pentcontr5b(3), pentcontr6b(3)
-      
- 
-      
+
+
 c variables for implementation of the box routine
-      double complex  boxtest(2), treetest(2)
+
       double complex result(-1:1,4),result_born(-1:1,4)
       double complex cte
       double complex gaugebox1(2), gaugebox2(2), gaugebox3(2)
@@ -138,8 +124,6 @@ c variables for implementation of the box routine
 
 c variables for test purposes
 
-      double precision qmu(0:3), sc, q1sqc, q2sqc, tc, p1p2
-      double precision psq, qsq, lsq, tsq, pq, pl, pt, ql, qt, lt
 
 c---------------------------- BEGIN CODE -----------------------
 

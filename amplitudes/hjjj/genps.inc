@@ -41,6 +41,3 @@ c      parameter (max_host=99,maxplace=199,maxpoints=100,maxans=50)
 
 
 
-
-
-

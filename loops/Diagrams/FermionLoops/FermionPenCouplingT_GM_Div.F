@@ -12,8 +12,8 @@ c  cpl(5)-cpl(8)  P_left couplingss
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
        Complex*16 mup5test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(1,6)
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4,temp5
+       Complex*16 result,resultn(1,6)
+       Real*8 musq,resultgauge,temp1,temp2,temp3,temp4,temp5
        complex*16 rg1(1,6),rg2(1,6),rg3(1,6),rg4(1,6),rg5(1,6)
        integer gauge,i,comp,Div
 
@@ -102,7 +102,7 @@ cFC          print*, "temp2",temp2
 cFC          print*, "temp3",temp3
 cFC          print*, "temp4",temp4
 cFC          print*, "result1",resultn(1)
-cFC          print*, "result2",resultn(2)
+cFC          print*, "result",resultn(2)
 cFC          print*, "result3",resultn(3)
 cFC          print*, "result4",resultn(4)
 cFC          print*, "result5",resultn(5)
@@ -128,8 +128,8 @@ cFCcccccccccccccccccccc    ODD PART cccccccccccccccccccccccccccccccccccccccccccc
        Complex*16 mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3),mup5(0:3)
        Complex*16 mup1test(0:3),mup2test(0:3),mup3test(0:3),mup4test(0:3)
        Complex*16 mup5test(0:3)
-       Complex*16 result,resulttemp,resulttemp2,resultn(1,6)
-       Real*8 musq,m,resultgauge,temp1,temp2,temp3,temp4,temp5
+       Complex*16 result,resultn(1,6)
+       Real*8 musq,resultgauge,temp1,temp2,temp3,temp4,temp5
        complex*16 rg1(1,6),rg2(1,6),rg3(1,6),rg4(1,6),rg5(1,6)
        integer gauge,i,comp,Div
 

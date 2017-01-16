@@ -13,7 +13,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       double complex D0_2345,D0_1345,D0_1245,D0_1235,D0_1234
       double complex Dij_2345(3,13),Dij_1345(3,13),Dij_1245(3,13),
      #     Dij_1235(3,13),Dij_1234(3,13)
-      double complex E0fin, Eij(4,46), Eijp(4,46), Eijpp(4,46), Eijo(4,46)
+      double complex E0fin, Eij(4,46)
 c
 c  Determine the Passarino-Veltman(PV) tensor decomposition for the four-point
 c  tensor integrals.
@@ -58,21 +58,21 @@ c         nm = 21, 22, 23, ..., 211    ff"s for E_munu
 c         nm = 31, 32, 33, ..., 323, 324     ff"s for E_mu,nu,rho
 c         nm = 41, 42, 43, ..., 445, 446
 c
-      double complex R(1:4),res(1:4)
+      double complex R(1:4)
 
-      double precision s02,s03,s12,s13,s14,s23,s24,s34,  s01,s04,
+      double precision s02,s03,s12,s13,s14,s23,s24,s34,s04,
      1       detx4,detx01t,detx02t,detx03t,detx04t,detx00t
-      double precision x4(0:4,0:4), x4t(0:4,0:4), x4tt(0:4,0:4,0:4,0:4)
-      double complex dd1(4,0:4), dd1n(4,0:4), ed2(4,4), dd2(4,4,0:4), 
+      double precision x4t(0:4,0:4), x4tt(0:4,0:4,0:4,0:4)
+      double complex dd1(4,0:4), ed2(4,4), dd2(4,4,0:4), 
      1           ed3(4,4,4), xed3(4,4,4), dd300(4,0:4), ed300(4),
      1           dd3(4,4,4,0:4), dd400(4,4,0:4), dd40000(0:4),
      1           xed4(4,4,4,4), ed4(4,4,4,4), ed400(4,4), ed40000,
      1           xed400(4,4), yed400(4,4)
-      double complex zz(4,3)
+
       integer i,j,k,l
       logical debug, lwr
       parameter (debug=.false.,lwr=.false.)
-      character*20 text
+
 
 c Quantities defined in Section 2 of DD paper
 

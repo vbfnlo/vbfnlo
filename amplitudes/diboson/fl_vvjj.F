@@ -112,7 +112,7 @@ c*****************************************************************************
       
       integer iflav(4),id1,id2,id3,id4,listposition,i,i1
       integer iflavour(4),colstruc
-      double precision prob1, prob2, rn, RandomNumber
+
       logical ldebug
       parameter (ldebug=.false.)
 

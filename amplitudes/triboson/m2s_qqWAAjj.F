@@ -13,9 +13,9 @@
 
       integer ps_number,NW
  
-      integer i,j,k,mu,sign(4),
-     &  i1,i2,i3,i4,i5,i6,i7,nlo,signpdf1,signpdf2,
-     &  pdfl, bos
+      integer i,j,k,mu,
+     &  nlo,signpdf1,signpdf2,
+     &  bos
       logical lokt(11),fincolcalc,pdfchange
       logical ldebug
       parameter (ldebug=.false.)
@@ -26,21 +26,21 @@
       double precision xi(nx), p(0:3,max_p,max_kin), 
      &   v(0:3,max_v,max_kin), m2s_qqwgaglujfey,
      &   m2s_qqwgaglujf(4,3),pch(0:3,max_p,max_kin),
-     &   pcross(0:3,max_p,max_kin),
-     &   pcrossch(0:3,max_p,max_kin),
+     &   
+     &   
      &   muu(3),mdd(3),muuch(3),mddch(3),m2s_qqwgaglujch(4,3),
      &   q_sf,pdf(-6:6,2),amp,m2s_qqwgaglujdd(4,3),dotrr,
      &   m2s_qqwgaglujddch(4,3),
-     &   helastestmom(0:3,7),help1,help2,help3,help4,help2v(3),
-     &   mgg(4),mggch(4),m2s(0:11),test,help5,
-     &   help6,help7,help8,help9,help10,help11,
+     &   helastestmom(0:3,7),
+     &   mgg(4),mggch(4),m2s(0:11),
+     &   
      &   fincol(12),fincolampsq(12),coll3,coll4,
-     &   fincolconv,coll7,coll8,pdftmp(-6:6,2),xitilde(2),
+     &   fincolconv,coll7,coll8,pdftmp(-6:6,2),
      &   rn(1)
 
-      double precision pijt(0:3),pkt(0:3),dipole(10),dipolesum,bk(0:3),bkt(0:3),
+      double precision dipole(10),
      &   xuz(2,2:11),kinem(11),dipolev(6,6),dipolea(3),dipoleb(3),borncache147(2,2),
-     &   borncache(9,4),borncache145(3,2),ptelw(11),ptelwtmp(0:3,11)
+     &   borncache(9,4),borncache145(3,2)
       double precision kininv(4,4), ratio(5)
       logical kintrue
 
@@ -53,7 +53,7 @@
       common/BORNCACHE/borncache145,borncache147
 
       double complex help1c,help2c,help3c,
-     &   borncurr(0:3),borncurrc(0:3),Contract_Trjj
+     &   Contract_Trjj
       external dotrr,Contract_Trjj
 
       real*8 partons(0:7,max_jets,max_kin)
@@ -760,7 +760,6 @@ c define epsilon~ = espilon - k * k.epsilon/M**2 for wpwa1, wpwa2 and wpwaa
      &        + 2d0*dipolev(5,3) *(pdf(0,1)*pdf( 0,2))
 
 
-
 !
 !     Fill Cache
 !
@@ -1255,7 +1254,6 @@ c define epsilon~ = espilon - k * k.epsilon/M**2 for wpwa1, wpwa2 and wpwaa
       endif
 
 
-
       if (lokt(9).and.fincolcalc) then
 
       call getyourscalesready_trib(xi,p(0,1,9),v(0,1,9),pdfchange,pdf,nlo,9)
@@ -1468,7 +1466,6 @@ c        enddo
       end
 
 
-
       subroutine getyourscalesready_trib(xi,p,v,pdfchange,pdf,nlo,l)
 
       implicit none
@@ -1516,9 +1513,6 @@ c        enddo
       end
 
 
-
-
-
 ! THIS SUBROUTINE CALCULATES THE DIPOLES ACCORDING TO CATANI-SEYMOUR
 
       subroutine daisjdipole67_trib(n,sel,kin,xuz,pmi,pk,pa,p,v,dipoleres, 
@@ -1543,7 +1537,7 @@ c
 
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildek(0:3),dipole(0:3,0:3),p(0:3,3),v(0:3,4)
+      double precision dipole(0:3,0:3),p(0:3,3),v(0:3,4)
      &    ,pipk,pkpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,7),color,symmetry
 c
       double complex borncurr(0:3)
@@ -1685,7 +1679,6 @@ c     kin1 -> both, kin2 -> g
      &             )*color*symmetry
 
 
-
       dipole(0,0)=-1d0/2d0/pipa/xika*8.*pis*alfas*CF*(2./(1.-xika+ui)-(1.+xika))
 
       color=(CA-2.*CF)/2./CF*4.
@@ -1716,14 +1709,14 @@ c
       parameter (ldebug=.false.)
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildeb(0:3),dipole(0:3,0:3),xuz(2),pges(0:3),
-     & pipb,papb,pipa,k(0:3),Ktilde(0:3),bornmom(0:3,7),dipoleres(3),color,symmetry,
+      double precision dipole(0:3,0:3),xuz(2),pges(0:3),
+     & pipb,papb,pipa,bornmom(0:3,7),dipoleres(3),color,symmetry,
      & borncache147(2,2),borncache145(3,2)
 
       common/BORNCACHE/borncache145,borncache147 
 
       double complex borncurr(0:3)
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3),lep(0:3)
+      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3)
 
 c
       double precision xiab,ui
@@ -1885,7 +1878,7 @@ c     kin1 -> both, kin2 -> g
 
       integer ps_number
 
-      integer mu,nu,sel,kin,n
+      integer mu,sel,kin,n
 c INPUT
 
       double precision pmi(0:3),pk(0:3),pa(0:3)
@@ -1896,11 +1889,11 @@ c INPUT
 
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildek(0:3),dipole,p(0:3,3),v(0:3,4)
-     &    ,pipk,pkpa,pipa,xuz(2),dipoleres(6),bornmom(0:3,7),color(3),symmetry
+      double precision dipole,p(0:3,3),v(0:3,4)
+     &    ,pipk,pkpa,pipa,xuz(2),dipoleres(6),bornmom(0:3,7),color(3)
 c
       double precision born
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3)
+      double precision Contract_Trjcj
 
       double precision xika,ui
       double precision dotrr
@@ -1981,7 +1974,6 @@ c
       end
 
 
-
       subroutine daibdipole145_trib(n,sel,kin,xuz,pmi,pa,pb,p,v,dipoleres,
      &     ps_number)
 
@@ -1992,7 +1984,7 @@ c
 
       integer ps_number
 
-      integer mu,nu,sel,kin,n
+      integer mu,sel,kin,n
 c INPUT
 c
       double precision pmi(0:3),pb(0:3),pa(0:3),p(0:3,3),v(0:3,4)
@@ -2002,14 +1994,14 @@ c
       parameter (ldebug=.false.)
 c OUTPUT
 c
-      double precision ptildeai(0:3),ptildeb(0:3),dipole,xuz(2),
-     &    pipb,papb,pipa,k(0:3),Ktilde(0:3),bornmom(0:3,7),dipoleres(6),color(3),symmetry,
+      double precision dipole,xuz(2),
+     &    pipb,papb,pipa,bornmom(0:3,7),dipoleres(6),color(3),
      &    borncache145(3,2),borncache147(2,2)
 
       common/BORNCACHE/borncache145,borncache147
 
       double precision born
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3),lep(0:3)
+      double precision Contract_Trjcj
 
 c
       double precision xiab,ui
@@ -2110,12 +2102,12 @@ c
 
 c OUTPUT
 c
-      double precision ptildea(0:3),ptildeij(0:3),dipole(0:3,0:3),p(0:3,3),v(0:3,4)
+      double precision dipole(0:3,0:3),p(0:3,3),v(0:3,4)
      &    ,pipj,pjpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,7),color,symmetry,borntmp,
      &    dipolesc
 c
       double complex borncurr(0:3)
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3)
+      double precision Contract_Trjcj
 
       double precision xija,zi,zj
       double precision dotrr
@@ -2285,8 +2277,6 @@ c
       end
 
 
-
-
       subroutine test40_trib(n,sel,kin,xuz,pj,pmi,pa,p,v,dipoleres,ps_number)
 
       implicit none
@@ -2300,7 +2290,7 @@ c
 c INPUT
 
 c
-      double precision pmi(0:3),pj(0:3),pa(0:3),omx,one,two,u,x,omz
+      double precision pmi(0:3),pj(0:3),pa(0:3)
       double precision pis,CF,CA,TR
       parameter (pis=3.141592653589793238d0,CF=4d0/3d0,CA=3d0,TR=1d0/2d0)
       logical ldebug
@@ -2308,12 +2298,12 @@ c
 
 c OUTPUT
 c
-      double precision ptildea(0:3),ptildeij(0:3),dipole(0:3,0:3),p(0:3,3),v(0:3,4)
-     &    ,pipj,pjpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,7),color,symmetry,borntmp,
-     &    dipolesc,test1,test2,test3,z
+      double precision p(0:3,3),v(0:3,4)
+     &    ,pipj,pjpa,pipa,xuz(2),dipoleres(3),bornmom(0:3,7),color,borntmp,
+     &    dipolesc
 c
       double complex borncurr(0:3)
-      double precision Contract_Trjcj,borntest1,borntest2,metric(0:3,0:3),dptmp
+      double precision Contract_Trjcj,borntest2,metric(0:3,0:3),dptmp
 
       double precision xija,zi,ui,zj
       double precision dotrr
@@ -2360,7 +2350,6 @@ c
       endif
 
 
-
       do mu=0,3
       do nu=0,mu-1
       metric(mu,nu)=0d0
@@ -2402,10 +2391,6 @@ c
 !       print*, "My Dipole", borntmp*dipolesc
 
       end
-
-
-
-
 
 
 !       subroutine dijkdipole(id,pmi,pj,pk,ptildeij,ptildek,dipole)
@@ -2517,9 +2502,6 @@ c
 ! 
 ! 
 !       end
-
-
-
 
 
 !       if (m2s(0).ne.0d0) then

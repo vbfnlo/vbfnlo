@@ -57,7 +57,7 @@ c... local dot products
 c... other variables
       integer i1,i2,i3,i4
       integer i,j,mu
-      integer id(4)
+
 
       integer init,ie0(4,4,4,4)
       data init/0/, ie0/256*0/

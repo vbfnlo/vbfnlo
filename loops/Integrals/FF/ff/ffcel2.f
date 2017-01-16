@@ -306,7 +306,7 @@
 *
 *	arguments:
 *
-	integer in,jn,ip1,kn,ln,lkn,islk,iss,ns,ier
+	integer in,jn,kn,ln,lkn,islk,iss,ns,ier
 	DOUBLE COMPLEX delps,piDpj(ns,ns)
 *
 *	local variables
@@ -388,11 +388,11 @@
 *	local variables:
 *
 	DOUBLE PRECISION smax,xmax,absc
-	DOUBLE COMPLEX s(7),som,xsom,del2s,delps,c
-	integer i,j,k,ip1,ip2,ip3,ipn,is1,is2,isi,is3,ihlp,iqn,jsgnq,
+	DOUBLE COMPLEX s(7),som,xsom,c
+	integer i,j,k,ip1,ip2,ip3,ipn,is1,is2,isi,is3,ihlp,iqn,
      +		jsgn1,jsgn2,jsgn3,jsgnn,iadj(10,10,3:4),init,nm
 	save iadj,init
-	logical lsign,lmax,ltwist
+	logical lmax,ltwist
 *
 *	common blocks:
 *

@@ -68,7 +68,7 @@ c      INTEGER NHEL(NEXTERNAL)
 C     
 C     LOCAL VARIABLES 
 C     
-      INTEGER I,J,MU
+      INTEGER I,MU
 C      COMPLEX*16 ZTEMP
 C      REAL*8 DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
       COMPLEX*16 AMP(NGRAPHS) !, JAMP(NCOLOR)
@@ -89,7 +89,6 @@ c      INCLUDE 'coupl.inc'
 
 c      logical lswitch
 c      parameter (lswitch=.true.)
-
 
 
 C     

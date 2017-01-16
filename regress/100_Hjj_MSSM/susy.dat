@@ -1,0 +1,62 @@
+!! sophy: 27-10-2009, new input file
+!    SUSY input file for vbfnlo
+
+
+BENCH         = 10      ! Benchmark flag:
+!                        0     :  user-defined
+!                        1     :  Mh-max scenario (hep-ph/0202167)
+!                        2     :  No-mixing scenario (hep-ph/0202167)
+!                        3     :  gluophobic scenario (hep-ph/0202167)
+!                        4     :  small alpha_eff scenario (hep-ph/0202167)
+!                        5     :  CPX scenario (hep-ex/0602042)
+!                        10    :  SPS1a (Defined at http://www.ippp.dur.ac.uk/~georg/sps/)
+!                        11    :  SPS1b
+!                        12-19 :  SPS 2 - 9 
+FEYNH_SWITCH  = true  ! whether to use FeynHiggs to calculate the Higgs sector
+SLHA_SWITCH   = false ! Whether to read in parameters from file SLHA.in (in 
+!                      Susy Les Houches Accord format)
+!                      NOTE THAT if this SLHA_SWITCH = TRUE, the parameters in the SLHA
+!                      file overwrite those in the vbfnlo.dat and susy.dat files
+SLHA_FILE     = "sps1a.slha"    ! file name of SLHA parameters      
+PROPLEVEL     = 1     ! Level at which Higgs propagator corrections are included
+!                       0    :  Effective Higgs-mixing angle used
+!                       1    :  included at leading order
+!                       2    :  included at leading order AND loop level
+!                       3    :  included as a loop correction
+DELMB_SWITCH  = true  ! Whether to correct the bottom Yukawa coupling   
+MH_LOOPS      = 0     ! Whether the masses of higgs bosons in electroweak loops are
+!                       0 : at tree level
+!                       1 : corrected values
+LOOPSQR_SWITCH = true  ! Whether to include electroweak loop^2 corrections
+
+TANB          = 10d0   ! Value of tan beta
+! Note: It is standard to define the mass MA when working in the MSSM with real parameters
+!       and the mass of the charged Higgs (MHp) when working in the MSSM with complex
+!       parameters.  
+MASSA0        = 400d0  ! Mass of CP-odd Higgs mass (real MSSM)
+MASSHP        = -1d0   ! Mass of charged Higgs mass (complex mssm) 
+
+
+!------------------------------------------------------------------------------
+
+! User-input values of SUSY parameters, notation as in FeynHiggs
+  
+M3SQ          = 495.9d0
+M3SU          = 424.8d0
+M3SD          = 516.9d0
+M3SL          = 195.8d0
+M3SE          = 133.6d0
+M2SQ          = 539.9d0
+M2SU          = 521.7d0
+M2SD          = 519.5d0
+M2SL          = 196.6d0
+M2SE          = 136.2d0
+
+AT            = -510.0d0
+AB            = -772.7d0
+ATAU          = -254.2d0
+
+MUE           = 352.4d0
+M_2           = 192.7d0
+M_1           = 99.1d0
+M_3           = 595.2d0

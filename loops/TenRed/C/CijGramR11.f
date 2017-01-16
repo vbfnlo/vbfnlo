@@ -41,7 +41,7 @@ c*******************************************************************************
       Complex*16 S200,S21(2),S2001(2)
       Complex*16 S2h001(2)
       Complex*16 S20000,S200001(2)
-      Complex*16 S2h0000,S2h00001(2)
+      Complex*16 S2h00001(2)
       Complex*16 S2h0000001(2),S20000001(2)
       Complex*16 auxC30,tempC30
       Complex*16 auxC300,tempC300
@@ -2758,7 +2758,6 @@ c          if(accuracyC(4,ac).lt.1d-16) goto 500
            Cij(7,4)=temp002(2,2)
            Cij(8,4)=temp002(2,1)
            Cij(9,4)=tempC30000
-
 
 
        if(order.eq.8) goto 500

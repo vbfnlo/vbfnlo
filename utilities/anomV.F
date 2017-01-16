@@ -13,7 +13,8 @@
 ********************************************************************************
 
       subroutine read_anomVcouplings
-
+        use globalvars, only: lglobalprint
+        use readinput
 c reads in initial set of anomalous coupling constants 
 c from file anomV.dat. The coupling constants
 c are stored in common blocks in anomV_cplg.inc      
@@ -455,6 +456,7 @@ c are stored in common blocks in anomV_cplg.inc
 ** dim-8 operators for triboson and VVjj processes: 
          call read_real("FS0",fs0_0,0.0d0)
          call read_real("FS1",fs1_0,0.0d0)
+         call read_real("FS2",fs2_0,0.0d0)
          call read_real("FT0",ft0_0,0.0d0)
          call read_real("FT1",ft1_0,0.0d0)
          call read_real("FT2",ft2_0,0.0d0)
@@ -556,6 +558,7 @@ c         call read_real("FPHI1", fphi1_0,0.0d0) ! fphi1 contributes to the Z bo
 
          fs0=fs0_0
          fs1=fs1_0
+         fs2=fs2_0
          ft0=ft0_0
          ft1=ft1_0
          ft2=ft2_0
@@ -591,8 +594,6 @@ c         call read_real("FPHI1", fphi1_0,0.0d0) ! fphi1 contributes to the Z bo
       end
 
 
-
-
       subroutine set_anomVcouplings_zero
 c     this subroutine sets all relevant couplings to SM values,
 c     so that the anomalous routines can also be used for SM calculations
@@ -606,6 +607,7 @@ c     when anom=false
       ! couplings for triboson
       fs0=0
       fs1=0
+      fs2=0
       ft0=0
       ft1=0
       ft2=0

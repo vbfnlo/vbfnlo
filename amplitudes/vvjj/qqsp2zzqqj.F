@@ -45,138 +45,41 @@ c
       real*8 fpials(2:3), fpi
       parameter (fpi=4d0*pi)
 
-      double precision  pbar(0:3,4+max_v),qbar(0:4),musq
+      double precision  pbar(0:3,4+max_v),qbar(0:4)
       double precision uucc(3),uuss(3),ddcc(3),ddss(3),udsc(3),ducs(3),
      1 		       res(6,2:3),resv(6)
       double precision  p(0:3,4+max_v),q(0:4), p21(0:4,2:3), p43(0:4,2:3),
      1                  pq(0:4,4),pez(0:4),puz(0:4),pzz(0:4),
      2			qee(0:4,2:3),quu(0:4,2:3)!,
-      integer  sign(4+max_v),gsign, mu, i, j,jj, k, kk, id,
-     1         isig, isig1, isig3,is,ka,kb,kf,il,ib,ll,bos
-      integer  ifl(4,6), js1, js3, is1, is3
+      integer  sign(4+max_v),gsign, mu, i, j, k,
+     1         isig, isig1, isig3,bos
+      integer  ifl(4,6), is1, is3
       integer  l   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
       integer jmin, jmax
       logical jlog2,jlog3
       double complex prop21(4,2:3), prop43(4,2:3),
      1		     prop_ee(4,2:3),prop_uu(4,2:3)
-      double complex mat(6,-1:1,-1:1,2:3,0:2,9),temp
-      integer id1,id2,id3
-      double complex m5e(3,2,2,2:3,2),m5u(3,2,2,2:3,2),
-     1 	             m1p(6,2,2,2:3,2),m2p(6,2,2,2:3,2),m3p(6,2,2,2:3,2)
-      double complex  m1ae,m1ze,m2ae,m2ze,z1ae,z1ze,z2ae,z2ze,
-     1	              m1au,m1zu,m2au,m2zu,z1au,z1zu,z2au,z2zu,
-     1		      m3au,m3zu,m4au,m4zu,m3ae,m3ze,m4ae,m4ze,
-     1		      z3ae,z3ze,z3zu,z3au,z4ae,z4ze,z4zu,z4au,
-     1		      mate12,matu12,mate34,matu34
+      double complex mat(6,-1:1,-1:1,2:3,0:2,9)
+
       double complex mm(6,-1:1,-1:1,2:3,2)
-      double complex ga,gb,gc,gd
+
       double complex maa, maz, mza, mzz, mzz5, mzz6
-      double complex  m1,m2 ! for checks only
-      double complex  matot,ratot,raz,raa! for checks only
+      double complex  m2 ! for checks only
+      double complex  raz! for checks only
       double precision eps(0:3,2) ! g in kartesian basis 
       double complex psi(2,-1:1,4),jqq(0:5,-1:1,2,-1:1,0:2), 
      1 		     braketg(2,-1:1,4,2), jh1(0:5,-1:1), jh2(0:5,-1:1)
-      double complex psize(2,-1:1,4),psiae(2,-1:1,4),
-     1 		     psizu(2,-1:1,4),psiau(2,-1:1,4),
-     1               jez(0:5,-1:1,-1:1,4,0:2),jea(0:5,-1:1,-1:1,4,0:2),
-     1		     juz(0:5,-1:1,-1:1,4,0:2),jua(0:5,-1:1,-1:1,4,0:2)
-      double precision fqze(0:4,4), fqzu(0:4,4), fqae(0:4,4), fqau(0:4,4),
-     1 		       fq(0:4,4),dummy(0:4),
-     1 		       bq(0:4,4)
-      double complex bkjqq(2,-1:1,-1:1,4,2:3,0:2),
-     1		     bkjqqg(2,-1:1,-1:1,4,2:3,0:2),
-     1 		     gbkjqq(2,-1:1,-1:1,4,2:3,0:2)
-      double complex braketgze(2,-1:1,4,0:2),braketzeg(2,-1:1,4,0:2),
-     3		     braketgzu(2,-1:1,4,0:2),braketzug(2,-1:1,4,0:2),
-     3		     braketgae(2,-1:1,4,0:2),braketaeg(2,-1:1,4,0:2),
-     3		     braketgau(2,-1:1,4,0:2),braketaug(2,-1:1,4,0:2)      
-      double complex braketgA(2,-1:1,0:2,4),braketAg(2,-1:1,0:2,4),
-     3		     braketgZ(2,-1:1,0:2,4),braketZg(2,-1:1,0:2,4)      
-      double precision  pgze(0:4,4),pgzu(0:4,4),
-     3			pzeg(0:4,4),pzug(0:4,4),pgae(0:4,4),pgau(0:4,4),
-     3			paeg(0:4,4),paug(0:4,4)
-      double precision  pga(0:4,4),pgz(0:4,4),
-     3			pag(0:4,4),pzg(0:4,4)
-      double complex psia(2,-1:1,-1:1,4), psiz(2,-1:1,-1:1,4)
-      double complex ja(0:5,-1:1,-1:1,4,0:2), jz(0:5,-1:1,-1:1,4,0:2),
-     1		     jag(0:5,-1:1),jga(0:5,-1:1),jg0(0:5,-1:1),
-     1		     jgz(0:5,-1:1),jzg(0:5,-1:1),jgm(0:5,-1:1)
-      double complex jaegi(0:5,-1:1),jgaei(0:5,-1:1),jaeg0i(0:5,-1:1),
-     1		     jaegii(0:5,-1:1),jgaeii(0:5,-1:1),jaeg0ii(0:5,-1:1),
-     1		     jaugi(0:5,-1:1),jgaui(0:5,-1:1),jaug0i(0:5,-1:1),
-     1		     jaugii(0:5,-1:1),jgauii(0:5,-1:1),jaug0ii(0:5,-1:1),
-     1		     jzegi(0:5,-1:1),jgzei(0:5,-1:1),jzeg0i(0:5,-1:1),
-     1		     jzegii(0:5,-1:1),jgzeii(0:5,-1:1),jzeg0ii(0:5,-1:1),
-     1		     jzugi(0:5,-1:1),jgzui(0:5,-1:1),jzug0i(0:5,-1:1),
-     1		     jzugii(0:5,-1:1),jgzuii(0:5,-1:1),jzug0ii(0:5,-1:1)
-      double complex epsaa0(0:3),epsaz0(0:3),epsza0(0:3),epszz0(0:3),
-     1		     epsaa(0:3),epsaz(0:3),epsza(0:3),epszz(0:3),
-     1               epsaee(0:5,-1:1,3:4,2,2:3,0:2),
-     2		     epsauu(0:5,-1:1,3:4,2,2:3,0:2),
-     2               epszee(0:5,-1:1,3:4,2,2:3,0:2), 
-     2		     epszuu(0:5,-1:1,3:4,2,2:3,0:2),
-     3		     epsee0(0:3),epsuu0(0:3),epsee60(0:3),epsuu60(0:3),
-     3		     epsee(0:3),epsuu(0:3),epsee6(0:3),epsuu6(0:3),
-     1               epsCCee(0:5,-1:1,2,2:3,0:2),
-     1               epsCCuu(0:5,-1:1,2,2:3,0:2),
-     1               epsCCee6(0:5,-1:1,2,2:3,0:2),
-     1               epsCCuu6(0:5,-1:1,2,2:3,0:2)
-      double complex qepszee(2,3:4,-1:1,2:3,0:2),qepszuu(2,3:4,-1:1,2:3,0:2),
-     1	 	     qepsCCee(2,2:3,0:2),qepsCCuu(2,2:3,0:2),
-     1	 	     qepsCCee6(2,2:3,0:2),qepsCCuu6(2,2:3,0:2)
-      double complex jj21au(-1:1,0:2),jj43au(-1:1,0:2),
-     1 		     jj21zu(-1:1,0:2),jj43zu(-1:1,0:2),
-     1 		     jj21ae(-1:1,0:2),jj43ae(-1:1,0:2),
-     1 		     jj21ze(-1:1,0:2),jj43ze(-1:1,0:2)
-      double complex zuu(4:5,2:3),zee(4:5,2:3)
-      double complex m1aae,m1aze,m1zae,m1zze,z1aze,z1zze,
-     1 		     m2aae,m2aze,m2zae,m2zze,m1e,m2e,
-     1		     m1aau,m1azu,m1zau,m1zzu,z1azu,z1zzu,
-     1 		     m2aau,m2azu,m2zau,m2zzu,m1u,m2u,
-     1		     mz1aae,mz1aze,mz1zae,mz1zze,
-     1		     mz2aae,mz2aze,mz2zae,mz2zze,
-     1		     mz1aau,mz1azu,mz1zau,mz1zzu,
-     1		     mz2aau,mz2azu,mz2zau,mz2zzu,
-     1		     m3aae,m3aze,m3zae,m3zze,z3aze,z3zze,
-     3 		     m4aae,m4aze,m4zae,m4zze,m3e,m4e,
-     3		     m3aau,m3azu,m3zau,m3zzu,z3azu,z3zzu,
-     3 		     m4aau,m4azu,m4zau,m4zzu,m3u,m4u,
-     3		     mz3aae,mz3aze,mz3zae,mz3zze,
-     3		     mz4aae,mz4aze,mz4zae,mz4zze,
-     3		     mz3aau,mz3azu,mz3zau,mz3zzu,
-     3		     mz4aau,mz4azu,mz4zau,mz4zzu
-      double complex mezz(4,-1:1,-1:1,2:3,2),meza(4,-1:1,-1:1,2:3,2),
-     #		     meaz(4,-1:1,-1:1,2:3,2),meaa(4,-1:1,-1:1,2:3,2),
-     # 		     muzz(4,-1:1,-1:1,2:3,2),muza(4,-1:1,-1:1,2:3,2),
-     #		     muaz(4,-1:1,-1:1,2:3,2),muaa(4,-1:1,-1:1,2:3,2),
-     #		     zezz(-1:1,-1:1,2:3,2:3,2),zeza(-1:1,-1:1,2:3,2:3,2),
-     #		     zeaz(-1:1,-1:1,2:3,2:3,2),zeaa(-1:1,-1:1,2:3,2:3,2),
-     # 		     zuzz(-1:1,-1:1,2:3,2:3,2),zuza(-1:1,-1:1,2:3,2:3,2),
-     #		     zuaz(-1:1,-1:1,2:3,2:3,2),zuaa(-1:1,-1:1,2:3,2:3,2)
-      double complex  ma(4,2:3,0:2), mz(4,2:3,0:2)
-      double complex propt(-1:1,-1:1,6,2:3,2),
-     1		     propbbe(2:3), propbbu(2:3),
-     1		     propbbea(6,-1:1,-1:1,2:3), propbbua(6,-1:1,-1:1,2:3),
-     1		     propbbez(6,-1:1,-1:1,2:3), propbbuz(6,-1:1,-1:1,2:3)
+
       double complex  zm2i(2:4)
       double complex contract_Tjj,! contract_T1j,contract_T2j,
      1 		     dotcc, dotrc, dotqj, s1c
       external contract_Tjj, !contract_T1j,contract_T2j,
      1 	       dotcc, dotrc, dotqj, s1c
-      integer lh
-      double complex m1hc(-1:1),m1kc(2),m1hh(-1:1),m1kh(2)
-      double complex m1hj(-1:1,2:3),m1kj(2,2:3)
-      double complex m1haj(-1:1,2:3),m1hzj(-1:1,2:3),
-     1 		     m1hua(-1:1,2:3),m1hla(-1:1,2:3),
-     1 		     m1huz(-1:1,2:3),m1hlz(-1:1,2:3),
-     1 		     m1kaj(2,2:3),m1kzj(2,2:3),
-     1 		     m1kua(2,2:3),m1kla(2,2:3),
-     1 		     m1kuz(2,2:3),m1klz(2,2:3)
-      double complex fac
+
       double complex im
       parameter (im = (0d0,1d0))
       logical ldebug, linit,lerror,lgauge,ldebugm
-      integer n,m
+
      
       save ifl, zm2i, linit, lerror,ldebug,ldebugm,lgauge
 	

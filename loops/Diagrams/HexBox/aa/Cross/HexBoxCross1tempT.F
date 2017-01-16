@@ -41,7 +41,6 @@ c*******************************************************************************
        End
 
 
-
        subroutine HexBoxCross166T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,
      &   barpsi_p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,
      &   resultn,resultborn,Div)
@@ -70,8 +69,6 @@ c*******************************************************************************
        End
 
 
-
-
        subroutine HexBoxCross167T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,
      &   barpsi_p2,psi_p5,mup3,mup4,musq,comp,ngluon,posgluon,result,
      &   resultn,resultborn,Div)
@@ -98,7 +95,6 @@ c*******************************************************************************
 
        Return
        End
-
 
 
        subroutine HexBoxCross176T(p1,p2,p3,p4,p5,p6,psi_p1,barpsi_p6,

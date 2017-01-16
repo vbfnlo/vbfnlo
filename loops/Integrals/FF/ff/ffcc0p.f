@@ -196,7 +196,7 @@
 		    endif
 		endif
    85	    continue
-   86	    continue
+     	    continue
 	    print '(a)','  ##] get roots:'
 	endif
 *  #]   write output:

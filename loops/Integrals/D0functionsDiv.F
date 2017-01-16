@@ -103,10 +103,6 @@ c #define UVPOLE_ONLY
       end
 
 
-
-
-
-
       function C0finDiv_1m(p1sq,musq,i)
       implicit none
       complex*16 C0finDiv_1m
@@ -159,11 +155,6 @@ c #define UVPOLE_ONLY
        return
        endif
        End
-
-
-
-          
-
 
 
 c    ***********   D00m_fin(s,t,musq)   *************
@@ -224,9 +215,6 @@ c          N_ep = i/(4 pi)^2 (4 pi)^ep Gamma(1+ep) (musq)^(-ep)
       end
 
 
-
-
-
       function D01m_finDiv(s,t,m4sq,musq,i)
       implicit none
       complex * 16 D01m_finDiv
@@ -264,7 +252,6 @@ c          N_ep = i/(4 pi)^2 (4 pi)^ep Gamma(1+ep) (musq)^(-ep)
 
 
       end
-
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -400,7 +387,6 @@ c          N_ep = i/(4 pi)^2 (4 pi)^ep Gamma(1+ep) (musq)^(-ep)
       end
 
 
-
       function D03m_finDiv(s,t,m2sq,m3sq,m4sq,musq,i)
       implicit none
       complex * 16 D03m_finDiv
@@ -416,7 +402,6 @@ c          N_ep = i/(4 pi)^2 (4 pi)^ep Gamma(1+ep) (musq)^(-ep)
          write(*,*) 
      #        'POSSIBLE ERROR IN D03m_fin: SCALE MUSQ LESS THAN ZERO!!'
       endif
-
 
 
       if(i.eq.1) then

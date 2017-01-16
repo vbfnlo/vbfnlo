@@ -67,7 +67,7 @@ c  helicity selection
       PARAMETER (zero=(0d0,0d0))
 
       DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -172,7 +172,6 @@ c better choice
 
          endif
 #endif
-
 
 
 c leptonic tensors:
@@ -430,13 +429,13 @@ c local variables
       INTEGER iflav(4), diagToPhys(2), FL_VVV
       EXTERNAL dotrr, FL_VVV
 
-      LOGICAL ChargedCurrent, sametype, oneAntiparticle
+
       LOGICAL ldebug
       PARAMETER (ldebug=.false.)
       LOGICAL ldebug_ltens
       PARAMETER (ldebug_ltens=.false.)
       PARAMETER (zero = (0d0,0d0) )
-      INTEGER i,if1,if2,icc1,j,k,mu
+      INTEGER i,if1,k,mu
 
       uuwwa = 0d0
       uuwwa2 = 0d0
@@ -526,7 +525,7 @@ c*****************************************************************
 #include "tensor.inc"
       complex*16 zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,mu
 
       do mu = 0,5
          do j = 1,3

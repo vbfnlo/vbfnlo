@@ -1,8 +1,8 @@
 ****************subroutine QQVVj *************************************
 c
-c	Vera Hankele, <vera@particle.physik.uni-karlsruhe.de>
-c	Initial version:  2006 April
-c	Last modified: 
+c        Vera Hankele, <vera@particle.physik.uni-karlsruhe.de>
+c        Initial version:  2006 April
+c        Last modified: 
 C     Francisco Campanario, francam@particle.uni-physik.uni-karlsruhe.de
 c      Last modified:  April 2012
 c
@@ -22,14 +22,14 @@ c  This code includes only real emission contributions, i.e.
 c
 c      return uucc = |M_real|^2   etc.
 c
-c	fpials is attached only in the end of the code
+c        fpials is attached only in the end of the code
 c
 c index j = 2:3 indicates, whether g is emitted from 
-c		upper line (j=2) or lower line (j=3)
-c	l is the gluon polarization in the kartesian basis (l=1,2)
-c		l=0 stands for building blocks without gluon emission
-c	k is the process ID (1:uuww,2:ddww)
-c	isig1/isig3 are the helicities of parton1/2 
+c                upper line (j=2) or lower line (j=3)
+c        l is the gluon polarization in the kartesian basis (l=1,2)
+c                l=0 stands for building blocks without gluon emission
+c        k is the process ID (1:uuww,2:ddww)
+c        isig1/isig3 are the helicities of parton1/2 
 c
 c*********************************************************************
 
@@ -54,91 +54,54 @@ c variables for the main part of the program
       real*8 fpials(2:3), fpi
       parameter (fpi=4d0*pi)
 
-      double precision  pbar(0:3,2+n_v), qbar(0:4), fac, musq, q(0:3)
+      double precision  pbar(0:3,2+n_v), qbar(0:4), musq, q(0:3)
       double precision  uuww, ddww, res(2),resv(2)
-      double precision  p(0:3,2+n_v), pq(0:4,2),p21(0:4),
-     1                  pww(0:4), fqp(0:4,2), fqm(0:4,2)
+      double precision  p(0:3,2+n_v), pq(0:4,2)
       double precision pgWP(0:4,2), pgWM(0:4,2), pWP(0:4,2), pWM(0:4,2)
 
-      integer  sign(2+n_v), gsign, mu, i, jj, k, kk, id, isig, nlo, N
-      integer  ifl(2,2), js1, js3, is, ps_number
+      integer  sign(2+n_v), gsign, mu, i, k, isig, nlo, N
+      integer  ifl(2,2), ps_number
       integer  l,j   ! gluon polariz. (l=0:no g, l=1,2:g in kartesian basis)
-      integer jmin, jmax
-      logical jlog2,jlog3
-      double complex prop21(4,2:3), prop43(4,2:3),
-     1		     prop_pm(4,2:3),prop_mp(4,2:3)
 
 
       double complex mat(2,-1:1,0:2,9),temp, temp1
       double complex mata(2,-1:1,0:2,9),
-     1 		     matz(2,-1:1,0:2,9)
-      double complex mm(2,-1:1,2),m5(3,3:4,2:3,2)
-      double complex ga,gb,gc,gd
-      double complex maa, maz, mza, mzz, mww5, mww6
-      double complex  mpm(4,2:3,2), mmp(4,2:3,2)
-      double complex  m1u,m2u,m1l,m2l,z1u,z1l
+     1                      matz(2,-1:1,0:2,9)
+      double complex mm(2,-1:1,2)
       double complex  m1(-1:1,2,3), m2(-1:1,2,3)
-      double complex  matot,ratot,raz,raa! for checks only
+      double complex  raz! for checks only
       double precision eps(0:3,2) ! g in kartesian basis 
       double complex psi(2,-1:1,4), psiWM(2,-1:1,2), psiWP(2,-1:1,2)
       double complex psiWMg(2,-1:1, 2,2), psiWPg(2,-1:1, 2,2)
-      double complex jqq(0:5,-1:1,2,0:2), braketg(2,-1:1,2,2)
+      double complex braketg(2,-1:1,2,2)
       double complex jqgaq(0:5,-1:1,2), jqagq(0:5,-1:1,2), 
-     &               jqqa(0:5,-1:1,2), jh1(0:5,-1:1), jh2(0:5,-1:1)
+     &               jqqa(0:5,-1:1,2)
       double complex jqqgWP(0:5,-1:1,2,0:3), jqqgWM(0:5,-1:1,2,0:3)
-      double complex jwp(0:5,-1:1,-1:1,4,0:2), jwm(0:5,-1:1,-1:1,4,0:2)
-      double precision fq(0:4,4),dummy(0:4),
-     1 		       bq(0:4,4)
-      double complex bkjqq(2,-1:1,-1:1,4,2:3,0:2),
-     1		     bkjqqg(2,-1:1,-1:1,4,2:3,0:2),
-     1 		     gbkjqq(2,-1:1,-1:1,4,2:3,0:2)
+
       double complex braketgWP(2,-1:1,2,2),braketgWM(2,-1:1,2,2)         
       double precision  pwpg(0:4,4),pwmg(0:4,4)
-      double precision  pga(0:4,4),pgz(0:4,4),
-     3			pag(0:4,4),pzg(0:4,4)
-      double complex psia(2,-1:1,-1:1,4), psiz(2,-1:1,-1:1,4)
-      double complex ja(0:5,-1:1,-1:1,4,0:2), jz(0:5,-1:1,-1:1,4,0:2),
-     1		     jag(0:5,-1:1),jga(0:5,-1:1),jg0(0:5,-1:1),
-     1		     jgz(0:5,-1:1),jzg(0:5,-1:1),jgm(0:5,-1:1)
-      double complex jwgi(0:5,-1:1),jgwi(0:5,-1:1),jwg0i(0:5,-1:1),
-     1		     jwgii(0:5,-1:1),jgwii(0:5,-1:1),jwg0ii(0:5,-1:1)
-      double complex epsa0(0:3),epsz0(0:3),epsa(0:3),epsz(0:3),
-     1               epsNCwp(0:5,-1:1,3:4,2,2:3,0:2),
-     2		     epsNCwm(0:5,-1:1,3:4,2,2:3,0:2)
-      double complex qepswp(3:4,2:3,0:2),qepswm(3:4,2:3,0:2)
-      double complex jj21m(0:2),jj21p(0:2),jj43m(0:2),jj43p(0:2)
-      double complex zp(4:5,2:3),zm(4:5,2:3)
-      double complex zpm(2:3,2),zmp(2:3,2)
       double complex ma(-1:1,2,0:2), mz(-1:1,2,0:2)
-      double complex propt(-1:1,-1:1,6,2:3,2)
       double complex  zm2i(2:4)
       double complex contract_Tjj,! contract_T1j,contract_T2j,
-     1 		     dotcc, dotrc, dotqj, s1c
+     1                      dotcc, dotrc, dotqj, s1c
       double precision dotrr
       external contract_Tjj, !contract_T1j,contract_T2j,
-     1 	       dotcc, dotrc, dotqj, s1c,dotrr
+     1                dotcc, dotrc, dotqj, s1c,dotrr
       integer lh
-      double complex madgr(9,-1:1,-1:1,2),m1kb(2,-1:1,9),m2kb(2,-1:1,9) !checks
-      double complex m1hj(-1:1,2:3),m1kj(2,2:3)
-      double complex m1haj(-1:1,2:3),m1hzj(-1:1,2:3),
-     1 		     m1hu(-1:1,2:3),m1hl(-1:1,2:3),m1hc(-1:1),
-     1 		     m1hua(-1:1,2:3),m1hla(-1:1,2:3),
-     1 		     m1huz(-1:1,2:3),m1hlz(-1:1,2:3),
-     1 		     m1kaj(2,2:3),m1kzj(2,2:3),
-     1 		     m1ku(2,2:3),m1kl(2,2:3),m1kc(2),
-     1 		     m1kua(2,2:3),m1kla(2,2:3),m1kc2(2),m1kc3(2),
-     1 		     m1kuz(2,2:3),m1klz(2,2:3),m1hc2(-1:1),m1hc3(-1:1)
+      double complex madgr(9,-1:1,-1:1,2) !checks
+
+      double complex m1kb(2,-1:1,9),m2kb(2,-1:1,9) !checks
+
       double complex im
       parameter (im = (0d0,1d0))
       logical lerror
-      integer m
      
       save ifl, zm2i!, linit
       data  lerror /.true./
 
       logical ldebug, ldebugm, ldebuglt, linit, christophmods
-      logical lnlo, lbox, lpq, lpt, lpent,lhex,lbox2,lhiggs,lvert
-      logical addkmuknu
+      logical lnlo, lbox, lpt, lpent,lbox2,lhiggs,lvert
+
       data linit /.true./
       save linit
       parameter(ldebugm = .false., ldebug=.false., ldebuglt=.false.)
@@ -175,37 +138,35 @@ c Variables for boxes
 c Variables for pentagons      
       real*8 mqa2(0:3)
       real*8 mqz(0:3)
-      complex*16 cmqz(0:3)
+
       real*8 p1(0:3),p2(0:3)
-      real*8 mpg(0:3),mpz(0:3)
+      real*8 mpg(0:3)
       complex*16 pentcontr1(3),pentcontr1b(3)
       complex*16 pentcontr2(3),pentcontr2b(3)
       complex*16 pentcontr3(3),pentcontr3b(3)
       complex*16 pentcontr4(3),pentcontr4b(3)
       complex*16 pentcontr5(3),pentcontr5b(3)
       complex*16 pentcontr6(3),pentcontr6b(3)
-      complex*16 pentcontr7(3),pentcontr7b(3)
-      complex*16 pentcontr8(3),pentcontr8b(3)
 c
       complex*16 j5a2g(8,4,2,-1:1),jba2g(4,2,-1:1)
       complex*16 j5ga2(8,4,2,-1:1),jbga2(4,2,-1:1)
 !      complex*16 j5a2g1(8,4,2,-1:1),jba2g1(4,2,-1:1)
 !      complex*16 j5ga21(8,4,2,-1:1),jbga21(4,2,-1:1)
 c
-      complex*16 j5ma2g(8,4,2,-1:1),jbma2g(4,2,-1:1)
-      complex*16 j5mga2(8,4,2,-1:1),jbmga2(4,2,-1:1)
+
+
 c
 !      complex*16 j5ma2g1(8,4,2,-1:1),jbma2g1(4,2,-1:1)
 !      complex*16 j5mga21(8,4,2,-1:1),jbmga21(4,2,-1:1)
 
 c NoAbe
       complex*16 jg5a2(2,2,-1:1)
-      complex*16 jg5ma2(2,2,-1:1)
+
 !      complex*16 jg5a21(2,2,-1:1)
 !      complex*16 jg5ma21(2,2,-1:1)
 c      complex*16 jg5ma2(2,2,-1:1)
       complex*16 pentcontrNoAbe1(3),pentcontrNoAbe2(3)
-      complex*16 pentemp(3)
+
       real*8      accuracyres
 
 
@@ -221,7 +182,7 @@ c  Colors Parameters
 c     Variables for virtual
       complex*16 mv1,mv2,mv3,mv4,mv5,mv6
       complex*16 mmv2,mmv3,ratioFACT,mmv2b,mmv3b,mmv5,mmv6
-      Complex*16 mmv2CA,mmv3CA,mmv4
+      Complex*16 mmv2CA,mmv4
       complex*16 mmv1,mmv1b,mmv1CA
       complex*16 Myeps(0:3,2) ! g in kartesian basis
 c  Compare born from penlines, hexline,boxline 
@@ -236,14 +197,14 @@ C  For adding Christoph factor from cancellation of 1/eps  divergences
        real*8 s,t,mmu,mursq1
        complex*16 check(2,-1:1,2),check1(2,-1:1,2)
        complex*16 check2(2,-1:1,2,7),check3(2,-1:1,2,7)
-       integer GaugeAbe,GaugeNoAbe
+
 c
        integer isig2,comp
        double complex cnf
-      Integer Div,Gauge,PerformGauge,mutemp
-      complex*16 mv1CA,mv2CA,mv3CA,mv1b,mv2b,mv3b,mv4b,mv5b
-      complex*16 mmv4b,mmv5b,mv4CA,mv5CA
-      complex*16 rvZERO(4,4),rbZERO(4,4)
+      Integer Div,PerformGauge,mutemp
+      complex*16 mv1CA,mv2CA,mv3CA,mv1b,mv2b,mv3b,mv4b
+      complex*16 mmv4b,mv4CA
+
       complex*16 lns,lnt,lnu,cteEps1
 
       Logical wardidtest1,wardidtest2,wardidtest3,wardidtest4
@@ -259,26 +220,26 @@ c variable for q_mu q_nu terms in the propagators of the massive vector bosons
 !      integer nlo
 
 c Variables for fermion loops
-      integer flgauge, flcomp
+
       double precision mf(4)
       integer cpl(4)
-      double precision vv, temp_m2s
+      double precision vv
       double complex rfbox(6,2,4,2,2)
       double precision rgfbox(6,2,4,2,2) 
       double complex rfvert(2,3,4,2,2)
       double precision rgfvert(2,3,4,2,2) 
-      double precision fcresult, fctreeresult
+
+      double precision fcresult
       integer*8 fchelicities, thirtytwo
       integer fcflags
       double complex fcamp(0:1,-2:2,-2:2), fckamp(0:1,2)
       parameter(thirtytwo=32)
 
       real*8 minus_qp(0:3),minus_qm(0:3),minus_qww(0:3)
-      double complex result(-1:1,4,2),result_born(-1:1,4,2)
       integer poln
       external deltakro
       real*8 deltakro
-      complex*16 v1(0:3), curr1(0:3,2),curr2(0:5,-1:1)
+      complex*16 curr1(0:3,2),curr2(0:5,-1:1)
       double precision p12(0:4,-1:1)
       integer l1,l2
       external sc1c
@@ -346,7 +307,7 @@ c         zm2i(4) = 1/dcmplx(xm2(4),-xmg(4))
 
       do k = 1,2
          do isig = -1,1,2
-	    do l = 0,2
+            do l = 0,2
                do i = 1,9
                   mat(k,isig,l,i)  = 0
                   mata(k,isig,l,i) = 0
@@ -382,7 +343,7 @@ c define the internal momenta
             p(mu,i) = pbar(mu,i)*sign(i)
          enddo
 
-	 q(mu) = qbar(mu)*gsign
+         q(mu) = qbar(mu)*gsign
 
       enddo
 
@@ -400,7 +361,7 @@ c     psi(1,isig1,2) = <2|_isig
 
 c  Get the gluon polarization vector and the gluon emission spinors
 
-      do l = 1,2	! 2 gluon polarizations
+      do l = 1,2        ! 2 gluon polarizations
 
          call polvec(qbar,l,eps(0,l))  ! get gluon pol.vectors
 
@@ -413,7 +374,7 @@ c            eps(mu,l) = qbar(mu)
 
 c--- End of QCD gaugecheck -------------------------------------------    
 
-         do isig = -1,1,2	! fermion helicity 
+         do isig = -1,1,2        ! fermion helicity 
 
 c     NOTES for bras and kets: .true. if psi is a 2-spinor of the chi
 c     form as output by psi0m, .false. otherwise.  the last entry is
@@ -542,7 +503,7 @@ c     either side of the ffV vertex:
      &              psi(1,-1,1),p(0,1),jqagq(0,-1,l))
 
             do mu = 0,5
-	       jqqa(mu,isig,l) = jqgaq(mu,isig,l) + jqagq(mu,isig,l)
+               jqqa(mu,isig,l) = jqgaq(mu,isig,l) + jqagq(mu,isig,l)
 c                            = (<2|gam.mu|q,1>+<2,q|gam.mu|1>)_l,isig)
             enddo
          enddo
@@ -625,9 +586,9 @@ c compute m1/m2 in kartesian basis:
             do i=1,9
                do k=1,2
                
-	 m1kb(k,isig,i) = (madgr(i,isig,-1,k) - 
+         m1kb(k,isig,i) = (madgr(i,isig,-1,k) - 
      &            madgr(i,isig,1,k))/sqrt(2d0)       
-	 m2kb(k,isig,i) = -im*(madgr(i,isig,-1,k) + 
+         m2kb(k,isig,i) = -im*(madgr(i,isig,-1,k) + 
      &            madgr(i,isig,1,k))/sqrt(2d0)
 
                enddo
@@ -640,8 +601,8 @@ c print results from checks:
             do k = 2,2
                do i = 4,7
 
-    	    print*,"ratio for l=1, isig = ",isig,"i = ",i,":",
-     &	    	mat(k,isig,1,i)/m1kb(k,isig,i)
+                print*,"ratio for l=1, isig = ",isig,"i = ",i,":",
+     &                    mat(k,isig,1,i)/m1kb(k,isig,i)
             print*,"mat(",k,",",isig,",1,",i,") = ",mat(k,isig,1,i)
             temp = dreal(mat(k,isig,1,i))**2+dimag(mat(k,isig,1,i))**2
             print*,temp
@@ -651,8 +612,8 @@ c print results from checks:
             print*,"temp/temp1 = ",temp/temp1
             print*," "
 
-    	    print*,"ratio for l=2, isig = ",isig,"i = ",i,":",
-     &	    	mat(k,isig,2,i)/m2kb(k,isig,i)
+                print*,"ratio for l=2, isig = ",isig,"i = ",i,":",
+     &                    mat(k,isig,2,i)/m2kb(k,isig,i)
             print*,"mat(",k,",",isig,",2,",i,") = ",mat(k,isig,2,i)
             temp = dreal(mat(k,isig,2,i))**2+dimag(mat(k,isig,2,i))**2
             print*,temp
@@ -672,10 +633,6 @@ c------------------------------------------------------
 c-----------------END of calculation of matrix elements------------------
 
 
-
-
-
-
 c**************************************************************
 c
 c    Virtual contributions
@@ -689,8 +646,8 @@ C To checl Factorization of Divergences
 C  Div=1 -> 1/Eps;   Div=2 ->1/Eps^2
 !         do Div=2,0,-1
         Div=0
-	PerformGauge=0
-	Reno_inv=0
+        PerformGauge=0
+        Reno_inv=0
 C The only piece that is not checked with this variables 
 C is the finite terms from the cancellation of the poles
 C  against the Real part. Ask Christoph for this
@@ -720,14 +677,14 @@ c Some factors
                      
                      
  100    lns=log(Abs(mans))-(0,1)*pi*theta(mans)-log(musq)
-	lnt=log(Abs(mant))-(0,1)*pi*theta(mant)-log(musq)
-	lnu=log(Abs(manu))-(0,1)*pi*theta(manu)-log(musq)
+        lnt=log(Abs(mant))-(0,1)*pi*theta(mant)-log(musq)
+        lnu=log(Abs(manu))-(0,1)*pi*theta(manu)-log(musq)
 
 ! This terms is a guess to make a substraction of each of the contributions to make
 ! them small, so that, we can decrease statistics in boxline,penlines, hexlines.
 ! So, it will give the M_v_born: K_cont*M_born
 !       K_cont=(-2d0*pi*pi/3d0+50d0/9d0)*CAC-16d0/9d0*TF*cnf
-!     1 	      +2d0*CFC*(-pi*pi+3d0)	
+!     1               +2d0*CFC*(-pi*pi+3d0)        
        K_cont=0d0
 ! This is the finite piece that has to be added to the finite contributions.
 ! It includes also the counterterms. We have factor out musq^-eps which goes to the 
@@ -752,7 +709,7 @@ c Some factors
 ! the finite part of the hexlines,penline's independent of musq.
 !
 !
-	If(Reno_inv.gt.0) then
+        If(Reno_inv.gt.0) then
       K_contcheck=-4*Inv2*Inv3*cnf*TF*Log(musq) + 
      1              CFC*Log(musq)*(3 - 2*EulerGamma + Log(musq) + 2*Log(4*Pi) - 
      2               2*Log(Abs(mans)) + (0,2)*Pi*theta(mans)) + 
@@ -791,7 +748,7 @@ c Some factors
 !   This part proof renormalization invariance following Eq.2.38 of my paper 
         K_contcheck2=CAC*(1/2d0*(lns*lns-lnt*lnt-lnu*lnu)+
      &  3D0*(-2*lns+lnt+lnu))
-	K_contcheck3=-CFC*(lns-3d0)*lns
+        K_contcheck3=-CFC*(lns-3d0)*lns
 !       Print*, 'K_contcheck2',K_contcheck2
         endif ! Finish the scale renormalization check
 
@@ -835,8 +792,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
 C                 Here start the virtual staff
 C
-!	 LPENT=.FALSE.
-!	 LBOX=.FALSE.
+!         LPENT=.FALSE.
+!         LBOX=.FALSE.
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc
 
 
@@ -869,34 +826,34 @@ cFC
             do mu = 0,3
                p1(mu) = p(mu,1)
                p2(mu) = -p(mu,2)
-	       mpg(mu) = -q(mu)
+               mpg(mu) = -q(mu)
 c W-
                mqa2(mu) = -qm(mu,1)
 c W+
                mqz(mu) = -qp(mu,1)
-	   enddo
+           enddo
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!        
 ! Check gauge invariance
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       If(PerformGauge.eq.1) then
          do mu = 0,3
-	    Myeps(mu,1)=mpg(mu)
-	    Myeps(mu,2)=mpg(mu)
-	  enddo
+            Myeps(mu,1)=mpg(mu)
+            Myeps(mu,2)=mpg(mu)
+          enddo
       elseif(PerformGauge.eq.2) then
          do mu = 0,3
-	     mutemp=mu+1
+             mutemp=mu+1
 c Polarization of W+
-	    wp(mutemp,1) = mqz(mu)
-c	    atau1(mutemp,1) = mqz(mu)
-	 enddo
+            wp(mutemp,1) = mqz(mu)
+c            atau1(mutemp,1) = mqz(mu)
+         enddo
       elseif(PerformGauge.eq.3) then
          do mu = 0,3
-	    mutemp=mu+1
+            mutemp=mu+1
 c Polariazation A
-	    wm(mutemp,1) = mqa2(mu)
-	 enddo
+            wm(mutemp,1) = mqa2(mu)
+         enddo
        endif
 CCCCCCCCCCCCCCCCCCCCCCCCC
 C  Abelian PART
@@ -1074,30 +1031,29 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
        wardidtest1=wardidtest1.and.wardidtest2.and.wardidtest3.and.
      1 wardidtest4.and.wardidtest5.and.wardidtest6
        wardidtest1=wardidtest1.and.wardidtest7.and.wardidtest8
-     
 
 
         If(Div.ne.0) then
 ! Check factorization of Divergences. Set the color equal.
 ! So that I can check separately the CF and CA factorization
-!	Print*,'CFCFCF',cfc
-	cfc=1d0
-	cacgraph=1d0
-!	Print*,'CFCFCF',cfc
-	cfcac=cfc
-	wardidtest1=.True.
-	endif
-	
-	
+!        Print*,'CFCFCF',cfc
+        cfc=1d0
+        cacgraph=1d0
+!        Print*,'CFCFCF',cfc
+        cfcac=cfc
+        wardidtest1=.True.
+        endif
+        
+        
          if (.not.wardidtest1) then
           do isig=-1,-1,2  
-	    do  isig2=1,2
+            do  isig2=1,2
                 do i = 1,3
-		   do mu=1,2
+                   do mu=1,2
                      j5a2g(mu,i,isig2,isig) = (0.0d0, 0.0d0)
- 		     j5ga2(mu,i,isig2,isig) = (0.0d0, 0.0d0)
- 	          jg5a2(mu,isig2,isig)=(0.0d0, 0.0d0)
-		   enddo
+                      j5ga2(mu,i,isig2,isig) = (0.0d0, 0.0d0)
+                   jg5a2(mu,isig2,isig)=(0.0d0, 0.0d0)
+                   enddo
                 enddo
               enddo
            enddo 
@@ -1108,7 +1064,7 @@ c           print*, "NO PEN GAUGE", ps_number,pentcountm,pentcountps(ps_number)
          else
 
           do isig=-1,-1,2  
-	    do isig2=1,2
+            do isig2=1,2
               do i = 1,3
            j5a2g(1,i,isig2,isig)=(cfc*j5a2g(1,i,isig2,isig)
      &                         +cfcac*j5a2g(2,i,isig2,isig))
@@ -1118,11 +1074,11 @@ c           print*, "NO PEN GAUGE", ps_number,pentcountm,pentcountps(ps_number)
 
                enddo
              do i = 1,2
-        	 jg5a2(i,isig2,isig) = cacgraph*jg5a2(i,isig2,isig)
+                 jg5a2(i,isig2,isig) = cacgraph*jg5a2(i,isig2,isig)
 
-    	      enddo
-	    enddo  
-	  enddo  
+                  enddo
+            enddo  
+          enddo  
               pentcount2m = pentcount2m+1
               pentcount2ps(ps_number) = pentcount2ps(ps_number)+1      
          endif
@@ -1198,9 +1154,9 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ! Non-Abelian graphs
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! W+W-
-	mv3=(jg5a2(1,isig2,isig))
+        mv3=(jg5a2(1,isig2,isig))
 ! W-W+
-	mv4=(jg5a2(2,isig2,isig))
+        mv4=(jg5a2(2,isig2,isig))
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !                   SUM
@@ -1222,79 +1178,77 @@ c Change of sign to agree with MadGraph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	  
-	IF (wardidtest1 ) THEN
-	
-	IF (PerformGauge.eq.1) then
+          
+        IF (wardidtest1 ) THEN
+        
+        IF (PerformGauge.eq.1) then
 ! gauge test for the gluon. The CF part of ,mv2,mv3,
 ! is already zero. mv1,mv2,mv3, then, only contains CA part which
 ! should cancel agains NOABE, mv4,mv5
-	Print*, ''
-	Print*, 'Div',Div
-	Print*, 'PerformGauge',PerformGauge
-	
         Print*, ''
-	Print*, 'wardidtest1',wardidtest1 
-	Print*, 'cacgraph',cacgraph
-	Print*, 'cfc',cfc
-	Print*, 'cfca',cfcac
-	Print*, 'cfca-CF',cfcac-cfc
-	Print*, ''
-	Print*, 'mv2b',mv2b
-	Print*, 'mv2',mv2
-	Print*, 'mv4',mv4
-	Print*, 'Gauge',-mv2/mv4-1d0
+        Print*, 'Div',Div
+        Print*, 'PerformGauge',PerformGauge
+        
+        Print*, ''
+        Print*, 'wardidtest1',wardidtest1 
+        Print*, 'cacgraph',cacgraph
+        Print*, 'cfc',cfc
+        Print*, 'cfca',cfcac
+        Print*, 'cfca-CF',cfcac-cfc
+        Print*, ''
+        Print*, 'mv2b',mv2b
+        Print*, 'mv2',mv2
+        Print*, 'mv4',mv4
+        Print*, 'Gauge',-mv2/mv4-1d0
 
 
-	Print*, ''
-	Print*, 'mv1b',mv1b
-	Print*, 'mv1',mv1
-	Print*, 'mv3',mv3
-	Print*, 'Gauge',-mv1/mv3-1d0
+        Print*, ''
+        Print*, 'mv1b',mv1b
+        Print*, 'mv1',mv1
+        Print*, 'mv3',mv3
+        Print*, 'Gauge',-mv1/mv3-1d0
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	elseif(PerformGauge.gt.1) then
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
+        elseif(PerformGauge.gt.1) then
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!        
 !   Here only the sum of all the contributions is gauge
 !   invariant, but, with coupling cte equal=1. 
 !    Otherwise, there are reamining terms that cancel against
 !    penline's and so on due to the difference of clr(u(k),1,-1)
 !    and clr(d(k),1,-1)
-	Print*, ''
-	Print*, 'Div',Div
-	Print*, 'PerformGauge',PerformGauge
+        Print*, ''
+        Print*, 'Div',Div
+        Print*, 'PerformGauge',PerformGauge
 
         Print*, ''
-	Print*, 'wardidtest1',wardidtest1 
-	Print*, 'cacgraph',cacgraph
-	Print*, 'cfc',cfc
-	Print*, 'cfca',cfcac
-	Print*, 'cfca-CF',cfcac-cfc
-	Print*, ''
-	
-	Print*, ''
-	Print*, 'matb1', matb(1,isig,isig2,1)
-	Print*, 'matb2', matb(2,isig,isig2,1)
+        Print*, 'wardidtest1',wardidtest1 
+        Print*, 'cacgraph',cacgraph
+        Print*, 'cfc',cfc
+        Print*, 'cfca',cfcac
+        Print*, 'cfca-CF',cfcac-cfc
+        Print*, ''
+        
+        Print*, ''
+        Print*, 'matb1', matb(1,isig,isig2,1)
+        Print*, 'matb2', matb(2,isig,isig2,1)
         print*,"-m1/m2-1d0 ",-matb(1,isig,isig2,1)/matb(2,isig,isig2,1)-1d0
 
-	Print*, 'matb1', matv(1,isig,isig2,1)
-	Print*, 'matb2', matv(2,isig,isig2,1)
+        Print*, 'matb1', matv(1,isig,isig2,1)
+        Print*, 'matb2', matv(2,isig,isig2,1)
         print*, "-m1/m2-1d0",-matv(1,isig,isig2,1)/matv(2,isig,isig2,1)
 
 
-
-c	Print*, 'Gauge',-mv2/mv4-1d0
+c        Print*, 'Gauge',-mv2/mv4-1d0
  
-	endif
-	endif ! Warditest
+        endif
+        endif ! Warditest
 
 
-
-	If(wardidtest1) then
-	
-	If(Div.ne.0) then
-!    Check Factorization of CF and CA part separately	
+        If(wardidtest1) then
+        
+        If(Div.ne.0) then
+!    Check Factorization of CF and CA part separately        
 !    Mind that the born part is already checked against Madgraph.
 !    So this test is quite good!!
 !    At this point mv1,mv2,mv3, only contains the CF part.
@@ -1310,98 +1264,97 @@ c	Print*, 'Gauge',-mv2/mv4-1d0
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	If(Div.eq.2) then
+        If(Div.eq.2) then
 ! CF part
-	 Print*, ""
-	 Print*, "CF PART"
-	 Print*, ""	
-	 ratioFact=mv2/(-2d0*mv2b)
-	 Print*, 'mv2',mv2
-	 Print*, 'mv2b',mv2b
-	 Print*, "CF Div/Eps^2", ratioFact
-	 Print*, ""
-	 ratioFact=mv2/(-2d0*mv2b)
-	 Print*, 'mv1',mv1
-	 Print*, 'mv1b',mv1b
-	 Print*, "CF Div/Eps^2", ratioFact
-	 Print*, ""
-	 
+         Print*, ""
+         Print*, "CF PART"
+         Print*, ""        
+         ratioFact=mv2/(-2d0*mv2b)
+         Print*, 'mv2',mv2
+         Print*, 'mv2b',mv2b
+         Print*, "CF Div/Eps^2", ratioFact
+         Print*, ""
+         ratioFact=mv2/(-2d0*mv2b)
+         Print*, 'mv1',mv1
+         Print*, 'mv1b',mv1b
+         Print*, "CF Div/Eps^2", ratioFact
+         Print*, ""
+         
 
 ! CA part
-	 Print*, ""
-	 Print*, ""
-	 Print*, "CA PART"
-	 Print*, ""
-	 Print*, ""
-	 Print*, 'mv2CA',mv2CA*(-1d0/2d0)
-	 Print*, 'mvNoAbe',mv4
+         Print*, ""
+         Print*, ""
+         Print*, "CA PART"
+         Print*, ""
+         Print*, ""
+         Print*, 'mv2CA',mv2CA*(-1d0/2d0)
+         Print*, 'mvNoAbe',mv4
          Print*, 'mv1b',mv2b
-	 ratioFact=(mv2CA*(-1d0/2d0)+mv4)/(-1d0*mv2b)
-	 Print*, "CA Div/Eps^2", ratioFact
-	 Print*, ""
-	 Print*, ""
-	 Print*, ""
-	 Print*, 'mv1CA',mv1CA*(-1d0/2d0)
-	 Print*, 'mvNoAbe',mv3
+         ratioFact=(mv2CA*(-1d0/2d0)+mv4)/(-1d0*mv2b)
+         Print*, "CA Div/Eps^2", ratioFact
+         Print*, ""
+         Print*, ""
+         Print*, ""
+         Print*, 'mv1CA',mv1CA*(-1d0/2d0)
+         Print*, 'mvNoAbe',mv3
          Print*, 'mv1b',mv1b
-	 ratioFact=(mv1CA*(-1d0/2d0)+mv3)/(-1d0*mv1b)
-	 Print*, "CA Div/Eps^2", ratioFact
-	 Print*, ""
-	 
+         ratioFact=(mv1CA*(-1d0/2d0)+mv3)/(-1d0*mv1b)
+         Print*, "CA Div/Eps^2", ratioFact
+         Print*, ""
 
-	  
+
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-	else   !  Div 1/Eps
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC	
-	lns=log(Abs(mans))-(0,1)*pi*theta(mans)-log(musq)
-	lnt=log(Abs(mant))-(0,1)*pi*theta(mant)-log(musq)
-	lnu=log(Abs(manu))-(0,1)*pi*theta(manu)-log(musq)
+        else   !  Div 1/Eps
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC        
+        lns=log(Abs(mans))-(0,1)*pi*theta(mans)-log(musq)
+        lnt=log(Abs(mant))-(0,1)*pi*theta(mant)-log(musq)
+        lnu=log(Abs(manu))-(0,1)*pi*theta(manu)-log(musq)
 
 ! CF PART
-	 cteEps1=(-3d0+2d0*lns)
-	 Print*, ""
-	 Print*, "CF PART"
-	 Print*, ""
-	 Print*, 'CF cte',cteEps1
-	 Print*, ""
-	 
-	 ratioFact=mv1/(mv1b*cteEps1)
-	 Print*, 'mv1',mv1
-	 Print*, 'mv1b*cte',mv1b*cteEps1
-	 Print*, "CF Div/Eps", ratioFact
-	 Print*, ""
+         cteEps1=(-3d0+2d0*lns)
+         Print*, ""
+         Print*, "CF PART"
+         Print*, ""
+         Print*, 'CF cte',cteEps1
+         Print*, ""
+         
+         ratioFact=mv1/(mv1b*cteEps1)
+         Print*, 'mv1',mv1
+         Print*, 'mv1b*cte',mv1b*cteEps1
+         Print*, "CF Div/Eps", ratioFact
+         Print*, ""
 
-	 ratioFact=mv2/(mv2b*cteEps1)
-	 Print*, 'mv2',mv2
-	 Print*, 'mv2b*cte',mv2b*cteEps1
-	 Print*, "CF Div/Eps", ratioFact
-	 Print*, ""
+         ratioFact=mv2/(mv2b*cteEps1)
+         Print*, 'mv2',mv2
+         Print*, 'mv2b*cte',mv2b*cteEps1
+         Print*, "CF Div/Eps", ratioFact
+         Print*, ""
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ! CA part
-	 cteEps1=(-lns+lnt+lnu)
-	 
-	 Print*, "CA PART"
-	 Print*, ""
-	 Print*, 'cteEps1',cteEps1
-	 Print*, ""
-	 Print*, 'mv1CA',mv1CA*(-1d0/2d0)
-	 Print*, 'mvNoAbe',mv3
+         cteEps1=(-lns+lnt+lnu)
+         
+         Print*, "CA PART"
+         Print*, ""
+         Print*, 'cteEps1',cteEps1
+         Print*, ""
+         Print*, 'mv1CA',mv1CA*(-1d0/2d0)
+         Print*, 'mvNoAbe',mv3
          Print*, 'mv1b*cte',mv1b*cteEps1
-	 ratioFact=(mv1CA*(-1d0/2d0)+mv3)/(mv1b*cteEps1)
-	 Print*, "CA Div/Eps", ratioFact
-	 Print*, ""
-	 Print*, 'mv2CA',mv2CA*(-1d0/2d0)
-	 Print*, 'mvNoAbe',mv4
+         ratioFact=(mv1CA*(-1d0/2d0)+mv3)/(mv1b*cteEps1)
+         Print*, "CA Div/Eps", ratioFact
+         Print*, ""
+         Print*, 'mv2CA',mv2CA*(-1d0/2d0)
+         Print*, 'mvNoAbe',mv4
          Print*, 'mv2b*cte',mv2b*cteEps1
-	 ratioFact=(mv2CA*(-1d0/2d0)+mv4)/(mv2b*cteEps1)
-	 Print*, "CA Div/Eps", ratioFact
-	 Print*, ""
+         ratioFact=(mv2CA*(-1d0/2d0)+mv4)/(mv2b*cteEps1)
+         Print*, "CA Div/Eps", ratioFact
+         Print*, ""
 
-	endif    !Div
-	
-	endif    ! Div, Compute CA part of ABe contributions
-	endif   ! Warditest set to true for Div checks
+        endif    !Div
+        
+        endif    ! Div, Compute CA part of ABe contributions
+        endif   ! Warditest set to true for Div checks
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1459,12 +1412,12 @@ cFC      Print*,''
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      	  matv(1,isig,isig2,1)=matv(1,isig,isig2,1)+matb(1,isig,isig2,1)*convfact
-	  matv(1,isig,isig2,1)=matv(1,isig,isig2,1)-matb(1,isig,isig2,1)*(K_cont)
+                matv(1,isig,isig2,1)=matv(1,isig,isig2,1)+matb(1,isig,isig2,1)*convfact
+          matv(1,isig,isig2,1)=matv(1,isig,isig2,1)-matb(1,isig,isig2,1)*(K_cont)
 
 
-      	  matv(2,isig,isig2,1)=matv(2,isig,isig2,1)+matb(2,isig,isig2,1)*convfact
-	  matv(2,isig,isig2,1)=matv(2,isig,isig2,1)-matb(2,isig,isig2,1)*(K_cont)
+                matv(2,isig,isig2,1)=matv(2,isig,isig2,1)+matb(2,isig,isig2,1)*convfact
+          matv(2,isig,isig2,1)=matv(2,isig,isig2,1)-matb(2,isig,isig2,1)*(K_cont)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
@@ -1475,9 +1428,8 @@ cFC      Print*,''
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	enddo ! end isig2 loop
-	enddo ! end isig loop
-
+        enddo ! end isig2 loop
+        enddo ! end isig loop
 
 
 !  Check renormalization invariance using K_contcheck      
@@ -1520,7 +1472,7 @@ cFC      Print*,''
          enddo
        enddo
 
-      endif	
+      endif        
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
@@ -1541,9 +1493,7 @@ c FC
 c      Print*, "Here"
 C      stop
 c FC
-      endif ! end lpent  
-
-
+      endif ! end lpent
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -1570,24 +1520,24 @@ cFC
             do mu = 0,3
                p1(mu) = p(mu,1)
                p2(mu) = -p(mu,2)
-	       mpg(mu) = -q(mu)
+               mpg(mu) = -q(mu)
                mqza(mu) = -p1(mu)-p2(mu)+q(mu)
-c for gauge test	       
-	       emqza(mu)=mqza(mu)
-	       empg(mu)=mpg(mu)
-	   enddo
+c for gauge test               
+               emqza(mu)=mqza(mu)
+               empg(mu)=mpg(mu)
+           enddo
 !!! Check Gauge invariance
       If(PerformGauge.eq.1) then
          do mu = 0,3
-	    Myeps(mu,1)=mpg(mu)
-	    Myeps(mu,2)=mpg(mu)
-	  enddo
+            Myeps(mu,1)=mpg(mu)
+            Myeps(mu,2)=mpg(mu)
+          enddo
       elseif(PerformGauge.eq.2) then
          do mu = 0,3
-	     mutemp=mu!+1
-	    zww(mutemp,1) = mqza(mu)
-      	    aww(mutemp,1) = mqza(mu)
-	 enddo
+             mutemp=mu!+1
+            zww(mutemp,1) = mqza(mu)
+                  aww(mutemp,1) = mqza(mu)
+         enddo
        endif    
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC 
 C   Abelian Part
@@ -1737,9 +1687,9 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC     
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC     
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC     
-cFC c	Print*, 'wardidtest1',wardidtest1
-cFC c	Print*, 'wardidtest2',wardidtest2
-cFC c	Print*, 'wardidtest3',wardidtest3
+cFC c        Print*, 'wardidtest1',wardidtest1
+cFC c        Print*, 'wardidtest2',wardidtest2
+cFC c        Print*, 'wardidtest3',wardidtest3
 c      STOP
        wardidtest1=wardidtest1.and.wardidtest2.and.wardidtest3
       
@@ -1750,62 +1700,62 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
         If(Div.ne.0) then
 ! Check factorization of Divergences. Set the color equal.
 ! So that I can check separately the CF and CA factorization
-!	Print*,'CFCFCF',cfc
-	cfc=1d0
-	cacgraph=1d0
-!	Print*,'CFCFCF',cfc
-	cfcac=cfc
-	wardidtest1=.True.
-	endif
+!        Print*,'CFCFCF',cfc
+        cfc=1d0
+        cacgraph=1d0
+!        Print*,'CFCFCF',cfc
+        cfcac=cfc
+        wardidtest1=.True.
+        endif
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC     
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC     
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC     
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC     
 
-	    if (.not.wardidtest1) then
+            if (.not.wardidtest1) then
           do isig=-1,1,2  
-	    do  isig2=1,2
+            do  isig2=1,2
                 do i = 1,2
-		  do mu=1,2
+                  do mu=1,2
                    j5g(mu,i,isig2,isig) = (0.0d0, 0.0d0)
-		   j5gg(mu,i,isig2,isig) = (0.0d0, 0.0d0)
+                   j5gg(mu,i,isig2,isig) = (0.0d0, 0.0d0)
                    j5gg2(mu,i,isig2,isig) = (0.0d0, 0.0d0)
-		   j5g1(mu,i,isig2,isig) = (0.0d0, 0.0d0)
+                   j5g1(mu,i,isig2,isig) = (0.0d0, 0.0d0)
 
-             	
- 	           jg5n(isig2,isig) =     (0.0d0, 0.0d0)
-		   jg5ng(isig2,isig)=     (0.0d0, 0.0d0)
+                     
+                    jg5n(isig2,isig) =     (0.0d0, 0.0d0)
+                   jg5ng(isig2,isig)=     (0.0d0, 0.0d0)
 
- 	           jg5ng2(isig2,isig) =     (0.0d0, 0.0d0)
-		   jg5n1(isig2,isig)=     (0.0d0, 0.0d0)
+                    jg5ng2(isig2,isig) =     (0.0d0, 0.0d0)
+                   jg5n1(isig2,isig)=     (0.0d0, 0.0d0)
 
 
                    enddo
                   enddo
-	        enddo
-	       enddo	
+                enddo
+               enddo        
 
- 	      boxcountm = boxcountm+1
+               boxcountm = boxcountm+1
               boxcountps(ps_number) = boxcountps(ps_number)+1 
 c               print*, "NO BOX GAUGE",ps_number,boxcountm,boxcountps(ps_number) 
              else
          do isig=-1,1,2  
-	    do isig2=1,2
+            do isig2=1,2
                   do i = 1,2
 
-		     j5g(1,i,isig2,isig)=(cfc*j5g(1,i,isig2,isig)+cfcac*j5g(2,i,isig2,isig))
-		     j5gg(1,i,isig2,isig)=(cfc*j5gg(1,i,isig2,isig)+cfcac*j5gg(2,i,isig2,isig))
-		     j5gg2(1,i,isig2,isig)=(cfc*j5gg2(1,i,isig2,isig)+cfcac*j5gg2(2,i,isig2,isig))
-		     j5g1(1,i,isig2,isig)=(cfc*j5g1(1,i,isig2,isig)+cfcac*j5g1(2,i,isig2,isig))
+                     j5g(1,i,isig2,isig)=(cfc*j5g(1,i,isig2,isig)+cfcac*j5g(2,i,isig2,isig))
+                     j5gg(1,i,isig2,isig)=(cfc*j5gg(1,i,isig2,isig)+cfcac*j5gg(2,i,isig2,isig))
+                     j5gg2(1,i,isig2,isig)=(cfc*j5gg2(1,i,isig2,isig)+cfcac*j5gg2(2,i,isig2,isig))
+                     j5g1(1,i,isig2,isig)=(cfc*j5g1(1,i,isig2,isig)+cfcac*j5g1(2,i,isig2,isig))
 
                   enddo
-	             jg5n(isig2,isig)=cacgraph*jg5n(isig2,isig)
-		     jg5ng(isig2,isig)=cacgraph*jg5ng(isig2,isig)
-	             jg5ng2(isig2,isig)=cacgraph*jg5ng2(isig2,isig)
-		     jg5n1(isig2,isig)=cacgraph*jg5n1(isig2,isig)
+                     jg5n(isig2,isig)=cacgraph*jg5n(isig2,isig)
+                     jg5ng(isig2,isig)=cacgraph*jg5ng(isig2,isig)
+                     jg5ng2(isig2,isig)=cacgraph*jg5ng2(isig2,isig)
+                     jg5n1(isig2,isig)=cacgraph*jg5n1(isig2,isig)
 
            enddo          
-	      enddo 
+              enddo 
               boxcount2m = boxcount2m+1
               boxcount2ps(ps_number) = boxcount2ps(ps_number)+1      
              endif
@@ -1837,14 +1787,14 @@ c comparing the the previous born which is checked against madgraph
 
 C Change of sign to agree with Madgraph
         mv1b =-mv1b
-	mmv1b =-mmv1b
+        mmv1b =-mmv1b
         mv2b =-mv2b
-	mmv2b =-mmv2b
+        mmv2b =-mmv2b
 
         mv3b =-mv3b
-	mmv3b =-mmv3b
+        mmv3b =-mmv3b
         mv4b =-mv4b
-	mmv4b =-mmv4b
+        mmv4b =-mmv4b
 
        do k=1,2
        tmpb(k,isig,isig2,2)=(mv3b+mmv3b)*clr(ifl(1,k),1,isig)
@@ -1939,25 +1889,25 @@ c
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCcc
 C  No abelian part
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc
-	mv5=jg5n(isig2,isig)
+        mv5=jg5n(isig2,isig)
         mv6=jg5n1(isig2,isig)
 
-	mmv5=0d0
+        mmv5=0d0
         mmv6=0d0
 
 C Change of sign to agree with Madgraph
         mv1 =-mv1
-	mmv1 =-mmv1
+        mmv1 =-mmv1
         mv2 =-mv2
-	mmv2 =-mmv2
+        mmv2 =-mmv2
         mv3 =-mv3
-	mmv3 =-mmv3
+        mmv3 =-mmv3
         mv4 =-mv4
-	mmv4 =-mmv4
+        mmv4 =-mmv4
         mv5 =-mv5
-	mmv5 =-mmv5
+        mmv5 =-mmv5
         mv6 =-mv6
-	mmv6 =-mmv6
+        mmv6 =-mmv6
 
        do k=1,2
        tmpv(k,isig,isig2,2)=(mv3+mmv3+mv6+mmv6)*clr(ifl(1,k),1,isig)
@@ -1977,45 +1927,45 @@ C Change of sign to agree with Madgraph
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	  
-	IF (wardidtest1 ) THEN
-	
-	IF (PerformGauge.gt.0) then
+          
+        IF (wardidtest1 ) THEN
+        
+        IF (PerformGauge.gt.0) then
 ! gauge test for the gluon. The CF part of mv1,mv2,mv3,
 ! is already zero. mv1,mv2,mv3, then, only contains CA part which
 ! should cancel agains NOABE, mv4,mv5,mv6
-	Print*, ''
-	Print*, 'Div',Div
-	Print*, 'PerformGauge',PerformGauge
-	
         Print*, ''
-	Print*, 'wardidtest1',wardidtest1 
-	Print*, 'cacgraph',cacgraph
-	Print*, 'cfc',cfc
-	Print*, 'cfca',cfcac
-	Print*, 'cfca-CF',cfcac-cfc
-	Print*, ''
-	Print*, ''
+        Print*, 'Div',Div
+        Print*, 'PerformGauge',PerformGauge
+        
+        Print*, ''
+        Print*, 'wardidtest1',wardidtest1 
+        Print*, 'cacgraph',cacgraph
+        Print*, 'cfc',cfc
+        Print*, 'cfca',cfcac
+        Print*, 'cfca-CF',cfcac-cfc
+        Print*, ''
+        Print*, ''
 
         do k=1,2
-	Print*, 'mv2b',tmpb(k,isig,isig2,2)
-	Print*, 'mv3b',tmpb(k,isig,isig2,3)
-	Print*, 'Gauge',-tmpb(k,isig,isig2,2)/tmpb(k,isig,isig2,3)
+        Print*, 'mv2b',tmpb(k,isig,isig2,2)
+        Print*, 'mv3b',tmpb(k,isig,isig2,3)
+        Print*, 'Gauge',-tmpb(k,isig,isig2,2)/tmpb(k,isig,isig2,3)
 
-	Print*, 'mv2',tmpv(k,isig,isig2,2)
-	Print*, 'mv3',tmpv(k,isig,isig2,3)
-	Print*, 'Gauge',-tmpv(k,isig,isig2,2)/tmpv(k,isig,isig2,3)
+        Print*, 'mv2',tmpv(k,isig,isig2,2)
+        Print*, 'mv3',tmpv(k,isig,isig2,3)
+        Print*, 'Gauge',-tmpv(k,isig,isig2,2)/tmpv(k,isig,isig2,3)
 
-	Print*, 'mv4b',tmpb(k,isig,isig2,4)
-	Print*, 'mv5b',tmpb(k,isig,isig2,5)
-	Print*, 'Gauge',-tmpb(k,isig,isig2,4)/tmpb(k,isig,isig2,5)
+        Print*, 'mv4b',tmpb(k,isig,isig2,4)
+        Print*, 'mv5b',tmpb(k,isig,isig2,5)
+        Print*, 'Gauge',-tmpb(k,isig,isig2,4)/tmpb(k,isig,isig2,5)
 
-	Print*, 'mv4',tmpv(k,isig,isig2,4)
-	Print*, 'mv5',tmpv(k,isig,isig2,5)
-	Print*, 'Gauge',-tmpv(k,isig,isig2,4)/tmpv(k,isig,isig2,5)
+        Print*, 'mv4',tmpv(k,isig,isig2,4)
+        Print*, 'mv5',tmpv(k,isig,isig2,5)
+        Print*, 'Gauge',-tmpv(k,isig,isig2,4)/tmpv(k,isig,isig2,5)
 
         enddo
-	
+        
 !         stop
         elseif(PerformGauge.gt.1) then
 !   Here only the sum of all the contributions is gauge
@@ -2025,39 +1975,38 @@ C Change of sign to agree with Madgraph
 !    and clr(d(k),1,-1)
 
         Print*, ''
-	Print*, 'wardidtest1',wardidtest1 
-	Print*, 'cacgraph',cacgraph
-	Print*, 'cfc',cfc
-	Print*, 'cfca',cfcac
-	Print*, 'cfca-CF',cfcac-cfc
-	Print*, ''
-	Print*, ''
-	Print*, 'mv1b',mv1b
+        Print*, 'wardidtest1',wardidtest1 
+        Print*, 'cacgraph',cacgraph
+        Print*, 'cfc',cfc
+        Print*, 'cfca',cfcac
+        Print*, 'cfca-CF',cfcac-cfc
+        Print*, ''
+        Print*, ''
+        Print*, 'mv1b',mv1b
         print*, 'j5g(1,1,isig2,isig)',j5g(1,1,isig2,isig)
         print*, 'j5g(1,1,isig2,isig)',j5g(1,2,isig2,isig)
-	Print*, 'Gauge mv1',mv1!/j5g(1,1,isig2,isig)
+        Print*, 'Gauge mv1',mv1!/j5g(1,1,isig2,isig)
 
         print*, 'jg5a2(1,isig2,isig)',jg5n(isig2,isig)
-	Print*, 'GAuge mv3',mv3
-c	Print*, 'Gauge',-mv2/mv4-1d0
+        Print*, 'GAuge mv3',mv3
+c        Print*, 'Gauge',-mv2/mv4-1d0
 
         print*, 'j5a2g1(1,1,isig2,isig)',j5g1(1,1,isig2,isig)
         Print*, 'Gauge mv2',mv2!/j5a2g1(1,1,isig2,isig)
 
         print*, 'jg5a21(1,isig2,isig)',jg5n1(isig2,isig)
-	Print*, 'Gauge mv5',mv4!/jg5a21(1,isig2,isig)
-c	Print*, 'Gauge',-mv3/mv5-1d0
-	
+        Print*, 'Gauge mv5',mv4!/jg5a21(1,isig2,isig)
+c        Print*, 'Gauge',-mv3/mv5-1d0
+        
 !        stop
-	endif
-	endif ! Warditest
+        endif
+        endif ! Warditest
 
 
-
-	If(wardidtest1) then
-	
-	If(Div.ne.0) then
-!    Check Factorization of CF and CA part separately	
+        If(wardidtest1) then
+        
+        If(Div.ne.0) then
+!    Check Factorization of CF and CA part separately        
 !    Mind that the born part is already checked against Madgraph.
 !    So this test is quite good!!
 !    At this point mv1,mv2,mv3, only contains the CF part.
@@ -2086,111 +2035,111 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	If(Div.eq.2) then
+        If(Div.eq.2) then
            
 ! CF part
-	 Print*, ""
-	 Print*, "CF PART"
-	 Print*, ""	
+         Print*, ""
+         Print*, "CF PART"
+         Print*, ""        
 
          do k=1,2
-	 ratioFact=((mv1+mv2))/(-2d0*(mv1b+mv2b))!tmpv(k,isig,isig2,6)/(-2d0*tmpb(k,isig,isig2,6))
+         ratioFact=((mv1+mv2))/(-2d0*(mv1b+mv2b))!tmpv(k,isig,isig2,6)/(-2d0*tmpb(k,isig,isig2,6))
 
-	 Print*, 'mv1',mv1+mv2!tmpv(k,isig,isig2,6)
-	 Print*, 'mv1b',mv1b+mv2b!tmpb(k,isig,isig2,6)
-	 Print*, "CF Div/Eps^2", ratioFact
-	 Print*, ""
-	 
-	 ratioFact=(mv3+mv4)/(-2d0*(mv3b+mv4b))!tmpv(k,isig,isig2,7)/(-2d0*tmpb(k,isig,isig2,7))
+         Print*, 'mv1',mv1+mv2!tmpv(k,isig,isig2,6)
+         Print*, 'mv1b',mv1b+mv2b!tmpb(k,isig,isig2,6)
+         Print*, "CF Div/Eps^2", ratioFact
+         Print*, ""
+         
+         ratioFact=(mv3+mv4)/(-2d0*(mv3b+mv4b))!tmpv(k,isig,isig2,7)/(-2d0*tmpb(k,isig,isig2,7))
 
-	 Print*, 'mv1',mv3+mv4!tmpv(k,isig,isig2,7)
-	 Print*, 'mv1b',mv3B+mv4B!tmpb(k,isig,isig2,7)
-	 Print*, "CF Div/Eps^2", ratioFact
-	 Print*, ""
-	 enddo
+         Print*, 'mv1',mv3+mv4!tmpv(k,isig,isig2,7)
+         Print*, 'mv1b',mv3B+mv4B!tmpb(k,isig,isig2,7)
+         Print*, "CF Div/Eps^2", ratioFact
+         Print*, ""
+         enddo
          
 
-	 Print*, ""
-	 !Print*, 'SUM of born', mmv1b+mmv2b	 
-	 
+         Print*, ""
+         !Print*, 'SUM of born', mmv1b+mmv2b         
+         
 ! CA part
-	 Print*, ""
-	 Print*, ""
-	 Print*, "CA PART"
-	 Print*, ""
-	 Print*, ""
+         Print*, ""
+         Print*, ""
+         Print*, "CA PART"
+         Print*, ""
+         Print*, ""
 
          do k=1,2
 
-	 Print*, 'mv1CA',mv1CA*(-1d0/2d0)
-	 Print*, 'mvNoAbe',mv3
+         Print*, 'mv1CA',mv1CA*(-1d0/2d0)
+         Print*, 'mvNoAbe',mv3
          Print*, 'mv1b',mv1b
-	 ratioFact=((mv1CA+mv2CA)*(-1d0/2d0)+mv5)/(-1d0*(mv1b+mv2b))
-	 Print*, "CA Div/Eps^2", ratioFact
-	 Print*, ""
+         ratioFact=((mv1CA+mv2CA)*(-1d0/2d0)+mv5)/(-1d0*(mv1b+mv2b))
+         Print*, "CA Div/Eps^2", ratioFact
+         Print*, ""
 
- 	 Print*, 'mv2CA',mv2CA*(-1d0/2d0)
-	 Print*, 'mvNoAbe',mv4
+          Print*, 'mv2CA',mv2CA*(-1d0/2d0)
+         Print*, 'mvNoAbe',mv4
          Print*, 'mv2b',mv2b
-	 ratioFact=((mv3CA+mv4CA)*(-1d0/2d0)+mv6)/(-1d0*(mv3b+mv4b))
-	 Print*, "CA Div/Eps^2", ratioFact
-	 Print*, ""
+         ratioFact=((mv3CA+mv4CA)*(-1d0/2d0)+mv6)/(-1d0*(mv3b+mv4b))
+         Print*, "CA Div/Eps^2", ratioFact
+         Print*, ""
 
          enddo
-	 
+         
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-	else   !  Div 1/Eps
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC	
-	lns=log(Abs(mans))-(0,1)*pi*theta(mans)-log(musq)
-	lnt=log(Abs(mant))-(0,1)*pi*theta(mant)-log(musq)
-	lnu=log(Abs(manu))-(0,1)*pi*theta(manu)-log(musq)
+        else   !  Div 1/Eps
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC        
+        lns=log(Abs(mans))-(0,1)*pi*theta(mans)-log(musq)
+        lnt=log(Abs(mant))-(0,1)*pi*theta(mant)-log(musq)
+        lnu=log(Abs(manu))-(0,1)*pi*theta(manu)-log(musq)
 
 ! CF PART
-	 cteEps1=(-3d0+2d0*lns)
-	 Print*, ""
-	 Print*, "CF PART"
-	 Print*, ""
-	 Print*, 'CF cte',cteEps1
-	 Print*, ""
-	 
-	 ratioFact=(mv1+mv2)/((mv1b+mv2B)*cteEps1)
-	 Print*, 'mv1',mv1+MV2
-	 Print*, 'mv1b*cte',(mv1b+mv2b)*cteEps1
-	 Print*, "CF Div/Eps", ratioFact
-	 Print*, ""
+         cteEps1=(-3d0+2d0*lns)
+         Print*, ""
+         Print*, "CF PART"
+         Print*, ""
+         Print*, 'CF cte',cteEps1
+         Print*, ""
+         
+         ratioFact=(mv1+mv2)/((mv1b+mv2B)*cteEps1)
+         Print*, 'mv1',mv1+MV2
+         Print*, 'mv1b*cte',(mv1b+mv2b)*cteEps1
+         Print*, "CF Div/Eps", ratioFact
+         Print*, ""
 
-	 ratioFact=(mv3+mv4)/((mv3b+mv4b)*cteEps1)
-	 Print*, 'mv2',(mv3+mv4)
-	 Print*, 'mv2b*cte',(mv3b+mv4b)*cteEps1
-	 Print*, "CF Div/Eps", ratioFact
-	 Print*, ""
+         ratioFact=(mv3+mv4)/((mv3b+mv4b)*cteEps1)
+         Print*, 'mv2',(mv3+mv4)
+         Print*, 'mv2b*cte',(mv3b+mv4b)*cteEps1
+         Print*, "CF Div/Eps", ratioFact
+         Print*, ""
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ! CA part
-	 cteEps1=(-lns+lnt+lnu)
-	 
-	 Print*, "CA PART"
-	 Print*, ""
-	 Print*, 'cteEps1',cteEps1
-	 Print*, ""
-	 Print*, 'mv1CA',(mv1CA+mv2CA)*(-1d0/2d0)
-	 Print*, 'mvNoAbe',mv5
+         cteEps1=(-lns+lnt+lnu)
+         
+         Print*, "CA PART"
+         Print*, ""
+         Print*, 'cteEps1',cteEps1
+         Print*, ""
+         Print*, 'mv1CA',(mv1CA+mv2CA)*(-1d0/2d0)
+         Print*, 'mvNoAbe',mv5
          Print*, 'mv1b*cte',(mv1b+mv2b)*cteEps1
-	 ratioFact=((mv1CA+mv2CA)*(-1d0/2d0)+mv5)/((mv1b+mv2b)*cteEps1)
-	 Print*, "CA Div/Eps", ratioFact
-	 Print*, ""
-	 Print*, ""
-	 Print*, 'mv2CA',(mv3CA+mv4CA)*(-1d0/2d0)
-	 Print*, 'mvNoAbe',(mv6)
+         ratioFact=((mv1CA+mv2CA)*(-1d0/2d0)+mv5)/((mv1b+mv2b)*cteEps1)
+         Print*, "CA Div/Eps", ratioFact
+         Print*, ""
+         Print*, ""
+         Print*, 'mv2CA',(mv3CA+mv4CA)*(-1d0/2d0)
+         Print*, 'mvNoAbe',(mv6)
          Print*, 'mv2b*cte',(mv3b+mv4b)*cteEps1
-	 ratioFact=((mv3CA+mv4CA)*(-1d0/2d0)+mv6)/((mv3b+mv4b)*cteEps1)
-	 Print*, "CA Div/Eps", ratioFact
-	 Print*, ""
+         ratioFact=((mv3CA+mv4CA)*(-1d0/2d0)+mv6)/((mv3b+mv4b)*cteEps1)
+         Print*, "CA Div/Eps", ratioFact
+         Print*, ""
 
-	endif    !Div
-	
-	endif    ! Div, Compute CA part of ABe contributions
-	endif   ! Warditest set to true for Div checks
+        endif    !Div
+        
+        endif    ! Div, Compute CA part of ABe contributions
+        endif   ! Warditest set to true for Div checks
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
@@ -2338,13 +2287,11 @@ c copy to matv / matb
       endif
 
 
-
-
 c FC
 c      Print*, "End BOX Here"
 c      stop
 c FC     
-	
+        
 !!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -2788,15 +2735,10 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       endif !lbox
 
 
-
-
       end if ! end lnlo
 
 
-#endif   ! with NLO
-
-
-
+#endif
 
 
 c sum the graphs, square them and map them onto uuww and ddww
@@ -2804,7 +2746,7 @@ c sum the graphs, square them and map them onto uuww and ddww
          res(k) = 0
          resv(k)=0
          do isig = -1,1,2
- 	    do l = 1,2
+             do l = 1,2
                mm(k,isig,l) = 0
                mmb(k,isig,l) = 0
                do i = 1,7
@@ -2826,7 +2768,6 @@ c         res(k) = res(k)*4d0*fpials(2)  ! C_2*3 is the color factor
 c      stop
 c      uuww = res(1)
 c      ddww = res(2)
-
 
 
          do l=1,2

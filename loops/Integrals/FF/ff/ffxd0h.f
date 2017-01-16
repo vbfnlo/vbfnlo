@@ -50,7 +50,7 @@ c
 *
 *	local variables
 *
-	integer i,j,izero,istart,ier0,init
+	integer i,j,izero,ier0,init
 	DOUBLE PRECISION del2p,xlosn
 	DOUBLE COMPLEX chulp(4,4)
 	save init

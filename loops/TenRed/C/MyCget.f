@@ -22,7 +22,6 @@ c Returns C0 and Cij
       real*8 musq
 
 
-
        B012=B0fin(p1sq,musq)    
 c       print*, 'B012', B012
      
@@ -41,10 +40,9 @@ c       print*, 'B023', B023
        B023I=DIMAG(B023) 
 
 
-       C0123=C0fin(p1sq,p2sq,s12,musq)  
+       C0123=C0fin(p1sq,p2sq,s12,musq)
 
- 
-   
+
        call tens_red3_new_Re_Com(p1sq,p2sq,s12,B023,B013,B012,C0123,C0
      &   123R,C0123I,Cij123R,Cij123I) 
  

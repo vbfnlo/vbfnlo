@@ -6,7 +6,7 @@ c ------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:6)
       complex*16 wza(0:5)
-      integer lsign(2:6,4),ll,mu,nu,h,N
+      integer lsign(2:6,4),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -55,7 +55,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -279,7 +279,7 @@ c ------------------------------------------------------------
 
       DOUBLE PRECISION P(0:3,2:6)
       complex*16 wza(0:5)
-      integer lsign(2:6,4),ll,mu,nu,h,N
+      integer lsign(2:6,4),ll,h,N
       integer NW ! = 0: all diagrams, = 1: no non resonant diagrams
 
       ! possible lepton helicities:
@@ -328,7 +328,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -543,7 +543,6 @@ c
       END
 
 
-
 c ------------------------------------------------------------
 
       subroutine tribosWPTOWA_had(v,N,h,wpatens,NW)
@@ -608,7 +607,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -737,7 +736,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -801,8 +800,6 @@ c
       wmatens(5) = dcmplx(q(1),q(2))
 c
       END
-
-
 
 
 c
@@ -873,7 +870,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -1027,7 +1024,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 
@@ -1120,10 +1117,6 @@ c
       END
 
 
-
-
-
-
       subroutine tribosATOZA_had(v,N,h,zatens,NW)
 
       IMPLICIT NONE
@@ -1186,7 +1179,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors
@@ -1305,7 +1298,7 @@ C
 C
 C LOCAL VARIABLES
 C
-      INTEGER I,J, mu
+      INTEGER I, mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 c  lepton spinors and W+-, Z/A polarization vectors

@@ -102,10 +102,10 @@ c*******************************************************************************
         Real*8 Dij1234R(13,3)
         Real*8 Dij1234I(13,3)
        Complex*16 SMB(4),SMG(4) ,Fa(6),F(27)
-      Real*8 FI(27),FR(27),FaI(6),FaR(6)
+      Real*8 FI(27),FR(27)
       Complex*16 SC1r,SC1c,SC3rcc,dotrc,dotcc,result(3)
        Complex*16 resultgauge(2) 
-       Real*8 musq,p4t,Is12,Is23,Is12s23,P(25) 
+       Real*8 musq,Is12,Is23,Is12s23,P(25) 
        EXTERNAL   dotrc,dotcc,SC1c,SC1r,SC3rcc
        Integer alpha,comp,gaugetest,ngluon,Div
        common/FfunctionsNoAbemm/F

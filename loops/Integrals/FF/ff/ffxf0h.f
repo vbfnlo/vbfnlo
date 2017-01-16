@@ -24,7 +24,7 @@
 	integer is1,is2,is3,is4,is5,ip7,ip8,ip9,ip10,ip13,ip14,ip15,
      +		ip17,ip19,ip20,i,j,igehad(21,21),itel,i1,i2,i3,i4,i5,i6,
      +		i8,i9,i13,i14,i19,n,jtel,ii1,ii2,ii3,ii4,sgn19,sgn20,
-     +		sgn21,s4,s5,s13,s14,s19,ss2,ier0,ier1
+     +		s4,s5,s13,s14,s19,ss2,ier0,ier1
 *	werkt niet bij Absoft
 *	parameter (locwrt=.FALSE.)
 	logical locwrt

@@ -52,7 +52,7 @@ c*******************************************************************************
       Complex*16 dotrc,dotcc,result,resultn(5)
        Real*8 musq,m,msq
       EXTERNAL   dotrc,dotcc
-      Integer comp,Div,i
+      Integer comp,Div
        common/FerBoxOddFunctions/F
        common/PFerBoxOddFunctions/P
       Save/FerBoxOddFunctions/ 
@@ -236,8 +236,6 @@ c*******************************************************************************
      -   34I,C0124I,C0123I,C234I,C134I,C124I,C123I,D01234,D01234R,D01
      -   234I,D1234R,D1234I)
          endif
-
-
 
 
 c       Definition of the F,P functions:Independent of the currents    
@@ -2364,7 +2362,7 @@ c************** Calling the Fa functions****************************************
        IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
        Complex*16   mup1(0:3),mup2(0:3),mup3(0:3),mup4(0:3)
-       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,result
+       Complex*16 EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR
        Real*8 EPSRRRR
       EXTERNAL   EPSCCCC,EPSCCCR,EPSCCRR,EPSCRRR,EPSRRRR
       Complex*16 Fa(35)

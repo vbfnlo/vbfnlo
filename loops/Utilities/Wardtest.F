@@ -31,9 +31,9 @@ c  input / output
       integer gaugetest
 
 c  local variables
-      integer i, mu, number
+      integer mu, number
       double complex mvcheck(1:3)
-      double precision pi, colorfactor, kinfactor, factor, temp
+      double precision pi, colorfactor, factor, temp
       double precision couplfactor
       double precision fac(3), deltaP(3)
       parameter (colorfactor = 4.0d0/3.0d0)
@@ -41,8 +41,8 @@ c  local variables
       parameter (pi = 3.141592653589793d0)
 
       double precision minus_qz1z2(0:3), minus_qz2z3(0:3)
-      double complex gaugebox1(2),gaugebox1_born(2), boxtest(2), treetest(2)
-      double complex gaugebox2(2), gaugebox2_born(2)
+      double complex gaugebox1(2),gaugebox1_born(2)
+
       double complex result(-1:1,8),result_born(-1:1,8)
 
       integer icount, bcount, lbox
@@ -146,7 +146,7 @@ c***************************************************************
       implicit none
 
 c  input / output
-      double precision qz1(0:4), qz2(0:4), qz3(0:4)
+      double precision qz1(0:4), qz2(0:4)
       double complex z1(6), z2(6)
       double complex boxcontr(2), borncontr(2), mborn
       integer gaugetest

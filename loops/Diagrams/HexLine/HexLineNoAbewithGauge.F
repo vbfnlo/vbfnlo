@@ -6,7 +6,7 @@
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3)
        Complex*16 barpsi_p5(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i ,gauge
        Real*8 musqIn,musq
@@ -83,7 +83,6 @@ C********************************************************
       end
 
 
-
 #if WITH_QUAD
 
        subroutine HexLineNoAbe1gT_QUAD(p1,p2,p3,p4,p5,p6,barpsi_p5,psi_p1,mup2,mup3,mup4,
@@ -93,7 +92,7 @@ C********************************************************
        IMPLICIT NONE
        Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3)
        Complex*16   mup2(0:3),mup3(0:3),mup4(0:3),mup6(0:3)
-       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3),mup6test(0:3)
+       Complex*16   mup2test(0:3),mup3test(0:3),mup4test(0:3)
        Complex*16 barpsi_p5(2),psi_p1(2)
        Integer comp,alpha, ngluon, posgluon,i ,gauge
        Real*8 musqIn,musq

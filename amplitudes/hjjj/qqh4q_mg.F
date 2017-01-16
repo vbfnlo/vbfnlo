@@ -36,11 +36,11 @@ c CPS scheme
       common /VBFNLO_HIGGS_CPS/ qgammaq
 c     
 c     Local variables
-      real*8 ph(0:4),lpbar(0:3,6),res(0:2,8),msq21,msq43
+      real*8 ph(0:4),lpbar(0:3,6),res(0:2,8)
       integer lfsign(6)
       integer iflav(6,8)
       real*8 p87(0:4),p(0:3,6+max_v),fac
-      real*8 p109(0:4),p810,p79,den,betah,lamb
+      real*8 p109(0:4)
       integer mu,i,k
       logical lcol
 c     flavors of different subprocesses
@@ -53,7 +53,6 @@ c                            1 2 3 4 5 6
       DATA(iflav(i,6),i=1,6)/2,2,1,1,2,2/
       DATA(iflav(i,7),i=1,6)/2,2,2,2,1,1/
       DATA(iflav(i,8),i=1,6)/2,2,2,2,2,2/
-
 
 
 c
@@ -205,7 +204,7 @@ c     Local variables
       real*8 ph(0:4),lpbar(0:3,6),res(0:2,2)
       integer lfsign(6)
       real*8 p87(0:4),p(0:3,6+max_v),fac
-      real*8 p109(0:4),p810,p79,den,lamb,betah
+      real*8 p109(0:4)
       integer mu,i,k
       logical lcol
 c

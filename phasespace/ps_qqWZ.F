@@ -8,6 +8,7 @@ c
 
 
       subroutine def_ps_qqWZ(bos1,bos2)
+          use globalvars, only: ldoblha
 
 
       implicit none
@@ -17,11 +18,9 @@ c
 
       integer bos(2), i, bos1, bos2
 
-c set up variables in common block BLIPSI for call of LIPSVVJ
-
       REAL*8 RM2,RMG,RM2MIN,RM2MAX, S,YJMIN,YJMAX,PTJMIN
       REAL*8 RM2MINX2, RM2MAXX2, M2MIN, RM2MINX1, RM2MAXX1
-      COMMON /BLIPSI/ RM2(2),RMG(2),RM2MIN(2),RM2MAX(2),
+      COMMON /BLIPSIWZ/ RM2(2),RMG(2),RM2MIN(2),RM2MAX(2),
      1                RM2MINX1, RM2MAXX1, M2MIN, RM2MINX2, RM2MAXX2,
      2                S,YJMIN,YJMAX,PTJMIN
 
@@ -83,7 +82,6 @@ c cutoff for numerical purposes
       end
 
 
-
 C**********************  LIPSVVJ   ****************************************
 C
       SUBROUTINE LIPSWZ(N,RD,RN,
@@ -99,7 +97,7 @@ c
       REAL*8 TPI
       PARAMETER (nrandl=(1+3)*3, TPI=2D0*PI )
       real*8 RD(*),RN
-      real*8 K1(0:3),K2(0:3),V(0:3,4),X1,X2,W,K(0:4)
+      real*8 K1(0:3),K2(0:3),V(0:3,4),X1,X2,W
       real*8 PJET(0:3)
 
 C Phase space generator for production of 2 bosons + 1 jet at hadron colliders
@@ -119,13 +117,9 @@ C           P(0:3)    4-vector for the jet, assumed massless
 C           W         the weight of the phase space point
 
 
-
-C  INPUT INFORMATION on the phase space region is transferred via the
-C    common block /BLIPSI/
-
       REAL*8 RM2,RMG,RM2MIN,RM2MAX, S,YJMIN,YJMAX,PTJMIN
       REAL*8 RM2MINX2, RM2MAXX2, M2MIN, RM2MINX1, RM2MAXX1
-      COMMON /BLIPSI/ RM2(2),RMG(2),RM2MIN(2),RM2MAX(2),
+      COMMON /BLIPSIWZ/ RM2(2),RMG(2),RM2MIN(2),RM2MAX(2),
      1                RM2MINX1, RM2MAXX1, M2MIN,RM2MINX2, RM2MAXX2,
      2                S,YJMIN,YJMAX,PTJMIN
 C
@@ -139,34 +133,26 @@ C   PTJMIN         minimal PT values      REAL*8 Y,PT,PHI,PNJ
 
 C  OUTPUT INFORMATION is transferred via the common block /DIBOSLIPSO/
 
-      REAL*8 PT,PHI
 
 C  local variables
 
-      INTEGER I,J,II,JJ,MU,ic
+      INTEGER MU
 
-      real*8 xmin1, xmax1, delx1, tanx1, xval1
-      real*8 xmin2, xmax2, delx2, tanx2, xval2
-      real*8 xminx, xmaxx, delxx, tanxx, xx
+
       double precision xxwidth, xxm
       parameter ( xxwidth = 10d1, xxm = 50d1 )
-      real*8 coshy2, sinhy2, temp, test
-      real*8 y, y_border, tau, q(0:4,2), ql(0:4,2), y2
-      real*8 pX(0:4), phiX, costhetaX, abs_pX, sinthetaX
-      real*8 phi2, costheta2, sintheta2
-      real*8 phi3, costheta3, sintheta3
-      real*8 pTmax, pTmin, pL, y2_border, ET
-      real*8 abs_p, abs_p2, abs_p3
+      real*8 test
+      real*8 y, tau, q(0:4,2), ql(0:4,2), y2
+
+
       double precision dotrr
       external dotrr
       LOGICAL RESONANCE
       EXTERNAL RESONANCE
-      real*8 xxwidth_kk, xxm_kk, qsq, rm2maxx_kk
+
 
       logical ldebug
       parameter (ldebug=.false.)
-
-
 
 
       w=1d0
@@ -266,7 +252,6 @@ C  local variables
 !
 
 
-
 !      call TwoBodyDecay(rd(4), rd(5), K(0), K(4),ql(4,1),ql(4,2),ql(0,1),ql(0,2),W)
 
 !	  print*, '3', w
@@ -297,9 +282,6 @@ c generate phase space for decay of V2 -> l3 + l4 out of rd(12), rd(13)
 !         W = W * 3.89379304d11        ! conversion into fb
 !          	  print*, '6', w
 ! 		  stop
-
-
-
 
 
 ! 

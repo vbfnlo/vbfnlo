@@ -39,16 +39,16 @@
 ** Dimension-8 operators 
       double precision ft0_0, ft1_0, ft2_0, ft5_0, ft6_0, ft7_0, ft8_0, ft9_0
       double precision fm0_0, fm1_0, fm2_0, fm3_0, fm4_0, fm5_0
-      double precision fm6_0, fm7_0, fs0_0, fs1_0
+      double precision fm6_0, fm7_0, fs0_0, fs1_0, fs2_0
       double precision ft0, ft1, ft2, ft5, ft6, ft7, ft8, ft9
       double precision fm0, fm1, fm2, fm3, fm4, fm5
-      double precision fm6, fm7, fs0, fs1
+      double precision fm6, fm7, fs0, fs1, fs2
       common /anomDim8/ ft0_0, ft1_0, ft2_0, ft5_0, ft6_0, ft7_0, ft8_0, ft9_0
       common /anomDim8/ fm0_0, fm1_0, fm2_0, fm3_0, fm4_0, fm5_0
-      common /anomDim8/ fm6_0, fm7_0, fs0_0, fs1_0
+      common /anomDim8/ fm6_0, fm7_0, fs0_0, fs1_0, fs2_0
       common /anomDim8/ ft0, ft1, ft2, ft5, ft6, ft7, ft8, ft9 
       common /anomDim8/ fm0, fm1, fm2, fm3, fm4, fm5
-      common /anomDim8/ fm6, fm7, fs0, fs1
+      common /anomDim8/ fm6, fm7, fs0, fs1, fs2
 
 ** Dimension-8 couplings for K-Matrix unitarisation of LS0 and LS1
       double complex fswp1wp2, fswp1wm2, fswp1wm1, fswmwp, fswmz1, fswmz2

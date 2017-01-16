@@ -10,7 +10,7 @@ c ------------------------------------------------------------
 
       REAL*8 P(0:3,2:5)
       complex*16 wp4l(0:5)
-      integer lsign(2:5,4),h,ll,mu   
+      integer lsign(2:5,4),h,ll   
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=2,5) / -1, -1, -1, -1/  !h=1
@@ -50,7 +50,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
+      INTEGER I,mu
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C  
@@ -115,7 +115,6 @@ C ----------
 
       return
       END
-      
 
 
 c ------------------------------------------------------------	
@@ -126,7 +125,7 @@ c ------------------------------------------------------------
 
       REAL*8 P(0:3,2:5)
       complex*16 wm4l(0:5)
-      integer lsign(2:5,4),h,ll,mu   
+      integer lsign(2:5,4),h,ll   
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=2,5) / -1, -1, -1, -1/  !h=1
@@ -148,7 +147,8 @@ C
 C  
 C CONSTANTS
 C  
-      INTEGER    NGRAPHS,    NEIGEN 
+
+      INTEGER    NGRAPHS
       PARAMETER (NGRAPHS=   6) 
       INTEGER    NWAVEFUNCS  
       PARAMETER (NWAVEFUNCS=  11) 
@@ -163,8 +163,8 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu
-      COMPLEX*16 ZTEMP
+      INTEGER I,mu
+
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
 C   
@@ -257,7 +257,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, MU, NU
+      INTEGER I, MU, NU
       real*8 q2sq, Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS), denz
@@ -353,7 +353,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, MU, NU
+      INTEGER I, MU, NU
       real*8 q2sq, Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS), denz
@@ -477,7 +477,7 @@ C
 C    
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -575,7 +575,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -673,7 +673,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,mu,nu
+      INTEGER I,mu,nu
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)
@@ -746,7 +746,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 zwp(0:3,0:3), awp(0:3,0:3)
-      integer lsign(3:6,2),ll,mu,nu,h
+      integer lsign(3:6,2),ll,h
       
 
 	! possible lepton helicities:
@@ -789,7 +789,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER I,MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(18,NWAVEFUNCS)
 C  
@@ -1049,7 +1049,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER I,MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(18,NWAVEFUNCS)
 C  
@@ -1269,7 +1269,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 zwm(0:3,0:3), awm(0:3,0:3)
-      integer lsign(3:6,2),ll,mu,nu,h
+      integer lsign(3:6,2),ll,h
       
 
 	! possible lepton helicities:
@@ -1313,7 +1313,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER I,MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(18,NWAVEFUNCS)
 C  
@@ -1572,7 +1572,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J,MU, NU
+      INTEGER MU, NU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(18,NWAVEFUNCS)
 C  
@@ -1774,7 +1774,7 @@ c 	tensor for WW->mu+mu-
         integer idb,h
         real*8 q(0:3), v(0:3,4)
         complex*16 wll(0:3,0:3)
-	integer lsign(2,2),i,ll,mu,nu     
+	integer lsign(2,2),ll     
 
 	data (lsign(ll,1),ll=1,2) / -1, -1/
 	data (lsign(ll,2),ll=1,2) / +1, +1/
@@ -1817,7 +1817,7 @@ C
 C  
 C LOCAL VARIABLES 
 C  
-      INTEGER I,J, MU, NU
+      INTEGER I, MU, NU
       real*8 Q1(0:3), Q2(0:3)
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(6,NWAVEFUNCS)

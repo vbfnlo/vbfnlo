@@ -62,12 +62,11 @@ c
       double precision dot0p
       external FL_H4j
       external dot0p
-      logical ldebug, ldebug1,ldecay, lres
+      logical ldebug, ldebug1
       parameter(ldebug=.false.,ldebug1=.false.)
       integer i,if1,if2,if3,j,k,mu,jd,ndmap(8)
       integer if1l,if2l,icol
       integer fc(4+max_v),gq,qq,gg,qg
-
 
 
       polcolqq = 1d0/(NC**2 * 4d0 * xi(1)*xi(2)) 

@@ -34,7 +34,7 @@ c  helicity selection
 c      integer jsig, jsig1, jsig3, jsig5
 c      common /chelsum/ jsig,jsig1,jsig3,jsig5
 
-      complex*16 zero, z1, z2
+      complex*16 zero
       parameter (zero=(0d0,0d0))
 
 c declare external functions
@@ -47,7 +47,7 @@ c declare external functions
 c declare local variables
 
       real*8 q_sf
-      integer init/0/, I, J, mu, nu, id
+      integer init/0/, I, mu
       save init
 
 c declare variables for summation process
@@ -90,11 +90,13 @@ c  helicity selection
          do i = 1,maxnumsubproc
             res(i) = 0
          enddo
+
       else
          do i = 1,nmax
             res(i) = 0
          enddo
       endif
+
 
 c...Les Houches interface
         if ((lha.or.hepmc).and..not.doNLO) then
@@ -343,16 +345,17 @@ c alfas, scales etc
 c local variables
       real*8 uuww, ddww, uuww2, ddww2
       real*8 pbar(0:3,n_p+n_v), qbar(0:4), dotrr, polcolq, polcolg, polcolgg
+
       double precision NCmatrixelt(0:1,0:1)
       double complex zero
       integer iflav(4), diagToPhys(3), FL_VVg
       external dotrr, FL_VVg
 
-      logical ChargedCurrent, sametype, oneAntiparticle
+
       logical ldebug
       parameter (ldebug=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,icc1,j,k,mu
+      integer i,if1,j,k,mu
 
       uuww = 0d0
       uuww2 = 0d0
@@ -390,6 +393,7 @@ c local variables
      &    (physToDiag(1).eq.1) .and. (physToDiag(2).eq.2)
      & ))) then
 c gluon-fusion loop contributions
+
 c instead of anti-fermion here initial/final
         fsign(2)=-fsign(2)
         call GGWWg(pbar,fsign,qbar,gsign,nlo,1,uuww)
@@ -413,6 +417,7 @@ c switch back for nlo.eq.1
         endif
 #endif
       
+
         call QQVVj(pbar,fsign,qbar,gsign,nlo,1,uuww,ddww,ps_number)
 
 #ifdef WITH_MADGRAPH

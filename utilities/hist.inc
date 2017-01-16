@@ -1,14 +1,14 @@
-* variables set in the input file
+! variables set in the input file
       LOGICAL writeROOT, writeTOP, writeGNU, writeDATA !, writePAW
       LOGICAL replaceFiles, smearbins, calcerror1d, calcerror2d, calcerrorGnuplot, calcerrorRoot
       character*50 rootfile, topfile, gnufile, datafile ! , pawfile
       double precision smearamount
-      common/histuser/ writeROOT, writeTOP, writeGNU, writeDATA, replaceFiles,
-     &                 rootfile, topfile, gnufile, datafile !, writePAW, pawfile
+      common/histuser/ writeROOT, writeTOP, writeGNU, writeDATA, replaceFiles
+      common/histuser/ rootfile, topfile, gnufile, datafile !, writePAW, pawfile
       common/histsmear/ smearamount, smearbins, calcerror1d, calcerror2d, calcerrorGnuplot, calcerrorRoot
 
-* properties of the histograms
-      INTEGER HISTMAX, BINMAX, TOTAL, h_offset
+! properties of the histograms
+      INTEGER HISTMAX, BINMAX, TOTAL
 
       PARAMETER (HISTMAX = 600, BINMAX = 128, TOTAL = HISTMAX * BINMAX)
       integer  nbin(HISTMAX)
@@ -16,11 +16,11 @@
       character*64 htitles(HISTMAX)
 
       integer NLOoffset
-* list of histograms to be stored in file
+! list of histograms to be stored in file
       LOGICAL hstored(1:HISTMAX)
       common /histcb/ hlo, hup, rwid, dbin, nbin, NLOoffset, hstored, htitles
 
-* properties of the two dimensional histograms
+! properties of the two dimensional histograms
       INTEGER HIST2dMAX, BINMAXX, BINMAXY, NLOoffset2d
 
       PARAMETER (HIST2dMAX = 150, BINMAXX = 128, BINMAXY = 128)
@@ -31,6 +31,6 @@
       character*64 xlabels(HIST2dMAX), ylabels(HIST2dMAX)
 
       LOGICAL h2dstored(1:HIST2dMAX)
-      common /hist2dcb/    hloX, hloY, hupX, hupY, rwidX, rwidY, dbinX, dbinY, nbinX, nbinY,
-     &                     NLOoffset2d, h2dstored, h2dtitles, xlabels, ylabels
+      common /hist2dcb/ hloX, hloY, hupX, hupY, rwidX, rwidY, dbinX, dbinY, nbinX, nbinY
+      common /hist2dcb/ NLOoffset2d, h2dstored, h2dtitles, xlabels, ylabels
 

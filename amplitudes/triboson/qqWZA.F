@@ -53,33 +53,26 @@ c     electroweak couplings are taken from KOPPLN
       DOUBLE PRECISION  pbar(0:3,2+n_v)
       DOUBLE PRECISION  udwza, res(2),resv(2)
       DOUBLE PRECISION  p(0:3,2+n_v), pwpz(0:4), pwpa(0:4), pzpa(0:4),
-     1                  pwm(0:4), pww(0:4), fqp(0:4,2), fqz(0:4,2),
-     2                  fqa(0:4,2), fq(0:4,2)
-      DOUBLE PRECISION  fqmz(0:4,2), fqmp(0:4,2), fqzm(0:4,2)
+     1                  fqp(0:4,2), fqz(0:4,2),
+     2                  fqa(0:4,2)
+
       INTEGER  sign(2+n_v), nlo, mu, i, j, isig, N, ps_number
       INTEGER  ifl(2), bos
       DOUBLE COMPLEX psiwp(2,-1:1,2), psia(2,-1:1,2),
      1               psiaz(2,-1:1,2), psiz(2,-1:1,2), 
-     2               jwp(0:5,-1:1,2),
-     3               ja(0:5,-1:1,2), jz(0:5,-1:1,2)
-      DOUBLE COMPLEX psiwmz(2,-1:1,2), psiwmwp(2,-1:1,2),
-     1               psizwm(2,-1:1,2), 
-     2               jwmz(0:5,-1:1,2), jwmwp(0:5,-1:1,2),
-     3               jzwm(0:5,-1:1,2)
-      DOUBLE COMPLEX jva(0:5,-1:1,2), jvz(0:5,-1:1,2)
-      DOUBLE COMPLEX jvwp(0:5,-1:1,2), jvwm(0:5,-1:1,2)
+     2               jwp(0:5,-1:1,2)
+
       DOUBLE COMPLEX j5pa(3,2),j5ap(3,2), jbpa(3,2), jbap(3,2)
       DOUBLE COMPLEX j4pa(2),jdpa(2), j4ap(2),jdap(2)
       DOUBLE COMPLEX j4pz(2),jdpz(2), j4zp(2),jdzp(2)
       DOUBLE COMPLEX j4paz(1),jdpaz(1), j4azp(1), jdazp(1)
-      DOUBLE COMPLEX j55pa(0:3,3,-1:1),j55ap(0:3,3,-1:1)
-      DOUBLE COMPLEX j5za1(3), j5za2(3)
+
       DOUBLE COMPLEX temp, temp1
       DOUBLE COMPLEX mat(1,-1:1,3), matv(1,-1:1,3), mborn
       DOUBLE COMPLEX madgr(3,-1:1,2)
       DOUBLE COMPLEX mm(2,-1:1), mv(2,-1:1), zero
       DOUBLE COMPLEX mw, m1, m2, m3, m4, mm1, mm2, mm3, mm4
-      DOUBLE COMPLEX mva, mvz, mv1, mv2, mv3, mv4, mmv1, mmv2, mmv3, mmv4
+      DOUBLE COMPLEX mv1, mv2, mv3, mv4
       DOUBLE COMPLEX psi(2,-1:1,2), jqq(0:5,-1:1)
       DOUBLE COMPLEX dotcc, s1c, dotrc
       DOUBLE PRECISION dotrr, psumsq
@@ -108,9 +101,9 @@ c variables for virtual corrections
       parameter(ldebugm = .false., ldebug=.false.)
 
 c variables for implementation of the pentagon routine
-      double complex resultgauge, resultgaugeb, borntest(3), penttest(3)
+
       double precision minus_qp(0:3),minus_qz(0:3),minus_qa(0:3)
-      double precision minus_qwz(0:3), minus_qza(0:3), minus_qwa(0:3)
+      double precision minus_qza(0:3)
       double precision minus_qpz(0:3), minus_qpa(0:3)
       double precision p1(0:3), p2(0:3) 
       double complex pentcontr1(3), pentcontr2(3), pentcontr3(3)
@@ -120,15 +113,12 @@ c variables for implementation of the pentagon routine
       double complex dummy, dummyb
 
 c variables for implementation of the box routine
-      double complex boxcontr1(2), boxcontr2(2)
-      double complex boxcontr1b(2), boxcontr2b(2)
-      double complex result(-1:1,2),resultb(-1:1,2)
+      double complex boxcontr1(2)
+      double complex boxcontr1b(2)
+
       double complex cte
 
 c variables for test purposes
-
-      double precision qmu(0:3), sc, q1sqc, q2sqc, tc, p1p2
-      double precision psq, qsq, lsq, tsq, pq, pl, pt, ql, qt, lt
 
 
 c---------------------------- BEGIN CODE -----------------------

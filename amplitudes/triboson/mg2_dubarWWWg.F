@@ -1580,8 +1580,6 @@ C GLUON ATTACHED TO LOWER FERMION (D)        ! U~D --> W-g ->Lg
      &             -AMP( 206)-AMP( 207)-AMP( 208)-AMP( 209)-AMP( 210)
 
 
-
-
 C SUBPROCESSES WITH 3+1 BOSONS ATTACHED TO FERMION LINE
       SUBPROCESS(1) = -AMP(1) -AMP(2) -AMP(3) -AMP(4)                          ! DU~ --> W-W+W-g -->Lg
      &                -AMP(29)-AMP(30)-AMP(31)-AMP(32)

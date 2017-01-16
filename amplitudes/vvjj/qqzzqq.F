@@ -5,6 +5,7 @@ c---------------------------------------------------------------------------
       
       subroutine qqzzqq(pbar,sign, nlo, L,bos,
      1                  uucc,uuss,ddcc,ddss,udsc,ducs)
+          use globalvars, only: ldoblha
       implicit none
 c
 c	Barbara Jaeger, <baj@particle.physik.uni-karlsruhe.de>
@@ -66,8 +67,8 @@ c
       double precision tree(6)
       double precision  p(0:3,4+max_v), p21(0:4), p43(0:4), pez(0:4),
      1                  puz(0:4), pzz(0:4)
-      integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk, id,
-     1         isig, isig1, isig3,bos,h
+      integer  sign(4+max_v), nlo, mu, i, j, jj, k, kk,
+     1         isig, isig1, isig3,bos
       integer  ifl(4,6), js1, js3, L, Lold, is1, is3
       double complex prop21(4), prop43(4)
       double complex mat(6,-1:1,-1:1,9), matv(6,-1:1,-1:1,9)
@@ -85,7 +86,7 @@ c
      1	              m1au,m1zu,m2au,m2zu,z1au,z1zu,z2au,z2zu,
      1		      m3au,m3zu,m4au,m4zu,m3ae,m3ze,m4ae,m4ze,
      1		      z3ae,z3ze,z3zu,z3au,z4ae,z4ze,z4zu,z4au,
-     1		      matu(6,-1:1,-1:1,9),mate(6,-1:1,-1:1,9),
+     1		      
      1		      mue,mate12,muu,matu12,mal,mzl,mate34,matu34,
      1		      muae,muze,mlae,mlze
       double complex  mv1ae,mv1ze,mv2ae,mv2ze,mv1au,mv1zu,mv2au,mv2zu,
@@ -127,7 +128,7 @@ c
      #		     zeaz(-1:1,-1:1,3),zeaa(-1:1,-1:1,3),
      # 		     zuzz(-1:1,-1:1,3),zuza(-1:1,-1:1,3),
      #		     zuaz(-1:1,-1:1,3),zuaa(-1:1,-1:1,3)
-      double complex mv1,mv2,mva(2),mvz(2), mv5(3,3:4)
+      double complex mva(2),mvz(2)
       double complex psi(2,-1:1,4), jqq(0:5,-1:1,2) !, eps(0:5)
       double complex psize(2,-1:1,4),psiae(2,-1:1,4),
      1 		     psizu(2,-1:1,4),psiau(2,-1:1,4),
@@ -156,7 +157,7 @@ c
       double complex zm2i(2:4)
       double complex jj21ae(-1:1),jj21au(-1:1),jj43ae(-1:1),jj43au(-1:1),
      1 		     jj21ze(-1:1),jj21zu(-1:1),jj43ze(-1:1),jj43zu(-1:1)
-      double complex z1,zuu(4:5),zee(4:5)
+      double complex zuu(4:5),zee(4:5)
       double complex qepsCCee(2), qepsCCuu(2),qepsCCee6(2), qepsCCuu6(2)
       double complex propt1(-1:1,-1:1,4,2), propt2(-1:1,-1:1,4,2),
      1		     propt(-1:1,-1:1,5:6,2), prop_ee(3), prop_uu(3),
@@ -164,7 +165,7 @@ c
      1		     propbbea(6,-1:1,-1:1), propbbua(6,-1:1,-1:1),
      1		     propbbez(6,-1:1,-1:1), propbbuz(6,-1:1,-1:1)
       double complex fac
-      integer idu,idl
+
       double complex contract_Tjj, dotcc, dotrc, dotqj, s1c
       external contract_Tjj, dotcc, dotrc, dotqj, s1c
       logical ldebug, ldebugv, ldebugvf,linit,lerror,lgc(4)
@@ -189,8 +190,7 @@ c
       double complex  zero
       parameter (zero = (0d0,0d0) )
       integer ii,ll
-   
-    
+
 
       integer icountmax
 !      integer iterations1, iterations2, n2max1, n2max2
@@ -1106,9 +1106,8 @@ c
 	matvu12 = clr(3,3,-1)*(mv2au+mv2zu+mv1au+mv1zu)
      
        matv(k,-1,isig,2) = matve12 + matvu12
-       
 
-      
+
       endif !lbox
 
 c ----------------------------------
@@ -1367,9 +1366,7 @@ C CC:
      
        mat(k,-1,isig,3) = mate34 + matu34
 
-	
 
-        
       isig = -1
       k = 6                     !udsc, e+e- from upper line
       m3ae = dotcc(jea(0,-1,4),epsCCuu6(0,isig,2))*clr(ifl(4,k),1,-1)  
@@ -1718,9 +1715,8 @@ c    aww/zww(mu)         with momentum    pzz
      1            ( mva(2)*clr(ifl(3,k),1,isig3) +
      2              mvz(2)*clr(ifl(3,k),2,isig3)   )
             enddo
-		
 
-            
+
 	    if (isig1.eq.-1 .and. isig3.eq.-1) then
                do k = 5,6
                   propt(-1,-1,k,1) = clr(ifl(1,k),3,-1)**2*prop21(3)
@@ -2428,10 +2424,9 @@ c---------------------------------------------------
      3	       clr(ifl(1,k),1,isig1)*clr(ifl(4,k),2,isig3)+ 
      3  ((mvuaa(3,i,isig1,isig3))+(mvuaa(4,i,isig1,isig3)))*
      3	       clr(ifl(1,k),1,isig1)*clr(ifl(4,k),1,isig3))*
-     3	      propbbuz(k,isig1,isig3)   
-      
+     3	      propbbuz(k,isig1,isig3)
 
-       
+
        		enddo !k
        
        		enddo !isig3
@@ -3174,9 +3169,8 @@ c  epsj=j43 with vj arbitrary,epsa=va,epsb=vb ( j = 1 or 2 or 3; a,b = A / Z )
           enddo !k =1,6
 	 
 	 endif
-    
-          
-	  
+
+
 c -----------------	  
 	  
 	  do k = 1,4  

@@ -21,7 +21,7 @@ c
       double precision MET(4,4), T1(4,4,4,4)
 
 
-      integer i, j, k, l, a, b
+      integer i, j, k, l
 
       double complex cZero
       double precision rZero, rTwo, rOne

@@ -5,9 +5,9 @@
 ! in a .F90 file in order to use free-form source format which allows longer @PATHS@ .
 
 
-
 !*************************************************************************  
       character*250 FUNCTION GetInputPath()
+          use readinput, only: inputpath
 !*************************************************************************  
 !     returns the path to input files
 !     it is taken from the command line option input=my_input_path
@@ -16,10 +16,7 @@
 !*************************************************************************  
       implicit none
       character*250  s
-      integer narg,i,j,k,lk,le,lt
       
-#include "readinput.inc"
-
 ! first, check for command line option
       if (len_trim(inputpath).gt.0) then
          GetInputPath = inputpath
@@ -35,13 +32,12 @@
 
 ! else, current directory
       GetInputPath = "."      
-      RETURN
       END
-
 
 
 !*************************************************************************  
       SUBROUTINE GetInputFile(inunit, filename, *)
+          use readinput, only: inputpath
 !*************************************************************************  
 !     returns the path to input files
 !     it is taken from the command line option input=my_input_path
@@ -55,14 +51,12 @@
       character*250 pathname, s
       integer ier
       
-#include "readinput.inc"
-
 ! check with same order as GetInputPath(), 
 ! but continue to further options if not found 
 
 ! first, check for command line option
       if (len_trim(inputpath).gt.0) then
-         pathname = inputpath(1:len_trim(inputpath))//"/"//filename
+         pathname = trim(inputpath)//"/"//filename
          open (unit=inunit, file=pathname, status="old", iostat=ier)
          if (ier.eq.0) return
       endif
@@ -70,7 +64,7 @@
 ! next, check for environment variable
       call GETENV( "VBF_INPUT_PATH" , s )
       if (len_trim(s).gt.0) then
-         pathname = s(1:len_trim(s))//"/"//filename
+         pathname = trim(s)//"/"//filename
          open (unit=inunit, file=pathname, status="old", iostat=ier)
          if (ier.eq.0) return
       endif
@@ -89,9 +83,9 @@
       END
 
 
-
 !*************************************************************************  
       character*250 FUNCTION GetPdfsetsPath()
+          use readinput, only: pdfpath
 !*************************************************************************  
 !     Returns the path to the VBFNLO-internal pdfsets files.
 !     The default is hardwired to the share directory
@@ -99,27 +93,23 @@
 !*************************************************************************  
       implicit none
 
-#include "readinput.inc"
-
       character*250  s
 
 ! first, check for command line option
-      if (len_trim(pdfpath).gt.0) then
+      if (len_trim(pdfpath) > 0) then
          GetPdfsetsPath = pdfpath
          RETURN
       endif
 
 ! check for environment variable
-      call GETENV( "VBF_PDFSETS_PATH" , s )
+      call GETENV("VBF_PDFSETS_PATH", s)
       if (len_trim(s).gt.0) then
          GetPdfsetsPath = s
          RETURN
       endif
 
 ! default to installation, set when building
-
       GetPdfsetsPath = "@PDFSETSPATH@"      
-      RETURN
       END
 
 

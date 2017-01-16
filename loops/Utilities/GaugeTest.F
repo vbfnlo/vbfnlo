@@ -28,9 +28,9 @@ c is larger that GaugeAccuracyPenL. In the same subroutines the boxlines called 
 #include "GaugeTest.inc"
       DOUBLE PRECISION   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p23(0:3),p34(0:3)
       DOUBLE COMPLEX barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-      DOUBLE COMPLEX emup2(0:3),emup3(0:3),emup4(0:3) 
+
       DOUBLE PRECISION musq,test1,test2
-      DOUBLE COMPLEX x2,x3,x4,cte
+      DOUBLE COMPLEX cte
       Integer alpha,i
       DOUBLE COMPLEX result(3),result1,result2,result3,result4
       DOUBLE COMPLEX resultb(3),resultb1,resultb2,resultb3,resultb4
@@ -126,8 +126,6 @@ c      test1=abs(resultgauge(1)/(resultgaugeb(1)*(cte))-1d0)
 c      test2=abs(resultgauge(2)/(resultgaugeb(2)*(cte))-1d0)
 
 
-
-
       if(test1.gt.GaugeAccuracyPenL.or.test2.gt.GaugeAccuracyPenL) return ! Ward=false
 
 !      if (test1.lt.1d-2) then
@@ -199,9 +197,8 @@ c      test2=abs(resultgauge(2)/(resultgaugeb(2)*(cte))-1d0)
       else
 	test(1) = 0d0
       endif
-      
-      
-      
+
+
       if(abs(resultb(2)).ne.0d0) then
 	ratiocheckCan=Abs(-result(2)/(-cte*resultb(2))-1d0)
   !       print*,'r',ratiocheckCan,cte,resultb(2),result(2)
@@ -248,7 +245,6 @@ c test NAN
       If(t.lt.GaugeAccuracyPenL) Ward=.True.
 
 
-      
       Return
 !      endif
 !      endif
@@ -322,8 +318,6 @@ c      Print*, 'Ward', Ward
 ********************************************************************************
 
 
-
-
       subroutine pentNoAbe_gauge(Accuracy,p1,p2,p3,p4,p5,barpsi_p4,psi_p1,
      -  mup2,mup3,mup5,alpha,musq,
      - result,
@@ -341,19 +335,17 @@ c td is the result of largest gauge test which should be lower than
 c Accuracy to pass the gauge test.
 
       IMPLICIT NONE
-      double precision   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),pp23(0:3),p34(0:3)
+      double precision   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),pp23(0:3)
       double complex barpsi_p4(2),psi_p1(2),mup2(0:3),mup3(0:3),mup5(0:3)
       double complex mup5test(0:3)
-      double complex emup2(0:3),emup3(0:3),emup4(0:3)
+
       double precision musq,test1,test2
-      double complex x2,x3,x4,cte
+      double complex cte
       Integer alpha,i
-      double complex result(3),result1,result2,result3,result4
-      double complex resultb(3),resultb1,resultb2,resultb3,resultb4
-      double complex resultQ(3)
-      double complex resultQb(3)
-      double complex Qresult(3)
-      double complex Qresultb(3)
+      double complex result(3),result1,result3
+      double complex resultb1,resultb3
+
+
       double complex resultgauge(3),resultgaugeb(3)
       double complex resultbtemp(5)
       double precision pi,pi2,test(3),t,td,tq,qt
@@ -596,7 +588,6 @@ c test NAN
       td=Max(test(1),test(2))
 
 
-
       If(td.lt.Accuracy) then
       Ward=.True.
       else
@@ -612,14 +603,7 @@ c$$$      print*, Qresult
       endif
 
 
-
       end
-
-
-
-
-
-
 
 
 c################################################################################
@@ -880,12 +864,12 @@ C Compute the gauge three gauge test for HexagonLine and result .True. if the ma
 c is larger that 1d-2. In the same subroutines the penlines are checked as well.
       IMPLICIT NONE
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p6(0:3),p23(0:3),
-     - p34(0:3),p45(0:3)
+     - p34(0:3)
       Complex*16 barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3),
      - mup6(0:3) 
-      Complex*16 result1,result2,result3,result4,result5,result6
-      Complex*16 resultb1,resultb2,resultb3,resultb4,resultb5,resultb6
-      Complex*16 resultgauge(3),resultgaugeb(3)
+      Complex*16 result3,result4,result5,result6
+
+      Complex*16 resultgauge(3)
       Complex*16 resultptemp(8)
       Complex*16 resultd(4)
 
@@ -893,8 +877,8 @@ c is larger that 1d-2. In the same subroutines the penlines are checked as well.
       parameter (pi =3.14159265358979323846264338327950288d0)
       parameter (pi2 =9.86960440108935861883449099987615114d0)
       external dotrr,theta
-      real*8 dotrr,s15,lm,ls,ths,theta,musq
-      complex*16 cte
+      real*8 dotrr,theta,musq
+
       Integer i,alpha,gauge
       Logical WardH,WardP,WardP1,WardP2
       real*8 Accuracy,Accuracymy1
@@ -1151,13 +1135,11 @@ c NAN
       counth1=counth1+1
       counth2=counth2+1
       endif
-    
 
 
       Return
       end
 c################################################################################
-
 
 
       subroutine box_gaugeMM(Accuracy,p1,p2,p3,p4,musq,
@@ -1183,10 +1165,10 @@ c should be instable.
       Real*8   p1(0:3),p2(0:3),p3(0:3),p4(0:3)
       Real*8 musq,test1,test2
       Complex*16 cte
-      Integer  i
+
       Complex*16 result(2)
       Complex*16 resultb(2)
-      real*8 pi,pi2,test(3),td,tQ,Qt
+      real*8 pi,pi2,td
       parameter (pi =3.14159265358979323846264338327950288d0)
       parameter (pi2 =9.86960440108935861883449099987615114d0)
       external dotrr,theta
@@ -1250,9 +1232,9 @@ c     is larger that 1d-2. In the same subroutines the boxlines called are check
       IMPLICIT NONE
       DOUBLE PRECISION   p1(0:3),p2(0:3),p3(0:3),p4(0:3),p5(0:3),p23(0:3),p34(0:3)
       DOUBLE COMPLEX barpsi_p5(2),psi_p1(2),mup2(0:3),mup3(0:3),mup4(0:3) 
-      DOUBLE COMPLEX emup2(0:3),emup3(0:3),emup4(0:3) 
+
       DOUBLE PRECISION musq,test1,test2
-      DOUBLE COMPLEX x2,x3,x4,cte,cte1
+      DOUBLE COMPLEX cte,cte1
       Integer alpha,i
       DOUBLE COMPLEX result(3),result1(5),result2(5),result3(5),result4(5)
       DOUBLE COMPLEX resultb(3),resultb1,resultb2,resultb3,resultb4
@@ -1389,20 +1371,14 @@ c$$$     -     ,alpha,musq,9,-1,resultgauge,result4,resultgaugeb,resultb4)
       ratiocheckCan=(Abs(-(result4(1))/(-cte*(resultb4)))-1d0)
 
 
-      
       if(ratiocheckCan.gt.1d-2) then
          test(1)=abs((result4(1)-cte*resultb4)/(result(1)-cte*resultb(1))+1d0)
       else
          test(1)=abs((result4(1))/(result(1))+1d0)
       endif
-      
-      
-      
-      
+
+
       ratiocheckCan=Abs(-result(2)/(-cte*resultb(2)))-1d0
-
- 
-
 
 
       if(ratiocheckCan.gt.1d-2) then
@@ -1411,8 +1387,6 @@ c$$$     -     ,alpha,musq,9,-1,resultgauge,result4,resultgaugeb,resultb4)
       else
          test(2)=abs((result2(1)-result3(1))/result(2)+1d0)
       endif
-      
-
 
 
       ratiocheckCan=(Abs(-(-result1(1))/(-cte*(-resultb1)))-1d0)
@@ -1470,7 +1444,6 @@ c         print*, "test(3)",test(3),result1(1),result(3)
        endif
 
 
-      
       Return
 !     endif
 !     endif
@@ -1529,7 +1502,6 @@ c         stop
        endif
 
 
-
       IF(ABS(RESULTB(1)).LT.1D-4) THEN
       TESTB(1)=ABS(RESULT(1)-CTE*RESULTB(1))
       ELSE
@@ -1582,8 +1554,6 @@ c      Print*, 'Ward', Ward
 
       return
       end
-
-
 
 
 ********************************************************************************

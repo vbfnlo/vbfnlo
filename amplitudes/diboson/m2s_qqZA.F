@@ -49,8 +49,8 @@ c  helicity selection
       COMPLEX*16 zero
       PARAMETER (zero=(0d0,0d0))
 
-      DOUBLE PRECISION q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      DOUBLE PRECISION q_sf
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -265,7 +265,7 @@ c local variables
       logical ldebug
       parameter (ldebug=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,j,k,mu
+      integer i,if1,k,mu
 
       uuza = 0d0
       uuza = 0d0

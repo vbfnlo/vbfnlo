@@ -7,6 +7,7 @@ c       Initial version: January 2009
 c       Last modified: June 2007
 
       SUBROUTINE DEF_PS_ZZZj(bos1,bos2,bos3)
+          use globalvars, only: ldoblha
 
       IMPLICIT NONE
 
@@ -14,8 +15,6 @@ c       Last modified: June 2007
 #include "VBFNLO/utilities/cuts.inc"
 
       INTEGER bos(3), i, bos1, bos2, bos3
-
-c set up variables in common block BLIPSI for call of LIPSVVVJ
 
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTJMIN
       DOUBLE PRECISION RM2MINX, RM2MAXX, M2MIN, RM2MINY, RM2MAXY
@@ -124,9 +123,6 @@ C           W          the weight of the phase space point
 C
 
 
-C  INPUT INFORMATION on the phase space region is transferred via the
-C    common block /BLIPSI/
-
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTC
       DOUBLE PRECISION RM2MINX, RM2MAXX, RM2MINY, RM2MAXY, M2MIN
       DOUBLE PRECISION RM2MAX1, RM2MAX2
@@ -145,13 +141,13 @@ C   PTJMIN         minimal PT value of the jet
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER MU
       DOUBLE PRECISION m1sq, m2sq, m3sq
-      DOUBLE PRECISION PT
-      DOUBLE PRECISION coshy2, sinhy2, temp, test
-      DOUBLE PRECISION ql(0:4,2), q(0:4,3)  
-      DOUBLE PRECISION pX(0:4), pY(0:4)
-      DOUBLE PRECISION C, m2, mw, tauc
+
+      DOUBLE PRECISION test
+      DOUBLE PRECISION q(0:4,3)  
+      DOUBLE PRECISION pY(0:4)
+      DOUBLE PRECISION tauc
       DOUBLE PRECISION q1(0:3), q2(0:3), q3(0:3)
 
       DOUBLE PRECISION xxwidth, xxm, xywidth, xym
@@ -558,7 +554,6 @@ c***************************** DEBUGGING *********************************
          test = dotrr(v(0,6),v(0,6))
          if (test.gt.1E-7) print*,"v6^2 = ",dotrr(v(0,6),v(0,6))
          print*, "-----------------------"
-         pause
       endif
 
 c*********************** END OF DEBUGGING *******************************

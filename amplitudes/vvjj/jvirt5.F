@@ -26,8 +26,8 @@ c     #     Jborn)
       double complex jret(0:3)
       integer mu,kb, sign(4)
       double precision qa(0:4),qb(0:4),fa(0:4,4),fb(0:4,4),
-     - 		       fab(0:4,4),fba(0:4,4)
-      double complex psia(2,4),psib(2,4),psiab(2,4),psiba(2,4)		      
+     - 		       fba(0:4,4)
+      double complex psia(2,4),psib(2,4),psiba(2,4)		      
       double complex  jborn(0:5),jret_nlo(0:3)	      
    
       double precision  qak(0:4,2),qbk(0:4,2)	      
@@ -100,7 +100,6 @@ c
             print*,"this configuration for pentagon line is not allowed" 
       
          endif
-
 
 
       !  compute pentagon line including born contribution:
@@ -193,9 +192,8 @@ c     -			wpol(0:3),res(1:2),mom-res(0:4))
 
 c		call curr6(-1,psibar(2,-1:1),pbar(0:3),
 c     1                 psiwf(2,-1:1),mom-psi(0:3), jout(0:5,-1:1)   )
-		
 
-     
+
 c first graph (k=3): order = jal, jbe, open index (LO)
 
          if (num_ret_current.eq.3) then ! jal,jbe,jexch
@@ -285,10 +283,8 @@ c     -			cak(0,1),psipak(1,1,nq1),fpak(0,1,nq1))
 
 c            call curr6(-1,psi(1,-1,nq2),p(0,nq2),
 c     1                 psipak(1,1,nq1),fpak(0,1,nq1),j0aa(0,-1,1)   )
-   
-     	
-     
- 
+
+
 c k=2: order = jal, open index, jbe (NLO)
  
      	    call boxlinec(-1,psi(1,-1,nq1),psi(1,-1,nq2),p(0,nq1),p(0,nq2),
@@ -299,9 +295,8 @@ c k=2: order = jal, open index, jbe (NLO)
         
 c          call boxlinec(-1,psi(1,-1,nq1),psi(1,-1,nq2),p(0,nq1),p(0,nq2),
 c     -	   	.true.,cak(0,1),2,j0aa(0,-1,1),jvirt3(0,-1))
-    
-   
-		 
+
+
     ! emit jal, then jbe from upper line: 
             do mu = 0,5
                jvabd(mu,2)= -xbe*jvirt1(mu,-1) + xal*jvirt2(mu,-1)    
@@ -319,7 +314,6 @@ c -------------
 c third graph (k=1): order = open index, jal, jbe (LO)
 
 
-     
          if (num_ret_current.eq.1) then ! jexch,jal,jbe
 
 				
@@ -347,7 +341,6 @@ c third graph (k=1): order = open index, jal, jbe (LO)
 
             call curr6(-1,psipak(1,2,nq2),fpak(0,2,nq2),
      1           psi(1,-1,nq1),p(0,nq1),j0aa(0,-1,2)   )
-     
 
 
 c third graph (k=1): NLO for order = open index, jal, jbe 

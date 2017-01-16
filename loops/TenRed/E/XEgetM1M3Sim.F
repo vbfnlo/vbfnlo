@@ -100,7 +100,7 @@ c*******************************************************************************
        Real*8 E12345R(80,5) 
        Real*8 E12345I(80,5) 
 
-       Logical PrintB,PrintC,PrintD,PrintE 
+
        COMMON/EVALFunctionsPenEvenGSim/ E012345R,E12345R,E012345I,E12345I
        COMMON/DVALFunctionsPenEvenGSim/ D01234R,D1234R,D01234I,D1234I, D01235R,D1
      -   235R,D01235I,D1235I, D01245R,D1245R,D01245I,D1245I, D01345R,
@@ -460,10 +460,6 @@ cfc       If(PrintE) then
 cfc       write(*,*)"E12345",E012345R,E012345I
 cfc       call print_EijR(E012345,E12345R,E12345I)
 cfc       endif
-
-
-
-
 
 
        return

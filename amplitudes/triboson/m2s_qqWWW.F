@@ -57,7 +57,7 @@ c declare local variables
       PARAMETER (zero=(0d0,0d0))
 
       double precision q_sf, qq
-      INTEGER init/0/, I, J, mu, nu, id
+      INTEGER init/0/, I, mu
       SAVE init
 
 c declare variables for summation process
@@ -71,7 +71,7 @@ c variables for leshouches interface
 
 c store contributions from subprocess ip in res(ip) where
       double precision res(maxnumsubproc)
-      double precision rmax
+
 
 c declare parton distribution variables
       double precision pdf(-6:6,2)
@@ -385,7 +385,6 @@ c       energy scale is invariant WWW mass
 #endif
 
 
-
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
       q_sf = sqrt(mufsq(1,1))
@@ -564,15 +563,15 @@ c local variables
       double precision pbar(0:3,2+n_v), dotrr, polcol
       double precision Matrixelt(0:1,0:1)
       double complex zero
-      integer iflav(2), diagToPhys(2), FL_VVV
+      integer iflav(2), FL_VVV
       external dotrr, FL_VVV
 
-      logical ChargedCurrent, sametype, oneAntiparticle
+
       LOGICAL ldebug, ldebug_ltens
       PARAMETER (ldebug=.false.)
       PARAMETER (ldebug_ltens=.false.)
       parameter (zero = (0d0,0d0) )
-      integer i,if1,if2,icc1,j,k,mu
+      integer i,if1,k,mu
       integer stopp
       data stopp /1/
       save stopp
@@ -784,7 +783,7 @@ c*****************************************************************************
 #include "tensor.inc"
       double complex zero
       parameter (zero=(0d0,0d0))
-      integer j,jj,mu,nu
+      integer j,jj,mu
 
       do mu = 0,5
          do j = 1,3

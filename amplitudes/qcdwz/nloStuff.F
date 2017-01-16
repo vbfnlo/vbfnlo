@@ -10,13 +10,13 @@ c #define NINH_COMPARE
 #include "brakets.inc"
 #include "VBFNLO/utilities/global.inc"
       real*8 p(0:3,max_p,max_kin)
-      logical lokt(16),lnlo
+      logical lokt(16)
       integer lephel,lepkin,nbos
 
-      real*8 mjj2,dotrr, mjj2Q,dotrrQ
+      real*8 mjj2,dotrr,dotrrQ
       external mjj2,dotrr,dotrrQ
-      real*8 pbar(0:3,5),pdia(0:4,5),mpdia(0:4,5)
-      integer fsignp(4),fsignm(4),id(4),h,i,j,k,idb(4),kin,copy(5,16),mu,pol1,pol2,qtype(4)
+      real*8 pdia(0:4,5),mpdia(0:4,5)
+      integer fsignp(4),fsignm(4),id(4),h,i,j,idb(4),kin,copy(5,16),mu,pol1,pol2,qtype(4)
       data fsignp / 1,1,1,1/, fsignm / -1,-1,-1,-1 /, id /1,3,2,4/,idb/4,2,3,1/
       complex*16 psiTemp(2,-1:1)
       real*8 momTemp(0:4)
@@ -172,13 +172,13 @@ c psiWG
 #include "cacheZZ.inc"
 #include "VBFNLO/utilities/global.inc"
       real*8 p(0:3,max_p,max_kin)
-      logical lokt(16),lnlo
+      logical lokt(16)
       integer lephel,lepkin
 
-      real*8 mjj2,dotrr, mjj2Q,dotrrQ
+      real*8 mjj2,dotrr,dotrrQ
       external mjj2,dotrr,dotrrQ
-      real*8 pbar(0:3,5),pdia(0:4,5),mpdia(0:4,5)
-      integer fsignp(4),fsignm(4),id(4),h,i,j,k,idb(4),kin,copy(5,16),mu,pol1,pol2,qh,qt,iV,iV2
+      real*8 pdia(0:4,5),mpdia(0:4,5)
+      integer fsignp(4),fsignm(4),id(4),i,j,idb(4),kin,copy(5,16),mu,pol1,qh,qt,iV,iV2,nfmax
       data fsignp / 1,1,1,1/, fsignm / -1,-1,-1,-1 /, id /1,3,2,4/,idb/4,2,3,1/
       complex*16 psiTemp(2,-1:1)
       real*8 momTemp(0:4)
@@ -207,7 +207,11 @@ c       AZ=3,4 : V coupling to u/d quark with qhel inclouding couplings
 c generate psi 
       do kin=1,16
       if(lokt(kin)) then 
-
+        if (kin.eq.1) then
+          nfmax = 5
+        else
+          nfmax = 4
+        endif
 c use pdia for psi, -pdia for psibar
 c -pdia for bosons !!!!!
       do mu=0,3
@@ -230,9 +234,9 @@ c -pdia for bosons !!!!!
 c calc spinors
 c kets are psi(:,:, >0 , :)
 c bras are psi(:,:, <0 , :)
-        call psi0mAll(5,p(0,1,kin),psi(1,-1,-5,kin))
+        call psi0mAll(nfmax,p(0,1,kin),psi(1,-1,-nfmax,kin))
       
-      do i=1,5
+      do i=1,nfmax
         call polvec(p(0,i,kin),1,epsG(0,i,1,kin))
         call polvec(p(0,i,kin),2,epsG(0,i,2,kin))
       enddo
@@ -250,9 +254,8 @@ c bras are psi(:,:, <0 , :)
 !       enddo;enddo 
 
 c psiG
-      do i=1,5
-      if(.not.(kin.ne.1.and.i.eq.5)) then
-        do j=1,5
+      do i=1,nfmax
+        do j=1,nfmax
         if(i.ne.j) then
           call bra2r(psi(1,-1,-i,kin),.true.,mpdia(0,i),-1,mpdia(0,j),epsG(0,j,1,kin),psiG(1,-1,-i,j,1,kin),momPsiG(0,-i,j,kin))
           call bra2r(psi(1, 1,-i,kin),.true.,mpdia(0,i), 1,mpdia(0,j),epsG(0,j,1,kin),psiG(1, 1,-i,j,1,kin),momPsiG(0,-i,j,kin))
@@ -336,7 +339,6 @@ c psiV(V)
         enddo ! qt
         enddo ! qh
 ! 
-      endif
       enddo
       
       endif ! lokt
@@ -403,9 +405,6 @@ ccc
       END
 
 
-
-
-
 c amp(0) pol != pol', amp(i): pol(i)
 c buff==nbos
       subroutine CScolAmpGNew(p,kin,idB,fsignB,emitB,spectB,nbos,res)
@@ -417,9 +416,9 @@ c get <TiTj> for 2q2g processes, amp = (Born^2, T1T2,T1T3)
       integer emitB,spectB,mini,maxi, kin, idB(4),fsignB(4),nbos,i,j,k,nres
       real*8 CF,CA
       parameter (CF=4d0/3d0,CA=3d0)
-      logical ldebug,lokt(16),usePreCalc
+      logical ldebug,usePreCalc
       
-      real*8 borncache(0:2,0:2,0:2,3:4,1:4,1:4,16),amptemp(0:2,0:2,0:2)
+      real*8 borncache(0:2,0:2,0:2,3:4,1:4,1:4,16)
       save borncache
       integer helswitch,q
       common/helswitchTemp/ helswitch
@@ -534,14 +533,14 @@ c get <TiTj> for 2q2g processes, amp = (Born^2, T1T2,T1T3)
 #include "VBFNLO/utilities/global.inc"
       real*8 p(0:3,max_p,max_kin), amp(0:2),res(-1:2,3:4,3:4,0:2)
       integer h,i,j,ii,jj,mini,maxi, kin, idB(4),idtemp(4),signtemp(4),diffFl(0:2),fsignB(4)
-      integer helB,nbos, factorial(4),q,df,per,emitB,spectB
+      integer nbos, factorial(4),df,per,emitB,spectB
       integer a,b,q1,q2
       real*8 CF,CA
       parameter (CF=4d0/3d0,CA=3d0)
       logical ldebug
       parameter (ldebug = .false.)
       real*8 borncache(0:2,3:4,3:4,0:2,24,16)
-      real*8 tempamp(0:2,0:2)
+
       save borncache
 
       goto 25
@@ -644,7 +643,7 @@ c get <TiTj> for 2q2g processes, amp = (Born^2, T1T2,T1T3)
 #include "VBFNLO/utilities/global.inc"
       real*8 p(0:3,max_p,max_kin), amp(0:2),res(-1:2,3:4,0:2)
       integer h,i,j,ii,jj,mini,maxi, kin, idB(4),idtemp(4),signtemp(4),diffFl(0:2),fsignB(4)
-      integer helB,nbos, factorial(4),q,df,per,emitB,spectB
+      integer nbos, factorial(4),q,df,per,emitB,spectB
       integer a,b
       real*8 CF,CA
       parameter (CF=4d0/3d0,CA=3d0)
@@ -771,7 +770,7 @@ c     initial state splitting g -> q qb, g ->gg will be calulated here as well
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/scales.inc"
       real*8 p(0:3,max_p,max_kin),xi(2,2)
-      integer kin,id(4),fsign(4),iflav(4),in,nbos, difffamily
+      integer id(4),fsign(4),iflav(4),in,nbos, difffamily
       logical ldebug
       parameter (ldebug = .true.)
 
@@ -781,10 +780,10 @@ c     initial state splitting g -> q qb, g ->gg will be calulated here as well
       integer beamsign(2),i, dia(4),di,qtype,hel9(9),hel9temp(9),q1,q2
       data hel9 / 0,0,0,0,0,0,0,0,0/
       data hel9temp / -1,-1,-1,-1,-1,-1,-1,-1,-1/
-      real*8 x,omx,xa,xxa,omxxa,logx,logomx,logomxxa,muf,T(4,4),logMU2oSij(1,4)
-      real*8 pdfqxa,pdfqxxa, pdfgxa,pdfgxxa,pdfb,pdftemp(-6:6), ampborn(-1:2,3:4,0:2),born,csamp(-1:2,3:4)
+      real*8 x,omx,xa,xxa,omxxa,logx,logomx,logomxxa,T(4,4),logMU2oSij(1,4)
+      real*8 pdfqxa,pdfqxxa, pdfgxa,pdfgxxa,pdfb, ampborn(-1:2,3:4,0:2),born,csamp(-1:2,3:4)
       real*8 CF, CA, dotrr, pdf(-6:6,2,2),gamma(3:4),ampbornZZ(-1:2,3:4,3:4,0:2)
-      real*8 deltaCReal, temp(-6:6), theta,logalpha,logax,QCDVVjjFinColltemp,CScolAmpG
+      real*8 deltaCReal, theta,logalpha,logax,QCDVVjjFinColltemp,CScolAmpG
       parameter (deltaCReal=0d0)
       parameter (CF=4d0/3d0, CA=3d0)
       external di,CScolAmpgNew,theta,CScolAmpG
@@ -927,9 +926,8 @@ c set pdf and calc fincoll
         do i=-nfl,nfl
           if(i.ne.0) pdfqxa = pdfqxa + pdf(i,in,2)
         enddo
-        
 
-        
+
 ! ! ! ! ! cccccccccccccccccccccccccccc
 ! ! ! ! ! ccccccc Ninh test
 !       pdfqxa = 0d0

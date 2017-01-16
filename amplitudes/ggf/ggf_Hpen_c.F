@@ -9,8 +9,8 @@
 
       complex*16 H4G_LoopDD2c
 
-      integer i1,i2,i3,i4
-      real*8 q1sq,q2sq,q3sq,q4sq,q12sq,q34sq,q1234sq,
+
+      real*8 q1sq,q2sq,q3sq,q4sq,
      &       q1q2,q1q3,q1q4,q2q3,q2q4,q3q4,m
 
       complex*16 q1J1,q2J1,q3J1,q4J1,q1J2,q2J2,q3J2,q4J2,

@@ -32,7 +32,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pwp(0:3),pwm(0:3),pa1(0:3),pa2(0:3), dotrr
       double precision cos2w, g1, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -287,7 +287,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pwp(0:3),pwm(0:3),pz(0:3),pa(0:3), dotrr
       double precision cos2w, g1, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -562,7 +562,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pwp(0:3),pwm(0:3),pz1(0:3),pz2(0:3), dotrr
       double precision cos2w, g1, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -593,11 +593,14 @@ c
       wwzz = gwwz**2 * (dotcc(wm,z1)*dotcc(wp,z2) + dotcc(wm,z2)*dotcc(wp,z1) - 2.0d0*dotcc(wm,wp)*dotcc(z1,z2))
 
 
-
       if (kmatrix) then
            ! This is the fs0/fs1-amplitude separated in s/t/u-channels and unitarized
            ! following the kmatrix prescription (see subroutine anomal_formfactor)
-        if (fs0 .ne. 0 .or. fs1 .ne. 0 ) then
+        if (fs2 .ne. fs0) then
+          write(*,*) "Sorry, K-matrix is only available for fs0 == fs2"
+          stop
+        endif
+        if (fs0 .ne. 0 .or. fs1 .ne. 0 .or. fs2 .ne. 0) then
          wwzz = wwzz 
      &         + 2. * wmass**4 / cos2w * fswmwp * dotcc(wm,wp)*dotcc(z1,z2)
      &         +      wmass**4 / cos2w * fswmz1 * dotcc(wm,z1)*dotcc(wp,z2)
@@ -612,6 +615,10 @@ c
 
       if (fs1 .ne. 0) then
         wwzz = wwzz + fs1 * wmass**4 / cos2w * 2.0d0 * dotcc(wm,wp)*dotcc(z1,z2)
+      endif
+
+      if (fs2 .ne. 0) then
+        wwzz = wwzz + fs2 * wmass**4 / cos2w * (dotcc(wm,z1)*dotcc(wp,z2) + dotcc(wm,z2)*dotcc(wp,z1))
       endif
       endif
 
@@ -891,7 +898,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pwp1(0:3),pwm1(0:3),pwp2(0:3),pwm2(0:3), dotrr
       double precision cos2w, g1, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -926,7 +933,11 @@ c
       if (kmatrix) then
            ! This is the fs0/fs1-amplitude separated in s/t/u-channels and unitarized
            ! following the kmatrix prescription (see subroutine anomal_formfactor)
-        if (fs0 .ne. 0 .or. fs1 .ne. 0 ) then
+        if (fs2 .ne. fs0) then
+          write(*,*) "Sorry, K-matrix is only available for fs0 == fs2"
+          stop
+        endif
+        if (fs0 .ne. 0 .or. fs1 .ne. 0 .or. fs2 .ne. 0) then
          wwww = wwww 
      &         + 4. * wmass**4 * fswp1wp2 * dotcc(wp1,wp2) * dotcc(wm1,wm2) 
      &         + 2. * wmass**4 * fswp1wm2 * dotcc(wp1,wm2) * dotcc(wp2,wm1)
@@ -941,6 +952,12 @@ c
  
        if (fs1 .ne. 0) then
          wwww = wwww + 2. * fs1 * wmass**4 
+     &      * (dotcc(wp1,wm2) * dotcc(wp2,wm1)
+     &      +  dotcc(wp1,wm1) * dotcc(wp2,wm2))
+       endif
+
+       if (fs2 .ne. 0) then
+         wwww = wwww + 2. * fs2 * wmass**4 
      &      * (dotcc(wp1,wm2) * dotcc(wp2,wm1)
      &      +  dotcc(wp1,wm1) * dotcc(wp2,wm2))
        endif
@@ -1132,7 +1149,6 @@ c
       end
 
 
-
 *********************************************************************************************************
 *********************************************************************************************************
 CCCCCCCCCCCCCCC
@@ -1149,7 +1165,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pz1(0:3),pz2(0:3),pz3(0:3),pz4(0:3), dotrr
       double precision cos2w, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -1182,7 +1198,11 @@ c
 
 
       if (kmatrix) then        
-       if (fs0 .ne. 0 .or. fs1 .ne. 0) then
+        if (fs2 .ne. fs0) then
+          write(*,*) "Sorry, K-matrix is only available for fs0 == fs2"
+          stop
+        endif
+       if (fs0 .ne. 0 .or. fs1 .ne. 0 .or. fs2 .ne. 0) then
         zzzz = zzzz 
      &         + 2. * wmass**4 / cos2w**2 * fsz1z4 * dotcc(z1,z4)*dotcc(z2,z3)
      &         + 2. * wmass**4 / cos2w**2 * fsz1z3 * dotcc(z1,z3)*dotcc(z2,z4)
@@ -1198,6 +1218,11 @@ c
        if (fs1 .ne. 0) then     
          zzzz = zzzz + 2. * fs1 * wmass**4 / cos2w**2 
      &      * ( dotcc(z1,z4)*dotcc(z2,z3) + dotcc(z1,z3)*dotcc(z2,z4) + dotcc(z1,z2)*dotcc(z3,z4) )
+       endif
+
+       if (fs2 .ne. 0) then
+        zzzz = zzzz + 2. * fs2 * wmass**4 / cos2w**2 * 
+     &      ( dotcc(z1,z4)*dotcc(z2,z3) + dotcc(z1,z3)*dotcc(z2,z4) + dotcc(z1,z2)*dotcc(z3,z4) )
        endif
       endif
 
@@ -1582,7 +1607,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pz1(0:3),pz2(0:3),pz3(0:3),pa(0:3), dotrr
       double precision cos2w, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -1920,7 +1945,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pz1(0:3),pz2(0:3),pa1(0:3),pa2(0:3), dotrr
       double precision cos2w, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -2018,8 +2043,7 @@ c
      &    ( ( dotrc(pz2,a1)*dotrc(pa1,z2) - dotcc(a1,z2)*dotrr(pa1,pz2) ) 
      &            * ( dotrc(pz1,a2)*dotrc(pa2,z1) - dotcc(z1,a2)*dotrr(pz1,pa2) )
      &    + ( dotrc(pz1,a1)*dotrc(pa1,z1) - dotcc(a1,z1)*dotrr(pa1,pz1) ) 
-     &            * ( dotrc(pz2,a2)*dotrc(pa2,z2) - dotcc(a2,z2)*dotrr(pa2,pz2) )  
-
+     &            * ( dotrc(pz2,a2)*dotrc(pa2,z2) - dotcc(a2,z2)*dotrr(pa2,pz2) )
 
 
      &    + ( dotrc(pa2,a1)*dotrc(pa1,a2) - dotcc(a1,a2)*dotrr(pa1,pa2) ) 
@@ -2192,7 +2216,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pz(0:3),pa1(0:3),pa2(0:3),pa3(0:3), dotrr
       double precision cos2w, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -2406,7 +2430,7 @@ c
       double complex dotcc, dotrc, epsccrr, epscccr, epscccc
       double precision pa1(0:3),pa2(0:3),pa3(0:3),pa4(0:3), dotrr
       double precision cos2w, cosw, sinw
-      integer i
+
       external dotcc, dotrc, dotrr, epsccrr, epscccr, epscccc
 
 #include "VBFNLO/utilities/coupl.inc"
@@ -2585,7 +2609,6 @@ c
       end
 
 
-
 ********************************************************************************
 ********************************************************************************
 
@@ -2659,72 +2682,53 @@ c
         END SELECT
 
         if (kmatrix) then !K- Matrix unitarisation for L_S0 and L_S1
+
+         DA00 = -((7.*(fs0+fs2) + 11.*fS1)**2*ss**4)/(6.*((0,192)*Pi + (7.*(fs0+fs2) + 11.*fS1)*ss**2)) 
+         DA02 = -((2.*(fs0+fs2) + fS1)**2*ss**4)/(30.*((0,960)*Pi + (2.*(fs0+fs2) + fS1)*ss**2))
+         DA11 = -(((fs0+fs2) - 2.*fS1)**2*ss**4)/(12.*((0,384)*Pi + ((fs0+fs2) - 2.*fS1)*ss**2))
+         DA20 = -((2.*(fs0+fs2) + fS1)**2*ss**4)/(3.*((0,96)*Pi + (2.*(fs0+fs2) + fS1)*ss**2))
+         DA22 = -(((fs0+fs2) + 2.*fS1)**2*ss**4)/(60.*((0,1920)*Pi + ((fs0+fs2) + 2.*fS1)*ss**2))
+ 
         SELECT CASE(procID)
 
 !       ** W+.W- **
         CASE(WPWMjj, WPhadWMjj, WPWMhadjj) !these processes can have z-bosons in
             !the initial state. Therefore both wwzz and wwww need unitarisation.
 
-         DA00 = -((3.*fS0 + 11.*fS1)**2*ss**4)/(6.*((0,192)*Pi + (3.*fS0 + 11.*fS1)*ss**2))
-         DA11 = -((-2.*fS0 + fS1)**2*ss**4)/(6.*((0,192)*Pi + (2.*fS0 - fS1)*ss**2))
-         DA02 = -((3.*fS0 + fS1)**2*ss**4)/(30.*((0,960)*Pi + (3.*fS0 + fS1)*ss**2))
-         DA20 = -((3.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (3.*fS0 + fS1)*ss**2))
-         DA22 = -(fS1**2*ss**4)/(30.*((0,960)*Pi + fS1*ss**2))
+         fswp1wm1 = fs1 + fs2 +  1./(3. * ss**2) * (2. * DA00 + DA20)
+     &                        - 10./(3. * ss**2) * (2. * DA02 + DA22)
+         fswp1wp2 = fs0 +        1./(2. * ss**2) * (10. * DA02 + 3. * DA11 + 5. * DA22)
+         fswp1wm2 = fs1 + fs2 +  1./(1. * ss**2) * (10. * DA02 - 3. * DA11 + 5. * DA22)
 
-         fswp1wm1 = fs1 +  1./(3. * ss**2) * (2. * DA00 + DA20)
-     &                  - 10./(3. * ss**2) * (2. * DA02 + DA22)
-         fswp1wp2 = fs0 +  1./(2. * ss**2) * (10. * DA02 + 3. * DA11 + 5. * DA22)
-         fswp1wm2 = fs1 +  1./(     ss**2) * (10. * DA02 - 3. * DA11 + 5. * DA22)
-
-         !unitarized partial waves DAIJ need to be calculated again for the
-         !wwzz-vertex, because the relation between alpha4/alpha5 and fs0/fs1
-         !is a different one. one needs to modify LS0 or add another opeartor
-         !LS2 in order to get the same one-to-one correspondence between the
-         !couplings for all processes
-         DA00 = -((7.*fS0 + 11.*fS1)**2*ss**4)/(6.*((0,192)*Pi + (7.*fS0+ 11.*fS1)*ss**2)) 
-         DA02 = -((2.*fS0 + fS1)**2*ss**4)/(30.*((0,960)*Pi + (2.*fS0 + fS1)*ss**2))
-         DA20 = -((2.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (2.*fS0 + fS1)*ss**2))
-         DA22 = -((fS0 + 2.*fS1)**2*ss**4)/(60.*((0,1920)*Pi + (fS0 + 2.*fS1)*ss**2))
-         
          fswmwp = fs1 + 2./(3.*ss**2) * (DA00 - DA20) - 20./(3.*ss**2) * (DA02 - DA22)
-         fswmz1 = fS0 + 20./(ss**2) * (DA02 - DA22)
+         fswmz1 = fS0 + fS2 + 20./(ss**2) * (DA02 - DA22)
          fswmz2 = fswmz1        
 
 !       ** W+.W+ **
         CASE(WPWPjj, WMWMjj, WPhadWPjj, WMhadWMjj)
-         DA20 = -((3.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (3.*fS0 + fS1)*ss**2))
-         DA22 = -(fS1**2*ss**4)/(30.*((0,960)*Pi + fS1*ss**2))
          
-         fswp1wp2 = fs0 + 1./ss**2 * (DA20 - 10. * DA22) 
-         fswp1wm2 = fs1 + 30./ss**2 * DA22
+         fswp1wp2 = fs0 +        1./ss**2 * (DA20 - 10. * DA22) 
+         fswp1wm2 = fs1 + fs2 + 30./ss**2 * DA22
          fswp1wm1 = fswp1wm2
 
 !        ** W.Z **         
         CASE(WPZjj, WMZjj, WPhadZjj, WPZhadjj, WMhadZjj, WMZhadjj)
-         DA11 = -((fS0 - 2.*fS1)**2*ss**4)/(12.*((0,384)*Pi + (fS0 - 2.*fS1)*ss**2))
-         DA20 = -((2.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (2.*fS0 + fS1)*ss**2))
-         DA22 = -((fS0 + 2.*fS1)**2*ss**4)/(60.*((0,1920)*Pi + (fS0 + 2.*fS1)*ss**2))
 
-         fswmwp = fs1 - 3./ss**2 * DA11 + 15./ss**2 * DA22
-         fswmz1 = fs0 + 2./ss**2 * DA20 - 20./ss**2 * DA22
-         fswmz2 = fs0 + 6./ss**2 * DA11 + 30./ss**2 * DA22
+         fswmwp = fs1 -       3./ss**2 * DA11 + 15./ss**2 * DA22
+         fswmz1 = fs0 + fs2 + 2./ss**2 * DA20 - 20./ss**2 * DA22
+         fswmz2 = fs0 + fs2 + 6./ss**2 * DA11 + 30./ss**2 * DA22
 
 !       ** Z.Z **  
         CASE(ZZjj_ll, ZZjj_lnu, ZZhadjj) !these processes can have w-bosons in
             !the initial state. Therefore both wwzz and zzzz need
             !unitarisation, just like in the W+.W- case.
          
-         DA00 = -((7.*fS0 + 11.*fS1)**2*ss**4)/(6.*((0,192)*Pi + (7.*fS0 + 11.*fS1)*ss**2)) 
-         DA02 = -((2.*fS0 + fS1)**2*ss**4)/(30.*((0,960)*Pi + (2.*fS0 + fS1)*ss**2))
-         DA20 = -((2.*fS0 + fS1)**2*ss**4)/(3.*((0,96)*Pi + (2.*fS0 + fS1)*ss**2))
-         DA22 = -((fS0 + 2.*fS1)**2*ss**4)/(60.*((0,1920)*Pi + (fS0 + 2.*fS1)*ss**2))
- 
          fswmwp = fs1 + 2./(3.*ss**2) * (DA00 - DA20) - 20./(3.*ss**2) * (DA02 - DA22)
-         fswmz1 = fS0 + 20./(ss**2) * (DA02 - DA22)
-         fswmz2 = fswmz1
+         fswmz1 = fS0 + fS2 + 20./(ss**2) * (DA02 - DA22)
+         fswmz2 = fswmz1        
 
-         fsz1z2 = fS0 + fS1 + 2./(3.*ss**2) * (DA00 + 2.*DA20) - 20./(3.*ss**2) * (DA02 + 2.*DA22)
-         fsz1z3 = fS0 + fS1 + 10./ss**2 * (DA02 + 2. * DA22) 
+         fsz1z2 = fS0 + fS1 + fs2 + 2./(3.*ss**2) * (DA00 + 2.*DA20) - 20./(3.*ss**2) * (DA02 + 2.*DA22)
+         fsz1z3 = fS0 + fS1 + fs2 + 10./ss**2 * (DA02 + 2. * DA22) 
          fsz1z4 = fsz1z3
      
         CASE DEFAULT
@@ -2756,10 +2760,10 @@ c
          end if
 
 
-
 **  dim-8 operators:
          fs0=fs0_0*ffvalue
          fs1=fs1_0*ffvalue
+         fs2=fs2_0*ffvalue
          ft0=ft0_0*ffvalue
          ft1=ft1_0*ffvalue
          ft2=ft2_0*ffvalue
@@ -2797,17 +2801,24 @@ c
          fwwwtilde=fwwwtilde_0*ffvalue
          fdwtilde=fdwtilde_0*ffvalue
          fphi1=fphi1_0*ffvalue
- 
- 
- 
+
+
 **  Now moving to the trianom=2 parametrisation (needed for Vjj in VBF)
           if (trianom .eq. 2) then
              ffvalue_KA = (1./(1.+ss/massscale2KA))**DBLE(ffexpKA)
              ffvalue_KZ = (1./(1.+ss/massscale2KZ))**DBLE(ffexpKZ)
           else
              ! numerator is multiplied by appropriate formfactors
-             ffvalue_KA = (fw + fb)/(fw_0 + fb_0)
-             ffvalue_KZ = (CW2*fw - SW2*fb)/(fw_0*CW2 - SW2*fb_0)  
+             if ( (fw_0 + fb_0) .ne. 0d0 ) then
+               ffvalue_KA = (fw + fb)/(fw_0 + fb_0)
+             else
+               ffvalue_KA = 0
+             endif
+             if ( (fw_0*CW2 - SW2*fb_0) .ne. 0d0 ) then
+               ffvalue_KZ = (CW2*fw - SW2*fb)/(fw_0*CW2 - SW2*fb_0)
+             else
+               ffvalue_KZ = 0
+             endif
           end if
           if (lambda0 .ne. 0D0) then
              lambda0 = lambda0_0

@@ -3,6 +3,8 @@ c*************************************************************************
 c*************************************************************************
 c     Initialize the global parameters which are defined in "global.inc"
 c*************************************************************************
+          use globalvars, only: lglobalprint, isggflo
+          use readinput
 
       implicit none
 #include "VBFNLO/utilities/global.inc"
@@ -31,21 +33,23 @@ c Read in values from 'vbfnlo.dat'.
       doVirtuals=.false.
       doEmissions=.false.
       doFLoops=.false.
+
       
       call loadfile("vbfnlo.dat",.true.)
-      print *," "
-      print *,"       Information on global parameters"
-      print *,"-----------------------------------------------"
-      call read_int("PROCESS",procID,100)
-
-
-      if ( (procID.ge.4100) .and. (procID.le.4999) ) then
-         print*,"  SELECTED PROCESS NUMBER NOT APPROPRIATE" //
-     &        "FOR PROGRAM VBFNLO. "
-         print*,"  FOR GLUON FUSION PROCESSES PLEASE RUN THE" //
-     &        "PROGRAM GGFLO! "
-         STOP
+      
+      if(lglobalprint) then
+         print *," "
+         print *,"       Information on global parameters"
+         print *,"-----------------------------------------------"
       endif
+      call read_int("PROCESS",procID,100)
+      
+      if ( (procID.ge.4100) .and. (procID.le.4999) ) then
+          isggflo = .true.
+      else
+          isggflo = .false.
+      endif
+
 
       ! switch whether W, Z, H should be forced on-shell
       !   0: full width dependence
@@ -72,7 +76,12 @@ c     It's not officially supported and has several limitations!
 !         call read_int("NARROW_WIDTH",narrowwidth,0)
 !      END SELECT
 
+
+      lwritedata = .false.
+      lreaddata = .false.
+     
       call read_logical("LOPROCESS_PLUS_JET",LOplusjet,.false.)
+
 c      call proc_assignment(procID)
       call proc_assignment
       alllep_flag = .false.
@@ -86,6 +95,7 @@ c      call proc_assignment(procID)
       endif
       call symmetry_factor
 
+
       call read_int("LO_ITERATIONS",N_iterations1,4)
       call read_int("NLO_ITERATIONS",N_iterations2,4)
       call read_int("LO_POINTS",N_points(0),20)
@@ -93,12 +103,22 @@ c      call proc_assignment(procID)
       call read_logical("NLO_SWITCH",doNLO,.false.)
       call read_logical("EWCOR_SWITCH",ewcor_switch,.false.)
       call read_int("FERMIONLOOP",floops,3)
+      if ( (floops .eq. 0) .and. 
+     &    ( (procID.ge.4300) .and. (procID.le.4379) ) ) then
+        write(*,*)'Diboson production via gluon-fusion requested'
+        write(*,*)'but fermionic loops switched off.'
+        write(*,*)'Result will be zero.'
+        stop
+      endif
 
       if (N_decayquarks.gt.0) then
         call read_int("NLO_SEMILEP_DECAY",nlo_semilep,0)
       else
         nlo_semilep = 0
       endif
+
+      call read_int("NFLAVOURS",nfl,5,.true.)
+      call read_logical("VBFHASB",vbfnflb,.false.,.true.)
 
       call read_logical("LHA_SWITCH",lha,.false.)   
       call read_logical("HEPMC_SWITCH",hepmc,.false.)   
@@ -120,8 +140,7 @@ c      call proc_assignment(procID)
             stop
          end if
          if (lha) call read_string("LHA_FILE",lhaFILE,"event.lhe")
-         if (hepmc) call read_string("HEPMC_FILE",hepmcFILE,
-     -        "event.hepmc")
+         if (hepmc) call read_string("HEPMC_FILE",hepmcFILE,"event.hepmc")
          call read_logical("UNWEIGHTING_SWITCH",unweighting,.true.)
          desiredEventCount = 0
          if (unweighting) call read_int("DESIRED_EVENT_COUNT",desiredEventCount,0)
@@ -159,10 +178,13 @@ c      call proc_assignment(procID)
       call read_Real("XIR",xir,1d0)
       
 c read in some hidden options 
-      call read_logical_hidden("BORN_OFF", born_off,.false.)
-      call read_logical_hidden("VIRTUALS_OFF", virtuals_off,.false.) 
-      call read_logical_hidden("EMISSIONS_OFF", emissions_off,.false.)
-      call read_logical_hidden("REDUCE_SUB_STAT", reduceSubStat,.true.)
+      call read_logical("BORN_OFF", born_off,.false.,.true.)
+      call read_logical("VIRTUALS_OFF", virtuals_off,.false.,.true.) 
+      call read_logical("EMISSIONS_OFF", emissions_off,.false.,.true.)
+      call read_logical("REDUCE_SUB_STAT", reduceSubStat,.true.,.true.)
+
+      call read_logical("SHOWTIMING", showtiming, .true.)
+
 
       if (LOplusjet) then
          doNLO = .false.
@@ -233,132 +255,3 @@ c read in some hidden options
       END
 
 
-c*************************************************************************
-      SUBROUTINE InitGlobalParameters_GGFLO
-c*************************************************************************
-c     Initialize the global parameters which are defined in "global.inc"
-c*************************************************************************
-
-      implicit none
-#include "VBFNLO/utilities/global.inc"
-#include "VBFNLO/utilities/scales.inc"
-#include "VBFNLO/utilities/lha.inc"
-#include "VBFNLO/utilities/koppln.inc"
-#include "VBFNLO/utilities/process.inc"
-     
-c Assign values to the global parameters here.
-c Read in values from 'vbfnlo.dat'.
-
-      doBorn=.true.
-      doVirtuals=.false.
-      doEmissions=.false.
-      doFLoops=.true.
-      infloops = .true.
-
-      call loadfile("vbfnlo.dat",.true.)
-      print *," "
-      print *,"       Information on global parameters"
-      print *,"-----------------------------------------------"
-      call read_int("PROCESS",procID,100)
-      if ( (procID.lt.4100) .or. (procID.gt.4999) ) then
-c     if you change this condition also change the correlated if statement in InitGlobalParameters for vbfnlo!
-         print*,"  SELECTED PROCESS NUMBER NOT APPROPRIATE"//
-     &        " FOR PROGRAM GGFLO. "
-         print*,"  THIS PROGRAM ONLY WORKS WITH GLUON FUSION"//
-     &        " PROCESSES. "
-         print*,"  PLEASE RUN THE PROGRAM VBFNLO! "
-         STOP
-      endif
-      narrowwidth = 0
-c      call read_logical("LOPROCESS_PLUS_JET",LOplusjet,.false.)
-      call proc_assignment
-      if (N_lepton.gt.0) then
-         call read_IntList("LEPTONS",N_lepton,finallep,finallep_default)
-         call lepton_assignment
-      endif
-      if (N_decayquarks.gt.0) then
-         call read_IntList("DECAY_QUARKS",N_decayquarks,finalquarks,finalquarks_default)
-         call quark_assignment
-      endif
-      call symmetry_factor
-
-      call read_int("LO_ITERATIONS",N_iterations1,4)
-      call read_int("NLO_ITERATIONS",N_iterations2,4)
-      call read_int("LO_POINTS",N_points(0),15)
-      call read_int("NLO_POINTS",N_points(-1),15)
-      call read_logical("NLO_SWITCH",doNLO,.false.)
-      call read_int("FERMIONLOOP",floops,3)
-      if ( (floops .eq. 0) .and. 
-     &    ( (procID.ge.4300) .and. (procID.le.4379) ) ) then
-        write(*,*)'Diboson production via gluon-fusion requested'
-        write(*,*)'but fermionic loops switched off.'
-        write(*,*)'Result will be zero.'
-        stop
-      endif
-      call read_string("LO_GRID",gridname1,"grid2")
-      call read_string("NLO_GRID",gridname2,"grid3")
-      call read_logical("LHA_SWITCH",lha,.false.)
-      call read_logical("HEPMC_SWITCH",hepmc,.false.)   
-#ifndef WITH_HEPMC
-      if (hepmc) then
-        write(*,*)'Sorry, HepMC output not included.'
-        write(*,*)'Reconfigure with --with-hepmc '
-        write(*,*)'or switch off HEPMC_SWITCH'
-        hepmc = .false.
-        stop
-      endif
-#endif
-      if (lha) call read_string("LHA_FILE",lhaFILE,"event.lhe")
-      if (hepmc) call read_string("HEPMC_FILE",hepmcFILE,"event.hepmc")
-      if (lha.or.hepmc) then
-        call read_logical("UNWEIGHTING_SWITCH",unweighting,.true.)
-        call read_logical("TAUMASS",taumass_switch,.false.)
-        desiredEventCount = 0
-        if (unweighting) call read_int("DESIRED_EVENT_COUNT",desiredEventCount,0)
-        partialUnweight = .false.
-        if (desiredEventCount.gt.0) call read_logical("PARTIAL_UNWEIGHTING",partialUnweight,.false.)
-      else
-        unweighting = .false.
-        desiredEventCount = 0
-        partialUnweight = .false.
-        taumass_switch = .false.
-      endif
-     
-      call read_Real("ECM",ecm,14000d0)
-      call read_int("BEAM1",sign1,1)
-      call read_int("BEAM2",sign2,1)
-
-      call read_int("ID_MUF",id_muf,0)
-      call read_int("ID_MUR",id_mur,0)
-      call read_Real("MUF_USER",muf_user,100d0)
-      call read_Real("MUR_USER",mur_user,100d0)
-      call read_Real("XIF",xif,1d0)
-      call read_Real("XIR",xir,1d0)
-
-      if (LOplusjet) then
-         doNLO = .false.
-      endif
-
-#ifdef WITH_NLO
-      if (doNLO.and.(.not.LOplusjet)) then
-         doVirtuals=.true.
-         doEmissions=.true.
-      endif
-#else
-      print *," "
-      print *," NLO features are disabled. "
-      print *," Processes are available only at LO level."
-      if (doNLO.and.(.not.LOplusjet)) then
-         print *," "
-         print *," Error: selected NLO process is not available."
-         stop
-      endif
-#endif
-
-      call closefile
-
-      RETURN
-      END
-
-
-***********************************

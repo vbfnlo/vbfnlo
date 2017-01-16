@@ -25,7 +25,7 @@ c*************************************************************************
       real*8 p(0:3,max_p,max_kin)
       real*8 v(0:3,max_v,max_kin)
       real*8 xuz(2,2:max_kin)
-      integer i
+
       
       SELECT CASE(procID)
 
@@ -199,7 +199,6 @@ c
       end
 
 
-
 c********************** subroutine wgajptildemake *************************
 c
 c    this subroutine assigns ptilde momenta to the partons and the final
@@ -224,22 +223,21 @@ c**************************************************************************
 
 #include "global.inc"
 
-      integer jj,ii,mu,nu,N,ic
+      integer jj,ii,mu
 
       double precision pin(0:3),pk(0:3),pa(0:3),pj(0:3),v(0:3,max_v,max_kin),
      &    p(0:3,max_p,max_kin),pb(0:3),p4(0:3),p3(0:3),ptildea(0:3),ptildeij(0:3),
-     &    pipb,papb,k(0:3),Kt(0:3),bornmom(6,0:3),bornmomt(6,0:3),pipj,xija,zi,papj,papi,
+     &    pipb,papb,k(0:3),Kt(0:3),pipj,xija,zi,papj,papi,
      &    vstore(0:3,max_v)
 c
       logical ldebug
       parameter (ldebug=.false.)
 
-      double precision ptildeai(0:3),ptildek(0:3),dipole(0:3,0:3),
+      double precision ptildeai(0:3),ptildek(0:3),
      &                 pipk,pkpa,pipa
       double precision xika,ui,xuz(2,2:max_kin),xiab,one
       parameter (one=1d0)
 
-      double precision debugmom(0:3)
 
       double precision dotrr
       external dotrr
@@ -768,12 +766,12 @@ c**************************************************************************
 
 #include "global.inc"
 
-      integer jj,ii,mu,nu,i,j,k,a,b, kin, u
+      integer jj,ii,mu,i,j,k,a,b, kin, u
 
       double precision p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), 
-     &    pipb,papb,pipj,pjpa,pipk,pkpa,pipa,pjpk,
+     &    pipb,papb,pipj,pjpa,pipk,pipa,pjpk,
      &    kk(0:3),kt(0:3),kkt(0:3),k2,kkt2,
-     &    xy,uz,vstore(4),pstore(5), xyuz(2,2:max_kin),one
+     &    xy,vstore(4),pstore(5), xyuz(2,2:max_kin),one
       real*8 alpha
       parameter (one=1d0,alpha=1d0)
 c
@@ -981,7 +979,6 @@ c
         print*, "changed? ", (sqrt(p(1,ii,1)**2+p(2,ii,1)**2+p(3,ii,1)**2) ,ii=1,5)
         print*, "vstore:  ", vstore
         print*, "changed? ", (sqrt(v(1,ii,1)**2+v(2,ii,1)**2+v(3,ii,1)**2) ,ii=1,4)
-!       pause
       endif
 
       end
@@ -1015,17 +1012,16 @@ c**************************************************************************
 
 #include "global.inc"
 
-      integer jj,ii,mu,nu,N,ic
+      integer jj,ii,mu
 
       double precision pin(0:3),pk(0:3),pa(0:3),pj(0:3),v(0:3,max_v,max_kin),
      &    p(0:3,max_p,max_kin),pb(0:3),p4(0:3),p3(0:3),ptildea(0:3),ptildeij(0:3),
-     &    pipb,papb,k(0:3),Kt(0:3),bornmom(6,0:3),bornmomt(6,0:3),pipj,xija,zi,papj,papi,
-     &    vstore(0:3,max_v)
+     &    pipb,papb,k(0:3),Kt(0:3),pipj,xija,zi,papj,papi
 c
       logical ldebug
       parameter (ldebug=.false.)
 
-      double precision ptildeai(0:3),ptildek(0:3),dipole(0:3,0:3)
+      double precision ptildeai(0:3),ptildek(0:3)
      &    ,pipk,pkpa,pipa
       double precision xika,ui,xuz(2,2:max_kin),xiab,one
       parameter (one=1d0)
@@ -1463,7 +1459,6 @@ c
       end
 
 
-
 c********************** subroutine DIBOSptildemake *************************
 c
 c    this subroutine assigns ptilde momenta to the partons and the final
@@ -1490,7 +1485,7 @@ c**************************************************************************
 
 #include "global.inc"
 
-      integer mu, a, i, j, N, ii, jj, b
+      integer mu, a, i, j, N, ii, b
       real*8 p(0:3,max_p,max_kin), xuz, v(0:3,max_v,max_kin)
       real*8 omx, pipa, pipb, papb
       real*8 vK(1:n_v), vKtilde(1:n_v), KKtilde
@@ -1671,7 +1666,7 @@ c*************************************************************************
 
 #include "global.inc"
 
-      integer mu,N,ii,jj,j,i
+      integer mu,N,ii,j,i
       real*8 p(0:3,max_p,1:max_kin),xuz(2,2:max_kin),v(0:3,max_v,1:max_kin)
 
       integer N1,npart,ic
@@ -1741,17 +1736,17 @@ c**************************************************************************
 
       include 'global.inc'
 
-      integer jj,ii,mu,nu,N,ic,nv
+      integer jj,ii,mu,N,nv
 
       double precision pin(0:3),pk(0:3),pa(0:3),pj(0:3),v(0:3,max_v,max_kin),
      &    p(0:3,max_p,max_kin),pb(0:3),p4(0:3),p3(0:3),ptildea(0:3),ptildeij(0:3),
-     &    pipb,papb,k(0:3),Kt(0:3),bornmom(6,0:3),bornmomt(6,0:3),pipj,xija,zi,papj,papi,
+     &    pipb,papb,k(0:3),Kt(0:3),pipj,xija,zi,papj,papi,
      &    vstore(0:3,max_v)
 c
       logical ldebug
       parameter (ldebug=.false.)
 
-      double precision ptildeai(0:3),ptildek(0:3),dipole(0:3,0:3)
+      double precision ptildeai(0:3),ptildek(0:3)
      &    ,pipk,pkpa,pipa
       double precision xika,ui,xuz(2,2:max_kin),xiab,one
       parameter (one=1d0)
@@ -2402,8 +2397,6 @@ c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
-
-
 c****************************************************************************
 
 
@@ -2437,7 +2430,7 @@ c     you better put mxpt in global.inc
 c     np is the number of partons and nv is the number of decay leptons
       integer ip,kp,jp,mu,ic,ipart,nd,j
       real*8 pmom(0:3,max_p,max_kin),lmom(0:3,max_v,max_kin),xuz(2,2:max_kin)
-      real*8 p(0:3,max_p+max_v),q(0:3,max_p+max_v),xu(2),sum(0:3)
+      real*8 p(0:3,max_p+max_v),q(0:3,max_p+max_v),xu(2)
       real*8 omy,y,x,omx,z,u
       real*8 sik,sjk,sij
 
@@ -2445,7 +2438,7 @@ c     np is the number of partons and nv is the number of decay leptons
       external dotrr
 
       real*8 k(0:3),kt(0:3),ks(0:3)
-      real*8 kDk,ksDks,pDks,pDk,vDks,vDk
+      real*8 kDk,ksDks,pDks,pDk
       real*8 one,two            !these can be put into global
       parameter(one=1.0d0,two=2.0d0)
       logical ldebug,ldebug1
@@ -2842,7 +2835,7 @@ c       Terrance Figy
 c       Initial version:  April 2008
 c       Last modified: April 2008
 c 
-      integer mu,a,i,j,N,ii,jj
+      integer mu,i,j,N,ii
 #include "global.inc"
       real*8 p(0:3,max_p,max_kin),xuz(1:2,2:max_kin),v(0:3,max_v,max_kin)
 c
@@ -3005,7 +2998,6 @@ c
       end
 
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-
 
 
 c  Real 
@@ -3296,7 +3288,7 @@ c
       integer i,j               ! emitter and spectator 
       integer ii,aa,bb,num,mu
       double precision mompart(0:3,1:8),momphtn(0:3)
-      double precision k(0:3),p(0:3,1:8),ptilde(0:3,1:8)
+      double precision k(0:3),p(0:3,1:8)
       double precision xuz(1:2)
       double precision gsub
       double precision piDk,yy,zz

@@ -67,10 +67,8 @@ c leptonic tensors
            call vto4l_mg2_had(v,h,azz,zzztens)
 
 
-
          call qqzzqq(pbar,sign, nlo, 1,bos,
      1                    uucc2,uuss2,ddcc2,ddss2,udsc2,ducs2)
-
 
 
            ! for AA,AZ,ZA,ZZ -> e+ e- mu+ mu- :
@@ -100,7 +98,6 @@ c leptonic tensors
            call vto4l_had(v,h,azz,zzztens)
 
 
-
          do mu = 0,3
           do nu = 0,3
            mg2_tens_2d_1(mu,nu) = dcmplx(0.,0.)
@@ -115,7 +112,6 @@ c leptonic tensors
            mg2_tens_1d(i) = dcmplx(0.,0.)
            mg2_tens_1d_2(i) = dcmplx(0.,0.)
          enddo
-
 
 
          print*, ""
@@ -138,7 +134,6 @@ c leptonic tensors
          print*, "tensor z to zz:", sumtest
 
 
-
 !         print*, ""
          call wwtozz_mg2_had(q12(0,j),q34(0,j),v,h,mg2_tens_2d_1(0,0))  ! q12 = W+
          sumtest = 0
@@ -150,7 +145,6 @@ c leptonic tensors
           enddo
          enddo
          print*, "tensor ww to zz 5:", sumtest
-
 
 
 !         print*, ""
@@ -199,7 +193,6 @@ c leptonic tensors
          print*, "tensor zz to zz:", sumtest
 
 
-
 !         print*, ""
          call VVtoll_mg2_had(1,1,h,q12(0,j),v,mg2_tens_2d_1(0,0),mg2_tens_2d_2(0,0),mg2_tens_2d_3(0,0),mg2_tens_2d_4(0,0))     !emit V on lower
          sumtest = 0
@@ -246,7 +239,6 @@ c leptonic tensors
          print*, "tensor zz to z:", sumtest
 
 
-
 !         print*, ""
          call WWtoll_mg2_had(1,1,h,q12(0,j),v,mg2_tens_2d_1(0,0))     !emit V on lower
          sumtest = 0
@@ -258,7 +250,6 @@ c leptonic tensors
           enddo
          enddo
          print*, "tensor ww to z:", sumtest
-
 
 
          print*, ""
@@ -276,13 +267,6 @@ c leptonic tensors
 
 
       end
-
-
-
-
-
-
-
 
 
       subroutine wwtozz_mg2_had(q1,q2,P,h,ww)
@@ -669,7 +653,6 @@ C ----------
      &             +AMP(  46)+AMP(  47)+AMP(  48)+AMP(  49)+AMP(  50)
 
 
-
       endif
 
             ENDDO
@@ -703,9 +686,8 @@ c ------------------------------------------------------------
 
 	
 	call WWtoLL1_mg2_had(idb,idl,Q,v,lsign(1,i),wll(0,0))
-	
-	
-		
+
+
 	end
 		
 c ------------------------------------------------------------	
@@ -822,8 +804,6 @@ C ----------
       wll(mu,nu) = +AMP(   1)+AMP(   2)+AMP(   3)
 
 
-
- 
       if (Ztouu .and. idl.eq.1) then
 
 
@@ -852,7 +832,6 @@ C ----------
       wll(MU,NU) = +AMP(   1)+AMP(   2)+AMP(   3)
 
 
-
       endif
          
 	 enddo !nu
@@ -860,9 +839,8 @@ C ----------
 
       end
       
-c ------------------------------------------------------------	
-       
-       
+c ------------------------------------------------------------
+
 
 c ------------------------------------------------------------	
 
@@ -1057,7 +1035,6 @@ C ----------
      &             +AMP(  36)+AMP(  37)+AMP(  38)+AMP(  39)+AMP(  40)
 
 
-
       elseif (Ztodd) then
 
 
@@ -1162,9 +1139,6 @@ C ----------
      &             +AMP(  31)+AMP(  32)+AMP(  33)+AMP(  34)+AMP(  35)
      &             +AMP(  36)+AMP(  37)+AMP(  38)+AMP(  39)+AMP(  40)
 
-
-
-      
 
       endif
 
@@ -1341,9 +1315,6 @@ C ----------
      &             +AMP(  36)+AMP(  37)+AMP(  38)+AMP(  39)+AMP(  40)
 
 
-      
-      
-
       elseif (Ztodd) then
 
 
@@ -1448,9 +1419,6 @@ C ----------
      &             +AMP(  31)+AMP(  32)+AMP(  33)+AMP(  34)+AMP(  35)
      &             +AMP(  36)+AMP(  37)+AMP(  38)+AMP(  39)+AMP(  40)
 
-
-
-      
 
       endif
 	
@@ -1643,9 +1611,6 @@ C ----------
      &             +AMP(  41)+AMP(  42)+AMP(  43)
 
 
-      
-      
-
       elseif (Ztodd) then
 
 
@@ -1766,9 +1731,6 @@ C ----------
      &             +AMP(  36)+AMP(  37)+AMP(  38)+AMP(  39)+AMP(  40)
      &             +AMP(  41)+AMP(  42)+AMP(  43)
 
-
-
-      
 
       endif
  
@@ -1925,11 +1887,7 @@ C ----------
       aa(mu,nu) = +AMP(   1)+AMP(   2)
 
 
-
-
-
       if (Ztouu .and. idl.eq.1) then
-
 
 
       CALL FVIXXX(W(1,3   ),W(1,2   ),GAU ,ZERO    ,ZERO    ,W(1,5   ))    
@@ -1947,12 +1905,9 @@ C ----------
       aa(mu,nu) = +AMP(   1)+AMP(   2)
 
 
-
       endif
 
 
-
-        
 	 enddo !nu
       enddo !mu
 
@@ -2069,12 +2024,7 @@ C ----------
       az(mu,nu) = +AMP(   1)+AMP(   2)
 
 
-
-
-
-
       if (Ztouu .and. idl.eq.1) then
-
 
 
       CALL FVIXXX(W(1,3   ),W(1,2   ),GZU ,ZERO    ,ZERO    ,W(1,5   ))    
@@ -2088,7 +2038,6 @@ C ----------
       elseif (Ztodd .and. idl.eq.1) then
 
 
-
       CALL FVIXXX(W(1,3   ),W(1,2   ),GZD ,ZERO    ,ZERO    ,W(1,5   ))    
       CALL IOVXXX(W(1,5   ),W(1,4   ),W(1,1   ),GAD ,AMP(1   ))            
       CALL FVIXXX(W(1,3   ),W(1,1   ),GAD ,ZERO    ,ZERO    ,W(1,6   ))    
@@ -2100,10 +2049,6 @@ C ----------
       endif
 
 
-
-
-
-         
 	 enddo !nu
       enddo !mu
 
@@ -2220,12 +2165,6 @@ C ----------
       za(mu,nu) = +AMP(   1)+AMP(   2)
 
 
-
-
-
-
-
-
       if (Ztouu .and. idl.eq.1) then
 
 
@@ -2251,14 +2190,10 @@ C ----------
       endif
 
 
-
-
- 
  	 enddo !nu
       enddo !mu
 
       end
-
 
 
 c ------------------------------------------------------------	
@@ -2372,12 +2307,6 @@ C ----------
       zz(mu,nu) = +AMP(   1)+AMP(   2)
 
 
-
-
-
-
-
-
       if (Ztouu .and. idl.eq.1) then
 
 
@@ -2394,8 +2323,7 @@ C ----------
       CALL FVIXXX(W(1,3   ),W(1,2   ),GZD ,ZERO    ,ZERO    ,W(1,5   ))    
       CALL IOVXXX(W(1,5   ),W(1,4   ),W(1,1   ),GZD ,AMP(1   ))            
       CALL FVIXXX(W(1,3   ),W(1,1   ),GZD ,ZERO    ,ZERO    ,W(1,6   ))    
-      CALL IOVXXX(W(1,6   ),W(1,4   ),W(1,2   ),GZD ,AMP(2   ))            
-
+      CALL IOVXXX(W(1,6   ),W(1,4   ),W(1,2   ),GZD ,AMP(2   ))
 
 
       zz(mu,nu) = +AMP(   1)+AMP(   2)
@@ -2403,13 +2331,6 @@ C ----------
       endif
 
 
-
-
-
-
-
-
-        
 	 enddo !nu
       enddo !mu
 
@@ -2527,9 +2448,6 @@ c
      &             +AMP(   6)+AMP(   7)+AMP(   8)
 
 
-      
-      
-
       elseif (Ztodd) then
 
 
@@ -2555,9 +2473,6 @@ c
       Z(MU) = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
      &             +AMP(   6)+AMP(   7)+AMP(   8)
 
-
-
-      
 
       endif
 
@@ -2658,9 +2573,6 @@ c
      &             +AMP(   6)+AMP(   7)+AMP(   8)
 
 
-      
-      
-
       elseif (Ztodd) then
 
 
@@ -2687,9 +2599,6 @@ c
      &             +AMP(   6)+AMP(   7)+AMP(   8)
 
 
-
-      
-
       endif
      
       enddo   
@@ -2699,6 +2608,6 @@ c
 
       return
       END
-      
+
 
 

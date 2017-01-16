@@ -7,6 +7,7 @@ c       Initial version: June 2006
 c       Last modified: September 2012
 
       SUBROUTINE DEF_PS_QQVVVj(bos1,bos2,bos3)
+          use globalvars, only: ldoblha
 
       IMPLICIT NONE
 
@@ -14,8 +15,6 @@ c       Last modified: September 2012
 #include "VBFNLO/utilities/cuts.inc"
       INTEGER bos(3), i, bos1, bos2, bos3
       common /pswwzbos/bos
-
-c set up variables in common block BLIPSI for call of LIPSVVVJ
 
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTJMIN
       DOUBLE PRECISION RM2MINX, RM2MAXX, M2MIN, RM2MINY, RM2MAXY
@@ -126,7 +125,7 @@ c
       DOUBLE PRECISION TPI
       PARAMETER (nrandl=18, TPI=2D0*PI )
       DOUBLE PRECISION RD(nrandl),RN
-      DOUBLE PRECISION K1(0:3), K2(0:3), V(0:3,6), X1, X2, W, K(0:3)
+      DOUBLE PRECISION K1(0:3), K2(0:3), V(0:3,6), X1, X2, W
       DOUBLE PRECISION Pjet(0:3)
 
 C Phase space generator for the production of 3 bosons (+ 1 jet)
@@ -152,9 +151,6 @@ C
       INTEGER bos(3)
       common /pswwzbos/bos
 
-C  INPUT INFORMATION on the phase space region is transferred via the
-C    common block /BLIPSI/
-
       DOUBLE PRECISION RM2, RMG, RM2MIN, RM2MAX, S, PTC
       DOUBLE PRECISION RM2MINX, RM2MAXX, RM2MINY, RM2MAXY, M2MIN
       DOUBLE PRECISION RM2MAX1, RM2MAX2
@@ -173,11 +169,11 @@ C   PTJMIN         minimal PT value of the jet
 
 C  local variables
 
-      INTEGER I, J, II, JJ, MU, ic
+      INTEGER MU
 
-      DOUBLE PRECISION Y, PT
+      DOUBLE PRECISION Y
       DOUBLE PRECISION test, q(0:4,3), pX(0:4), pY(0:4)
-      DOUBLE PRECISION C, m2, mw
+
 
       DOUBLE PRECISION xxwidth, xxm, xywidth, xym
       DOUBLE PRECISION dotrr

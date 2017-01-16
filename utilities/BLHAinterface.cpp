@@ -1,9 +1,11 @@
 /*
- * Public Interface for the Binoth Les Houches Accord
+ * Public Interface for the Binoth Les Houches Accord 
  *
  * Author: Michael Rauch <michael.rauch@kit.edu>
  * Initial version: Nov 2013
  * Last modified: Dec 2013
+ *
+ * at the moment: BLHA2
  *
  */
 

@@ -25,7 +25,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=3,6) / -1, -1, -1, -1/  !h=1
@@ -171,7 +171,7 @@ c ------------------------------------------------------------
 
       REAL*8 Q1(0:3), Q2(0:3), P(0:3,3:6)
       complex*16 ww(0:3,0:3)
-      integer lsign(3:6,4),ll,mu,nu,h
+      integer lsign(3:6,4),ll,h
       
 
 	! possible lepton helicities: (not used in code, definition of h should be changed when using this)
@@ -293,9 +293,9 @@ c ------------------------------------------------------------
       complex*16 aa(0:3,0:3)
       complex*16 az(0:3,0:3)
       complex*16 za(0:3,0:3)
-      complex*16 za_o(0:3,0:3)
+
       complex*16 zz(0:3,0:3)
-      integer lsign(3:6,4),h,ll,mu,nu
+      integer lsign(3:6,4),h,ll
 
 	! possible lepton helicities:
 	data (lsign(ll,1),ll=3,6) / -1, -1, -1, -1/
@@ -404,7 +404,6 @@ C     Amplitude(s) for diagram number 6
       ENDDO
 
       END
-
 
 
       subroutine AZtoZA1(q1,q2,P,lsign,az)
@@ -656,7 +655,7 @@ C
 C     
 C     LOCAL VARIABLES 
 C     
-      INTEGER I,MU,NU
+      INTEGER I,MU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(18,NWAVEFUNCS)
 C     
@@ -738,7 +737,7 @@ C
 C     
 C     LOCAL VARIABLES 
 C     
-      INTEGER I,MU,NU
+      INTEGER I,MU
       COMPLEX*16 AMP(NGRAPHS)
       COMPLEX*16 W(18,NWAVEFUNCS)
 C     
@@ -772,8 +771,6 @@ c        CALL VXXXXX(P(0,4),ZERO,NHEL(4),+1*IC(4),W(1,4))
       endif
 
 
-
-
       CALL VCARTX(Q(0),ZERO,AWIDTH, MU,-1,W(1,1))
 
       CALL FVIXXX(W(1,2),W(1,4),GAL,ZERO,ZERO,W(1,5))
@@ -794,5 +791,5 @@ c fc added new
       return
       END
 
-        
+
 

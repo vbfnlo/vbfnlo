@@ -16,7 +16,7 @@ c----------------------------------------------------------------
       logical hswitchww,hswitchwz,hswitchzz,hswitch
       logical hswitchwww,hswitchwwz,hswitchzzw, hswitchzzz
 	logical mhlmswitch
-  
+
       common /COUPL_KK/ w1mass_k,z1mass_k,z1width_k,w1width_k,
      &                 a1mass_k,a1width_k,h1mass_k,h1width_k,
      &                 gwwww_k,gwwzz_k,
@@ -25,7 +25,7 @@ c----------------------------------------------------------------
      &                 gwwh_k,gzzh_k,
      &                 kkhz,kkha,kkhw,kkhh,
      &                 hswitchww,hswitchwz,hswitchzz,hswitch,
-     &		     hswitchwww,hswitchwwz,hswitchzzw,hswitchzzz,
-     &		     mhlmswitch
+     &               hswitchwww,hswitchwwz,hswitchzzw,hswitchzzz,
+     &               mhlmswitch
      
 	
