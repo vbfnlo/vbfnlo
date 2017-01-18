@@ -31,7 +31,8 @@ c Alpha Parameter can be set with       entry CSGeneralSetAlpha(alpha_dip)
       real*8 p2,dotrr,factor(-1:2),CF,CA,TR,x,omx,z,omz,born(-1:2,Nres),hVec(0:3),pipj,pipk,pjpk,hReal,dotrrQ
       real*8 alpha/1d0/, alpha_dip
       save alpha
-      complex*16 dotcc,dotcr,dotrc,epsMu(0:3,-1:2)
+      complex*16 dotcc,dotcr,dotrc
+      real*8 epsMu(0:3,-1:2)
       external dotrr,dotcc,dotcr,dotrc,dotrrQ
       parameter (CF = 4d0/3d0,CA=3d0,TR=0.5d0)
       

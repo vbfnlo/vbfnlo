@@ -59,3 +59,8 @@ HexBoxCross2tempFF6.F\
 HexBoxCross2tempFF7.F\
 HexBoxCross2tempFF8.F\
 HexBoxCross2tempFF9.F
+
+$(top_builddir)/include/%.mod: libDiagramsAQCross_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

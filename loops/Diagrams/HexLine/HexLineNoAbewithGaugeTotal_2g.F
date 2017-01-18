@@ -211,7 +211,7 @@ c gauge test of Hexagon using Pentagon: result_gaugeHex(1,1) and (1,2) should be
        Real*8 musqIn,musq
        Common/musqInv/musq
        Complex*16 result_graph(3),result_color(2)
-       real*8 resultgauge,pengauge
+       real*8 resultgauge,pengauge(2)
        Integer Div,Gauge
         musq=musqIn
 
@@ -223,8 +223,8 @@ c gauge test of Hexagon using Pentagon: result_gaugeHex(1,1) and (1,2) should be
       if(gauge.eq.1.or.gauge.eq.3) then
 	call NoAbe2gaPenLineTotal(p1,p23,p4,p5,p6,barpsi_p4,psi_p1,mup3,mup5,mup6,
      &             alpha,musq,2,0,1,result_graph(1),result_color(1),pengauge,div,1)
-	if(pengauge.gt.GaugeAccuracyHexLnA) then
-	  resultgauge = pengauge
+	if(pengauge(1).gt.GaugeAccuracyHexLnA) then
+	  resultgauge = pengauge(1)
 	  return
 	endif
 	resultgauge = abs(-result_color(1)/result_gaugeHex(1,1)-1d0)
@@ -234,8 +234,8 @@ c gauge test of Hexagon using Pentagon: result_gaugeHex(1,1) and (1,2) should be
       if(gauge.eq.2.or.gauge.eq.3) then
 	call NoAbe2gaPenLineTotal(p1,p23,p4,p5,p6,barpsi_p4,psi_p1,mup2,mup5,mup6,
      &             alpha,musq,2,0,1,result_graph(1),result_color(1),pengauge,div,1)
-	if(pengauge.gt.GaugeAccuracyHexLnA) then
-	  resultgauge = pengauge
+	if(pengauge(1).gt.GaugeAccuracyHexLnA) then
+	  resultgauge = pengauge(1)
 	  return
 	endif
 	resultgauge = max(abs(result_color(1)/result_gaugeHex(1,2)-1d0),resultgauge)

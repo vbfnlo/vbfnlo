@@ -475,7 +475,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       wardb=.false.
 
        call boxlineNoABEmm_QUAD(p1,pp23,p4,p5,barpsi_p4,psi_p1,mup3,mup5,
-     - alpha,musq,7,1,resultBoxNoAbeG,resultbtemp)
+     - alpha,musq,7,1,resultBoxNoAbeG,resultbtemp(1))
 
       resultBoxNoAbe1=resultbtemp(1)
 
@@ -489,7 +489,7 @@ cfc      Print*, "Dble"
 cfc      Print*,"resultgauge(1)",resultBoxNoAbeG(1)
 
       call boxlineNoABEmm_QUAD(p1,pp23,p4,p5,barpsi_p4,psi_p1,mup3,mup5test,
-     - alpha,musq,3,-1,resultbtemp,resultBoxNoAbeG)
+     - alpha,musq,3,-1,resultbtemp,resultBoxNoAbeG(1))
 
       resultBoxNoAbeG(1)=resultBoxNoAbeG(1)
 
@@ -525,7 +525,7 @@ c test NAN
 
       if (wardb) then
       call boxlineNoABEmm_QUAD(p1,pp23,p4,p5,barpsi_p4,psi_p1,mup2,mup5,
-     - alpha,musq,7,1,resultBoxNoAbeG,resultbtemp)
+     - alpha,musq,7,1,resultBoxNoAbeG,resultbtemp(1))
 
       resultBoxNoAbe2=resultbtemp(1)
 
@@ -909,7 +909,7 @@ c pen's 2 for contraction 2,3
 ccccccccccccccccccccccccccccc
 ccccccccccccccccccccccccccccc      
       call penlineNoAbemmm_QUAD(p1,p2,p34,p5,p6,barpsi_p5,psi_p1,mup2,mup3,mup6,
-     - alpha,musq,4,1,resultgauge,resultpTEMP)
+     - alpha,musq,4,1,resultgauge,resultpTEMP(1))
       RESULT3=resultptemp(1)
       call pentNoAbe_gauge_QUAD(Accuracymy1,p1,p2,p34,p5,p6,barpsi_p5,psi_p1,
      -  mup2,mup3,mup6,alpha,musq,
@@ -918,7 +918,7 @@ ccccccccccccccccccccccccccccc
 c       WardP=WardP1
 c      if (WardP) then
       call penlineNoAbemmm_QUAD(p1,p2,p34,p5,p6,barpsi_p5,psi_p1,mup2,mup4,mup6,
-     -  alpha,musq,9,-1,resultgauge,resultptemp)
+     -  alpha,musq,9,-1,resultgauge,resultptemp(1))
       result4=resultptemp(1)
 
       endif ! If gauge
@@ -944,7 +944,7 @@ c pen's 1 for contraction 1,2
 ccccccccccccccccccccccccccccc
 ccccccccccccccccccccccccccccc      
       call penlineNoAbemmm_QUAD(p1,p23,p4,p5,p6,barpsi_p5,psi_p1,mup2,mup4,mup6,
-     - alpha,musq,4,1,resultgauge,resultptemp)
+     - alpha,musq,4,1,resultgauge,resultptemp(1))
        result5=resultptemp(1)
       call pentNoAbe_gauge_QUAD(Accuracymy1,p1,p23,p4,p5,p6,barpsi_p5,psi_p1,
      -  mup2,mup4,mup6,alpha,musq,
@@ -953,7 +953,7 @@ ccccccccccccccccccccccccccccc
       WardP=WardP1
 c      if (WardP) then
       call penlineNoAbemmm_QUAD(p1,p23,p4,p5,p6,barpsi_p5,psi_p1,mup3,mup4,mup6,
-     - alpha,musq,9,-1,resultgauge,resultptemp)
+     - alpha,musq,9,-1,resultgauge,resultptemp(1))
        result6=resultptemp(1)
 
        endif ! If gauge

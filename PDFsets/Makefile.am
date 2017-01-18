@@ -17,3 +17,8 @@ dist_pdfdata_DATA = $(PDFTABLES)
 
 
 libVBFNLOPDFsets_la_FFLAGS = $(AM_FFLAGS)
+
+$(top_builddir)/include/%.mod: libVBFNLOPDFsets_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

@@ -24,3 +24,8 @@ libTIB_la_FFLAGS += -DWITH_QUAD
 libTIB_la_SOURCES += \
 tensor_redux_BijLUde_R3_G_QUAD.F
 endif
+
+$(top_builddir)/include/%.mod: libTIB_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

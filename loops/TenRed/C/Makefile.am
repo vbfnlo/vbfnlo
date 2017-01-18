@@ -36,3 +36,8 @@ tensor_redux_Cij_new_Re_Com_QUAD.F \
 tensor_redux_CijLUdeRank4_G_QUAD.F
 
 endif
+
+$(top_builddir)/include/%.mod: libTIC_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

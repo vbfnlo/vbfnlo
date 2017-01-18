@@ -507,7 +507,7 @@ C	****** ONLY MM2 AND MM3 ARE ZERO ******
      *	            CMPLX(1Q0,0Q0,16))
 	IF( IMAG(R(I,J)).EQ.0Q0 ) THEN
 	   RS(I,J)=SQE_QUAD(CMPLX(1Q0,0Q0,16),CMPLX(-K(I,J),EPS,16),
-     *	               CMPLX(1Q0,0Q0),16)
+     *	               CMPLX(1Q0,0Q0,16))
 	ELSE
 	   RS(I,J)=R(I,J)
 	ENDIF

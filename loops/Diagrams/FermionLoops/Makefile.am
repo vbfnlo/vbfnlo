@@ -207,3 +207,8 @@ FermionBoxEventempCoupling_QUAD.F\
 FermionBoxOddtempCoupling_QUAD.F
 
 endif
+
+$(top_builddir)/include/%.mod: libDiagramsFloops_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

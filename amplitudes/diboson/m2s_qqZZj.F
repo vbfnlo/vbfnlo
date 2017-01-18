@@ -41,8 +41,8 @@ c  helicity selection
       INTEGER h
       COMMON /hcount / h
 
-      COMPLEX*16 zero
-      PARAMETER (zero=(0d0,0d0))
+      DOUBLE PRECISION zero
+      PARAMETER (zero=0d0)
 
 c declare external functions
       integer FL_VVg
@@ -381,7 +381,7 @@ c   physToDiag(ext.momentum label) = Feynman diagram label
       gsign    = 1          !outgoing gluon
 
       call qq_ZZj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     &             pdf,res,nmin,nmax)
+     &             pdf,res,nmin,nmax,ps_number)
 
 C*******************  qbar1 q1 ---> Z Z g   **********************
 
@@ -394,7 +394,7 @@ C*******************  qbar1 q1 ---> Z Z g   **********************
       gsign    = 1
 
       call qq_ZZj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     &             pdf,res,nmin,nmax)
+     &             pdf,res,nmin,nmax,ps_number)
 
 C*******************  g q1 ---> Z Z q1  **********************************
 
@@ -407,7 +407,7 @@ C*******************  g q1 ---> Z Z q1  **********************************
       gsign    = -1
 
       call qq_ZZj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 C*******************  qbar1 g ---> Z Z qbar1   **********************
 
@@ -420,7 +420,7 @@ C*******************  qbar1 g ---> Z Z qbar1   **********************
       gsign    = -1
 
       call qq_ZZj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 C*******************  g q1bar ---> Z Z q1bar  **********************
 
@@ -433,7 +433,7 @@ C*******************  g q1bar ---> Z Z q1bar  **********************
       gsign    = -1
 
       call qq_ZZj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 C*******************  q1 g ---> Z Z q1   **********************
 
@@ -446,7 +446,7 @@ C*******************  q1 g ---> Z Z q1   **********************
       gsign    = -1
 
       call qq_ZZj(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
-     1             pdf,res,nmin,nmax)
+     1             pdf,res,nmin,nmax,ps_number)
 
 
 c***  end of extra process evaluation for hadronic decay  ***

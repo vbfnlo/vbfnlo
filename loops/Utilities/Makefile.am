@@ -26,3 +26,8 @@ libUtilities_la_SOURCES += \
 GaugeTest_QUAD.F
 endif
 endif
+
+$(top_builddir)/include/%.mod: libUtilities_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

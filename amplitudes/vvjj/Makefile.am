@@ -126,3 +126,7 @@ if WITH_MADGRAPH
 libvbf_la_FFLAGS += -DWITH_MADGRAPH
 endif
 
+$(top_builddir)/include/%.mod: libvbf_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

@@ -88,4 +88,4 @@ dist_pkgdata_DATA = $(INPUTFILES)
 printinputfiles:
 	@echo $(INPUTFILES)
 
-
+include $(top_srcdir)/Makefile.dependencylist

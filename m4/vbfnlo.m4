@@ -406,10 +406,12 @@ if test "x$with_hepmc" != "xyes"; then
 		HEPMCLIBS="-L$with_hepmc/lib -Wl,-rpath,$with_hepmc/lib -lHepMC"
 		HEPMCLDFLAGS="-L$with_hepmc/lib -Wl,-rpath,$with_hepmc/lib"
 	fi
+        HEPMC_DIR="$with_hepmc"
 	HEPMCINCLUDE="-I$with_hepmc/include"
 else
 	HEPMCLIBS="-lHepMC"
 	HEPMCLDFLAGS=""
+	HEPMC_DIR=""
 	HEPMCINCLUDE=""
 fi
 AC_LANG_PUSH([C++])
@@ -432,6 +434,7 @@ LDFLAGS=$oldLDFLAGS
 CPPFLAGS=$oldCPPFLAGS
 AC_LANG_POP([C++])
 fi
+AC_SUBST(HEPMC_DIR)
 AC_SUBST(HEPMCLIBS)
 AC_SUBST(HEPMCLDFLAGS)
 AC_SUBST(HEPMCINCLUDE)
@@ -748,8 +751,12 @@ AM_CONDITIONAL(VBFNLO_DEBUG,[test "x$enable_debug" = "xyes"])
 
 
 if test "x$enable_debug" == "xyes" ; then
-  AM_FCFLAGS="$AM_FCFLAGS -Wall -Wextra"
-  AM_CPPFLAGS="$AM_CPPFLAGS -Wall -Wextra"
+  if (test "x$VBFFC" = "xgfortran"); then
+    AM_FCFLAGS="$AM_FCFLAGS -Wall -Wextra"
+  elif (test "x$VBFFC" = "xifort"); then
+    AM_FCFLAGS="$AM_FCFLAGS -warn"
+  fi
+  AM_CFLAGS="$AM_CFLAGS -Wall -Wextra"
   AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wextra"
 fi
   AM_FCFLAGS="$AM_FCFLAGS -g -I\$(top_builddir)/include -O2"
@@ -758,6 +765,7 @@ fi
   AM_LDFLAGS="$AM_LDFLAGS $LDFLAGS $ROOTLDFLAGS $GSLLDFLAGS $LHAPDF_LDFLAGS $HEPMCLDFLAGS $LOOPTOOLS_LDFLAGS $FEYNHIGGS_LDFLAGS" 
 
   AC_SUBST(AM_CPPFLAGS)
+  AC_SUBST(AM_CFLAGS)
   AC_SUBST(AM_CXXFLAGS)
   AC_SUBST(AM_FCFLAGS)
   AC_SUBST(AM_LDFLAGS)

@@ -209,3 +209,8 @@ mg2_dguenuaa.F
 endif
 
 endif
+
+$(top_builddir)/include/%.mod: libtriboson_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

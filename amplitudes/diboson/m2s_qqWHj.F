@@ -44,8 +44,8 @@ c  helicity selection
 
 c  helicity selection
 
-      complex*16 zero
-      parameter (zero=(0d0,0d0))
+      DOUBLE PRECISION zero
+      PARAMETER (zero=0d0)
 
 c declare external functions
 

@@ -32,6 +32,6 @@ subroutine printtime(prefix)
   call date_and_time(ZONE=zone,VALUES=values)
   print '(a11,i4,"-",i0.2,"-",i0.2,"T",i0.2,":",i0.2,":",i0.2,a5)', &
        prefix, values(1:3),            values(5:7),           zone
-end
+end subroutine
 
 endmodule

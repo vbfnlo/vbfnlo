@@ -74,3 +74,8 @@ endif
 #libqcdwz_la_FFLAGS+= -DWITH_LT
 #libqcdwz_la_LIBADD = $(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS)
 #endif
+
+$(top_builddir)/include/%.mod: libqcdwz_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

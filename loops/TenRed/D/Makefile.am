@@ -79,3 +79,7 @@ tensor_redux_DijLUde_Rank5321_G_QUAD.F \
 XBoxGetM1M3_QUAD.F
 endif
 
+$(top_builddir)/include/%.mod: libTID_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

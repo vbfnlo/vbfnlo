@@ -24,3 +24,7 @@ uzzxxx_tripn.F
 
 libSpin2_la_FFLAGS = $(AM_FFLAGS)
 
+$(top_builddir)/include/%.mod: libSpin2_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

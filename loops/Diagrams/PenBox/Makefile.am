@@ -30,3 +30,7 @@ Cross/PenBoxCrosstemp77.F\
 Cross/PenBoxCrosstempFF2.F
 
 
+$(top_builddir)/include/%.mod: libDiagramsPenBox_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

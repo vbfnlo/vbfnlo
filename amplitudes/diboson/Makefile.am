@@ -114,3 +114,8 @@ endif
 if WITH_KK
 libdiboson_la_FFLAGS += -DWITH_KK
 endif
+
+$(top_builddir)/include/%.mod: libdiboson_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

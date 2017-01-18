@@ -43,8 +43,8 @@ c  helicity selection
       INTEGER h, it 
       COMMON /hcount / h
 
-      complex*16 zero
-      parameter (zero=(0d0,0d0))
+      double precision zero
+      parameter (zero=0d0)
 
 c declare external functions
 

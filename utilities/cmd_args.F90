@@ -56,7 +56,7 @@ module cmd_args
          enddo
       endif
 
-      END
+      END subroutine
 
 !*************************************************************************  
       function VBFNLOCapabilities(option)

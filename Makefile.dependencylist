@@ -1,0 +1,25 @@
+-include $(srcdir)/Makefile.dep
+
+dependencylist-local:
+	@case "$(top_srcdir)" in \
+	  /*) \
+	    for i in $(DEPDIR)/*.Po $(DEPDIR)/*.Plo; do \
+	      if test -e $$i ; then \
+	        echo "# --- $$i ---"; \
+	        cat $$i | \
+	          sed 's#$(top_srcdir)#$$(top_srcdir)#' | \
+	          sed 's#$(FEYNHIGGS_DIR)#$$(FEYNHIGGS_DIR)#' | \
+	          sed 's#$(HEPMC_DIR)#$$(HEPMC_DIR)#' | \
+	          sed 's#$(LHAPDF_DIR)#$$(LHAPDF_DIR)#' | \
+	          sed 's#$(LOOPTOOLS_DIR)#$$(LOOPTOOLS_DIR)#' | \
+	          sed 's#$(ROOTPATH)#$$(ROOTPATH)#'; \
+	        echo; \
+	      fi; \
+	    done > $(srcdir)/Makefile.dep; \
+	    ;; \
+	  *) \
+	    echo "Error: Use absolute path to configure" >&2; \
+	    exit 1; \
+	    ;; \
+	esac
+

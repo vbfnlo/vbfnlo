@@ -19,3 +19,7 @@ ggf_Hpen_a.F \
 ggf_Hpen_b.F \
 ggf_Hpen_c.F
 
+$(top_builddir)/include/%.mod: libggf_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

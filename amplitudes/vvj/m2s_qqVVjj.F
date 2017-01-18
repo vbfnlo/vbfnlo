@@ -39,9 +39,9 @@ c declare input/output variables
       logical lok(max_kin)
 
       double precision N
-      complex*16 zero
       parameter(N=3d0)
-      parameter (zero=(0d0,0d0))
+      DOUBLE PRECISION zero
+      PARAMETER (zero=0d0)
 
 c declare external functions
 

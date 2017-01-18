@@ -1,11 +1,11 @@
 # VBFNLO
 
 * Version: 3.0.0 beta 3
-* Release date:  16 January 2017
+* Release date:  18 January 2017
 
 ---
 
-* arXiv:1107.4038, arXiv:1207.4975, arXiv:1404.3940
+* [arXiv:1107.4038], [arXiv:1207.4975], [arXiv:1404.3940]
 * http://www.itp.kit.edu/vbfnlo
 * vbfnlo@itp.kit.edu
 
@@ -33,6 +33,7 @@ and running VBFNLO, is available in the doc/Manual.pdf file.
 
 ## Installation
 
+* `autoreconf -vi` (only needed for git checkouts)
 * `./configure --OPTIONS` see below
 * `make`
 * `make install`
@@ -63,6 +64,7 @@ The main options are:
                           Default: all_except_hexagons
 
 * `--enable-kk`: enable simulation of Kaluza-Klein resonances
+* `--enable-MPI`: use MPI parallelization
 * `--disable-NLO`: disable next-to-leading order QCD
 * `--enable-madgraph`: include code for MadGraph comparisons
 * `--enable-quad`: enable quad precision for difficult phase space points
@@ -75,3 +77,15 @@ Optional Packages:
 * `--with-hepmc=DIR`: location of HepMC installation
 * `--with-gsl=DIR`: location of gsl installation, default=system lib path
 
+## Bug reports
+Please report any problems to vbfnlo@itp.kit.edu
+with a short report including the `configure` options used to build
+VBFNLO, as well as the versions of compilers and external libraries
+used.
+
+You can also open issues in github: https://github.com/vbfnlo/vbfnlo/issues
+
+
+[arXiv:1107.4038]: https://arxiv.org/abs/1107.4038
+[arXiv:1207.4975]: https://arxiv.org/abs/1207.4975
+[arXiv:1404.3940]: https://arxiv.org/abs/1404.3940

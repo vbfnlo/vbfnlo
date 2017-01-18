@@ -59,3 +59,8 @@ HexBox2tempFF6.F\
 HexBox2tempFF7.F\
 HexBox2tempFF8.F\
 HexBox2tempFF9.F
+
+$(top_builddir)/include/%.mod: libDiagramsAQDire_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

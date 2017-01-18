@@ -3903,12 +3903,13 @@ c (LEPTONS = 99 in vbfnlo.dat) has been chosen
 #include "VBFNLO/utilities/process.inc"
 #include "VBFNLO/utilities/global.inc"
 
-      double precision rn
+      double precision rn, RandomNumber
       integer i
+      external RandomNumber
 
       ! default leptons are always first generation!
       do i = 1, N_lepton, 2
-         call ranmar(rn)
+         rn = RandomNumber()
          finallep(i)   = sign(abs(finallep_default(i)  ) + 2*int(rn*lepgens), finallep_default(i)  )
          finallep(i+1) = sign(abs(finallep_default(i+1)) + 2*int(rn*lepgens), finallep_default(i+1))
       enddo

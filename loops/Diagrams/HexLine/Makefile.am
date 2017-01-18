@@ -286,3 +286,8 @@ NoAbe2gaHexLinetemp_QUAD.F\
 NoAbe4vertHexLinetemp_QUAD.F\
 test_HexLineNoAbe1gtemp_QUAD.F
 endif
+
+$(top_builddir)/include/%.mod: libDiagramsHexL_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

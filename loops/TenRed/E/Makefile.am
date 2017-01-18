@@ -28,3 +28,8 @@ E0FunctionsG_QUAD.F\
 XEgetM1M3_QUAD.F\
 XEgetOddSimM1M3_QUAD.F
 endif
+
+$(top_builddir)/include/%.mod: libTIE_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

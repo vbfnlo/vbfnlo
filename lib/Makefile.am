@@ -28,3 +28,8 @@ $(top_builddir)/phasespace/libVBFNLOPhasespace.la \
 $(top_builddir)/utilities/libVBFNLOUtilities.la \
 $(top_builddir)/loops/libVBFNLOLoops.la \
 $(top_builddir)/amplitudes/libVBFNLOAmplitudes.la 
+
+$(top_builddir)/include/%.mod: libVBFNLO_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

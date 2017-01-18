@@ -106,7 +106,7 @@ c       pause
       call  hexGauge1gNoAbe(Accuracy,p1,p2,p3,p4,p5,p6,
      &            barpsi_p5,psi_p1,mup2,mup3,mup4,mup6,
      &            alpha,musq,
-     &            resultg,WardH,gauge)
+     &            resultg(1),WardH,gauge)
 
        tdble=t
 
@@ -139,7 +139,7 @@ c       print*, "WardH Dble:1g", WardH
        call  hexGauge1gNoAbe_QUAD(Accuracy,p1,p2,p3,p4,p5,p6,
      &            barpsi_p5,psi_p1,mup2,mup3,mup4,mup6,
      &            alpha,musq,
-     &            resultg_Q,WardH,gauge)
+     &            resultg_Q(1),WardH,gauge)
 
        tquad=t
 

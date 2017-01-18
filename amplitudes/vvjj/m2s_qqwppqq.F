@@ -531,9 +531,6 @@ c local variables
 
       integer i,if1,if2,k,mu
 
-** random number 
-      real*8 rn(6)
-      
       integer if1min,if2min
       double precision matrsq
       real*8 ucds ! for W+W+
@@ -541,8 +538,6 @@ c local variables
 
       LOGICAL ldebug_ltens
       PARAMETER (ldebug_ltens=.false.)
-
-      call ranmar ( rn ) 
 
       ucds = 0d0  ! for W+W+
       dsuc = 0d0 ! for W+W+

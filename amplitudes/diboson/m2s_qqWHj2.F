@@ -58,8 +58,8 @@ c     INTEGER h
 c     COMMON /hcount / h
 c     COMMON /icount / ie,iu,it
 
-      COMPLEX*16 zero
-      PARAMETER (zero=(0d0,0d0))
+      DOUBLE PRECISION zero
+      PARAMETER (zero=0d0)
 
       DOUBLE PRECISION q_sf 
       INTEGER init/0/, I,  mu 

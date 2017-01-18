@@ -96,7 +96,7 @@ contains
       endif
       usedefaults=.true.
 
-      end
+      end subroutine
 
 !*************************************************************************  
       subroutine loadfileKK(filename,show_input)
@@ -180,7 +180,7 @@ contains
       usedefaults=.true.
 
       return
-      end
+      end subroutine
 
 !*************************************************************************  
       subroutine closefile
@@ -190,7 +190,7 @@ contains
       implicit none
 
       close(iunit)
-      end
+      end subroutine
 
 !*************************************************************************  
       SUBROUTINE read_Real(key, value, default_value, dohide)
@@ -242,7 +242,7 @@ contains
       print *,""
       GOTO 10
 
-      END
+      END subroutine
 
 !*************************************************************************
       SUBROUTINE read_RealList(key,N, values, default_values, permit_ellipsis)
@@ -313,7 +313,7 @@ contains
       GOTO 10
 
       RETURN
-      END
+      END subroutine
 
 !*************************************************************************  
       SUBROUTINE read_HistList(key, values, default_values)
@@ -358,7 +358,7 @@ contains
       print *,""
       GOTO 10
 
-      END
+      END subroutine
 
 !*************************************************************************  
       SUBROUTINE read_Hist2dList(key, values, default_values)
@@ -404,7 +404,7 @@ contains
       GOTO 10
 
       RETURN
-      END
+      END subroutine
       
 !*************************************************************************  
       SUBROUTINE read_Int(key, value, default_value, dohide)
@@ -459,7 +459,7 @@ contains
       GOTO 10
 
       RETURN
-      END
+      END subroutine
 
 !*************************************************************************  
       SUBROUTINE read_IntList(key, N, values, default_values)
@@ -545,7 +545,7 @@ contains
       GOTO 10
 
       RETURN
-      END
+      END subroutine
 
 !*************************************************************************  
       SUBROUTINE read_Logical(key, value, default_value, dohide)
@@ -599,7 +599,7 @@ contains
       GOTO 10
 
       RETURN
-      END
+      END subroutine
 
 !*************************************************************************  
       SUBROUTINE read_String(key, value, default_value)
@@ -644,7 +644,7 @@ contains
       GOTO 10
 
       RETURN
-      END
+      END subroutine
 
 !*************************************************************************  
       SUBROUTINE read_StringList(key, N, values, default_values)
@@ -702,7 +702,7 @@ contains
       print *,""
       GOTO 10
 
-      END
+      END subroutine
 
 
 !*************************************************************************  
@@ -718,7 +718,7 @@ contains
         endif
       enddo
       verifyWhitespaces = .true.
-      END
+      END function
       
 !*************************************************************************
       SUBROUTINE read_cplx(key,value, default_value)
@@ -794,6 +794,6 @@ contains
       print *,""
       GOTO 10
 
-      END
+      END subroutine
 
 end module

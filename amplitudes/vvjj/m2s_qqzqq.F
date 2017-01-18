@@ -44,7 +44,8 @@ c
 
       integer bos, nlo, ps_number
 
-      real*8 xi(nx), p(0:3,max_p), v(0:3,max_v), rn, m2s
+      real*8 xi(nx), p(0:3,max_p), v(0:3,max_v), m2s
+      real*8 rn !, intent(in)
       real*8 vtemp(0:3,max_v)
 
 c  helicity selection
@@ -2418,10 +2419,8 @@ c local variables
       real*8 Qpdf(-7:7,2,3)
 
 ** random number 
-      real*8 rn
+      real*8 rn !, intent(int)
 
-
-cmr      call ranmar ( rn ) 
 
 c$$$      write(*,*)'p(1) =', p(0,1), p(1,1), p(2,1), p(3,1)
 c$$$      write(*,*)'p(2) =', p(0,2), p(1,2), p(2,2), p(3,2)
@@ -3508,7 +3507,7 @@ c
       double precision p(0:3,max_p)
       integer ap                !initial state emitter 
       double precision pdfx(-7:7,2,3),xx,zz,Qf(4),sigmaf(4),muf2
-      double precision rn ! random number between 0 and 1 for z integration
+      double precision rn ! intent(in) ! random number between 0 and 1 for z integration
 
 c     pdfx(flav_a,part_a,1) = xx * f_{a/p}(xx,muf2)
 c     pdfx(flav_a,part_a,2) = xx/zz * f_{a/p}(xx/zz,muf2)  

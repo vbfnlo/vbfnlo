@@ -75,3 +75,8 @@ SUBDIRS += Spin2
 libVBFNLOAmplitudes_la_LIBADD += Spin2/libSpin2.la
 
 libVBFNLOAmplitudes_la_LIBADD += $(top_builddir)/helas/libHELAS.la
+
+$(top_builddir)/include/%.mod: libVBFNLOAmplitudes_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

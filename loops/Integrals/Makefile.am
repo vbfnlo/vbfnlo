@@ -41,3 +41,8 @@ F0_QUAD.F\
 QUAD_poly_Re.F \
 B0C0D01MASG_QUAD.F
 endif
+
+$(top_builddir)/include/%.mod: libIntegrals_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

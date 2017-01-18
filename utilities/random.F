@@ -31,7 +31,7 @@ c set the two seeds
          seed2 = (seed - 1) / 2
       endif
 
-      call iranmr( 1, seed1, seed2 )
+      call iranmr( seed1, seed2 )
       
       END
 
@@ -47,21 +47,20 @@ c
 c	To get the values in the Marsaglia-Zaman paper, put
 c	ij = 1802, kl = 9373
 c
-      subroutine iranmr( ndim, seed1, seed2 )
+      subroutine iranmr( seed1, seed2 )
 c
       implicit none
-      integer*4 ndim, nd, seed1, seed2
+      integer*4 seed1, seed2
       integer*8 i, j, k, l, m, ij, kl, ii, jj
       double precision s, t, u(97), c, cd, cm
 c
-      common /comrmr/ u, c, cd, cm, nd
+      common /comrmr/ u, c, cd, cm
       save /comrmr/
 c
 c     data ij /1802/, kl /9373/
       ij = 1802 + seed2
       kl = 9373 + seed1
 
-      nd = ndim
       i = mod( ij / 177, 177 ) + 2
       j = mod( ij, 177 ) + 2
       k = mod( kl / 169, 178 ) + 1
@@ -99,58 +98,47 @@ c     Return a random number
 c*************************************************************************
       implicit none
 #include "global.inc"
-      real*8 R, RandomNumber
-      
+      real*8 RandomNumber
+
+      integer*8 i, j, ivec
+      integer*4 ndim
+      double precision r, uni
+      double precision u(97), c, cd, cm
+
+      common /comrmr/ u, c, cd, cm
+      save /comrmr/
+
+      data i /97/, j /33/
+
       if (lwritedata.or.lreaddata) then
         RandomNumber = 0
         return
       endif 
 
-      call ranmar( R )
+      uni = u(i) - u(j)
+      if ( uni .lt. 0.0d0 ) then
+          uni = uni + 1.0d0
+      end if
+      u(i) = uni
+      i = i - 1
+      if ( i .le. 0 ) then
+          i = 97
+      end if
+      j = j - 1
+      if ( j .le. 0 ) then
+          j = 97
+      end if
+      c = c - cd
+      if ( c .lt. 0.0d0 ) then
+          c = c + cm
+      end if
+      uni = uni - c
+      if ( uni .lt. 0.0d0 ) then
+          uni = uni + 1.0d0
+      end if
+      r = uni
 
-      RandomNumber=R
-
-      END
-
-      subroutine ranmar( rvec )
-
-      implicit none
-      integer*8 i, j, ivec
-      integer*4 ndim
-      double precision rvec(*), uni
-      double precision u(97), c, cd, cm
-
-      common /comrmr/ u, c, cd, cm, ndim
-      save /comrmr/
-
-      data i /97/, j /33/
-
-      do ivec = 1, ndim
-         uni = u(i) - u(j)
-         if ( uni .lt. 0.0d0 ) then
-            uni = uni + 1.0d0
-         end if
-         u(i) = uni
-         i = i - 1
-         if ( i .le. 0 ) then
-            i = 97
-         end if
-         j = j - 1
-         if ( j .le. 0 ) then
-            j = 97
-         end if
-         c = c - cd
-         if ( c .lt. 0.0d0 ) then
-            c = c + cm
-         end if
-         uni = uni - c
-         if ( uni .lt. 0.0d0 ) then
-            uni = uni + 1.0d0
-         end if
-         rvec(ivec) = uni
-      end do
-
-      return
-      end
+      RandomNumber = r
+      end function
 
 

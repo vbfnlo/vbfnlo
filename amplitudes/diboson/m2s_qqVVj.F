@@ -44,8 +44,8 @@ c  helicity selection
       integer jsig, jsig1, jsig3, jsig5
       common /chelsum/ jsig,jsig1,jsig3,jsig5
 
-      complex*16 zero
-      parameter (zero=(0d0,0d0))
+      DOUBLE PRECISION zero
+      PARAMETER (zero=0d0)
 
 c declare external functions
 

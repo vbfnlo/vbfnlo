@@ -57,3 +57,7 @@ if WITH_MADGRAPH
 libvvj_la_FFLAGS += -DWITH_MADGRAPH
 endif
 
+$(top_builddir)/include/%.mod: libvvj_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

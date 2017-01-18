@@ -59,3 +59,8 @@ HexBoxCross1tempFF6.F\
 HexBoxCross1tempFF7.F\
 HexBoxCross1tempFF8.F\
 HexBoxCross1tempFF9.F
+
+$(top_builddir)/include/%.mod: libDiagramsAACross_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

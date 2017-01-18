@@ -2,18 +2,18 @@ BUILT_SOURCES = done-all-links
 
 AUTOMAKE_OPTIONS = -Wno-portability
 
-DIRLINKS = $(top_srcdir)/amplitudes \
-	   $(top_srcdir)/helas \
-	   $(top_srcdir)/loops \
-           $(top_srcdir)/PDFsets \
-           $(top_srcdir)/phasespace \
-           $(top_srcdir)/utilities
+DIRLINKS = $(abs_top_srcdir)/amplitudes \
+		   $(abs_top_srcdir)/helas \
+		   $(abs_top_srcdir)/loops \
+           $(abs_top_srcdir)/PDFsets \
+           $(abs_top_srcdir)/phasespace \
+           $(abs_top_srcdir)/utilities
 
 CLEANFILES = done-all-links 
 
 done-all-links: $(DIRLINKS)
 	mkdir -p VBFNLO
-	$(LN_S) -f $(addprefix ../, $(DIRLINKS)) VBFNLO
+	$(LN_S) -f $(DIRLINKS) VBFNLO
 	touch done-all-links
 
 install-data-local:

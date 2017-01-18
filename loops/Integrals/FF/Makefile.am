@@ -463,3 +463,8 @@ clean-local:
 # 
 # EOF
 # done
+
+$(top_builddir)/include/%.mod: libFF_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

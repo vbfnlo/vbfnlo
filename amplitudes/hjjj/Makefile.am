@@ -26,5 +26,7 @@ if WITH_NLO
 libhjjj_la_FFLAGS += -DWITH_NLO
 endif
 
+$(top_builddir)/include/%.mod: libhjjj_la-%.lo
+	$(MAKE) $^
 
-
+include $(top_srcdir)/Makefile.dependencylist

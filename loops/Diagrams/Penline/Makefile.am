@@ -16,7 +16,6 @@ penlineNoAbeTotal.F\
 penlineNoAbe_parts.F\
 penlineNoAbeDiv_parts.F\
 penlineNoAbeTotal_parts.F\
-virtuals.h \
 tri_box_penta_tens_red.F \
 virtual1.F \
 virtual2.F 
@@ -61,3 +60,8 @@ penline_QUAD.F  \
 penlineABE_QUAD.F  
 endif
 endif
+
+$(top_builddir)/include/%.mod: libDiagramsPenL_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

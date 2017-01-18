@@ -37,3 +37,8 @@ jgggxx.F
 
 
 libHELAS_la_FFLAGS = $(AM_FFLAGS)
+
+$(top_builddir)/include/%.mod: libHELAS_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

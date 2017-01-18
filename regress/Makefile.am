@@ -177,7 +177,7 @@ INPUTFILES = `$(MAKE) -s --no-print-directory -C ../src printinputfiles`
 
 DIRS ?= $(ALLDIRS)
 
-all: 
+copy-input: 
 	@for d in $(DIRS); do \
 	   if [ "$(top_srcdir)" != "$(top_builddir)" ]; then \
 	     cp -r $(top_srcdir)/regress/$$d .; \
@@ -224,4 +224,4 @@ run-serial:
 printalldirs:
 	@echo $(ALLDIRS)
 
-.PHONY: run-all run-serial printalldirs
+.PHONY: copy-input run-all run-serial printalldirs

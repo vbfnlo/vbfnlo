@@ -80,3 +80,8 @@ libVBFNLOPhasespace_la_LIBADD = $(GSLLIBS)
 libVBFNLOPhasespace_la_SOURCES += \
 ps_tribos_kk.F
 endif
+
+$(top_builddir)/include/%.mod: libVBFNLOPhasespace_la-%.lo
+	$(MAKE) $^
+
+include $(top_srcdir)/Makefile.dependencylist

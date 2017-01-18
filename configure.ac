@@ -1,5 +1,5 @@
 dnl name / version / bugreports / tarball name
-AC_INIT([VBFNLO],[3.0.0beta2],[vbfnlo@itp.kit.edu],[VBFNLO])
+AC_INIT([VBFNLO],[3.0.0beta3],[vbfnlo@itp.kit.edu],[VBFNLO])
 
 dnl sanity check
 AC_CONFIG_SRCDIR([src/vbfnlo_main.F90])
@@ -44,7 +44,8 @@ fi
 
 dnl initialization
 AC_LANG([Fortran])
-AM_INIT_AUTOMAKE([1.9 gnu -Wall subdir-objects foreign])
+AM_INIT_AUTOMAKE([1.9 gnu -Wall -Wno-portability subdir-objects foreign])
+AM_EXTRA_RECURSIVE_TARGETS([dependencylist])
 AC_PROG_LIBTOOL([disable-static])
 AC_PROG_F77()
 AC_PROG_FC([], 95)
