@@ -45,7 +45,11 @@ fi
 dnl initialization
 AC_LANG([Fortran])
 AM_INIT_AUTOMAKE([1.9 gnu -Wall -Wno-portability subdir-objects foreign])
-AM_EXTRA_RECURSIVE_TARGETS([dependencylist])
+m4_ifdef([AM_EXTRA_RECURSIVE_TARGETS],
+	 [AM_EXTRA_RECURSIVE_TARGETS([dependencylist])
+          VBFNLO_DEPENDENCY_TRACKING()
+	 ]
+	)
 AC_PROG_LIBTOOL([disable-static])
 AC_PROG_F77()
 AC_PROG_FC([], 95)
