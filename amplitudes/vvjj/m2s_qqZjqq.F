@@ -1470,6 +1470,64 @@ cjp to recover zz notation
 c leptonic tensors
 c we keep the name of the output variables.
 c to reuse most of the original qqzaqq.f 
+
+	if(with_anom) then! anomalous gauge boson couplings
+c        using global form factor for all tensors of one phase space point
+c        this ensures proper cancellations for anomalous contributions
+c        energy scale is invariant ZA mass  
+
+         do j=2,3
+            call anomal_formfactor(q12(0,j),q34(0,j),qe(0),qu(0))
+            
+            call vvtoza_anomal(q12(0,j),q34(0,j),v,h,aazz(0,0,j),azzz(0,0,j),
+     - zazz(0,0,j),zzzz(0,0,j))
+
+C for W+W-
+            call wwtoza_anomal(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j)) ! q12 = W+
+            call wwtoza_anomal(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j)) ! q12 = W-
+
+C for V1V2 --> e+ e- 
+c NCl tensors for NC process (k=1...4)
+
+            call VVtoll_anomal(2,1,h,q34(0,j),v,aaee(0,0,1,j),azee(0,0,1,j),
+     - zaee(0,0,1,j),zzee(0,0,1,j))  !emit V on upper       
+            call VVtoll_anomal(1,1,h,q12(0,j),v,aaee(0,0,2,j),azee(0,0,2,j),
+     - zaee(0,0,2,j),zzee(0,0,2,j))  !emit V on lower
+	    aauu=0d0
+	    azuu=0d0
+	    zauu=0d0
+	    zzuu=0d0
+	    
+
+C for W+W- --> e+ e-
+c  CCl tensors for CC (k=5)
+
+            call WWtoll_anomal(2,1,h,q34(0,j),v,CCee(0,0,1,j)) !emit V on upper
+            call WWtoll_anomal(1,1,h,q12(0,j),v,CCee(0,0,2,j)) !emit V on lower
+C     for W+W- -->  A
+
+cfc ???? k=5 => ud -> sc entiendo es 1???? 
+cfc to check first argument
+
+            call calc_wwtoa_anomal(2,iu,q34(0,j),v,CCuu(0,0,1,j)) !emit Z -> e+ e- on upper
+            call calc_wwtoa_anomal(1,iu,q12(0,j),v,CCuu(0,0,2,j)) !emit Z -> e+ e- on lower
+ 
+C for W-W+ --> e+ e- 
+c CCl for CC (k=6)
+
+            call WWtoll_anomal(1,1,h,q34(0,j),v,CCee6(0,0,1,j)) !emit A on upper
+            call WWtoll_anomal(2,1,h,q12(0,j),v,CCee6(0,0,2,j)) !emit A on lower
+
+C     for W-W+ -->  A
+
+cfc  k=6 => du -> cs entiendo es 2
+cfc to check first argument
+
+            call calc_wwtoa_anomal(1,iu,q34(0,j),v,CCuu6(0,0,1,j)) !emit Z -> e+ e- on upper
+            call calc_wwtoa_anomal(2,iu,q12(0,j),v,CCuu6(0,0,2,j)) !emit Z -> e+ e- on lower
+         enddo ! j
+
+        else ! SM
          do j=2,3
             call vvtoza(q12(0,j),q34(0,j),v,h,aazz(0,0,j),azzz(0,0,j),
      - zazz(0,0,j),zzzz(0,0,j))
@@ -1518,8 +1576,9 @@ cfc to check first argument
             call calc_wwtoa(1,iu,q34(0,j),v,CCuu6(0,0,1,j)) !emit Z -> e+ e- on upper
             call calc_wwtoa(2,iu,q12(0,j),v,CCuu6(0,0,2,j)) !emit Z -> e+ e- on lower
          enddo ! j
+      endif ! SM
+      
 C     for V --> e+ e- a
-
             call vtolla(v,h,azz,zzztens)
             
 
@@ -1579,6 +1638,59 @@ c...  Les Houches interface
 
      
 c leptonic tensors
+      if(with_anom) then! anomalous gauge boson couplings
+c        using global form factor for all tensors of one phase space point
+c        this ensures proper cancellations for anomalous contributions
+c        energy scale is invariant ZA mass     
+
+       do j=2,3
+        qu=qa
+        call anomal_formfactor(q12(0,j),q34(0,j),qe(0),qu(0))
+        
+c vv->vv (not in SM)
+          call vvtozan_anomal(q12(0,j),q34(0,j),v,h,aazz(0,0,j),azzz(0,0,j),
+     - zazz(0,0,j),zzzz(0,0,j))
+     
+C for W+W- --> ve ve~ a
+            call wwtozan_anomal(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j)) ! q12 = W+
+            call wwtozan_anomal(q34(0,j),q12(0,j),v,h,wwzz6(0,0,j)) ! q12 = W-
+
+C V1V2 --> ve ve~  
+c NCl tensors for NC process (k=1...4)
+      qu=qe ! VVtolln, WWtolln assume Z_l Z_n
+            call VVtolln_anomal(2,q34(0,j),v(0,1),aaee(0,0,1,j),azee(0,0,1,j),
+     - zaee(0,0,1,j),zzee(0,0,1,j))     !emit V on upper       
+            call VVtolln_anomal(1,q12(0,j),v(0,1),aaee(0,0,2,j),azee(0,0,2,j),
+     - zaee(0,0,2,j),zzee(0,0,2,j))     !emit V on lower
+
+C for W+W- --> ve ve~
+c  CCl tensors for CC (k=5)
+
+            call WWtolln_anomal(2,q34(0,j),v(0,1),CCee(0,0,1,j)) !emit V on upper
+            call WWtolln_anomal(1,q12(0,j),v(0,1),CCee(0,0,2,j)) !emit V on lower
+C     for W+W- -->  A
+
+cfc  k=5 => ud -> sc entiendo es 1
+
+            call calc_wwtoa_anomal(2,iu,q34(0,j),v,CCuu(0,0,1,j)) !emit Z -> ve ve~ on upper
+            call calc_wwtoa_anomal(1,iu,q12(0,j),v,CCuu(0,0,2,j)) !emit Z -> ve ve~ on lower
+
+C for W-W+ --> ve ve~ 
+c CCl for CC (k=6)
+
+            call WWtolln_anomal(1,q34(0,j),v,CCee6(0,0,1,j)) !emit A on upper
+            call WWtolln_anomal(2,q12(0,j),v,CCee6(0,0,2,j)) !emit A on lower
+
+C     for W-W+ -->  A
+
+cfc  k=6 => du -> cs entiendo es 2
+
+            call calc_wwtoa_anomal(1,iu,q34(0,j),v,CCuu6(0,0,1,j)) !emit Z -> ve ve~ on upper
+            call calc_wwtoa_anomal(2,iu,q12(0,j),v,CCuu6(0,0,2,j)) !emit Z -> ve ve~ on lower
+        enddo ! j
+        
+      else ! SM
+      
        do j=2,3
 C for W+W- --> ve ve~ a
             call wwtozan(q12(0,j),q34(0,j),v,h,wwzz5(0,0,j)) ! q12 = W+
@@ -1617,9 +1729,12 @@ cfc  k=6 => du -> cs entiendo es 2
             call calc_wwtoa(1,iu,q34(0,j),v,CCuu6(0,0,1,j)) !emit Z -> ve ve~ on upper
             call calc_wwtoa(2,iu,q12(0,j),v,CCuu6(0,0,2,j)) !emit Z -> ve ve~ on lower
         enddo ! j
+      endif ! SM
+      
       azz=0d0
       zzztens=0d0
          qu=qa
+         
 c-----------------------------
 
       elseif (bos.eq.16.or.bos.eq.61) then
@@ -3439,6 +3554,8 @@ c...flavours of 4 quarks and gluon
      &        HjjjLO_WPhadWM, HjjjLO_WPWMhad, HjjjLO_ZZhad,
      &        WPhadWPjjjLO, WMhadWMjjjLO, Sp2jjjLO_WW)
          lnup(listposition)=numParticles+3 
+      case(ZAjjjLO,ZAjjjLO_n)
+         lnup(listposition)=numParticles+1
       case(HjjjLO,AjjjLO)
          lnup(listposition)=numParticles-2
       case(HjjjLO_AA, HjjjLO_mu, HjjjLO_tau, HjjjLO_bbar, ZjjjLO_l,

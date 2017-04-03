@@ -2975,6 +2975,8 @@ c 4 quark flavors and subprocess number
      &      Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad,
      &      WPhadWPjj, WMhadWMjj, Sp2jj_WW)
          lnup(listposition)=numParticles+2
+      case(ZAjj,ZAjj_n) 
+         lnup(listposition)=numParticles
       case(Hjj_AA, Hjj_mu, Hjj_tau, Hjj_bbar, Zjj_l, Zjj_nu, WPjj,
      &      WMjj, AAjj) 
          lnup(listposition)=numParticles-1

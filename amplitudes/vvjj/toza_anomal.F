@@ -156,7 +156,7 @@ c      CALL IOVXXX(W(1,3),W(1,4),W(1,11),GZL,AMP(14))
 c     new Higgs contributions
       call jhww_anomal3(W(1,1),W(1,2),W(1,6))
       call aah_anomal3(W(1,5),W(1,10),W(1,6),amp(15))
-      call azh_anomal3(W(1,5),W(1,10),W(1,6),amp(16))
+      call azh_anomal3(W(1,5),W(1,11),W(1,6),amp(16))
       
 
       WW(MU,NU)=+AMP(1)+AMP(2)+AMP(3)+AMP(4)+AMP(5)+AMP(6)+AMP(7)+AMP(8)
@@ -778,7 +778,7 @@ c     Higgs contributions
       call jhaa_anomal3(W(1,2),W(1,5),W(1,7))
       call azh_anomal3(W(1,1),W(1,6),W(1,7),amp(4))
       
-      aa(MU,NU)=+amp(1)+amp(2)+amp(3)+amp(4)
+      aa(MU,NU)=-amp(1)-amp(2)-amp(3)-amp(4)
 
         ENDDO
       ENDDO
@@ -859,7 +859,7 @@ c     Higgs contributions
       call jhaz_anomal3(W(1,5),W(1,2),W(1,7))
       call azh_anomal3(W(1,1),W(1,6),W(1,7),amp(4))
       
-      az(MU,NU)=+AMP(1)+amp(2)+amp(3)+amp(4)
+      az(MU,NU)=-AMP(1)-amp(2)-amp(3)-amp(4)
 
        enddo
        enddo
@@ -941,7 +941,7 @@ c     Higgs contributions
       call zzh_anomal3(W(1,1),W(1,6),W(1,7),amp(4))
       
       
-      zz(MU,NU)=+AMP(1)+amp(2)+amp(3)+amp(4)
+      zz(MU,NU)=-AMP(1)-amp(2)-amp(3)-amp(4)
 
         ENDDO
       ENDDO
