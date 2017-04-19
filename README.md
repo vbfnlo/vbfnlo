@@ -1,7 +1,7 @@
 # VBFNLO
 
-* Version: 3.0.0 beta 3
-* Release date:  18 January 2017
+* Version: 3.0.0 beta 4
+* Release date:  18 April 2017
 
 ---
 

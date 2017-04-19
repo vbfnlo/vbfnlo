@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.0.0 beta 4] - 2017-04-19
+
+### Bug fixes
+* Fix bug in NLO calculation of ZAjj production (processes 290,291) when including anomalous couplings
+* Fix bug in event output for ZAjj production
+
 ## [3.0.0 beta 3] - 2017-01-18
 
 ### Major Enhancements
@@ -288,8 +294,9 @@ QCD-ZZjj, QCD-Zgammajj, VBF-Zgammajj, Z(->l+l-)Z(->nu nubar)gamma
 
 2008-11-27 *** Release of Version 2.0.0
 
-[Unreleased]: https://github.com/vbfnlo/vbfnlo/compare/v3.0.0_b3...HEAD
-[3.0.0 beta 3]: https://github.com/vbfnlo/vbfnlo/compare/v3.0.0_b2...v3.0.0_b3
-[3.0.0 beta 2]: https://github.com/vbfnlo/vbfnlo/compare/v3.0.0_b1...v3.0.0_b2
-[3.0.0 beta 1]: https://github.com/vbfnlo/vbfnlo/compare/v2.7.1...v3.0.0_b1
+[Unreleased]: https://github.com/vbfnlo/vbfnlo/compare/v3.0.0beta4...HEAD
+[3.0.0 beta 4]: https://github.com/vbfnlo/vbfnlo/compare/v3.0.0beta3...v3.0.0beta4
+[3.0.0 beta 3]: https://github.com/vbfnlo/vbfnlo/compare/v3.0.0beta2...v3.0.0beta3
+[3.0.0 beta 2]: https://github.com/vbfnlo/vbfnlo/compare/v3.0.0beta1...v3.0.0beta2
+[3.0.0 beta 1]: https://github.com/vbfnlo/vbfnlo/compare/v2.7.1...v3.0.0beta1
 [2.7.1]: https://github.com/vbfnlo/vbfnlo/compare/v2.7.0...v2.7.1
