@@ -1,5 +1,8 @@
 noinst_LTLIBRARIES = libTIC.la
 libTIC_la_SOURCES = \
+CijGram.inc \
+CijGramG.inc \
+CijGramM.inc \
 tensor_redux_Cij_new_Re_Com_1Mas.F\
 tensor_redux_Cij.F \
 tensor_redux_Cij_new_Re_Com.F \
@@ -41,3 +44,4 @@ $(top_builddir)/include/%.mod: libTIC_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

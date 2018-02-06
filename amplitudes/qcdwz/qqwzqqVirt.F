@@ -2292,6 +2292,7 @@ c different family
         else
           call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
         endif
+        return
       endif 
 
       if(IsNan(res,0d0,18,0)) then

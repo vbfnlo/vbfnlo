@@ -4,8 +4,7 @@ LFLAGS	      = $(FFLAGS)
 
 DEST	      = /usr/local/lib
 
-HDRS	      = aa.h \
-		ff.h
+HDRS	      = aa.h ff.h
 
 LIBRARY	      = ff.a
 

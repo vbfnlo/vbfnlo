@@ -1,7 +1,7 @@
 c
 c	Terrance Figy, <terrance@physics.wisc.edu>
 c	Initial version:  2005 July
-c	Last modified:    2008 Oct 2
+c	Last modified:    2017 February, Michael Rauch
 c   
 c     
       subroutine m2s_wbfh4j(
@@ -13,6 +13,7 @@ c
      7                   v,	!in:  momenta associated with WW decay fermions
      8                   xuz,   !in:  x, u, z for subtraction terms
      9                   m2s  )  !out: |M|^2*pdf1*pdf2 
+          use globalvars, only: ldoblha
           use VBFNLO_HIGGSTO, only: VBFNLO_HIGGSTO_gridHt
       implicit none
 c
@@ -21,6 +22,7 @@ c
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
 #include "VBFNLO/utilities/process.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
       integer bos
       double precision xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), 
      1     xuz(2,2:max_kin), m2s(0:max_kin)
@@ -45,7 +47,7 @@ c declare variables for summation process
 
       integer FSIGN(4+max_v), gsign(2), physToDiag(6), 
      $     nlo, nd,fs(6+max_v)
-      integer nmin,nmax,nproc(25)
+      integer nmin,nmax,nproc(13)
       save nmin, nmax, nproc
 
 c store contributions from subprocess ip in res(ip,ID) where
@@ -81,13 +83,7 @@ c CPS scheme
       common /VBFNLO_HIGGS_CPS/ qgammaq
 
 c if first iteration,
-      if ( init .ne. 0 ) then
-         do i = 1,nmax
-            do j=0,max_kin
-               res(i,j) = 0
-            enddo
-         enddo
-      else     
+      if ( init .eq. 0 .and. .not.ldoblha ) then
          if (bos.eq.6) then
             write(6,*) " "
             write(6,*) "H4j amplitude square information:"
@@ -101,6 +97,14 @@ c if first iteration,
          do i = 1,maxnumsubproc
             do j = 0,max_kin
                res(i,j) = 0.0d0
+            enddo
+         enddo
+      else if ( init .eq. 0 .and. ldoblha ) then
+         init = 1
+      else
+         do i = 1,nmax
+            do j=0,max_kin
+               res(i,j) = 0
             enddo
          enddo
       endif
@@ -121,14 +125,38 @@ c if first iteration,
         qgammaq = xmg(6)
       endif
 
+       if (ldoblha) then
+
+         physToDiag(1)=blha_physdiagmap(1,blha_cursubproc,blha_curproc)
+         physToDiag(2)=blha_physdiagmap(2,blha_cursubproc,blha_curproc)
+         physToDiag(3)=blha_physdiagmap(3,blha_cursubproc,blha_curproc)
+         physToDiag(4)=blha_physdiagmap(4,blha_cursubproc,blha_curproc)
+         physToDiag(5)=blha_physdiagmap(5,blha_cursubproc,blha_curproc)
+         physToDiag(6)=blha_physdiagmap(6,blha_cursubproc,blha_curproc)
+         fsign(1) = blha_fsign(1,blha_cursubproc,blha_curproc)
+         fsign(2) = blha_fsign(2,blha_cursubproc,blha_curproc)
+         fsign(3) = blha_fsign(3,blha_cursubproc,blha_curproc)
+         fsign(4) = blha_fsign(4,blha_cursubproc,blha_curproc)
+         fsign(5) = blha_fsign(5,blha_cursubproc,blha_curproc)
+         fsign(6) = blha_fsign(6,blha_cursubproc,blha_curproc)
+         gsign(1) = blha_fsign(5,blha_cursubproc,blha_curproc)
+         gsign(2) = blha_fsign(6,blha_cursubproc,blha_curproc)
+
+         if (mod(blha_idsubproc(blha_cursubproc,blha_curproc)/100000,10) .eq. 1) then
+           ! 4q2g
+           call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+     &       pdf,res,nmin,nmax)
+         else if (mod(blha_idsubproc(blha_cursubproc,blha_curproc)/100000,10) .eq. 2) then
+           ! 6q
+           call wbf_h4jq(xi,p,v,physToDiag,fsign,bos,nlo,lok,xuz,
+     &       pdf,res,nmin,nmax)
+         endif
+         return
+       endif
+
 c call PDF subroutine in order to determine parton
 c distributions in the incoming (anti)protons.
-      do i=-6,6
-         do k=1,5
-          pdf(i,1,k)=0.0d0
-          pdf(i,2,k)=0.0d0
-       enddo
-      enddo
+      pdf = 0
 
       call ctrans
       
@@ -164,7 +192,7 @@ c similarly physToDiag(3/4)={2,4} for the 3-4 fermion line
       gsign(1) = 1
       gsign(2) = 1
 
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1     pdf,res,nmin,nmax)   
 
       if(linfo) print*,"nmin,nmax1",nmin,nmax     
@@ -185,7 +213,7 @@ C*******************  q1 qb4 ---> q2 qb3 g g H   **********************
       gsign(1) = 1
       gsign(2) = 1
 
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax",nmin,nmax
@@ -207,7 +235,7 @@ C*******************  qbar2 q3 ---> qbar1 q4 g g H   **********************
       gsign(1) = 1
       gsign(2) = 1
 c      
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax3",nmin,nmax
@@ -229,7 +257,7 @@ C*******************  qbar2 qb4 ---> qbar1 qb3 g g H   ******************
       gsign(1) = 1
       gsign(2) = 1
          
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax",nmin,nmax
@@ -252,7 +280,7 @@ c
       gsign(1) = -1
       gsign(2) = 1
 
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax5",nmin,nmax
@@ -274,7 +302,7 @@ C*******************  g qbar4 ---> qbar3 qb1 q2 g H   **********************
       gsign(1) = -1
       gsign(2) = 1
 
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax",nmin,nmax
@@ -296,7 +324,7 @@ c                     p1 p2     p3 p5  p4 p6
       gsign(1) = -1
       gsign(2) =  1
 
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax7",nmin,nmax
@@ -318,7 +346,7 @@ C*******************  qb2 g ---> qb1 qb3 q4 g H   *************
       gsign(1) = -1
       gsign(2) =  1            
 
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax",nmin,nmax
@@ -341,7 +369,7 @@ c                 p1 p2   p5  p3 p6  p4
       gsign(1) = -1
       gsign(2) = -1            
 
-      call wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
+      call wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos,nlo,lok,xuz,
      1              pdf,res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax9",nmin,nmax
@@ -363,7 +391,7 @@ c                  p1 p2    p3 p4  p5 p6
       fs(5) = -1
       fs(6) = 1
 
-      call wbf_h4qnc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
+      call wbf_h4jq(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
      1     pdf(-6,1,1),res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax 10",nmin,nmax
@@ -384,7 +412,7 @@ c                p1 p2     p3  p4 p5  p6
       fs(4) = 1
       fs(5) = -1
       fs(6) = 1
-      call wbf_h4qnc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
+      call wbf_h4jq(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
      1     pdf(-6,1,1),res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax 11",nmin,nmax
@@ -406,7 +434,7 @@ c                p1  p2    p3  p4 p5  p6
       fs(5) = -1
       fs(6) = 1
 
-      call wbf_h4qnc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
+      call wbf_h4jq(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
      1     pdf(-6,1,1),res,nmin,nmax)
            if(linfo) print*,"nmin,nmax 12",nmin,nmax
       if (init.eq.1) nproc(12) = nmax 
@@ -428,280 +456,12 @@ c                      p1  p2     p3  p4 p5  p6
       fs(5) = -1
       fs(6) = 1
 c
-      call wbf_h4qnc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
+      call wbf_h4jq(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
      1     pdf(-6,1,1),res,nmin,nmax)
 
       if(linfo) print*,"nmin,nmax13",nmin,nmax
       if (init.eq.1) nproc(13) = nmax 
      
-c*********************************  
-c     charged current processes:        
-c
-c***************** q1 q3 -> q2 q4 qb5 q6
-c                  p1 p2    p3 p4 p5  p6
-      phystodiag(1)=1           !1/2
-      phystodiag(2)=3           !3/4
-      phystodiag(3)=2           !1/2
-      phystodiag(4)=4           !3/4
-      phystodiag(5)=5           !anti-quark
-      phystodiag(6)=6           !quark
-      
-      fs(1) = 1
-      fs(2) = 1
-      fs(3) = 1
-      fs(4) = 1
-      fs(5) = -1
-      fs(6) = 1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)      
-
-      if(linfo) print*,"nmin,nmax",nmin,nmax
-      if (init.eq.1) nproc(14) = nmax 
-
-c************** qb2 q3 -> qb1 q4 qb5 q6
-c               p1  p2    p3  p4 p5  p6
-
-      phystodiag(1)=2           !1/2
-      phystodiag(2)=3           !3/4
-      phystodiag(3)=1           !1/2
-      phystodiag(4)=4           !3/4
-      phystodiag(5)=5           !anti-quark
-      phystodiag(6)=6           !quark
-      
-      fs(1) = -1
-      fs(2) = -1
-      fs(3) = 1
-      fs(4) = 1
-      fs(5) = -1
-      fs(6) = 1
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax",nmin,nmax
-      if (init.eq.1) nproc(15) = nmax 
-
-c************qb2 qb4 -> qb1 qb3 qb5 q6
-c            p1  p2     p3  p4  p5  p6
-      phystodiag(1)=2           !1/2
-      phystodiag(2)=4           !3/4
-      phystodiag(3)=1           !1/2
-      phystodiag(4)=3           !3/4
-      phystodiag(5)=5           !anti-quark
-      phystodiag(6)=6           !quark
-      
-      fs(1) = -1
-      fs(2) = -1
-      fs(3) = -1
-      fs(4) = -1
-      fs(5) = -1
-      fs(6) = 1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax16",nmin,nmax
-      if (init.eq.1) nproc(16) = nmax 
-
-c************q1 qb4 -> q2 qb3 qb5 q6
-c            p1  p2    p3  p4  p5  p6
-
-      phystodiag(1)=1           !1/2
-      phystodiag(2)=4           !3/4
-      phystodiag(3)=2           !1/2
-      phystodiag(4)=3           !3/4
-      phystodiag(5)=5           !anti-quark
-      phystodiag(6)=6           !quark
-      
-      fs(1) = 1
-      fs(2) = 1
-      fs(3) = -1
-      fs(4) = -1
-      fs(5) = -1
-      fs(6) = 1
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax",nmin,nmax
-      if (init.eq.1) nproc(17) = nmax 
-  
-cccccccccccccccccc q5 q3 -> q6 qb1 q2 q4 
-c                  p1 p2    p3 p5  p6 p4 
-      phystodiag(1)=5           
-      phystodiag(2)=3           
-      phystodiag(3)=6           
-      phystodiag(4)=4           
-      phystodiag(5)=1           
-      phystodiag(6)=2           
-      
-      fs(1) = -1
-      fs(2) = 1
-      fs(3) = 1
-      fs(4) = 1
-      fs(5) = 1
-      fs(6) = 1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax",nmin,nmax
-      if (init.eq.1) nproc(18) = nmax 
-
-cccccccccccccccccc qb6 q3 -> qb5 qb1 q2 q4 
-c                  p1  p2    p3  p5  p6 p4
-
-      phystodiag(1)=6           
-      phystodiag(2)=3           
-      phystodiag(3)=5           
-      phystodiag(4)=4           
-      phystodiag(5)=1           
-      phystodiag(6)=2           
-      
-      fs(1) = -1
-      fs(2) = 1
-      fs(3) = 1
-      fs(4) = 1
-      fs(5) = -1
-      fs(6) = -1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax19",nmin,nmax
-      if (init.eq.1) nproc(19) = nmax 
-
-cccccccccccccccccc qb6 qb4 -> qb5 qb1 q2 qb3 
-c                  p1  p2     p3  p5  p6 p4
-      phystodiag(1)=6           
-      phystodiag(2)=4           
-      phystodiag(3)=5           
-      phystodiag(4)=3           
-      phystodiag(5)=1           
-      phystodiag(6)=2           
-      
-      fs(1) = -1
-      fs(2) = 1
-      fs(3) = -1
-      fs(4) = -1
-      fs(5) = -1
-      fs(6) = -1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax",nmin,nmax
-      if (init.eq.1) nproc(20) = nmax 
-
-cccccccccccccccccc q5 qb4 -> q6 qb1 q2 qb3 
-c                  p1 p2     p3  p5  p6 p4
-      phystodiag(1)=5           
-      phystodiag(2)=4           
-      phystodiag(3)=6           
-      phystodiag(4)=3           
-      phystodiag(5)=1           
-      phystodiag(6)=2           
-      
-      fs(1) = -1
-      fs(2) = 1
-      fs(3) = -1
-      fs(4) = -1
-      fs(5) = 1
-      fs(6) = 1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax21",nmin,nmax
-      if (init.eq.1) nproc(21) = nmax 
-
-cccccccccccccccccc q1 q5 ->qb3 q4 q2 q6
-c                  p1 p2   p5  p6 p3 p4 
-      phystodiag(1)=1           
-      phystodiag(2)=5           
-      phystodiag(3)=2           
-      phystodiag(4)=6           
-      phystodiag(5)=3           
-      phystodiag(6)=4           
-      
-      fs(1) = 1
-      fs(2) = 1
-      fs(3) = -1
-      fs(4) = 1
-      fs(5) = 1
-      fs(6) = 1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax",nmin,nmax
-      if (init.eq.1) nproc(22) = nmax 
-
-cccccccccccccccccc qb2 q5 ->qb3 q4 qb1 q6
-c                  p1  p2   p5  p6 p3  p4
-      phystodiag(1)=2           
-      phystodiag(2)=5           
-      phystodiag(3)=1           
-      phystodiag(4)=6           
-      phystodiag(5)=3           
-      phystodiag(6)=4           
-      
-      fs(1) = -1
-      fs(2) = -1
-      fs(3) = -1
-      fs(4) = 1
-      fs(5) = 1
-      fs(6) = 1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax",nmin,nmax
-      if (init.eq.1) nproc(23) = nmax 
-
-cccccccccccccccccc qb2 qb6 ->qb3 q4 qb1 qb5
-c                  p1  p2    p5  p6 p3   p4 
-      phystodiag(1)=2           
-      phystodiag(2)=6           
-      phystodiag(3)=1           
-      phystodiag(4)=5           
-      phystodiag(5)=3           
-      phystodiag(6)=4           
-      
-      fs(1) = -1
-      fs(2) = -1
-      fs(3) = -1
-      fs(4) = 1
-      fs(5) = -1
-      fs(6) = -1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax24",nmin,nmax
-      if (init.eq.1) nproc(24) = nmax 
-
-cccccccccccccccccc q1 qb6 ->qb3 q4 q2 qb5
-c                  p1  p2   p5  p6 p3  p4       
-      phystodiag(1)=1           
-      phystodiag(2)=6           
-      phystodiag(3)=2           
-      phystodiag(4)=5           
-      phystodiag(5)=3           
-      phystodiag(6)=4           
-      
-      fs(1) = 1
-      fs(2) = 1
-      fs(3) = -1
-      fs(4) = 1
-      fs(5) = -1
-      fs(6) = -1
-
-      call wbf_h4qcc(xi,p,v,physToDiag,fs,bos,nlo,lok,xuz,
-     1     pdf,res,nmin,nmax)
-
-      if(linfo) print*,"nmin,nmax 25",nmin,nmax
-      if (init.eq.1) nproc(25) = nmax 
-
 c*****************  end of process evaluation  ********************
 
       do nd=0,n_kin
@@ -763,11 +523,12 @@ c            print*,"alpha_s=",als(1,1)
 
 c******************************************************************
 c
-c   begin subroutine wbf_h4j
+c   begin subroutine wbf_h4jg
 c
 c*****************************************************************
-      subroutine wbf_h4j(xi,p,v,physToDiag,fsign,gsign,bos, 
+      subroutine wbf_h4jg(xi,p,v,physToDiag,fsign,gsign,bos, 
      1     nlo,lok,xuz,pdf,res,nmin,nmax)
+      use globalvars, only: ldoblha
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/lha.inc"
@@ -783,7 +544,7 @@ c
       double precision uucc(0:6),uuss(0:6),ddcc(0:6),ddss(0:6),
      $     udsc(0:6),ducs(0:6)
       double precision udscbb1     !testing purposes
-c wbf_h4j calls the amplitude square routines 
+c wbf_h4jg calls the amplitude square routines 
 c             qqhqqgg_mg    for qq-->qqggH     for bos=6
 c for the subtraction terms for the NLO cross section calculation
 c
@@ -834,10 +595,13 @@ c
       parameter (ldebug=.false.) 
       parameter(ldebug1=.false.,ldebug2=.false.)
       parameter(ldebug1n=.false.)
+      logical ldebugmg
+      parameter (ldebugmg=.false.)
       logical lcoll
       parameter(lcoll=.false.)  !switch of collinear fin piece
       integer i,if1,if2,icc1,j,k,mu, fc(4+max_v), gc
-      double precision delta,sum,pipj(9)
+      double precision delta,sum,newdelta
+      integer deltapair
       integer numdip21(12),numdip43(12),jd        !map to dipoles
       integer numdip4321(4) !only first 4 used 
 c      data numdip21 /2,4,5,7,8,10,15,18,23,24,9,11/
@@ -933,18 +697,29 @@ c
 c
 c              
       if (lok(1)) then
-         call qqhqqgg_mg_c(pbar,fsign,qbar,gsign,
-     $     uucc,uuss,ddcc,ddss,udsc,ducs)
+         call qqh2q2g(pbar,fsign,qbar,gsign,NCmatrix_r,CCmatrix_r)
+#if WITH_MADGRAPH
+         if (ldebugmg) then
+           call qqhqqgg_mg_c(pbar,fsign,qbar,gsign,
+     $       uucc,uuss,ddcc,ddss,udsc,ducs)
+           write(*,*) "Hjjj 2q2g Comparison:"
+           do i=0,6                  !loop over color flow 
+             write(*,*) "  colour structure: c = ", i
+             write(*,*) "  NC(0,0,c)", NCmatrix_r(0,0,i), uucc(i), abs(1-uucc(i)/NCmatrix_r(0,0,i))
+             write(*,*) "  NC(0,1,c)", NCmatrix_r(0,1,i), uuss(i), abs(1-uuss(i)/NCmatrix_r(0,1,i))
+             write(*,*) "  NC(1,0,c)", NCmatrix_r(1,0,i), ddcc(i), abs(1-ddcc(i)/NCmatrix_r(1,0,i))
+             write(*,*) "  NC(1,1,c)", NCmatrix_r(1,1,i), ddss(i), abs(1-ddss(i)/NCmatrix_r(1,1,i))
+             write(*,*) "  CC(0,c)", CCmatrix_r(0,i), udsc(i), abs(1-udsc(i)/CCmatrix_r(0,i))
+             write(*,*) "  CC(1,c)", CCmatrix_r(1,i), ducs(i), abs(1-udsc(i)/CCmatrix_r(0,i))
+           enddo
+         endif
+#endif
       endif
 
-      do i=0,6                  !loop over color flow 
-         NCmatrix_r(0,0,i)= uucc(i)  
-         NCmatrix_r(0,1,i)= uuss(i)
-         NCmatrix_r(1,0,i)= ddcc(i)
-         NCmatrix_r(1,1,i)= ddss(i) 
-         CCmatrix_r(0,i)= udsc(i) 
-         CCmatrix_r(1,i)= ducs(i) 
-      enddo
+      if (ldoblha) then
+        return
+      endif
+
 c     
 c
 c
@@ -1075,33 +850,79 @@ c     put in collinear piece"s
                   enddo            !dipoles
                
                   if(ldebug1) then
-c     take the limit of pi.pj -> 0               
-                     pipj(1) = dot0p(p(0,5,1),p(0,6,1))
-                     pipj(2) = dot0p(p(0,3,1),p(0,5,1))
-                     pipj(3) = dot0p(p(0,3,1),p(0,6,1))
-                     pipj(4) = dot0p(p(0,1,1),p(0,6,1))
-                     pipj(5) = dot0p(p(0,1,1),p(0,5,1))
-                     pipj(6) = dot0p(p(0,4,1),p(0,6,1))
-                     pipj(7) = dot0p(p(0,4,1),p(0,5,1))
-                     pipj(8) = dot0p(p(0,2,1),p(0,6,1))
-                     pipj(9) = dot0p(p(0,2,1),p(0,5,1))
-                     do i = 1,9
-                        if(abs(pipj(i)).lt.5d0) then
-                           print*,"NC",iflav
-                           print*,"mom config", i
-                           sum = 0
-                           do nd = 2,n_kin
-                              sum = sum + res(k,nd)
-                           enddo
-                           print*,"m2real=",res(k,1),lok(1)
-                           print*,"dip_sum=",sum
-                           if(res(k,1).ne.0d0) then
-                              print*,"---------------------------------"
-                              print*,"dip_sum/res(k,1)",abs(sum/res(k,1))
-                             print*,"----------------------------------"
-                           endif
-                        endif
-                     enddo
+c     take the limit of pi.pj -> 0
+                    delta = dot0p(p(0,5,1),p(0,6,1))
+                    deltapair=56
+                    newdelta = dot0p(p(0,3,1),p(0,5,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=35
+                    endif
+                    newdelta = dot0p(p(0,3,1),p(0,6,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=36
+                    endif
+                    newdelta = dot0p(p(0,1,1),p(0,6,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=16
+                    endif
+                    newdelta = dot0p(p(0,1,1),p(0,5,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=15
+                    endif
+                    newdelta = dot0p(p(0,4,1),p(0,6,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=46
+                    endif
+                    newdelta = dot0p(p(0,4,1),p(0,5,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=45
+                    endif
+                    newdelta = dot0p(p(0,2,1),p(0,6,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=26
+                    endif
+                    newdelta = dot0p(p(0,2,1),p(0,5,1))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=25
+                    endif
+                    if(delta.lt.1d0) then
+                      if(res(k,1).ne.0d0) then
+                        print*,"NC",iflav
+                        sum = 0
+                        do nd = 2,n_kin
+                          sum = sum + res(k,nd)
+                          if(res(k,1).ne.0d0) then
+                             print*,"D(",ip(nd),kp(nd),jp(nd),
+     -                            ")/|m2s|",nd,
+     $                            res(k,nd)/res(k,1),lok(nd)
+                          else
+                             print*,"D(",ip(nd),kp(nd),jp(nd),")",nd
+     $                            ,res(k,nd),lok(nd)
+                          endif
+                        enddo
+                        print*,"m2real=",res(k,1),lok(1)
+                        print*,"dip_sum=",sum
+                        print*,"---------------------------------"
+                        print*,"dip_sum/res(k,1)",abs(sum/res(k,1))
+                        print*,"----------------------------------"
+                        print*,"momentum"
+                        do i = 1,n_p
+                        print*,"p(mu,",i,")=",(p(mu,i,1),mu=0,3)
+                        enddo
+                        print*,"H(mu)=",(v(mu,2,1),mu=0,3)
+                        print*,"SCATTERXXX NCfg ",deltapair,delta,abs(sum/res(k,1)+1)
+                        else
+!                          print*,"SCATTERXXX NCfg ",deltapair,delta,"NaN"
+                      endif
+                    endif
                   endif            !debug
                endif !nlo.eq.1
 #endif /* WITH_NLO */
@@ -1172,26 +993,79 @@ c gsign to control which dipoles are computed
                      enddo         !dipole
 
                      if(ldebug1) then
-c     check subtraction
-c     c     take the limit of pi.pj -> 0               
-c     delta = dot0p(p(0,2,1),p(0,5,1))
-                        do i=1,9
-                           if(abs(pipj(i)).lt.5d0) then
-                              print*,"CC",iflav
-                              print*,"mom config",i
-                              sum = 0
-                              do nd = 2,n_kin
-                                 sum = sum + res(k,nd)
-                              enddo
-                              print*,"m2real=",res(k,1),lok(1)
-                              print*,"dip_sum=",sum
-                              if(res(k,1).ne.0d0) then 
-                                 print*,"---------------------------------"
-                                 print*,"dip_sum/res(k,1)",abs(sum/res(k,1))
-                                 print*,"---------------------------------"
-                              endif
-                           endif
-                        enddo
+c     take the limit of pi.pj -> 0
+                       delta = dot0p(p(0,5,1),p(0,6,1))
+                       deltapair=56
+                       newdelta = dot0p(p(0,3,1),p(0,5,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=35
+                       endif
+                       newdelta = dot0p(p(0,3,1),p(0,6,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=36
+                       endif
+                       newdelta = dot0p(p(0,1,1),p(0,6,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=16
+                       endif
+                       newdelta = dot0p(p(0,1,1),p(0,5,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=15
+                       endif
+                       newdelta = dot0p(p(0,4,1),p(0,6,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=46
+                       endif
+                       newdelta = dot0p(p(0,4,1),p(0,5,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=45
+                       endif
+                       newdelta = dot0p(p(0,2,1),p(0,6,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=26
+                       endif
+                       newdelta = dot0p(p(0,2,1),p(0,5,1))
+                       if (newdelta.lt.delta) then
+                         delta=newdelta
+                         deltapair=25
+                       endif
+                       if(delta.lt.1d0) then
+                         if(res(k,1).ne.0d0) then
+                           print*,"CC",iflav
+                           sum = 0
+                           do nd = 2,n_kin
+                             sum = sum + res(k,nd)
+                             if(res(k,1).ne.0d0) then
+                                print*,"D(",ip(nd),kp(nd),jp(nd),
+     -                               ")/|m2s|",nd,
+     $                               res(k,nd)/res(k,1),lok(nd)
+                             else
+                                print*,"D(",ip(nd),kp(nd),jp(nd),")",nd
+     $                               ,res(k,nd),lok(nd)
+                             endif
+                           enddo
+                           print*,"m2real=",res(k,1),lok(1)
+                           print*,"dip_sum=",sum
+                           print*,"---------------------------------"
+                           print*,"dip_sum/res(k,1)",abs(sum/res(k,1))
+                           print*,"----------------------------------"
+                           print*,"momentum"
+                           do i = 1,n_p
+                           print*,"p(mu,",i,")=",(p(mu,i,1),mu=0,3)
+                           enddo
+                           print*,"H(mu)=",(v(mu,2,1),mu=0,3)
+                           print*,"SCATTERXXX CCfg ",deltapair,delta,abs(sum/res(k,1)+1)
+                           else
+!                             print*,"SCATTERXXX CCfg ",deltapair,delta,"NaN"
+                         endif
+                       endif
                      endif         !debugging   
                   endif !nlo.eq.1
 #endif /* WITH_NLO */
@@ -1579,21 +1453,108 @@ c     debugging
 c     check subtraction
 c     c     take the limit of pi.pj -> 0  
                if(ldebug2) then
-                  delta = dot0p(p(0,3,1),p(0,6,1))
-
-                  if(abs(delta).lt.1d0 .and.lok(1)) then !debugging
+c     take the limit of pi.pj -> 0
+                 delta = 1d99
+                 newdelta = abs(dot0p(p(0,2,1),p(0,6,1)))
+                 if (newdelta.lt.delta) then
+                   delta=newdelta
+                   deltapair=26
+                 endif
+                 if((fsign(1).eq.-fsign(2)).and.(fsign(3).eq.-fsign(4))) then
+                   ! gg ->
+                   newdelta = abs(dot0p(p(0,1,1),p(0,5,1)))
+                   if (newdelta.lt.delta) then
+                     delta=newdelta
+                     deltapair=15
+                   endif
+                   newdelta = abs(dot0p(p(0,1,1),p(0,3,1)))
+                   if (newdelta.lt.delta) then
+                     delta=newdelta
+                     deltapair=13
+                   endif
+                   newdelta = abs(dot0p(p(0,2,1),p(0,4,1)))
+                   if (newdelta.lt.delta) then
+                     delta=newdelta
+                     deltapair=24
+                   endif
+                 else
+                   ! gq/qg ->
+                   newdelta = abs(dot0p(p(0,1,1),p(0,6,1)))
+                   if (newdelta.lt.delta) then
+                     delta=newdelta
+                     deltapair=16
+                   endif
+                   newdelta = abs(dot0p(p(0,3,1),p(0,6,1)))
+                   if (newdelta.lt.delta) then
+                     delta=newdelta
+                     deltapair=36
+                   endif
+                   newdelta = abs(dot0p(p(0,4,1),p(0,6,1)))
+                   if (newdelta.lt.delta) then
+                     delta=newdelta
+                     deltapair=46
+                   endif
+                   newdelta = abs(dot0p(p(0,5,1),p(0,6,1)))
+                   if (newdelta.lt.delta) then
+                     delta=newdelta
+                     deltapair=56
+                   endif
+                   if((fsign(1).eq.-fsign(2)).and.(fsign(3).eq.fsign(4))) then
+                     ! gq ->
+                     newdelta = abs(dot0p(p(0,1,1),p(0,3,1)))
+                     if (newdelta.lt.delta) then
+                       delta=newdelta
+                       deltapair=13
+                     endif
+                     newdelta = abs(dot0p(p(0,1,1),p(0,5,1)))
+                     if (newdelta.lt.delta) then
+                       delta=newdelta
+                       deltapair=15
+                     endif
+                   else
+                     ! qg ->
+                     newdelta = abs(dot0p(p(0,2,1),p(0,4,1)))
+                     if (newdelta.lt.delta) then
+                       delta=newdelta
+                       deltapair=24
+                     endif
+                     newdelta = abs(dot0p(p(0,2,1),p(0,5,1)))
+                     if (newdelta.lt.delta) then
+                       delta=newdelta
+                       deltapair=25
+                     endif
+                   endif
+                 endif
+                 if(delta.lt.1d0) then
+                   if(res(k,1).ne.0d0) then
                      print*,"NC",iflav
-                     print*,"delta=",delta
                      sum = 0
                      do nd = 2,n_kin
-                        sum = sum + res(k,nd)
+                       sum = sum + res(k,nd)
+                       if(res(k,1).ne.0d0) then
+                          print*,"D(",ip(nd),kp(nd),jp(nd),
+     -                         ")/|m2s|",nd,
+     $                         res(k,nd)/res(k,1),lok(nd)
+                       else
+                          print*,"D(",ip(nd),kp(nd),jp(nd),")",nd
+     $                         ,res(k,nd),lok(nd)
+                       endif
                      enddo
-                     print*,"m2real=",res(k,1)
+                     print*,"m2real=",res(k,1),lok(1)
                      print*,"dip_sum=",sum
                      print*,"---------------------------------"
                      print*,"dip_sum/res(k,1)",abs(sum/res(k,1))
-                     print*,"---------------------------------"
-                  endif     
+                     print*,"----------------------------------"
+                     print*,"momentum"
+                     do i = 1,n_p
+                     print*,"p(mu,",i,")=",(p(mu,i,1),mu=0,3)
+                     enddo
+                     print*,"H(mu)=",(v(mu,2,1),mu=0,3)
+                     print*,"SCATTERXXX NCig ",deltapair,delta,abs(sum/res(k,1)+1)
+                    else
+!                      print*,"SCATTERXXX NCig ",deltapair,delta,"NaN"
+                   endif
+                 endif
                endif            !debugging
 
             endif !nlo.eq.1
@@ -1677,22 +1638,108 @@ c     get born and dipoles
 
 c     debugging
                   if(ldebug2) then
-c     check subtraction
-cc     take the limit of pi.pj -> 0               
-c     delta = dot0p(p(0,1,1),p(0,3,1))
-                     if(abs(delta).lt.1d0 .and. lok(1)) then
+c     take the limit of pi.pj -> 0
+                    delta = 1d99
+                    newdelta = abs(dot0p(p(0,2,1),p(0,6,1)))
+                    if (newdelta.lt.delta) then
+                      delta=newdelta
+                      deltapair=26
+                    endif
+                    if((fsign(1).eq.-fsign(2)).and.(fsign(3).eq.-fsign(4))) then
+                      ! gg ->
+                      newdelta = abs(dot0p(p(0,1,1),p(0,5,1)))
+                      if (newdelta.lt.delta) then
+                        delta=newdelta
+                        deltapair=15
+                      endif
+                      newdelta = abs(dot0p(p(0,1,1),p(0,3,1)))
+                      if (newdelta.lt.delta) then
+                        delta=newdelta
+                        deltapair=13
+                      endif
+                      newdelta = abs(dot0p(p(0,2,1),p(0,4,1)))
+                      if (newdelta.lt.delta) then
+                        delta=newdelta
+                        deltapair=24
+                      endif
+                    else
+                      ! gq/qg ->
+                      newdelta = abs(dot0p(p(0,1,1),p(0,6,1)))
+                      if (newdelta.lt.delta) then
+                        delta=newdelta
+                        deltapair=16
+                      endif
+                      newdelta = abs(dot0p(p(0,3,1),p(0,6,1)))
+                      if (newdelta.lt.delta) then
+                        delta=newdelta
+                        deltapair=36
+                      endif
+                      newdelta = abs(dot0p(p(0,4,1),p(0,6,1)))
+                      if (newdelta.lt.delta) then
+                        delta=newdelta
+                        deltapair=46
+                      endif
+                      newdelta = abs(dot0p(p(0,5,1),p(0,6,1)))
+                      if (newdelta.lt.delta) then
+                        delta=newdelta
+                        deltapair=56
+                      endif
+                      if((fsign(1).eq.-fsign(2)).and.(fsign(3).eq.fsign(4))) then
+                        ! gq ->
+                        newdelta = abs(dot0p(p(0,1,1),p(0,3,1)))
+                        if (newdelta.lt.delta) then
+                          delta=newdelta
+                          deltapair=13
+                        endif
+                        newdelta = abs(dot0p(p(0,1,1),p(0,5,1)))
+                        if (newdelta.lt.delta) then
+                          delta=newdelta
+                          deltapair=15
+                        endif
+                      else
+                        ! qg ->
+                        newdelta = abs(dot0p(p(0,2,1),p(0,4,1)))
+                        if (newdelta.lt.delta) then
+                          delta=newdelta
+                          deltapair=24
+                        endif
+                        newdelta = abs(dot0p(p(0,2,1),p(0,5,1)))
+                        if (newdelta.lt.delta) then
+                          delta=newdelta
+                          deltapair=25
+                        endif
+                      endif
+                    endif
+                    if(delta.lt.1d0) then
+                      if(res(k,1).ne.0d0) then
                         print*,"CC",iflav
-                        print*,"delta=",delta
                         sum = 0
                         do nd = 2,n_kin
-                           sum = sum + res(k,nd)
+                          sum = sum + res(k,nd)
+                          if(res(k,1).ne.0d0) then
+                             print*,"D(",ip(nd),kp(nd),jp(nd),
+     -                            ")/|m2s|",nd,
+     $                            res(k,nd)/res(k,1),lok(nd)
+                          else
+                             print*,"D(",ip(nd),kp(nd),jp(nd),")",nd
+     $                            ,res(k,nd),lok(nd)
+                          endif
                         enddo
-                        print*,"m2real=",res(k,1)
+                        print*,"m2real=",res(k,1),lok(1)
                         print*,"dip_sum=",sum
                         print*,"---------------------------------"
                         print*,"dip_sum/res(k,1)",abs(sum/res(k,1))
-                        print*,"---------------------------------"
-                     endif     
+                        print*,"----------------------------------"
+                        print*,"momentum"
+                        do i = 1,n_p
+                        print*,"p(mu,",i,")=",(p(mu,i,1),mu=0,3)
+                        enddo
+                        print*,"H(mu)=",(v(mu,2,1),mu=0,3)
+                        print*,"SCATTERXXX CCig ",deltapair,delta,abs(sum/res(k,1)+1)
+                      else
+!                        print*,"SCATTERXXX CCig ",deltapair,delta,"NaN"
+                      endif
+                    endif
                   endif            !debugging
 
                endif !nlo.eq.1
@@ -1711,7 +1758,7 @@ c     delta = dot0p(p(0,1,1),p(0,3,1))
 
 c******************************************************************
 c
-c   end subroutine wbf_h4j
+c   end subroutine wbf_h4jg
 c
 c*****************************************************************
 c

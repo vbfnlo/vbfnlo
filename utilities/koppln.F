@@ -494,7 +494,7 @@ c move result into Higgs2 parameters and copy back
 #else
          print *," Error: KK mode not available."
          print *,' reconfigure with "--enable-kk" and then recomplile.'
-         stop
+         stop 2
 #endif
       end if
 

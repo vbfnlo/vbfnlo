@@ -54,8 +54,10 @@ c*************************************************************************
       integer NLO,i, ps_number
 
 c     to convert "NLO" to box- and pentagon call conventions
-      integer VBFNLOswitch(0:5)
-      data VBFNLOswitch / 0, 4,-4,-5,-6,-8 /
+c     last entry is for non-interfering closed fermion loops 
+c     (GF contributions)
+      integer VBFNLOswitch(0:11)
+      data VBFNLOswitch / 0, 4,-4,-5,-6,-8,-999,-999,-999,-999,-999,-8 /
 
 c     masses and widths
       double precision XM2s(6),XMGs(6)
@@ -1359,10 +1361,10 @@ c pp -> A A j
 *     DIBOSON PLUS JET : WWj, WZj, ZZj, WAj
 *
 **********************
-      CASE(WWJ)
+      CASE(WWJ,WPHADWMJ,WPWMHADJ)
          rn = RandomNumber()
          Amplitude = m2s_qqvvj2( 34, VBFNLOswitch(nlo), x, p, v, rn, ps_number)
-      CASE(GFWWJ)
+      CASE(GFWWJ,GFWPHADWMJ,GFWPWMHADJ)
          rn = RandomNumber()
          Amplitude = m2s_qqvvj2( 34, -8, x, p, v, rn, ps_number)
       CASE(WMAJ)
@@ -1408,7 +1410,7 @@ c pp -> A A j
          rn = RandomNumber()
          Amplitude = m2s_qqzzj2( 22, -8, x, p, v, rn, ps_number)
 
-      CASE(WWjjLO)
+      CASE(WWjjLO,WPHADWMJJLO,WPWMHADJJLO)
          lokt(1) = .true.
          do i=2,max_kin
          lokt(i) = .false.
@@ -3001,7 +3003,7 @@ c pp -> ve e
 *     DIBOSON PLUS JET : WWjj,WZjj,ZZjj,WAjj
 *
 **************************************         
-      CASE(WWJ)
+      CASE(WWJ,WPHADWMJ,WPWMHADJ)
          call m2s_qqVVjj( 34, 1, lokt, x, p, v, rn, xuz, m2s)
 c pp -> W+-A (jj) -> ve e+- a (jj)
       CASE(WMAJ)

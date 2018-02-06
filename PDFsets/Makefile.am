@@ -22,3 +22,4 @@ $(top_builddir)/include/%.mod: libVBFNLOPDFsets_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

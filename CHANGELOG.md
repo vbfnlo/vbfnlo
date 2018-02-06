@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased] - 2018-XX-XX
+
+
+## [3.0.0 beta 5] - 2018-02-06
+
+### Major Enhancements
+* Large speed improvement in real-emission calculation of Hjjj production (processes 110-117)
+
+### Bug fixes
+* Fix two bugs in NLO calculation of Hjjj production (processes 110-117)
+* Fix number of active flavours in BLHA interface
+
 ## [3.0.0 beta 4] - 2017-04-19
 
 ### Bug fixes

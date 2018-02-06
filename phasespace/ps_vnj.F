@@ -423,6 +423,7 @@ C
       SUBROUTINE LIPSN(N,RD,RN,
      1                 K1,K2,Q,D1,D2,P,
      2                 X1,X2,W, NW)
+      use globalvars, only: ldoblha
       IMPLICIT NONE
 #include "VBFNLO/utilities/global.inc"
 c
@@ -621,7 +622,11 @@ C  corresponds to lowest dijet invariant mass
          IF (I.EQ.1) THEN
             PHI(I) = PI*(2*RN-1)
          ELSE
-            PHI(I) = PHI(I-1) + TPI*(R(J+3)+0.25d0)
+           if (ldoblha .and. NW.eq.1 .and. I.eq.N) then
+             PHI(I) = PHI(I-1) + TPI*(R(1)+0.25d0)
+           else
+             PHI(I) = PHI(I-1) + TPI*(R(J+3)+0.25d0)
+           endif
             if (phi(i).gt.pi) phi(i) = phi(i)-tpi
             if (phi(i).gt.pi) phi(i) = phi(i)-tpi
          ENDIF

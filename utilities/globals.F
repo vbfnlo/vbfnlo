@@ -6,6 +6,7 @@ c*************************************************************************
           use globalvars, only: lglobalprint, isggflo
           use readinput
 
+
       implicit none
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/scales.inc"
@@ -184,7 +185,6 @@ c read in some hidden options
       call read_logical("REDUCE_SUB_STAT", reduceSubStat,.true.,.true.)
 
       call read_logical("SHOWTIMING", showtiming, .true.)
-
 
       if (LOplusjet) then
          doNLO = .false.

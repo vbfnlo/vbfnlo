@@ -1,8 +1,12 @@
-AM_TESTS_ENVIRONMENT = \
-   VBFNLOPATH=$(top_builddir)/src/; export VBFNLOPATH; \
-	 TESTPATH=$(top_srcdir)/regress/; export TESTPATH;
-TESTS = makecheck.sh
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' \
+	VBFNLOPATH='$(top_builddir)/src/' \
+	TESTPATH='$(top_srcdir)/regress/' \
+	VBF_PDFSETS_PATH='$(abs_top_srcdir)/PDFsets/' \
+	$(SHELL) $(srcdir)/pytest-driver.sh
+TESTS = vbfnlo.test
 
+EXTRA_DIST = vbfnlo.test test_runs.py parsedat.py runs Readme.md pytest-driver.sh \
+	     check_results.py get_results make_runs.py modify_point_numbers
 
 ALLDIRS = \
   100_Hjj   \
@@ -71,6 +75,8 @@ ALLDIRS = \
   521_ZnuAA \
   530_AAA   \
   600_WWj   \
+  601_WphadWmj \
+  602_WpWmhadj \
   610_WmAj  \
   620_WpAj  \
   620_WpAj_anom \
@@ -98,6 +104,8 @@ ALLDIRS = \
   4360_GFZA    \
   4370_GFAA    \
   4600_GFWWj   \
+  4601_GFWphadWmj \
+  4602_GFWpWmhadj \
   4650_GFZZj   \
   191_AAjj_spin2 \
   195_Sp2jj_WW \
@@ -172,7 +180,6 @@ ALLDIRS = \
   3290_QCDZAjj_l \
   3291_QCDZAjj_nu
 
-
 INPUTFILES = `$(MAKE) -s --no-print-directory -C ../src printinputfiles`
 
 DIRS ?= $(ALLDIRS)
@@ -180,45 +187,46 @@ DIRS ?= $(ALLDIRS)
 copy-input: 
 	@for d in $(DIRS); do \
 	   if [ "$(top_srcdir)" != "$(top_builddir)" ]; then \
-	     cp -r $(top_srcdir)/regress/$$d .; \
+	     cp -r $(top_srcdir)/regress/runs/$$d .; \
        fi; \
 	   for i in $(INPUTFILES); do \
-	     if ! test -r $$d/$$i; then \
-	       cp $(top_srcdir)/src/$$i $$d/$$i; \
-	       echo $$d/$$i >>deletedat; \
+	     if ! test -r runs/$$d/$$i; then \
+	       cp $(top_srcdir)/src/$$i runs/$$d/$$i; \
+	       echo runs/$$d/$$i >>deletedat; \
 	     fi; \
 	   done; \
 	 done
 
 clean-local:
+	@rm -f test_runs.log
 	@rm -f `cat deletedat`
 	@rm -f deletedat
 	@for d in $(DIRS); do \
 	   if [ "$(top_srcdir)" != "$(top_builddir)" ]; then \
-	     rm -rf $$d; \
+	     rm -rf runs/$$d; \
 	   else \
-	     cd $$d; \
+	     cd runs/$$d; \
 	     rm -rf check_* grid* GRID xsection* *.gp core kkcheck.dat LoopTools.out; \
-	     cd ..; \
+	     cd ../..; \
        fi; \
 	 done
 
 run-all:
 	@for d in $(DIRS); do \
            pwd=`pwd`; \
-	   cd $$d; \
+	   cd runs/$$d; \
            num=`echo "$$d" | awk -F'_' '{print $$1}'`; \
 					 qsub -cwd -b y -N check_$$d $$pwd/../src/vbfnlo; \
-	   cd ..; \
+	   cd ../..; \
 	 done
 
 run-serial:
 	@for d in $(DIRS); do \
 	pwd=`pwd`; \
-	   cd $$d; \
+	   cd runs/$$d; \
            num=`echo "$$d" | awk -F'_' '{print $$1}'`; \
 					 $$pwd/../src/vbfnlo >check_$${d}.out; \
-	   cd ..; \
+	   cd ../..; \
 	done
 
 printalldirs:

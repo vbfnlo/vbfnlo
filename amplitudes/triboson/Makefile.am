@@ -1,5 +1,14 @@
 noinst_LTLIBRARIES = libtriboson.la
 libtriboson_la_SOURCES = \
+ud_www.inc \
+tensor.inc \
+du_zzw.inc \
+genps.inc \
+ud_zzw.inc \
+du_www.inc \
+genpsr.inc \
+dd_wwz.inc \
+uu_wwz.inc \
 m2s_qqZZWj.F  \
 m2s_qqZZZ.F   \
 m2s_qqWWZ.F   \
@@ -214,3 +223,4 @@ $(top_builddir)/include/%.mod: libtriboson_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

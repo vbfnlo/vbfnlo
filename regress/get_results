@@ -39,7 +39,7 @@ echo ""
 for process in $ALLDIRS
 do
 
-  cd ${process}
+  cd runs/${process}
   num=`echo "$process" | awk -F'_' '{print $1}'`
   aid=`echo "$process" | awk -F'_' '{print $3}'`
   NLO=1
@@ -103,7 +103,7 @@ do
     echo ""
     echo ""
   fi
-  cd ..
+  cd ../..
 
 done;
 

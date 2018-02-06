@@ -122,11 +122,11 @@ ccc   work these out! these do not work!
             dip(nd) = Tf *(msq_b(1,nd)+
      $           (cf-CAc/2d0)*msq_b(2,nd)/cf)*sub(qg,nd)*polcolqq
 c     
-            nd = 25
+            nd = 22
             dip(nd) = Tf *
      $           CAc/2d0*msq_b(2,nd)/cf*sub(qg,nd)*polcolqq
 c     
-            nd = 22
+            nd = 25
             dip(nd) = Tf *(msq_b(1,nd) +
      $           (cf-CAc/2d0)*msq_b(2,nd)/cf)*sub(qg,nd)*polcolqq
 c     

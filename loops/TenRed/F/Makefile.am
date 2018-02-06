@@ -14,3 +14,4 @@ $(top_builddir)/include/%.mod: libTIF_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

@@ -223,8 +223,8 @@ c but should work for other VBF processes as well
      &      + (-(als(1,1))/2d0/pi*                        ! -I
      &          (blha_CF*cvirtVV+  ! our cvirt contribution to I operator
      &            2d0*(blha_KQuark+blha_gammaQuark+ ! K, gamma from CS (C.28)
-     &                 blha_tgammaQuark+ ! catani convention to I operator
-     &                  (pi**2/6d0-1)*blha_CF) ) ! difference 1/Gamma(1-e) vs. Gamma(1+e)
+     &                 blha_tgammaQuark+ ! possible conversion term MSbar to DRbar
+     &                  (-pi**2/3d0-1)*blha_CF) ) ! remainder to get correct analytic result (pi**2-8)
      &         +als(1,1)/pi*                                       ! +(mu^2/2p1.p2)^epsilon
      &         (-blha_gammaQuark*lnmusqp1p2-blha_CF/2d0*lnmusqp1p2**2)
      &        )*tree(blha_idsubproc(blha_cursubproc,blha_curproc))

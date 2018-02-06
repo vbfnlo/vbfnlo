@@ -5,7 +5,8 @@ noinst_LTLIBRARIES += libFFquad.la
 endif
 
 #Note: this list differs from the one in the Makefile because of a duplicate entry and one with an undefined function.
-libFF_la_SOURCES =  \
+nodist_libFF_la_SOURCES = ff/ffinit.f
+dist_libFF_la_SOURCES =  \
 		ff/ff2dl2.f \
 		ff/ffabcd.f \
 		ff/ffca0.f \
@@ -37,7 +38,6 @@ libFF_la_SOURCES =  \
 		ff/ffdl2i.f \
 		ff/ffdl5p.f \
 		ff/ffdxc0.f \
-		ff/ffinit.f \
 		ff/ffrcvr.f \
 		ff/fftran.f \
 		ff/ffxb0.f \
@@ -63,24 +63,46 @@ libFF_la_SOURCES =  \
 		ff/ffxli2.f \
 		ff/ffxxyz.f
 
-libFF_la_FFLAGS = \
-                $(AM_FCFLAGS) -I$(builddir)/ff 
+libFF_la_FFLAGS = $(AM_FCFLAGS) -I$(builddir)/ff 
 
 FFdir = $(pkgdatadir)/ff
-dist_FF_DATA = \
-		ff/fferr.dat \
-		ff/ffwarn.dat 
+dist_FF_DATA = ff/fferr.dat ff/ffwarn.dat 
 
-BUILT_SOURCES = ff/ffinit.f 
+BUILT_SOURCES = ff/ffinit.f
+EXTRA_DIST = ff/ffinit.f.in ff/ff.h.in ff/aa.h.in \
+             FF.html \
+             convert.sh \
+             ff/Makefile \
+             ff/Makefile.old \
+             ff/README \
+             ff/aacbc.f \
+             ff/aaccc.f \
+             ff/aacinv.f \
+             ff/aaxbx.f \
+             ff/aaxcx.f \
+             ff/aaxdx.f \
+             ff/aaxex.f \
+             ff/aaxinv.f \
+             ff/ffcb2.f \
+             ff/ffcd0.f \
+             ff/ffcdbd.f \
+             ff/ffini.f \
+             ff/ffperm5.dat \
+             ff/fftest.f \
+             ff/npoin.f \
+             ff/npointes.f \
+             ff/npointes.out \
+             ff/spence.f \
+             ff/update \
+             ffmanual.tex 
 
 if WITH_QUAD
 # same as above with generated files
-libFFquad_la_SOURCES = $(libFF_la_SOURCES:.f=.quad.F) 
+nodist_libFFquad_la_SOURCES = $(nodist_libFF_la_SOURCES:.f=.quad.F) $(dist_libFF_la_SOURCES:.f=.quad.F) 
 
-libFFquad_la_FFLAGS = \
-                $(AM_FCFLAGS) -I$(builddir)/ff $(QUADFCFLAGS)
+libFFquad_la_FFLAGS = $(AM_FCFLAGS) -I$(builddir)/ff $(QUADFCFLAGS)
 
-BUILT_SOURCES += $(libFFquad_la_SOURCES)
+BUILT_SOURCES += $(nodist_libFFquad_la_SOURCES)
 endif
 
 ff/ffinit.f: $(srcdir)/ff/ffinit.f.in ff/ff.h ff/aa.h
@@ -442,7 +464,7 @@ ff/ffxxyz.quad.o: ff/ffxxyz.quad.F ff/ff.quad.h
 endif
 
 clean-local:
-	rm -f $(BUILT_SOURCES)
+	rm -f $(BUILT_SOURCES) ff/ff.quad.h ff/aa.h ff/ff.h
 
 #
 # This script generates the entries for the .quad.F files above
@@ -468,3 +490,4 @@ $(top_builddir)/include/%.mod: libFF_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST += Makefile.dep

@@ -625,9 +625,9 @@ c     variables for the integration loops
 c            print*,'lreaddata',lreaddata
 
          Select Case(procID)
-      CASE(WW,WPhadWMlep,WPlepWMhad,AA)
+      CASE(WW,WPhadWMlep,WPlepWMhad,AA,WWJ,WPHADWMJ,WPWMHADJ)
          Ncall = two**( N_points(0) -6 - N_iterations1 + iteration )
-      CASE(ZZ,ZZhad,ZA)
+      CASE(ZZ,ZZhad,ZA,ZZJ)
          Ncall = two**( N_points(0) -7 - N_iterations1 + iteration )
       CASE DEFAULT
          Ncall = two**( N_points(0) - N_iterations1 + iteration )

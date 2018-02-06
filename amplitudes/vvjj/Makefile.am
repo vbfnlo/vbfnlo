@@ -1,5 +1,15 @@
 noinst_LTLIBRARIES = libvbf.la
 libvbf_la_SOURCES = \
+tensor.inc \
+tensorz.inc \
+tampr-lists.inc \
+tensorsp2aa.inc \
+tampz-lists.inc \
+genps.inc \
+tampr_wpp_list.inc \
+gmunu.inc \
+tensorw.inc \
+tensorzn.inc \
 toza.F \
 toza_anomal.F \
 qqzaqq.F\
@@ -130,3 +140,4 @@ $(top_builddir)/include/%.mod: libvbf_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

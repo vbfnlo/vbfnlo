@@ -10,35 +10,41 @@ import shutil
 import subprocess
 import logging
 from distutils.util import strtobool
-import configparser
+import datetime
 import math
+import configparser
+
 import pytest
 
 # custom modules
 import parsedat
 
-alldirs = glob.glob(os.path.dirname(os.path.realpath(__file__))+'/[0-9]*')
-envtestdirs = os.getenv('TESTDIRS', None)
-if envtestdirs:
-    alldirs = envtestdirs.split(',')
+ENVTESTPATH = os.getenv('TESTPATH', os.path.dirname(os.path.realpath(__file__)))
+ENVTESTDIRS = os.getenv('TESTDIRS', 'runs/[0-9]*')
+TESTDIRS = glob.glob(os.path.join(ENVTESTPATH, ENVTESTDIRS))
+
 Run = collections.namedtuple('Run', ['xsec', 'err'])
 Diff = collections.namedtuple('Diff', ['ref', 'run', 'diff', 'err', 'reldiff', 'sigdiff'])
 
 
-@pytest.mark.parametrize('checkdir', alldirs)
+# iterate over all entries in TESTDIRS and use the dirname as label for the test
+@pytest.mark.parametrize('checkdir', TESTDIRS, ids=os.path.basename)
 def test_run(checkdir):
     "run a specific directory"
+    logging.basicConfig(filename='test_runs.log', level=logging.DEBUG)
+    logging.info('%s: %s', datetime.datetime.now(), checkdir)
 
     if not os.path.exists(checkdir + '/result_10_10.out'):
         pytest.skip("No low-statistic results for %s." % checkdir)
 
-    with tempfile.TemporaryDirectory() as rundir:
+    with tempfile.TemporaryDirectory(dir='.') as rundir:
+        logging.info("Rundir: %s", rundir)
+        logging.info("Abs rundir: %s", os.path.abspath(rundir))
         config = configparser.ConfigParser()
         config.read(checkdir + '/test.ini')
         setup_dir(config, checkdir, rundir)
 
-        conf = parsedat.readconf(rundir + '/vbfnlo.dat')
-        command = get_run_command(rundir, int(conf['PROCESS']))
+        command = get_run_command(rundir)
         try:
             out = subprocess.check_output(command, cwd=rundir).decode()
         except subprocess.CalledProcessError as exce:
@@ -48,11 +54,12 @@ def test_run(checkdir):
                     assert False
                 else:
                     pytest.skip("Process not compiled. Compile with --enable-processes=all to run the complete testsuite.")
-            print("Running %s in %s (%s) failed:" % (command, rundir, checkdir))
-            print('returncode: ' + str(exce.returncode))
-            print('stdout: ' + str(exce.output))
+            logging.error("Running %s in %s (%s) failed:" % (command, rundir, checkdir))
+            logging.error('returncode: ' + str(exce.returncode))
+            logging.error('stdout: ' + str(exce.output))
             assert False
 
+        conf = parsedat.readconf(rundir + '/vbfnlo.dat')
         run = get_cross_section(out, conf)
         resultfiles = glob.glob(checkdir + '/result_10_10*.out')
         referenceruns = [get_cross_section(fname, conf) for fname in resultfiles]
@@ -82,8 +89,8 @@ def setup_dir(config, checkdir, rundir, stat='low'):
     # check for existance of vbfnlo.dat except for [require] vbfnlo.dat = False in config
 
     if config.getboolean('copy', 'defaults', fallback=False):
-        runfiles = glob.glob('../src/*.dat')
-        logging.debug('Copying default %s.' % ', '.join(runfiles))
+        runfiles = glob.glob(os.path.join(ENVTESTPATH, '../src/*.dat'))
+        logging.debug('Copying default %s.', ', '.join(runfiles))
         for fname in runfiles:
             shutil.copy(fname, rundir)
     else:
@@ -93,32 +100,36 @@ def setup_dir(config, checkdir, rundir, stat='low'):
     if checkdir != rundir:
         runfiles = glob.glob(checkdir + '/*.dat')
         if runfiles:
-            logging.info('Copying %s.' % ', '.join(runfiles))
+            logging.info('Copying %s.', ', '.join(runfiles))
         for fname in runfiles:
             shutil.copy(fname, rundir)
+        for targetfile in glob.glob(rundir+'/*'):
+            os.chmod(targetfile, 0o600)  # for make distcheck, since there source is read-only
+        if not os.path.exists(os.path.join(rundir, 'procinfo.dat')):
+            shutil.copy(
+                os.path.join(ENVTESTPATH, '../src/procinfo.dat'),
+                os.path.join(rundir, 'procinfo.dat')
+            )
+
     if stat == 'low':
-        # TODO: loop with increading statistics
-        vars = {
+        inputvars = {
             'LO_POINTS': '10',
             'NLO_POINTS': '10',
             'LO_ITERATIONS': '1',
             'NLO_ITERATIONS': '1',
         }
-        for key, val in vars.items():
-            parsedat.replacemachine(rundir + '/vbfnlo.dat',
-                                    key, val, keep=False)
+        inputfile = os.path.join(rundir, 'vbfnlo.dat')
+        for key, val in inputvars.items():
+            parsedat.replacemachine(inputfile, key, val, keep=False)
 
 
-def get_run_command(rundir, procid):
-    cmd = 'vbfnlo'
-
-    vbfnlobin = os.getenv('VBFNLOPATH', None)
-    if vbfnlobin:
-        if os.path.isabs(vbfnlobin):
-            cmd = [os.path.join(vbfnlobin, cmd)]
-        else:
-            srcdir = os.path.abspath(os.path.curdir)
-            cmd = [os.path.join(srcdir, vbfnlobin, cmd)]
+def get_run_command(rundir, bin=None):
+    vbfnlobin = os.getenv('VBFNLOPATH', bin)
+    if not vbfnlobin.endswith('vbfnlo'):
+        vbfnlobin = os.path.join(vbfnlobin, 'vbfnlo')
+    cmd = [os.path.realpath(vbfnlobin)]
+    if not os.path.exists(cmd[0]):
+        raise Exception("VBFNLO binary not found. Use --bin argument or set VBFNLOPATH.")
 
     cmdprefix = os.getenv('CMDPREFIX', None)
     if cmdprefix:
@@ -127,26 +138,26 @@ def get_run_command(rundir, procid):
 
 
 # regular expressions to extract cross section from stdout output
-nlo_result_re = re.compile('final result at NLO\s*\n\s*'
-                           'sigma = \s*(?P<xsec>.*?)\s*'
-                           '\+-\s*(?P<err>.*?)\s*fb\s*(?P<percent>.*?)\s*%')
-lo_result_re = re.compile('result \(LO\):\s*(?P<xsec>.*?)\s*'
-                          '\+-\s*(?P<err>.*?)\s*fb\s*(?P<percent>.*?)\s*%')
+NLO_RESULT_RE = re.compile(r'final result at NLO\s*\n\s*'
+                           r'sigma = \s*(?P<xsec>.*?)\s*'
+                           r'\+-\s*(?P<err>.*?)\s*fb\s*(?P<percent>.*?)\s*%')
+LO_RESULT_RE = re.compile(r'result \(LO\):\s*(?P<xsec>.*?)\s*'
+                          r'\+-\s*(?P<err>.*?)\s*fb\s*(?P<percent>.*?)\s*%')
 
 
 def get_cross_section(source, conf):
     if len(source.splitlines()) == 1:
         # assume source is a filename
-        with open(source) as f:
-            out = f.read()
+        with open(source) as file:
+            out = file.read()
     else:
         # assume source contains the output lines
         out = source
     nlo = strtobool(conf['NLO_SWITCH'])
     if nlo:
-        match = nlo_result_re.search(out)
+        match = NLO_RESULT_RE.search(out)
     else:
-        match = lo_result_re.search(out)
+        match = LO_RESULT_RE.search(out)
     assert match, "Could not find cross section in output"
     xsec = float(match.groupdict()['xsec'])
     err = float(match.groupdict()['err'])
@@ -185,8 +196,8 @@ def compare_output(out, referenceout):
 
     outclean = [line for line in out.splitlines() if 'VBFNLO' not in line]
     foundmatch = False
-    for r in referenceout:
-        refclean = [line for line in r.splitlines() if 'VBFNLO' not in line]
+    for refout in referenceout:
+        refclean = [line for line in refout.splitlines() if 'VBFNLO' not in line]
         if '\n'.join(outclean) == '\n'.join(refclean):
             foundmatch = True
             return
@@ -194,4 +205,4 @@ def compare_output(out, referenceout):
         assert '\n'.join(outclean) == '\n'.join(refclean)
 
 if __name__ == "__main__":
-    print("This script should not be run directly, but by calling py.test in the regress folder.")
+    print("This script should not be run directly. Run 'make check' instead.")

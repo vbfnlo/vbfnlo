@@ -5,12 +5,15 @@
 
       function m2s_qqwzglu_hel(xi,p,v,nlo,pdfchange)
 
+      use globalvars, only: ldoblha
+
       implicit none
 
 
 #include "VBFNLO/utilities/global.inc"
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
 
       integer nlo,k
       logical pdfchange
@@ -18,6 +21,10 @@
 
       double precision helastestmom1(0:3,7),m2helastest(1),pdf(-6:6,2)
       double precision m2s_qqwzglu,m2s_wgaglu
+
+      double precision helasmom(0:3,8) !blha momenta
+      ! -- one entry more due to additional unused entry in MG
+      double precision res(1) !blha amplitude
 
       double precision dotrr
 
@@ -28,18 +35,18 @@
 
       call getyourscalesready(xi,p(0,1),v(0,1),pdfchange,pdf,nlo,1)!.true.)
 
-      if(.not.pdfchange) then
-      if ( init .eq. 0 .and. nlo.eq.0) then
+      if ( init .eq. 0 .and. nlo.eq.0 .and. .not. ldoblha) then
+        if(.not.pdfchange) then
 
-         write(6,*) ' '
-         write(6,*) 'W-Zj amplitude square information:'
-         write(6,*) '-----------------------------------------------'
-         write(6,*) ' '
-         write(6,*) ' '
-         write(6,*) '-----------------------------------------------'
+          write(6,*) ' '
+          write(6,*) 'W-Zj amplitude square information:'
+          write(6,*) '-----------------------------------------------'
+          write(6,*) ' '
+          write(6,*) ' '
+          write(6,*) '-----------------------------------------------'
 
-         call printnfl(.true.)
-      endif
+          call printnfl(.true.)
+        endif
       endif
       init=1
 
@@ -57,6 +64,57 @@
          helastestmom1(k,6)=v(k,3)
          helastestmom1(k,7)=v(k,4)
       enddo
+
+         !TODO implement blha_ranhelcomb, helicity argument to SUDBGEPVEMUPMUM 
+      if (ldoblha) then
+        helasmom(0:3,1:3) = p(0:3, 1:3)
+        helasmom(0:3,4:7) = v(0:3, 1:4) 
+
+        if (blha_fsign(3,blha_cursubproc,blha_curproc) == 1) then ! ubar d -> g
+          if (blha_physdiagmap(1,blha_cursubproc,blha_curproc) == 1) then ! d ubar -> g
+            helasmom(0:3,1) = p(0:3,2)
+            helasmom(0:3,2) = p(0:3,1)
+          endif
+          Call SUBDGEMVEBMUMMUP(helasmom, res)
+          res = res * 36d0 / 2d0
+        else 
+          if (blha_physdiagmap(1,blha_cursubproc,blha_curproc) == 3) then ! g d -> u
+            helasmom(0:3,1) = p(0:3,2)
+            helasmom(0:3,2) = p(0:3,1)
+          endif
+          if (blha_fsign(1,blha_cursubproc,blha_curproc) == 1) then ! d g -> u
+            Call SDGUBEMVEBMUMMUP(helasmom, res)
+            res = res * 96d0 / 2d0
+          else ! dbar g -> ubar
+             Call SUBGDBEMVEBMUMMUP(helasmom, res)
+             res = res * 96d0 / 2d0
+          endif
+        endif
+
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+res(1)
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      (blha_CA-2*blha_CF)*res(1)
+     &    )
+          ! 1-3
+          call BLHA_cctree(1,3,
+     &      -blha_CA*res(1)
+     &    )
+          ! 2-3
+          call BLHA_cctree(1,3,
+     &      -blha_CA*res(1)
+     &    )
+        else if (blha_amptype(blha_curproc).eq.3) then ! sctree
+          ! TODO
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+
+        return
+      endif
 
 
 !

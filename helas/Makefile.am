@@ -42,3 +42,4 @@ $(top_builddir)/include/%.mod: libHELAS_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

@@ -105,19 +105,35 @@ contains
 
     end subroutine
 
-    subroutine mpi_prepare_loop(ncall)
+    subroutine mpi_prepare_loop(iteration, ncall)
+        use monaco, only: rtype, RTYPE_XORSHIFT
         integer*8, intent(in) :: ncall
+        integer, intent(in) :: iteration
         integer*8 ncall_worker
+        integer i
+
         ncall_worker = ncall/vbfnlo_mpi_nprocs
-        ncall_start = (vbfnlo_mpi_myid - 1) * ncall_worker
         if (vbfnlo_mpi_myid == vbfnlo_mpi_masterid) then
             ! make sure the total number of calls adds up
             ncall_thisproc = ncall - (vbfnlo_mpi_nprocs-1) * ncall_worker
-            ncall_start =  ncall - ncall_thisproc
         else
             ncall_thisproc = ncall_worker
         endif
-        call jump_next_numbers(ncall_start)
+
+        if (rtype /= RTYPE_XORSHIFT) then
+            ncall_start = (vbfnlo_mpi_myid - 1) * ncall_worker
+            if (vbfnlo_mpi_myid == vbfnlo_mpi_masterid) then
+                ! make sure the total number of calls adds up
+                ncall_start =  ncall - ncall_thisproc
+            endif
+            call jump_next_numbers(ncall_start)
+        endif
+
+        if (rtype == RTYPE_XORSHIFT .and. iteration == 1) then ! only xorshift has a quick jump method
+            do i=1,vbfnlo_mpi_myid ! maximum here: 2**64
+                call xorshift_jump()
+            enddo
+        endif
         if (ldebug) then
             print*, 'MPI ID ', vbfnlo_mpi_myid, 'nstart', ncall_start, '+', ncall_thisproc, '/', ncall
         endif
@@ -126,13 +142,16 @@ contains
 
     subroutine mpi_after_loop(ncall)
         use monaco_rng_mz, only: monran_print_state
+        use monaco, only: rtype, RTYPE_XORSHIFT
         integer*8, intent(in) :: ncall
         call combine_grids()
         call monaco_end_of_iteration()
         ! print*, 'before jump'
         ! TODO: this jump is only to ensure we use exactly the same random numbers as for a single run; 
         ! it can probably be removed by using different seeds
-        call jump_next_numbers(ncall - ncall_thisproc - ncall_start)
+        if (rtype /= RTYPE_XORSHIFT) then
+            call jump_next_numbers(ncall - ncall_thisproc - ncall_start)
+        endif
         if (ldebug) call monran_print_state()
         ! print*, 'after jump'
         ! call monran_print_state()

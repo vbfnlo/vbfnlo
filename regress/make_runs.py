@@ -27,10 +27,11 @@ def make_runs(args):
         config.read(checkdir + '/test.ini')
         if args.stat == 'low':
             with tempfile.TemporaryDirectory() as rundir:
-                command, conf = setup_start_run(config, checkdir, rundir, args)
+                command = get_run_command(rundir, bin=args.bin)
                 if command is None:
                     continue
-                logging.debug('Starting run.')
+                conf = setup_start_run(config, checkdir, rundir, args)
+                logging.debug('Starting %s in %s.', ' '.join(command), rundir)
                 try:
                     out = subprocess.check_output(command, cwd=rundir).decode()
                     write_result(conf, checkdir, out, args)
@@ -40,9 +41,10 @@ def make_runs(args):
                     print('stdout: ' + str(exce.output))
         else:
             rundir = checkdir
-            command, conf = setup_start_run(config, checkdir, rundir, args)
+            command = get_run_command(rundir, bin=args.bin)
             if command is None:
                 continue
+            conf = setup_start_run(config, checkdir, rundir, args)
             logging.debug('Starting run.')
             send_qsub(command, rundir, args)
 
@@ -52,15 +54,13 @@ def setup_start_run(config, checkdir, rundir, args):
         setup_dir(config, checkdir, rundir, stat=args.stat)
         conf = parsedat.readconf(rundir + '/vbfnlo.dat')
     except (FileNotFoundError, AssertionError):
-        logging.warning("No input or reference run found in %s." % checkdir)
+        logging.warning("No input or reference run found in %s.", checkdir)
         return None, None
     if strtobool(conf['EWCOR_SWITCH']):
         logging.warning('Not using electroweak corrections at the moment.'
                         ' Skipping run.')
-        # TODO: fix this
         return None, None
-    command = get_run_command(rundir, int(conf['PROCESS']))
-    return command, conf
+    return conf
 
 
 def write_result(conf, checkdir, out, args):
@@ -76,7 +76,10 @@ def write_result(conf, checkdir, out, args):
 
 
 def send_qsub(command, rundir, args):
-    qsubcmd = ['qsub'] + args.qsubargs.split(' ') + ['-cwd', '-N', args.jobprefix + rundir] + command
+    qsubcmd = ['qsub'] 
+    if args.qsubargs:
+        qsubcmd += args.qsubargs.split(' ')
+    qsubcmd += ['-cwd', '-N', args.jobprefix + rundir.replace('/', '_')] + command
     subprocess.call(qsubcmd, cwd=rundir)
 
 
@@ -92,6 +95,9 @@ def parse_args():
                         default="result_10_10.out",
                         help='Filename for run output.'
                              ' Default: result_10_10.out')
+    parser.add_argument('--bin',
+                        help='Binary to use for runs.'
+                             'If empty, env VBFNLOPATH is used')
     parser.add_argument('--stat',
                         default="low",
                         help='Choose whether to run with low or high statistics.'
@@ -104,9 +110,9 @@ def parse_args():
                         help="additional arguments to give to qsub.")
     parser.add_argument('testdirs',
                         nargs="*",
-                        default=["[0-9]*"],
+                        default=["runs/[0-9]*"],
                         help='List of test directories, can be shell glob.'
-                             ' Default: [0-9]*')
+                             ' Default: runs/[0-9]*')
 
     return parser.parse_args()
 

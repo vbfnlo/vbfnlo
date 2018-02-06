@@ -1049,7 +1049,8 @@ $(top_srcdir)/utilities/integrals_CC.h:
 $(LOOPTOOLS_DIR)/include/looptools.h:
 
 # --- .deps/libVBFNLOUtilities_la-CC_pentagons.Plo ---
-CC_pentagons.o libVBFNLOUtilities_la-CC_pentagons.lo: CC_pentagons.F \
+CC_pentagons.o libVBFNLOUtilities_la-CC_pentagons.lo: \
+ $(top_srcdir)/utilities/CC_pentagons.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/abbr_CC.h \
@@ -1067,7 +1068,8 @@ $(top_srcdir)/utilities/integrals_CC.h:
 $(LOOPTOOLS_DIR)/include/looptools.h:
 
 # --- .deps/libVBFNLOUtilities_la-CC_qqV.Plo ---
-CC_qqV.o libVBFNLOUtilities_la-CC_qqV.lo: CC_qqV.F \
+CC_qqV.o libVBFNLOUtilities_la-CC_qqV.lo: \
+ $(top_srcdir)/utilities/CC_qqV.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/abbr_CC.h \
@@ -1109,13 +1111,15 @@ cmd_args.o libVBFNLOUtilities_la-cmd_args.lo ../include/cmd_args.mod: \
  $(top_srcdir)/utilities/cmd_args.F90 \
  $(top_srcdir)/utilities/global.inc \
  ../include/vbfnloversion.mod ../include/readinput.mod \
- ../include/vbfnloversion.mod
+ ../include/globalvars.mod ../include/vbfnloversion.mod
 
 $(top_srcdir)/utilities/global.inc:
 
 ../include/vbfnloversion.mod:
 
 ../include/readinput.mod:
+
+../include/globalvars.mod:
 
 ../include/vbfnloversion.mod:
 
@@ -1186,7 +1190,7 @@ dotproducts.o libVBFNLOUtilities_la-dotproducts.lo: \
 
 # --- .deps/libVBFNLOUtilities_la-ew_formfactors.Plo ---
 ew_formfactors.o libVBFNLOUtilities_la-ew_formfactors.lo: \
- ew_formfactors.F \
+ $(top_srcdir)/utilities/ew_formfactors.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(LOOPTOOLS_DIR)/include/looptools.h \
  $(top_srcdir)/utilities/global.inc
@@ -1198,7 +1202,8 @@ $(LOOPTOOLS_DIR)/include/looptools.h:
 $(top_srcdir)/utilities/global.inc:
 
 # --- .deps/libVBFNLOUtilities_la-ew_qqV_eff.Plo ---
-ew_qqV_eff.o libVBFNLOUtilities_la-ew_qqV_eff.lo: ew_qqV_eff.F \
+ew_qqV_eff.o libVBFNLOUtilities_la-ew_qqV_eff.lo: \
+ $(top_srcdir)/utilities/ew_qqV_eff.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(top_srcdir)/utilities/global.inc \
  $(LOOPTOOLS_DIR)/include/looptools.h
@@ -1239,7 +1244,8 @@ FCtools.o libVBFNLOUtilities_la-FCtools.lo: \
 $(top_srcdir)/utilities/global.inc:
 
 # --- .deps/libVBFNLOUtilities_la-FHiggs.Plo ---
-FHiggs.o libVBFNLOUtilities_la-FHiggs.lo: FHiggs.F \
+FHiggs.o libVBFNLOUtilities_la-FHiggs.lo: \
+ $(top_srcdir)/utilities/FHiggs.F \
  $(top_srcdir)/utilities/SLHA.h \
  $(top_srcdir)/utilities/SLHADefs.h \
  $(top_srcdir)/utilities/mssm.inc \
@@ -1267,9 +1273,12 @@ finitecoll.o libVBFNLOUtilities_la-finitecoll.lo: \
 $(top_srcdir)/utilities/global.inc:
 
 # --- .deps/libVBFNLOUtilities_la-getPaths.Plo ---
-getPaths.o libVBFNLOUtilities_la-getPaths.lo: getPaths.F90 \
- ../include/readinput.mod ../include/readinput.mod \
+getPaths.o libVBFNLOUtilities_la-getPaths.lo: \
+ $(top_srcdir)/utilities/getPaths.F90 \
+ VBFNLOConfig.h ../include/readinput.mod ../include/readinput.mod \
  ../include/readinput.mod
+
+VBFNLOConfig.h:
 
 ../include/readinput.mod:
 
@@ -2601,7 +2610,8 @@ $(top_srcdir)/utilities/process.inc:
 $(top_srcdir)/utilities/mssm.inc:
 
 # --- .deps/libVBFNLOUtilities_la-mat_elCC+.Plo ---
-mat_elCC+.o libVBFNLOUtilities_la-mat_elCC+.lo: mat_elCC+.F \
+mat_elCC+.o libVBFNLOUtilities_la-mat_elCC+.lo: \
+ $(top_srcdir)/utilities/mat_elCC+.F \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/abbr_CC.h \
  $(top_srcdir)/utilities/integrals_CC.h \
@@ -2619,7 +2629,8 @@ $(top_srcdir)/utilities/mssm.inc:
 $(LOOPTOOLS_DIR)/include/looptools.h:
 
 # --- .deps/libVBFNLOUtilities_la-mat_elNC+.Plo ---
-mat_elNC+.o libVBFNLOUtilities_la-mat_elNC+.lo: mat_elNC+.F \
+mat_elNC+.o libVBFNLOUtilities_la-mat_elNC+.lo: \
+ $(top_srcdir)/utilities/mat_elNC+.F \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/integrals_NC.h \
  $(top_srcdir)/utilities/mssm.inc \
@@ -2661,8 +2672,9 @@ monaco.o libVBFNLOUtilities_la-monaco.lo ../include/monaco.mod: \
  $(top_srcdir)/utilities/monaco.F90 \
  ../include/VBFNLO/utilities/global.inc ../include/globalvars.mod \
  ../include/monaco_rng_mz.mod ../include/monaco_rng_sob.mod \
- ../include/monaco_rng_mz.mod ../include/monaco_rng_sob.mod \
- ../include/monaco_rng_mz.mod ../include/monaco_rng_sob.mod
+ ../include/globalvars.mod ../include/monaco_rng_mz.mod \
+ ../include/monaco_rng_sob.mod ../include/monaco_rng_mz.mod \
+ ../include/monaco_rng_sob.mod
 
 ../include/VBFNLO/utilities/global.inc:
 
@@ -2671,6 +2683,8 @@ monaco.o libVBFNLOUtilities_la-monaco.lo ../include/monaco.mod: \
 ../include/monaco_rng_mz.mod:
 
 ../include/monaco_rng_sob.mod:
+
+../include/globalvars.mod:
 
 ../include/monaco_rng_mz.mod:
 
@@ -2694,7 +2708,8 @@ monaco_rng_sob.o libVBFNLOUtilities_la-monaco_rng_sob.lo \
  $(top_srcdir)/utilities/monaco_rng_sob.F90
 
 # --- .deps/libVBFNLOUtilities_la-NC_boxes.Plo ---
-NC_boxes.o libVBFNLOUtilities_la-NC_boxes.lo: NC_boxes.F \
+NC_boxes.o libVBFNLOUtilities_la-NC_boxes.lo: \
+ $(top_srcdir)/utilities/NC_boxes.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/abbr_NC.h \
@@ -2712,7 +2727,8 @@ $(top_srcdir)/utilities/integrals_NC.h:
 $(LOOPTOOLS_DIR)/include/looptools.h:
 
 # --- .deps/libVBFNLOUtilities_la-NC_pentagons.Plo ---
-NC_pentagons.o libVBFNLOUtilities_la-NC_pentagons.lo: NC_pentagons.F \
+NC_pentagons.o libVBFNLOUtilities_la-NC_pentagons.lo: \
+ $(top_srcdir)/utilities/NC_pentagons.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/abbr_NC.h \
@@ -2730,7 +2746,8 @@ $(top_srcdir)/utilities/integrals_NC.h:
 $(LOOPTOOLS_DIR)/include/looptools.h:
 
 # --- .deps/libVBFNLOUtilities_la-NC_qqV.Plo ---
-NC_qqV.o libVBFNLOUtilities_la-NC_qqV.lo: NC_qqV.F \
+NC_qqV.o libVBFNLOUtilities_la-NC_qqV.lo: \
+ $(top_srcdir)/utilities/NC_qqV.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/abbr_NC.h \
@@ -2747,9 +2764,9 @@ $(top_srcdir)/utilities/integrals_NC.h:
 
 $(LOOPTOOLS_DIR)/include/looptools.h:
 
-# --- .deps/libVBFNLOUtilities_la-output.Plo ---
-output.o libVBFNLOUtilities_la-output.lo ../include/stdoutredirect.mod: \
- $(top_srcdir)/utilities/output.F90
+# --- .deps/libVBFNLOUtilities_la-stdoutredirect.Plo ---
+stdoutredirect.o libVBFNLOUtilities_la-stdoutredirect.lo ../include/stdoutredirect.mod: \
+ $(top_srcdir)/utilities/stdoutredirect.F90
 
 # --- .deps/libVBFNLOUtilities_la-parameters.Plo ---
 parameters.o libVBFNLOUtilities_la-parameters.lo: \
@@ -2784,11 +2801,15 @@ $(top_srcdir)/utilities/BLHAhelper.inc:
 ../include/globalvars.mod:
 
 # --- .deps/libVBFNLOUtilities_la-pdfsets.Plo ---
-pdfsets.o libVBFNLOUtilities_la-pdfsets.lo: pdfsets.F90 \
+pdfsets.o libVBFNLOUtilities_la-pdfsets.lo: \
+ $(top_srcdir)/utilities/pdfsets.F90 \
+ VBFNLOConfig.h \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/Apdf.inc \
  $(top_srcdir)/utilities/process.inc \
  ../include/globalvars.mod ../include/readinput.mod
+
+VBFNLOConfig.h:
 
 $(top_srcdir)/utilities/global.inc:
 
@@ -2851,15 +2872,17 @@ $(top_srcdir)/utilities/global.inc:
 
 # --- .deps/libVBFNLOUtilities_la-random.Plo ---
 random.o libVBFNLOUtilities_la-random.lo: \
- $(top_srcdir)/utilities/random.F \
+ $(top_srcdir)/utilities/random.F90 \
  $(top_srcdir)/utilities/global.inc \
- ../include/globalvars.mod ../include/readinput.mod
+ ../include/globalvars.mod ../include/readinput.mod ../include/monaco.mod
 
 $(top_srcdir)/utilities/global.inc:
 
 ../include/globalvars.mod:
 
 ../include/readinput.mod:
+
+../include/monaco.mod:
 
 # --- .deps/libVBFNLOUtilities_la-readinput.Plo ---
 readinput.o libVBFNLOUtilities_la-readinput.lo ../include/readinput.mod: \
@@ -2898,7 +2921,7 @@ $(top_srcdir)/utilities/BLHAhelper.inc:
 
 # --- .deps/libVBFNLOUtilities_la-renormalisation.Plo ---
 renormalisation.o libVBFNLOUtilities_la-renormalisation.lo: \
- renormalisation.F \
+ $(top_srcdir)/utilities/renormalisation.F \
  $(top_srcdir)/utilities/mssm.inc \
  $(top_srcdir)/utilities/global.inc \
  $(LOOPTOOLS_DIR)/include/looptools.h
@@ -4528,7 +4551,7 @@ $(ROOTPATH)/include/root/Match.h:
 
 # --- .deps/libVBFNLOUtilities_la-scales.Plo ---
 scales.o libVBFNLOUtilities_la-scales.lo: \
- $(top_srcdir)/utilities/scales.F \
+ $(top_srcdir)/utilities/scales.F90 \
  $(top_srcdir)/utilities/scales.inc \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/koppln.inc \
@@ -4650,10 +4673,14 @@ $(top_srcdir)/utilities/hist.inc:
 
 # --- .deps/libVBFNLOUtilities_la-vbfnloversion.Plo ---
 vbfnloversion.o libVBFNLOUtilities_la-vbfnloversion.lo \
- ../include/vbfnloversion.mod: vbfnloversion.F90 \
+ ../include/vbfnloversion.mod: \
+ $(top_srcdir)/utilities/vbfnloversion.F90 \
+ vbfnloversion.inc \
  $(top_srcdir)/utilities/global.inc \
  $(top_srcdir)/utilities/process.inc \
  ../include/readinput.mod
+
+vbfnloversion.inc:
 
 $(top_srcdir)/utilities/global.inc:
 

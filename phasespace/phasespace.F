@@ -123,7 +123,7 @@ c         call def_ps_vnj(6)   !take this line instead of the previous one if
 #endif
 
 #ifdef WITH_DIBOSONJET
-      CASE(WWJ,GFWWj)
+      CASE(WWJ,WPHADWMJ,WPWMHADJ,GFWWj,GFWPHADWMJ,GFWPWMHADJ)
          call def_ps_qqVVj(3,4)
       CASE(WMAJ,WPAJ)
          call def_ps_vnj(3)
@@ -660,7 +660,7 @@ c flipped because for GFZA only PS1 relevant
 #endif
 
 #ifdef WITH_DIBOSONJET
-      CASE(WWJ,GFWWj)
+      CASE(WWJ,WPHADWMJ,WPWMHADJ,GFWWj,GFWPHADWMJ,GFWPWMHADJ)
          call LIPSVVJ(n_p-nx,rand,rn,
      1                p(0,1,1), p(0,2,1),
      2                v(0,1,1),p(0,3,1),

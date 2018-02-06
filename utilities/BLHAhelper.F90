@@ -39,8 +39,8 @@
 !     SUBROUTINE BLHA_amptypeerror(amptype,filename,lineno)
 !*************************************************************************  
 
-      SUBROUTINE BLHA_initialize()
-          use globalvars, only: lglobalprint, ldoscales, ldoblha
+      recursive SUBROUTINE BLHA_initialize()
+          use globalvars, only: lglobalprint, ldoscales, ldoblha, seed
           use readinput, only: inputpath, pdfpath
 !*************************************************************************
 !     Initialize variables
@@ -74,6 +74,7 @@
         blha_numproc = 0
         blha_lastprocID = 0
         blha_Nc = 3
+        nfl = 5
         blha_pssubproc = 1
 
         ldoscales = .false.
@@ -91,6 +92,7 @@
         pdflib = 0
         inputpath=""
         pdfpath=""
+        sub_number = 1
 
         blha_wwidth = -1
         blha_zwidth = -1
@@ -105,7 +107,8 @@
         blha_ewfac  = -1
         blha_alphas = -1
 
-        call InitRandomNumbers(7782)
+        seed = 7782
+        call InitRandomNumbers()
 
 ! default values of parameters
         xmt = 172.4d0
@@ -422,6 +425,11 @@
         call BLHA_setNc(int(re))
         ierr = 1
         return
+!cc number of light flavours
+      elseif (trim(para).eq."Nf") then
+        call BLHA_setNf(int(re))
+        ierr = 1
+        return
 !cc Unknown parameter
       else
         ierr = -2
@@ -615,6 +623,10 @@
 !cc number of colours
       elseif (trim(para).eq."Nc") then
         re = blha_Nc
+        ierr = 1
+!cc number of light flavours
+      elseif (trim(para).eq."Nf") then
+        re = nfl
         ierr = 1
 !cc Unknown parameter
       else
@@ -819,6 +831,9 @@
       else if ((nparton .eq. 5) .and. (orderAlphas .eq. 1)) then
 ! VBF+j
         call MomMapping_VBF5(pdgparton,mapparton)
+      else if ((nparton .eq. 6) .and. (orderAlphas .eq. 2)) then
+! VBF+2j
+        call MomMapping_VBF6(pdgparton,mapparton)
       else if ((nparton .eq. 2) .and. (orderAlphas .eq. 0)) then
 ! QCD+0j
         call MomMapping_QCD(pdgparton, mapparton, nparton)
@@ -1382,7 +1397,7 @@
 
       integer Nf
 
-      blha_Nf=Nf
+      nfl = Nf
       call BLHA_setNc(blha_Nc)
 
       return
@@ -1415,9 +1430,9 @@
         blha_CF = (blha_Nc**2-1)/(2d0*blha_Nc)
       endif
       blha_gammaQuark = 3/2d0*blha_CF
-      blha_gammaGluon = 11/6d0*blha_CA-1/3d0*blha_Nf
+      blha_gammaGluon = 11/6d0*blha_CA-1/3d0*nfl
       blha_KQuark = (7/2d0-pi**2/6d0)*blha_CF
-      blha_KGluon = (67/18d0-pi**2/6d0)*blha_CA-5/9d0*blha_Nf
+      blha_KGluon = (67/18d0-pi**2/6d0)*blha_CA-5/9d0*nfl
       if (blha_DR) then
         blha_tgammaQuark = -blha_CF/2d0  
         blha_tgammaGluon = -blha_CA/6d0

@@ -10,12 +10,14 @@ module cmd_args
 !*************************************************************************  
         use VBFNLOVersion, only: setVersion, vbfnloversionstring
         use readinput, only: inputpath, pdfpath
+        use globalvars, only: seed
       implicit none
       character*250 s, sorig
       integer narg,i,j,k,le
       
 #include "global.inc"
 
+      seed=0
       inputpath=""
       pdfpath=""
 
@@ -46,6 +48,8 @@ module cmd_args
                 inputpath=s(le+1:len(s))
             elseif (s(1:le-1).eq."PDFSETS") then
                 pdfpath=s(le+1:len(s))
+            elseif (s(1:le-1).eq."SEED") then
+                read(s(le+1:len(s)), *) seed
             elseif (s(1:le-1).eq."VERSION") then
                 call setVersion
                 print *, "VBFNLO ", trim(vbfnloversionstring)

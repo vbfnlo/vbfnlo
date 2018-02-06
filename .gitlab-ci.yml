@@ -1,6 +1,6 @@
 ---
 
-image: particlekit/opensuse-gfortran:42.2
+image: particlekit/opensuse-gfortran
 
 cache:
   # Cache build results to speedup compilation
@@ -11,7 +11,7 @@ cache:
   # CI_BUILD_REF_NAME: "master" name of branch name
   # CI_BUILD_NAME: "compile:foo" name of job
   # ensures that the same configure/make job on the same branch uses the cache but nothing else
-  key: "$CI_BUILD_NAME/$CI_BUILD_REF_NAME"
+  key: "$CI_BUILD_NAME-$CI_BUILD_REF_NAME"
 
 compile:opensuse:
   stage: build
@@ -37,6 +37,31 @@ compile:opensuse:
     paths:
       - inst
       - config.log
+
+compile:makedistcheck:
+  stage: build
+  only:
+    - master
+  script:
+    - mkdir -p build
+    - autoreconf -vi
+    - cd build
+    - ../configure --enable-NLO --enable-processes=all
+      --enable-kk --enable-madgraph --enable-quad --with-LHAPDF
+      --prefix=$(realpath $PWD/../inst)
+    - make distcheck || ( tail -n +1 -- */_build/regress/*.log && false )
+
+compile:nooptionsmakecheck:
+  stage: build
+  only:
+    - master
+  script:
+    - mkdir -p build
+    - autoreconf -vi
+    - cd build
+    - ../configure --prefix=$(realpath $PWD/../inst)
+    - make
+    - make check || ( tail -n +1 -- regress/*.log && false )
 
 compile:ubuntu:
   image: particlekit/ubuntu-gfortran

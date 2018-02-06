@@ -29,3 +29,4 @@ $(top_builddir)/include/%.mod: libDiagramsBoxL_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

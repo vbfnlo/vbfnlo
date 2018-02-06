@@ -31,6 +31,7 @@ c declare input/output variables
 #include "tensor.inc"
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/process.inc"
 
       integer bos
       real*8 xi(nx), p(0:3,max_p,max_kin), v(0:3,max_v,max_kin), 
@@ -64,6 +65,11 @@ c declare local variables
 
       integer init/0/, I, J, mu
       save init
+
+c declare variables for hadronic decay 
+      integer N_gen_W
+      real*8 fac_W, mjj2
+      external mjj2
 
 c matrix elements
 c indices denote 
@@ -205,10 +211,19 @@ c all kinematics which have unshifted lepton momenta (all but initial-initial)
          qm(4,J) = dotrr(qm(0,J),qm(0,J))
          qww(4,J) = dotrr(qww(0,J),qww(0,J))         
 
+         SELECT CASE(process)     
+         CASE(WPHADWMJ, WPWMHADJ, WpHadWmJJLO, WpwMHadJJLO)
+c hadronic tensors
+           call DIBOSZtoQQll(v(0,1,J), J, zww(0,J))
+           call DIBOSAtoQQll(v(0,1,J), J, aww(0,J))
+
+         CASE DEFAULT
+
 c leptonic tensors
 
-         call DIBOSatoww(v(0,1,J),J,aww(0,J))
-         call DIBOSztoww(v(0,1,J),J,zww(0,J))
+           call DIBOSatoww(v(0,1,J),J,aww(0,J))
+           call DIBOSztoww(v(0,1,J),J,zww(0,J))
+         END SELECT
 c define epsilon~ = espilon - k * k.epsilon/M**2 
          help1c = -zm2i(2) * dotrc(qww(0,J),zww(0,J))
          do mu=0,3
@@ -261,12 +276,20 @@ c then the four initial-initial kinematics with shifted lepton momenta
            enddo
            qp(4,J) = dotrr(qp(0,J),qp(0,J))
            qm(4,J) = dotrr(qm(0,J),qm(0,J))
-           qww(4,J) = dotrr(qww(0,J),qww(0,J))         
+           qww(4,J) = dotrr(qww(0,J),qww(0,J))    
 
+           SELECT CASE(process)     
+           CASE(WPHADWMJ, WPWMHADJ, WpHadWmJJLO, WpwMHadJJLO)
+c hadronic tensors
+             call DIBOSZtoQQll(v(0,1,J), J, zww(0,J))
+             call DIBOSAtoQQll(v(0,1,J), J, aww(0,J))
+
+           CASE DEFAULT     
 c leptonic tensors
+             call DIBOSatoww(v(0,1,J),J,aww(0,J))
+             call DIBOSztoww(v(0,1,J),J,zww(0,J))
+           END SELECT
 
-           call DIBOSatoww(v(0,1,J),J,aww(0,J))
-           call DIBOSztoww(v(0,1,J),J,zww(0,J))
 c define epsilon~ = espilon - k * k.epsilon/M**2 
            help1c = -zm2i(2) * dotrc(qww(0,J),zww(0,J))
            do mu=0,3
@@ -1763,6 +1786,24 @@ c c C: 43 15
        endif 
 
 c*****************  end of process evaluation  *********************
+
+c multiply results with hadronic factor
+      SELECT CASE(procid)
+      CASE(WPhadWMj)
+       call hadDecayFactor_W(finalquarks(1), abs(mjj2(v(0,1,1),v(0,2,1))), N_gen_W, fac_W)
+       do j=0,n_kin
+        DO IRES = 1,NMAX
+          res(IRES,j) = res(IRES,j) * fac_W            ! factor fac_W for hadronic decay
+        ENDDO
+       enddo
+      CASE(WPWMhadj)
+       call hadDecayFactor_W(finalquarks(1), abs(mjj2(v(0,3,1),v(0,4,1))), N_gen_W, fac_W)
+       do j=0,n_kin
+        DO IRES = 1,NMAX
+          res(IRES,j) = res(IRES,j) * fac_W
+        ENDDO
+       enddo
+      END SELECT
 
 c sum into column 0 which steers integration
       do ires = 1,nmax

@@ -40,7 +40,8 @@
      &     WPhadWMjj, WPhadZjj, WPhadWMZ, ZZWPhad, WPhadWMWP, WMWPhadWM, WPhadZJ,
      &     Hjj_WPhadWM, WPhadWPjj,
      &     WMhadWMjj,
-     &     WPhadWMA, WPhadZA)  ! WMWM is calculated using WPWP
+     &     WPhadWMA, WPhadZA,
+     &     WPhadWMj,GFWPhadWMj)  ! WMWM is calculated using WPWP
         ! set couplings for W+ hadronic decay
         GWP_ZUN(1) = GZU(1)
         GWP_ZUN(2) = GZU(2)
@@ -53,7 +54,8 @@
       CASE(WPlepWMhad,GFWPlepWMhad,WMhadZ,
      &     WPWMhadjj, WMhadZjj, WPWMhadZ, ZZWMhad, WPWMhadWP, WMhadWPWM, WMhadZJ,
      &     Hjj_WPWMhad,
-     &     WPWMhadA, WMhadZA)
+     &     WPWMhadA, WMhadZA,
+     &     WPWMhadj,GFWPWMhadj)
         ! set couplings for W- hadronic decay
         GWM_ZUN(1) = GZU(1)
         GWM_ZUN(2) = GZU(2)

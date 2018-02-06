@@ -2982,6 +2982,10 @@ c 4 quark flavors and subprocess number
          lnup(listposition)=numParticles-1
       case(Hjj,Ajj)             
          lnup(listposition)=numParticles-3
+      case(HHjj) ! modif julien
+         lnup(listposition)=numParticles-2
+      case(HHjj_bbtau,HHjj_bbAA) ! modif julien
+         lnup(listposition)=numParticles+2
       case(HAjj)
          lnup(listposition)=numParticles-2
       case(HAjj_AA, HAjj_mu, HAjj_tau, HAjj_bbar)

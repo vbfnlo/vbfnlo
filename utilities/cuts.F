@@ -65,7 +65,8 @@ c     (common block semilepcuts in cuts.inc)
      &    ZZZhad, WPhadWMlep, WPlepWMhad, GFWPhadWMlep, GFWPlepWMhad, ZZhad,
      &    GFZZhad, WPhadZ, WPZhad, WMhadZ, WMZhad,
      &    Hjj_WPhadWM, Hjj_WPWMhad, Hjj_ZZhad,
-     &    WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA)
+     &    WPhadWMA, WPWMhadA, ZZhadA, WPhadZA, WPZhadA, WMhadZA, WMZhadA,
+     &    WPHADWMJ,WPWMHADJ,WMhadZJ,WMZhadJ,WPhadZJ,WPZhadJ)
          semileptonic = .true.
       case default
          semileptonic = .false.
@@ -76,7 +77,7 @@ c     (common block techcuts in process.inc)
       SELECT CASE(procID)
       CASE(WPZhadjj, WMZhadjj, ZZhadjj, WWZhad, ZZhadWP, ZZhadWM, 
      &     ZZZhad, ZZhad, GFZZhad, WPZhad, WMZhad, Hjj_ZZhad,
-     &     ZZhadA, WPZhadA, WMZhadA)
+     &     ZZhadA, WPZhadA, WMZhadA,WMZhadJ,WPZhadJ)
          zdecay_had = .true.           ! true for all processes with hadronically decaying Z 
       case default
          zdecay_had = .false.
@@ -643,6 +644,27 @@ c...maximum lepton rapidity and minimum lepton pt
      &   ( (abs(leptons(6,i)).lt.ymax_l).and.(ptlepton(i).gt.ptlmin(i)))
 *     &   .and.(ptlepton(i).le.ptlmax(i)) )  
       enddo
+!c apply lepton cuts also to neutrinos for debugging
+!      do i=1, n_v
+!        ptlepton(i) = 0d0
+!      enddo
+!      do i=1, ninv
+!        do j=1,i
+!          if (ptlepton(j).lt.invisible(5,i)) then
+!            do k=i-1,j,-1
+!              ptlepton(k+1)=ptlepton(k)
+!            enddo
+!            ptlepton(j) = invisible(5,i)
+!            exit
+!          endif
+!        enddo
+!      enddo
+!      do i=1, ninv
+!         pass_cuts=pass_cuts.and. 
+!     &   ( (abs(invisible(6,i)).lt.ymax_l).and.(ptlepton(i).gt.ptlmin(i)))
+!*     &   .and.(ptlepton(i).le.ptlmax(i)) )  
+!      enddo
+!c end
 
 c...cut on minimum pt of invisible particles
 c$$$      do i=1, ninv
@@ -813,6 +835,13 @@ c...minimal missing transverse momentum
             mom(j) = mom(j) + jets(j,i)
          enddo
       enddo
+c Alternative using transverse momenta of invisible particles (neutrinos, stable BSM particles like LSP)
+c      do j = 1,2  ! only transverse elements relevant
+c         mom(j) = 0d0
+c         do i = 1,ninv
+c            mom(j) = mom(j) + invisible(j,i)
+c         enddo
+c      enddo
       pass_cuts = pass_cuts .and. (sqrt(mom(1)**2+mom(2)**2).ge.ptmiss_min)
 
 

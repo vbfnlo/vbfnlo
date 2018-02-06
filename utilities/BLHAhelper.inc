@@ -21,7 +21,7 @@
        double precision blha_gammaQuark, blha_gammaGluon
        double precision blha_tgammaQuark, blha_tgammaGluon
        double precision blha_KQuark, blha_KGluon
-       integer blha_Nc, blha_Nf
+       integer blha_Nc
        integer blha_ewrenormscheme
        logical blha_recomp, blha_DR, blha_ranhelsum
        logical blha_couplingsoff, blha_anomcoupl
@@ -34,7 +34,7 @@
        common/BLHA_parameters/ blha_gammaQuark, blha_gammaGluon
        common/BLHA_parameters/ blha_tgammaQuark, blha_tgammaGluon
        common/BLHA_parameters/ blha_KQuark, blha_KGluon
-       common/BLHA_parameters/ blha_Nc, blha_Nf
+       common/BLHA_parameters/ blha_Nc
        common/BLHA_parameters/ blha_ewrenormscheme
        common/BLHA_parameters/ blha_recomp, blha_DR, blha_ranhelsum
        common/BLHA_parameters/ blha_couplingsoff, blha_anomcoupl

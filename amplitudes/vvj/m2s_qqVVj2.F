@@ -25,7 +25,10 @@ c
 #include "VBFNLO/utilities/kkcoupl.inc"
 #include "VBFNLO/utilities/scales.inc"
 #include "VBFNLO/utilities/lha.inc"
+#include "VBFNLO/utilities/process.inc"
 #include "tensor.inc"
+
+      
 
       integer bos, nlo, ps_number
       real*8 xi(nx), p(0:3,max_p), v(0:3,n_v,11), rn(1), m2s
@@ -56,8 +59,18 @@ c declare variables for summation process
 
       integer FSIGN(n_p+n_v), gsign, physToDiag(3), nmin, nmax
       save nmax
+
+c declare variables for hadronic decay 
+      integer N_gen_W
+      real*8 fac_W, mjj2
+      external mjj2
 c
-c store contributions from subprocess ip in res(ip) where
+c store contributions from subprocess ip in res(ip,ID) where
+c  ID = 1  : the real emission |M|^2 * pdf
+c     = 2,3: subtraction terms for emision off upper or lower line
+c     = 0  : subtracted result which drives integration, i.e
+c res(*,0) = res(*,1)+res(*,2)+res(*,3)
+
       real*8 res(maxnumsubproc)
 c
 c declare parton distribution variables
@@ -108,10 +121,10 @@ c...Les Houches interface
 
 c for WW->4l precalculate A->WW,Z->WW,AZ->WW etc leptonic tensors
 
-      CALL IXXXXX(v(0,2,1),ZERO ,1,-1,wep(1,1)) !W(1,4))          !e+       
-      CALL OXXXXX(v(0,1,1),ZERO ,-1,1,wve(1,1)) !W(1,3))          !ve 
-      CALL OXXXXX(v(0,3,1),ZERO ,-1,1,wmu(1,1)) !W(1,5))          !mu-      
-      CALL IXXXXX(v(0,4,1),ZERO ,1,-1,wvm(1,1)) !W(1,6))          !vm~
+      CALL IXXXXX(v(0,2,1),ZERO ,1,-1,wep(1,1)) !W(1,4))       !e+  | e+ | d~ 
+      CALL OXXXXX(v(0,1,1),ZERO ,-1,1,wve(1,1)) !W(1,3))       !ve  | ve | u
+      CALL OXXXXX(v(0,3,1),ZERO ,-1,1,wmu(1,1)) !W(1,5))       !mu- | d  | e-
+      CALL IXXXXX(v(0,4,1),ZERO ,1,-1,wvm(1,1)) !W(1,6))       !vm~ | u~ | ve~
       CALL JIOXXX(wep(1,1),wve(1,1),GWF ,WMASS,WWIDTH,wp(1,1)) !W(1,7))!W+
       CALL JIOXXX(wvm(1,1),wmu(1,1),GWF ,WMASS,WWIDTH,wm(1,1)) !W(1,8))!W-
 
@@ -127,18 +140,26 @@ c for WW->4l precalculate A->WW,Z->WW,AZ->WW etc leptonic tensors
 c helicity always 1
       h=1
 
-c leptonic tensors
-      if (with_kk) then
+      SELECT CASE(process)
+      CASE(WPHADWMJ, WPWMHADJ, GFWPHADWMJ, GFWPWMHADJ)
+         !hadronic tensors
+         call DIBOSZtoQQll(v, 1, zww(0,1))
+         call DIBOSAtoQQll(v, 1, aww(0,1))
+      CASE DEFAULT
+         !leptonic tensors
+        if (with_kk) then
 #ifdef WITH_KK
-         call DIBOSatoww_kk(v,1,aww(0,1))
-         call DIBOSztoww_kk(v,1,zww(0,1))
-         call DIBOSz1toww_kk(v,1,z1ww(0,1))
-         call DIBOSz2toww_kk(v,1,z2ww(0,1))
+           call DIBOSatoww_kk(v,1,aww(0,1))
+           call DIBOSztoww_kk(v,1,zww(0,1))
+           call DIBOSz1toww_kk(v,1,z1ww(0,1))
+           call DIBOSz2toww_kk(v,1,z2ww(0,1))
 #endif            
-      else
-         call DIBOSatoww(v,1,aww(0,1))
-         call DIBOSztoww(v,1,zww(0,1))
-      end if
+        else
+           call DIBOSatoww(v,1,aww(0,1))
+           call DIBOSztoww(v,1,zww(0,1))
+        end if
+      END SELECT
+
       if ((nlo .eq. -6) .or. (nlo .eq. -8) .or. (nlo.eq.1)) 
      &  call ww_htoww(v(0,1,1),1,w4l(h,1),0) !H -> e+ ve vu~ mu-
 
@@ -264,6 +285,20 @@ C*******************  q1 g ---> V V q2   **********************
       endif
 c*****************  end of process evaluation  *********************
 
+      SELECT CASE(procid)
+      CASE(WPhadWMj,GFWPhadWMj)
+       call hadDecayFactor_W(finalquarks(1), abs(mjj2(v(0,1,1),v(0,2,1))), N_gen_W, fac_W)
+        DO IRES = 1,NMAX
+          res(IRES) = res(IRES) * fac_W            ! factor fac_W for hadronic decay
+        ENDDO
+      CASE(WPWMhadj,GFWPWMhadj)
+       call hadDecayFactor_W(finalquarks(1), abs(mjj2(v(0,3,1),v(0,4,1))), N_gen_W, fac_W)
+        DO IRES = 1,NMAX
+          res(IRES) = res(IRES) * fac_W            ! factor fac_W for hadronic decay
+        ENDDO
+      END SELECT
+
+
       if (init.eq.1) then
          init = init+1
       endif
@@ -284,8 +319,6 @@ c...Les Houches interface - the most propable subprocess
             iprocess=i
          enddo
       endif
-
-      m2s = m2s     ! factor for electrons and muons and tau
 
       m2s_qqVVj2 = m2s
       
@@ -328,8 +361,7 @@ c          nlo             nlo = 0: calculate LO only
 c                          nlo = 1: calculate full NLO (Born + interference)
 c  OUTPUT:
 c          uuvv(ID)   output in format as in qqZqq(j), but corresponding
-c          etc.            to res(*) in m2s_qqZqq
-c     or   res(k)   
+c          etc.            to res(ID) in m2s_qqZqq
 c
 c  In and Output
 c    nmin, nmax            range of process numbers for this call

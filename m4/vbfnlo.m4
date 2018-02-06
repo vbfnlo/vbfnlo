@@ -133,12 +133,15 @@ AM_CONDITIONAL(WITH_FERMIONLOOPS,[test "$diboson" -o "$dibosonjet" -o "$qcdvjj" 
 dnl do we need Pentagons with 4 partons; Hexagons are only needed for QCDVV
 AM_CONDITIONAL(WITH_QCD_JJ_PLUSX,[test "$all" -o "$qcdvjj" -o "$qcdvvjj" ])
 dnl check if quad precision is desirable
+AM_COND_IF([WITH_FERMIONLOOPS],
+  [supports_quad=yes],
+  [
 if [test "$all" -o "$qcdvjj" -o "$qcdvvjj" ]; then
   supports_quad=yes
 else
   supports_quad=no
 fi
-
+  ])
 ])
 
 dnl ##### ROOT #####
@@ -381,6 +384,7 @@ AC_SUBST(LHAPDF_LDFLAGS)
 AC_SUBST(LHAPDF_PDFPATH)
 AM_CONDITIONAL([WITH_LHAPDF], [test "x$HAS_LHAPDF" == "xyes"])
 AM_CONDITIONAL([WITH_LHAPDF_6], [test "x$LHAPDF_VERSION" == "x6"])
+AC_DEFINE_UNQUOTED([LHAPDFPATH],["$LHAPDF_PDFPATH"],[PDF directory])
 ])
 
 dnl #### HEPMC ######

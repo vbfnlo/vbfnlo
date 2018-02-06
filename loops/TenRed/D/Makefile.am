@@ -1,5 +1,7 @@
 noinst_LTLIBRARIES = libTID.la
 libTID_la_SOURCES = \
+DijGramM.inc \
+DijGram.inc \
 tensor_redux_Dij_new_Re_Com_1Mas.F\
 tensor_redux_Dij.F \
 tensor_redux_Dij_new_Re_Com.F \
@@ -83,3 +85,4 @@ $(top_builddir)/include/%.mod: libTID_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

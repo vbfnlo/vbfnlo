@@ -76,7 +76,7 @@
 
 ! max number of NLO contributions
       integer max_nlo
-      parameter (max_nlo = 6)
+      parameter (max_nlo = 11)
 
 ! maximal number of resonances that can be put into one random number
 ! (see MultiResonances in phasespace/ps_tools.F)

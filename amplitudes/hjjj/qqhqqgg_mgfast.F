@@ -405,7 +405,7 @@ c
 c     eliminate graphs with V->q qbar decay
       call vetographs(fsign,gsign,tfac)
 c    
-      matrix(0) = 0.D0 
+      matrix = 0.D0 
       sum = 0.D0
       DO I = 1, NCOLOR
           ZTEMP = (0.D0,0.D0)
@@ -413,15 +413,16 @@ c
               ZTEMP = ZTEMP + CF(J,I)*JAMP(J)*tfac(J)
           ENDDO
           matrix(0) = matrix(0)+ZTEMP*DCONJG(JAMP(I))/DENOM(I)*tfac(I)  
+          matrix(I) = matrix(I)+ZTEMP*DCONJG(JAMP(I))/DENOM(I)*tfac(I)  
           sum       = sum + (DBLE(JAMP(I))**2 + DIMAG(JAMP(I))**2)*tfac(I)
       ENDDO
       
-      do I=1,NCOLOR
-c         matrix(I) = matrix(0) * JAMP(I)*DCONJG(JAMP(I)) * tfac(I)/sum
-         matrix(I) = matrix(0) * (DBLE(JAMP(I))**2 + DIMAG(JAMP(I))**2) 
-     $        * tfac(I)!/sum
-         if(abs(sum).gt.0.D0) matrix(I)=matrix(I)/sum
-      enddo
+C      do I=1,NCOLOR
+Cc         matrix(I) = matrix(0) * JAMP(I)*DCONJG(JAMP(I)) * tfac(I)/sum
+C         matrix(I) = matrix(0) * (DBLE(JAMP(I))**2 + DIMAG(JAMP(I))**2) 
+C     $        * tfac(I)!/sum
+C         if(abs(sum).gt.0.D0) matrix(I)=matrix(I)/sum
+C      enddo
 c      print*,'matrix(0)=',matrix(0)
 c      print*,'sum mat(i)=',matrix(1) + matrix(2) + matrix(3) + 
 c     $     matrix(4) +  matrix(5) + matrix(6) 

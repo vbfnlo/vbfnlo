@@ -382,32 +382,41 @@
       INTEGER WWJ, WMZJ, WPZJ, WMAJ, WPAJ, ZZJ
       INTEGER WWJJLO, WMZJLO, WPZJLO, WMAJLO, WPAJLO
       INTEGER ZZJJLO
+      INTEGER WPhadWMJ, WPWMhadJ
       INTEGER WPhadZJ, WPZhadJ, WMhadZJ, WMZhadJ
+      INTEGER WPhadWMJJLO, WPWMhadJJLO
       INTEGER WPhadZJjLO, WPZhadJjLO, WMhadZJjLO, WMZhadJjLO
-      PARAMETER ( WWJ        = 600 )
-      PARAMETER ( WMAJ       = 610 )
-      PARAMETER ( WPAJ       = 620 )
-      PARAMETER ( WMZJ       = 630 )
-      PARAMETER ( WMhadZJ    = 631 )
-      PARAMETER ( WMZhadJ    = 632 )
-      PARAMETER ( WPZJ       = 640 )
-      PARAMETER ( WPhadZJ    = 641 )
-      PARAMETER ( WPZhadJ    = 642 )
-      PARAMETER ( ZZJ        = 650 )
-      PARAMETER ( WWJJLO     = 9600 )
-      PARAMETER ( WMAJLO     = 9610 )
-      PARAMETER ( WPAJLO     = 9620 )
-      PARAMETER ( WMZJLO     = 9630 )
-      PARAMETER ( WMhadZJjLO = 9631 )
-      PARAMETER ( WMZhadJjLO = 9632 )
-      PARAMETER ( WPZJLO     = 9640 )
-      PARAMETER ( WPhadZJjLO = 9641 )
-      PARAMETER ( WPZhadJjLO = 9642 )
-      PARAMETER ( ZZJJLO     = 9650 )
+      PARAMETER ( WWJ         = 600 )
+      PARAMETER ( WPHADWMJ    = 601 )
+      PARAMETER ( WPWMHADJ    = 602 )
+      PARAMETER ( WMAJ        = 610 )
+      PARAMETER ( WPAJ        = 620 )
+      PARAMETER ( WMZJ        = 630 )
+      PARAMETER ( WMhadZJ     = 631 )
+      PARAMETER ( WMZhadJ     = 632 )
+      PARAMETER ( WPZJ        = 640 )
+      PARAMETER ( WPhadZJ     = 641 )
+      PARAMETER ( WPZhadJ     = 642 )
+      PARAMETER ( ZZJ         = 650 )
+      PARAMETER ( WWJJLO      = 9600 )
+      PARAMETER ( WPHADWMJJLO = 9601 )
+      PARAMETER ( WPWMHADJJLO = 9602 )
+      PARAMETER ( WMAJLO      = 9610 )
+      PARAMETER ( WPAJLO      = 9620 )
+      PARAMETER ( WMZJLO      = 9630 )
+      PARAMETER ( WMhadZJjLO  = 9631 )
+      PARAMETER ( WMZhadJjLO  = 9632 )
+      PARAMETER ( WPZJLO      = 9640 )
+      PARAMETER ( WPhadZJjLO  = 9641 )
+      PARAMETER ( WPZhadJjLO  = 9642 )
+      PARAMETER ( ZZJJLO      = 9650 )
 
 ! gluon fusion
       INTEGER GFWWj, GFZZj
+      INTEGER GFWPHADWMJ, GFWPWMHADJ
       PARAMETER( GFWWj         = 4600 )
+      PARAMETER( GFWPHADWMJ    = 4601 )
+      PARAMETER( GFWPWMHADJ    = 4602 )
       PARAMETER( GFZZj         = 4650 )
 
 ! W+- plus jet

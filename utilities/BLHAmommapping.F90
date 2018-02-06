@@ -9,11 +9,12 @@
 !
 !     Author: Michael Rauch <michael.rauch@kit.edu>
 !     Initial version: Sep 2013
-!     Last changed: Dec 2013 by Michael Rauch
+!     Last changed: Mar 2017 by Michael Rauch
 !
 !*************************************************************************  
 !   LIST OF ALL FUNCTIONS AND SUBROUTINES IN THIS FILE:
 !*************************************************************************
+!     SUBROUTINE MomMapping_VBF6(pdgparton, mapparton)
 !     SUBROUTINE MomMapping_VBF5(pdgparton, mapparton)
 !     SUBROUTINE MomMapping_VBF4(pdgparton, mapparton)
 !     SUBROUTINE MomMapping_EW(nparton,nelweak,pdgelweak,mapelweak,oQCD,oQED)
@@ -21,6 +22,564 @@
 !     LOGICAL FUNCTION permutations(nl,list)
 !     LOGICAL FUNCTION isparton(pdg)
 !     LOGICAL FUNCTION samegen(pdg1,pdg2)
+!*************************************************************************  
+
+      SUBROUTINE MomMapping_VBF6(pdgparton, mapparton)
+!*************************************************************************
+!     Momentum mapping for VBF+2j
+!*************************************************************************
+      implicit none
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
+      integer pdgparton(6)
+      integer mapparton(6)
+
+! local variables
+      integer i,j,k,l,nsp
+      integer npairs, listpairs(6,6), nother
+! inverse function to listpairs(:,i), BLHA->diag map
+      integer invlistpairs(6)
+      integer invmap(6)
+! external functions
+      integer findpairpartner
+      logical samegen
+      external findpairpartner, samegen
+
+      call makefermionpairs(6,pdgparton,.true.,npairs,listpairs,nother)
+
+      nsp=0
+
+      if (nother.eq.2) then
+
+        do i=1,npairs
+          ! check whether s-channel diagram: both initial-state connected
+          !! as (12)
+          if ( (((mapparton(listpairs(1,i))-1)/2.eq.0).and.   &
+                ((mapparton(listpairs(2,i))-1)/2.eq.0)) .or.  &
+          !! or as (34)
+               (((mapparton(listpairs(3,i))-1)/2.eq.0).and.   &
+                ((mapparton(listpairs(4,i))-1)/2.eq.0)) ) cycle
+
+! inverse listpairs
+          do j=1,6
+            invlistpairs(listpairs(j,i)) = j
+          enddo
+
+          nsp=nsp+1
+
+          ! 1 and 2 stay at positions
+          blha_particlemap(1,nsp,blha_numproc) = mapparton(1)
+          blha_particlemap(2,nsp,blha_numproc) = mapparton(2)
+
+          ! set gluons to 5 and 6, overwrite later if initial-state
+          blha_particlemap(5,nsp,blha_numproc) = mapparton(listpairs(5,i))
+          blha_physdiagmap(5,nsp,blha_numproc) = 5
+          blha_fsign(5,nsp,blha_numproc) = +1
+          blha_particlemap(6,nsp,blha_numproc) = mapparton(listpairs(6,i))
+          blha_physdiagmap(6,nsp,blha_numproc) = 6
+          blha_fsign(6,nsp,blha_numproc) = +1
+
+          if ( pdgparton(1) .eq. 21 ) then
+            ! initial-state gluon - map to 5
+            blha_physdiagmap(1,nsp,blha_numproc) = 5
+            blha_fsign(5,nsp,blha_numproc) = -1
+            if ( pdgparton(2) .eq. 21 ) then
+              ! 2 initial-state gluons
+              blha_physdiagmap(2,nsp,blha_numproc) = 6
+              blha_fsign(6,nsp,blha_numproc) = -1
+              ! fermions in pairs
+              do j=1,4
+                blha_particlemap(j+2,nsp,blha_numproc) = &
+                  mapparton(listpairs(j,i))
+                blha_physdiagmap(j+2,nsp,blha_numproc) = j
+                blha_fsign(j,nsp,blha_numproc) = (-1)**j
+              enddo
+            else
+              ! line containing parton 2
+              k = invlistpairs(2)
+              l = listpairs(findpairpartner(k),i)
+              blha_particlemap(4,nsp,blha_numproc) = mapparton(l)
+              if (mod(k,2).eq.1) then
+                blha_physdiagmap(2,nsp,blha_numproc) = 3
+                blha_physdiagmap(4,nsp,blha_numproc) = 4
+                blha_fsign(3,nsp,blha_numproc) = +1
+                blha_fsign(4,nsp,blha_numproc) = +1
+                l = listpairs(4-k,i) ! ket of other line
+              else
+                blha_physdiagmap(2,nsp,blha_numproc) = 4
+                blha_physdiagmap(4,nsp,blha_numproc) = 3
+                blha_fsign(3,nsp,blha_numproc) = -1
+                blha_fsign(4,nsp,blha_numproc) = -1
+                l = listpairs(5-k,i) ! ket of other line
+              endif
+              ! final-final line
+              k = listpairs(findpairpartner(invlistpairs(l)),i)
+              blha_particlemap(5,nsp,blha_numproc) = mapparton(l)
+              blha_particlemap(3,nsp,blha_numproc) = mapparton(k)
+              blha_physdiagmap(5,nsp,blha_numproc) = 1
+              blha_fsign(1,nsp,blha_numproc) = -1
+              blha_physdiagmap(3,nsp,blha_numproc) = 2
+              blha_fsign(2,nsp,blha_numproc) = +1
+            endif
+          else if ( pdgparton(2) .eq. 21 ) then
+            ! initial-state gluon - map to 5
+            blha_physdiagmap(2,nsp,blha_numproc) = 5
+            blha_fsign(5,nsp,blha_numproc) = -1
+            ! line containing parton 1
+            k = invlistpairs(1)
+            l = listpairs(findpairpartner(k),i)
+            blha_particlemap(3,nsp,blha_numproc) = mapparton(l)
+            if (mod(k,2).eq.1) then
+              blha_physdiagmap(1,nsp,blha_numproc) = 1
+              blha_physdiagmap(3,nsp,blha_numproc) = 2
+              blha_fsign(1,nsp,blha_numproc) = +1
+              blha_fsign(2,nsp,blha_numproc) = +1
+              l = listpairs(4-k,i) ! ket of other line
+            else
+              blha_physdiagmap(1,nsp,blha_numproc) = 2
+              blha_physdiagmap(3,nsp,blha_numproc) = 1
+              blha_fsign(1,nsp,blha_numproc) = -1
+              blha_fsign(2,nsp,blha_numproc) = -1
+              l = listpairs(5-k,i) ! ket of other line
+            endif
+            ! final-final line
+            k = listpairs(findpairpartner(invlistpairs(l)),i)
+            blha_particlemap(5,nsp,blha_numproc) = mapparton(l)
+            blha_particlemap(4,nsp,blha_numproc) = mapparton(k)
+            blha_physdiagmap(5,nsp,blha_numproc) = 3
+            blha_fsign(3,nsp,blha_numproc) = -1
+            blha_physdiagmap(4,nsp,blha_numproc) = 4
+            blha_fsign(4,nsp,blha_numproc) = +1
+          else
+            do j=1,2
+              blha_particlemap(j,nsp,blha_numproc) = mapparton(j)
+              l = findpairpartner(invlistpairs(j))
+              blha_particlemap(j+2,nsp,blha_numproc) = mapparton(listpairs(l,i))
+              if (pdgparton(j) .gt. 0) then
+                blha_physdiagmap(j,nsp,blha_numproc) = 2*j-1
+                blha_fsign(2*j-1,nsp,blha_numproc) = +1
+                k = findpairpartner(2*j-1)
+                blha_physdiagmap(j+2,nsp,blha_numproc) = k
+                blha_fsign(k,nsp,blha_numproc) = +1
+              else
+                blha_physdiagmap(j,nsp,blha_numproc) = 2*j
+                blha_fsign(2*j  ,nsp,blha_numproc) = -1
+                k = findpairpartner(2*j)
+                blha_physdiagmap(j+2,nsp,blha_numproc) = k
+                blha_fsign(k,nsp,blha_numproc) = -1
+              endif
+            enddo
+          endif
+
+          ! create inverse map
+          do j=1,6
+            do k=1,6
+              if (mapparton(k) .eq. blha_particlemap(j,nsp,blha_numproc)) then
+                invmap(blha_physdiagmap(j,nsp,blha_numproc)) = k
+              endif
+            enddo
+          enddo
+
+          ! choose right subproc
+          blha_idsubproc(nsp,blha_numproc) = 100001
+          if (abs(pdgparton(invmap(1))).eq. &
+              abs(pdgparton(invmap(2)))) then ! upper-Z
+            if (abs(pdgparton(invmap(3))).eq. &
+                abs(pdgparton(invmap(4)))) then ! NC-ZZ
+              if (mod(abs(pdgparton(invmap(1))),2) .eq. 1) then
+                blha_idsubproc(nsp,blha_numproc) = &
+                  blha_idsubproc(nsp,blha_numproc) + 1000
+              endif
+              if (mod(abs(pdgparton(invmap(3))),2) .eq. 1) then
+                blha_idsubproc(nsp,blha_numproc) = &
+                  blha_idsubproc(nsp,blha_numproc) + 100
+              endif
+            else ! CC-ZW
+              if (mod(abs(pdgparton(invmap(1))),2) .eq. 0) then
+                blha_idsubproc(nsp,blha_numproc) = 0 ! uucs/uusc
+              else
+                blha_idsubproc(nsp,blha_numproc) = 0 ! ddcs/ddsc
+              endif
+            endif
+          else ! upper-W
+            if (abs(pdgparton(invmap(3))).eq. &
+                abs(pdgparton(invmap(4)))) then ! CC-WZ
+              if (mod(abs(pdgparton(invmap(3))),2) .eq. 0) then
+                blha_idsubproc(nsp,blha_numproc) = 0 ! udcc/ducc
+              else
+                blha_idsubproc(nsp,blha_numproc) = 0 ! udss/duss
+              endif
+            else ! NC-WW
+              blha_idsubproc(nsp,blha_numproc) = &
+                blha_idsubproc(nsp,blha_numproc) + 10000
+              if (mod(abs(pdgparton(invmap(1))),2) .eq. 1) then
+                blha_idsubproc(nsp,blha_numproc) = &
+                  blha_idsubproc(nsp,blha_numproc) + 1000
+              endif
+            endif
+          endif
+
+!          ! check if we've seen this process already -> symmetry factor
+!          if ( blha_idsubproc(nsp,blha_numproc) .ne. 0 ) then
+!            do j=1,nsp-1
+!              if (blha_idsubproc(j,blha_numproc)/10 .eq. &
+!                  blha_idsubproc(nsp,blha_numproc)/10 ) then ! ignore last digit with multiplicity information
+!                blha_idsubproc(j,blha_numproc) = blha_idsubproc(j,blha_numproc) + 1
+!                nsp = nsp-1
+!                exit
+!              endif
+!            enddo
+!          endif
+
+        enddo
+
+      else if (nother.eq.0) then
+
+        do i=1,npairs
+
+          ! check whether s-channel diagram: both initial-state connected
+          !! as (12)
+          if ( (((mapparton(listpairs(1,i))-1)/2.eq.0).and.   &
+                ((mapparton(listpairs(2,i))-1)/2.eq.0)) .or.  &
+          !! or as (34)
+               (((mapparton(listpairs(3,i))-1)/2.eq.0).and.   &
+                ((mapparton(listpairs(4,i))-1)/2.eq.0)) .or.  &
+          !! or as (56)
+               (((mapparton(listpairs(5,i))-1)/2.eq.0).and.   &
+                ((mapparton(listpairs(6,i))-1)/2.eq.0)) ) cycle
+
+          nsp=nsp+1
+
+          ! inverse listpairs
+          do j=1,6
+            invlistpairs(listpairs(j,i)) = j
+          enddo
+
+          do j=1,2
+            blha_particlemap(j,nsp,blha_numproc) = mapparton(j)
+          ! find partner 
+            l = findpairpartner(invlistpairs(j))
+            blha_particlemap(j+2,nsp,blha_numproc) = mapparton(listpairs(l,i))
+            listpairs(invlistpairs(j),i)=0
+            listpairs(l,i)=0
+            if (pdgparton(j) .gt. 0) then
+              blha_physdiagmap(j,nsp,blha_numproc) = 2*j-1
+              blha_fsign(2*j-1,nsp,blha_numproc) = +1
+              k = findpairpartner(2*j-1)
+              blha_physdiagmap(j+2,nsp,blha_numproc) = k
+              blha_fsign(k,nsp,blha_numproc) = +1
+            else 
+              blha_physdiagmap(j,nsp,blha_numproc) = 2*j
+              blha_fsign(2*j  ,nsp,blha_numproc) = -1
+              k = findpairpartner(2*j)
+              blha_physdiagmap(j+2,nsp,blha_numproc) = k
+              blha_fsign(k,nsp,blha_numproc) = -1
+            endif
+          enddo
+          ! remaining pair
+          do j=1,5,2
+            if (listpairs(j,i).eq.0) cycle
+            blha_particlemap(5,nsp,blha_numproc) = mapparton(listpairs(j,i))
+            blha_particlemap(6,nsp,blha_numproc) = mapparton(listpairs(j+1,i))
+            exit
+          enddo
+          blha_physdiagmap(5,nsp,blha_numproc) = 5
+          blha_physdiagmap(6,nsp,blha_numproc) = 6
+          blha_fsign(5,nsp,blha_numproc) = -1
+          blha_fsign(6,nsp,blha_numproc) = +1
+
+          ! create inverse map
+          do j=1,6
+            do k=1,6
+              if (mapparton(k) .eq. blha_particlemap(j,nsp,blha_numproc)) then
+                invmap(blha_physdiagmap(j,nsp,blha_numproc)) = k
+              endif
+            enddo
+          enddo
+
+          ! choose right subproc
+          blha_idsubproc(nsp,blha_numproc) = 200000
+          if (abs(pdgparton(invmap(1))).eq. &
+              abs(pdgparton(invmap(2)))) then ! upper-Z
+            if (abs(pdgparton(invmap(3))).eq. &
+                abs(pdgparton(invmap(4)))) then ! lower-ZZ
+              if (abs(pdgparton(invmap(5))).eq. &
+                  abs(pdgparton(invmap(6)))) then ! ZZZ
+                if (mod(abs(pdgparton(invmap(1))),2) .eq. 1) then
+                  blha_idsubproc(nsp,blha_numproc) = &
+                    blha_idsubproc(nsp,blha_numproc) + 1000
+                endif
+                if (mod(abs(pdgparton(invmap(3))),2) .eq. 1) then
+                  blha_idsubproc(nsp,blha_numproc) = &
+                    blha_idsubproc(nsp,blha_numproc) + 100
+                endif
+                if (mod(abs(pdgparton(invmap(5))),2) .eq. 1) then
+                  blha_idsubproc(nsp,blha_numproc) = &
+                    blha_idsubproc(nsp,blha_numproc) + 10
+                endif
+                if (abs(pdgparton(invmap(1))).eq. &
+                    abs(pdgparton(invmap(5)))) then ! upper-interf
+                  blha_idsubproc(nsp,blha_numproc) = &
+                    blha_idsubproc(nsp,blha_numproc) + 1
+                endif
+                if (abs(pdgparton(invmap(3))).eq. &
+                    abs(pdgparton(invmap(5)))) then ! lower-interf
+                  blha_idsubproc(nsp,blha_numproc) = &
+                    blha_idsubproc(nsp,blha_numproc) + 2
+                endif
+                if (pdgparton(invmap(1)).eq. &
+                    pdgparton(invmap(3))) then ! non-existent-interf
+                  blha_idsubproc(nsp,blha_numproc) = &
+                    blha_idsubproc(nsp,blha_numproc) + 4
+                endif
+              else !ZZW
+                blha_idsubproc(nsp,blha_numproc) = 0
+              endif
+            else ! lower-ZW
+              if (abs(pdgparton(invmap(5))).eq. &
+                  abs(pdgparton(invmap(6)))) then ! ZWZ
+                blha_idsubproc(nsp,blha_numproc) = 0
+              else ! ZWW
+                call ID_VBF6_6qW(nsp,pdgparton,invmap)
+              endif
+            endif
+          else ! upper-W
+            if (abs(pdgparton(invmap(3))).eq. &
+                abs(pdgparton(invmap(4)))) then ! lower-WZ
+              if (abs(pdgparton(invmap(5))).eq. &
+                  abs(pdgparton(invmap(6)))) then ! WZZ
+                blha_idsubproc(nsp,blha_numproc) = 0
+              else ! WZW
+                call ID_VBF6_6qW(nsp,pdgparton,invmap)
+              endif
+            else ! lower-WW
+              if (abs(pdgparton(invmap(5))).eq. &
+                  abs(pdgparton(invmap(6)))) then ! WWZ
+                call ID_VBF6_6qW(nsp,pdgparton,invmap)
+              else ! WWW
+                blha_idsubproc(nsp,blha_numproc) = 0
+              endif
+            endif
+          endif
+
+          if ( blha_idsubproc(nsp,blha_numproc) .lt. 200000 ) then
+            ! not a valid process
+            nsp = nsp-1
+!          else
+!            ! check if we've seen this process already -> ignore as
+!            ! this is an already included interference term
+!            do j=1,nsp-1
+!              if (blha_idsubproc(j,blha_numproc) .eq. &
+!                  blha_idsubproc(nsp,blha_numproc) ) then
+!                nsp = nsp-1
+!                exit
+!              endif
+!            enddo
+          endif
+
+        enddo
+
+      endif
+
+      blha_numsubproc(blha_numproc) = nsp
+
+      return
+      end
+      
+!*************************************************************************  
+
+      SUBROUTINE ID_VBF6_6qW(nsp,pdgparton,invmap)
+!*************************************************************************
+!     Get the ID for the 6 quark with W exchange process
+!*************************************************************************
+      implicit none
+
+      integer, intent(in) :: nsp,pdgparton(6),invmap(6)
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+
+! local variables
+      integer i
+
+! external 
+      logical samegen
+      external samegen
+
+      ! W exchange process
+      blha_idsubproc(nsp,blha_numproc) = &
+        blha_idsubproc(nsp,blha_numproc) + 10000
+
+      if ( ( pdgparton(1) .gt. 0 .and. &
+             mod(abs(pdgparton(1)),2) .eq. 1 ) .or. &
+           ( pdgparton(1) .lt. 0 .and. &
+             mod(abs(pdgparton(1)),2) .eq. 0 ) ) then
+        blha_idsubproc(nsp,blha_numproc) = &
+          blha_idsubproc(nsp,blha_numproc) + 1000
+      endif
+      if ( ( pdgparton(2) .gt. 0 .and. &
+             mod(abs(pdgparton(2)),2) .eq. 1 ) .or. &
+           ( pdgparton(2) .lt. 0 .and. &
+             mod(abs(pdgparton(2)),2) .eq. 0 ) ) then
+        blha_idsubproc(nsp,blha_numproc) = &
+          blha_idsubproc(nsp,blha_numproc) + 100
+      endif
+      if (mod(abs(pdgparton(invmap(5))),2) .eq. 1) then
+        blha_idsubproc(nsp,blha_numproc) = &
+          blha_idsubproc(nsp,blha_numproc) + 10
+      endif
+
+      if (pdgparton(invmap(1)) .eq. pdgparton(invmap(2)) ) then ! only col1/col3
+        if ( ( pdgparton(1) .gt. 0 .and. &
+                 mod(abs(pdgparton(1)),2) .eq. &
+                   mod(abs(pdgparton(invmap(5))),2) ) .or. &
+             ( pdgparton(1) .lt. 0 .and. &
+                 mod(abs(pdgparton(1)),2) .ne. &
+                   mod(abs(pdgparton(invmap(5))),2) ) ) then
+          if ( samegen(pdgparton(invmap(1)), &
+                       pdgparton(invmap(5))) ) then ! upper-interf
+            ! interference part of another contribution - clear
+            blha_idsubproc(nsp,blha_numproc) = 0
+          else
+            ! col3
+            blha_idsubproc(nsp,blha_numproc) = &
+              blha_idsubproc(nsp,blha_numproc) + 5
+            if ( pdgparton(1) .lt. 0 ) then
+              ! correct flavour of 56 line if 1 is anti-quark
+              if (mod(abs(pdgparton(invmap(5))),2) .eq. 1) then
+                blha_idsubproc(nsp,blha_numproc) = &
+                  blha_idsubproc(nsp,blha_numproc) - 10
+              else
+                blha_idsubproc(nsp,blha_numproc) = &
+                  blha_idsubproc(nsp,blha_numproc) + 10
+              endif
+              ! correct momentum mapping as this contribution comes from a
+              ! flipped diagram: 1 <-> 5
+              do i=1,6
+                if (blha_physdiagmap(i,nsp,blha_numproc) .eq. 1) then
+                  blha_physdiagmap(i,nsp,blha_numproc) = 5
+                  blha_physdiagmap(5,nsp,blha_numproc) = 1
+                  exit
+                endif
+              enddo
+            else
+              ! correct momentum mapping as this contribution comes from a
+              ! flipped diagram: 2 <-> 6
+              do i=1,6
+                if (blha_physdiagmap(i,nsp,blha_numproc) .eq. 2) then
+                  blha_physdiagmap(i,nsp,blha_numproc) = 6
+                  blha_physdiagmap(6,nsp,blha_numproc) = 2
+                  exit
+                endif
+              enddo
+            endif
+          endif
+        else
+          ! col1
+          blha_idsubproc(nsp,blha_numproc) = &
+            blha_idsubproc(nsp,blha_numproc) + 1
+          if ( samegen(pdgparton(invmap(1)), &
+                       pdgparton(invmap(5))) ) then ! upper-interf
+            blha_idsubproc(nsp,blha_numproc) = &
+              blha_idsubproc(nsp,blha_numproc) + 2000
+          endif
+        endif
+      else if (pdgparton(invmap(3)) .eq. pdgparton(invmap(4)) ) then ! only col2/col4
+        if ( ( pdgparton(2) .gt. 0 .and. &
+                 mod(abs(pdgparton(2)),2) .eq. &
+                   mod(abs(pdgparton(invmap(5))),2) ) .or. &
+             ( pdgparton(2) .lt. 0 .and. &
+                 mod(abs(pdgparton(2)),2) .ne. &
+                   mod(abs(pdgparton(invmap(5))),2) ) ) then
+          if ( samegen(pdgparton(invmap(3)), &
+                       pdgparton(invmap(5))) ) then ! lower-interf
+            ! interference part of another contribution - clear
+            blha_idsubproc(nsp,blha_numproc) = 0
+          else
+            ! col4
+            blha_idsubproc(nsp,blha_numproc) = &
+              blha_idsubproc(nsp,blha_numproc) + 6
+            ! correct flavour of 56 line if 2 is anti-quark
+            if ( pdgparton(2) .lt. 0 ) then
+              if (mod(abs(pdgparton(invmap(5))),2) .eq. 1) then
+                blha_idsubproc(nsp,blha_numproc) = &
+                  blha_idsubproc(nsp,blha_numproc) - 10
+              else
+                blha_idsubproc(nsp,blha_numproc) = &
+                  blha_idsubproc(nsp,blha_numproc) + 10
+              endif
+              ! correct momentum mapping as this contribution comes from a
+              ! flipped diagram: 3 <-> 5
+              do i=1,6
+                if (blha_physdiagmap(i,nsp,blha_numproc) .eq. 3) then
+                  blha_physdiagmap(i,nsp,blha_numproc) = 5
+                  blha_physdiagmap(5,nsp,blha_numproc) = 3
+                  exit
+                endif
+              enddo
+            else
+              ! correct momentum mapping as this contribution comes from a
+              ! flipped diagram: 4 <-> 6
+              do i=1,6
+                if (blha_physdiagmap(i,nsp,blha_numproc) .eq. 4) then
+                  blha_physdiagmap(i,nsp,blha_numproc) = 6
+                  blha_physdiagmap(6,nsp,blha_numproc) = 4
+                  exit
+                endif
+              enddo
+            endif
+          endif
+        else
+          ! col2
+          blha_idsubproc(nsp,blha_numproc) = &
+            blha_idsubproc(nsp,blha_numproc) + 2
+          if ( samegen(pdgparton(invmap(3)), &
+                       pdgparton(invmap(5))) ) then ! lower-interf
+            blha_idsubproc(nsp,blha_numproc) = &
+              blha_idsubproc(nsp,blha_numproc) + 200
+          endif
+        endif
+      else
+        ! col 1 and 2
+          blha_idsubproc(nsp,blha_numproc) = &
+            blha_idsubproc(nsp,blha_numproc) + 3
+        if ( samegen(pdgparton(invmap(1)), &
+                     pdgparton(invmap(5))) ) then ! upper-interf
+          blha_idsubproc(nsp,blha_numproc) = &
+            blha_idsubproc(nsp,blha_numproc) + 2000
+        endif
+        if ( samegen(pdgparton(invmap(3)), &
+                     pdgparton(invmap(5))) ) then ! lower-interf
+          blha_idsubproc(nsp,blha_numproc) = &
+            blha_idsubproc(nsp,blha_numproc) + 200
+        endif
+      endif
+
+      ! check for multiplicity factor
+      if ( pdgparton(blha_particlemap(3,nsp,blha_numproc)) .eq. &
+             pdgparton(blha_particlemap(4,nsp,blha_numproc)) .or. &
+           pdgparton(blha_particlemap(3,nsp,blha_numproc)) .eq. &
+             pdgparton(blha_particlemap(5,nsp,blha_numproc)) .or. &
+           pdgparton(blha_particlemap(3,nsp,blha_numproc)) .eq. &
+             pdgparton(blha_particlemap(6,nsp,blha_numproc)) ) then
+        blha_idsubproc(nsp,blha_numproc) = &
+          blha_idsubproc(nsp,blha_numproc) + 4000
+      endif
+      if ( pdgparton(blha_particlemap(4,nsp,blha_numproc)) .eq. &
+             pdgparton(blha_particlemap(3,nsp,blha_numproc)) .or. &
+           pdgparton(blha_particlemap(4,nsp,blha_numproc)) .eq. &
+             pdgparton(blha_particlemap(5,nsp,blha_numproc)) .or. &
+           pdgparton(blha_particlemap(4,nsp,blha_numproc)) .eq. &
+             pdgparton(blha_particlemap(6,nsp,blha_numproc)) ) then
+        blha_idsubproc(nsp,blha_numproc) = &
+          blha_idsubproc(nsp,blha_numproc) + 400
+      endif
+
+      return
+      end
+
 !*************************************************************************  
 
       SUBROUTINE MomMapping_VBF5(pdgparton, mapparton)
@@ -1379,6 +1938,9 @@
                  .and..not.                                            &
                  ( (mylistf(listpairs(2*k-1,i)).eq.mylistf(listpairs(2*k-1,1))) .and.    &
                    (mylistf(listpairs(2*k  ,i)).eq.mylistf(listpairs(2*k  ,1))) )        &
+                 .and..not.                                            &
+                 ( (mylistf(listpairs(2*j-1,i)).eq.mylistf(listpairs(2*j-1,1))) .and.    &
+                   (mylistf(listpairs(2*j  ,i)).eq.mylistf(listpairs(2*j  ,1))) )        &
                ) then
                ! different-index pair matches but same-index one doesn't -> swap
               temppair(1) = listpairs(2*k-1,i)

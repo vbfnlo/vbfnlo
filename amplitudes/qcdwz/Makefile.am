@@ -2,6 +2,9 @@ noinst_LTLIBRARIES = libqcdwz.la
 libqcdwz_la_FFLAGS = $(AM_FFLAGS)
 
 libqcdwz_la_SOURCES = \
+brakets.inc \
+common.inc \
+cacheZZ.inc \
 m2s_WZ2j.F \
 m2s_WZ3j.F \
 nloStuff.F \
@@ -51,31 +54,8 @@ if WITH_VBF
 libqcdwz_la_FFLAGS += -DWITH_VBF
 endif
 
-#EXTRA_DIST = temp.F.in
-#BUILT_SOURCES = temp.F
-#
-#if WITH_LOOPTOOLS
-#libqcdwz_la_FFLAGS  += -DWITH_LOOPTOOLS
-## libqcdwz_la_FFLAGS  += -I$(LOOPTOOLS_DIR)/include -IFAFCme/
-#endif
-#
-#if WITH_LOOPTOOLS
-#temp.F: $(srcdir)/temp.F.in
-#	@sed s%@LOOPTOOLSPATH@%"$(LOOPTOOLS_DIR)"% < $(srcdir)/temp.F.in > temp.F
-#	@touch temp.F
-#else
-#temp.F: $(srcdir)/temp.F.in
-#	@cp $(srcdir)/temp.F.in temp.F
-#	@touch temp.F
-#endif
-#
-#
-#if WITH_LOOPTOOLS
-#libqcdwz_la_FFLAGS+= -DWITH_LT
-#libqcdwz_la_LIBADD = $(LOOPTOOLS_LDFLAGS) $(LOOPTOOLS_LIBS)
-#endif
-
 $(top_builddir)/include/%.mod: libqcdwz_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

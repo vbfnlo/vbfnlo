@@ -1,40 +1,35 @@
 #!/usr/bin/env python3
+"""Functions to read and write VBFNLO-Style .dat files"""
 import re
 
-
-def replacemachine(fileName, sourceText, replaceText, keep=True):
-    with open(fileName, "r") as file:
+def replacemachine(filename, sourcetext, replacetext, keep=True):
+    "Set value for a variable in .dat file"
+    with open(filename, "r") as file:
         text = file.read()
-    with open(fileName, "w") as file:
+    with open(filename, "w") as file:
         if keep:
-            file.write(re.sub(r'^[\s!]*'+sourceText+r'\s*=',
-                              sourceText+' = '+replaceText+' ! ',
+            file.write(re.sub(r'^[\s!]*'+sourcetext+r'\s*=',
+                              sourcetext+' = '+replacetext+' ! ',
                               text,
                               flags=re.MULTILINE))
         else:
-            file.write(re.sub(r'^[\s!]*'+sourceText+r'\s*=.*',
-                              sourceText+' = '+replaceText+' \n',
+            file.write(re.sub(r'^[\s!]*'+sourcetext+r'\s*=.*',
+                              sourcetext+' = '+replacetext+' \n',
                               text,
                               flags=re.MULTILINE))
 
 
 def readconf(filename):
-    COMMENT_CHAR = '!'
-    OPTION_CHAR = '='
+    "Read config from .dat file"
+    comment_char = '!'
+    option_char = '='
     options = {}
-    with open(filename) as f:
-        for line in f:
-            # First, remove comments:
-            if COMMENT_CHAR in line:
-                # split on comment char, keep only the part before
-                line, comment = line.split(COMMENT_CHAR, 1)
-            # Second, find lines with an option=value:
-            if OPTION_CHAR in line:
-                # split on option char:
-                option, value = line.split(OPTION_CHAR, 1)
-                # strip spaces:
-                option = option.strip()
-                value = value.strip()
-                # store in dictionary:
-                options[option] = value
+    with open(filename) as file:
+        for line in file:
+            if comment_char in line:
+                line = line.split(comment_char, 1)[0]
+
+            if option_char in line:
+                option, value = line.split(option_char, 1)
+                options[option.strip()] = value.strip()
     return options

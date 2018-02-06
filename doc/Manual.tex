@@ -9,7 +9,6 @@
 \usepackage{epsfig}
 \usepackage{cite}
 \usepackage{color}
-\usepackage{comment}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{multirow}
@@ -99,7 +98,7 @@
  {\Large \bf  for processes with electroweak bosons --}
 \end{center}
 \begin{center}
- {\Large \bf  Manual for Version 3.0.0 $\beta$ 4}
+ {\Large \bf  Manual for Version 3.0.0 $\beta$ 5}
 \end{center}
 \vspace{0.6cm}
 \begin{center}
@@ -508,6 +507,9 @@ Due to the experimental nature, please test that for your configuration and choi
 process the compilation with and without MPI leads to the same numerical output. For
 single-core usage MPI and non-MPI runs should agree up to machine precision, while for
 multi-core runs, numerical differences up to the stated statistical uncertainty are expected.
+
+Use the xoroshiro random number generator ({\tt RTYPE=3} in {\tt random.dat}) for best
+performance with MPI. For details see Section~\ref{sec:random}.
 
 \subsection{MacOSX}
 
@@ -1202,11 +1204,14 @@ q \bar{q} $ \\
 %
 Diboson production in association with a hard hadronic jet are
 available in {\sc{Vbfnlo}} at NLO QCD accuracy under the process IDs of
-Table~\ref{tab:prc7}. All off-shell and finite width effects
+Tables~\ref{tab:prc7} and~\ref{tab:prc7a}. All off-shell and finite width effects
 are included. The $WZ$ and $W\gamma$ processes can be run with anomalous $WWZ$ and $WW\gamma$ couplings, input via {\tt anomV.dat}.
 Details can be found in
 Refs.~\cite{Campanario:2010hv,Campanario:2010xn,Campanario:2010hp,
 Campanario:2009um,Campanario:2012bh,Campanario:2013wta,Campanario:2015nha}.  
+
+Furthermore, semileptonic decay modes of the vector bosons are implemented
+for the $W^+W^-$ final state in the SM.
 %
 \begin{table}[t!]
 \begin{center}
@@ -1230,9 +1235,30 @@ Campanario:2009um,Campanario:2012bh,Campanario:2013wta,Campanario:2015nha}.
 \hline
 \end{tabular}
 \caption{ \em  Process IDs for diboson production in association with a hadronic jet at
-NLO QCD.}
+NLO QCD with fully leptonic decays.}
 \vspace{0.2cm}
 \label{tab:prc7}
+\end{center}
+\end{table}
+%
+\begin{table}[t!]
+\begin{center}
+\small
+\begin{tabular}{c|l|l}
+\hline
+&\\
+\textsc{ProcId} & \textsc{Process} & \textsc{Bsm} \\
+&\\
+\hline
+&\\
+\bf 601 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} W^{-} j \to q \bar{q} \ell^{-} \bar{\nu}_{\ell} j $ & \\
+\bf 602 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} W^{-} j \to \ell^{+}\nu_{\ell} q \bar{q} j $ & \\
+\hline
+\end{tabular}
+\caption{ \em  Process IDs for diboson production in association with a hadronic jet at
+NLO QCD with semileptonic decays.}
+\vspace{0.2cm}
+\label{tab:prc7a}
 \end{center}
 \end{table}
 
@@ -1628,8 +1654,10 @@ Details of the calculation can be found in Ref.~\cite{Campanario:2012bh}.
 &\\
 \hline
 &\\
-\bf 4600 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to \ell_{1}^{+} \nu_{\ell_{1}} \ell_{2}^{-}\bar{\nu}_{\ell_{2}} j $ & \ldelim \} {2}{0.8cm} \multirow{2}{*}{anomalous $HVV$ couplings}\\
-\bf 4650 & $p \overset{\mbox{\tiny{(--)}}}{p} \to ZZ j \to \ell_{1}^{-} \ell_{1}^{+}  \ell_{2}^{-} \ell_{2}^{+} j $ & \\
+\bf 4600 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to \ell_{1}^{+} \nu_{\ell_{1}} \ell_{2}^{-}\bar{\nu}_{\ell_{2}} j $ & \multirow{1}{*}{anomalous $HVV$ couplings}\\
+\bf 4601 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to q \bar{q} \ell^{-}\bar{\nu}_{\ell} j $ & \\
+\bf 4602 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to \ell^{+} \nu_{\ell} q \bar{q} j $ & \\
+\bf 4650 & $p \overset{\mbox{\tiny{(--)}}}{p} \to ZZ j \to \ell_{1}^{-} \ell_{1}^{+}  \ell_{2}^{-} \ell_{2}^{+} j $ & \multirow{1}{*}{anomalous $HVV$ couplings}\\
 &\\
 \hline
 \end{tabular}
@@ -3353,16 +3381,34 @@ default values, which are set in {\tt utilities/histograms.F}, are used.
 
 A brief documentation on how to implement additional histograms into the file {\tt histograms.F}
 can be found on the \VBFNLO{} webpage,
-\url{https://www.itp.kit.edu/vbfnlo/} .
+\url{https://www.itp.kit.edu/vbfnlo/}.
 
 
 %===================================================================
 
 
-\subsection{{\tt random.dat} $-$ parameters for seeds}
+\subsection{{\tt random.dat} $-$ parameters for the random number generator}
 \label{sec:random}
-To run with different seeds, simply set the variable {\tt SEED} in the file {\tt
-random.dat} to a different integer value.
+
+For the Monte Carlo integration different random number generators can be used by setting
+{\tt RTYPE} in {\tt random.dat} to one of the following.
+\begin{description}
+  \item[0] ranmar based on~\cite{MarsagliaZaman:1990}. This is the default.
+  \item[1] Sobol sequences as introduced in~\cite{Sobol:1967} and based on the
+    implementation in~\cite{BratleyFox:1988}.
+  \item[2] Internal random number generator of the compiler, availability and performance
+    depend on the used compiler. Might not work with MPI\@.
+  \item[3] xoroshiro128+ as provided at \url{http://vigna.di.unimi.it/xorshift/}. This
+    generator is faster than the other choices.
+    It also allows quick skipping of random numbers and thus significantly improves the
+    performance in combination with MPI\@.
+\end{description}
+
+For all those generators (except Sobol) an initialization seed is needed.
+This allows reproducible random number generation.
+
+To run with different seeds, set the variable {\tt SEED} 
+to a different integer value for each run.
 
 
 %===================================================================
@@ -3475,7 +3521,12 @@ also shown in the example input files mentioned above.
 
 \section{\textsc{Changes}}
 
-The release \textsc{Version 3.0.0 $\beta$ 4} includes some changes that alter previous results:
+The release \textsc{Version 3.0.0 $\beta$ 5} includes some changes that alter previous results:
+
+\subsection{NLO calculation of VBF-$Hjjj$}
+
+A bug has been found in the virtual and real-emission parts of VBF-$Hjjj$
+production, which leads to a decrease of the NLO cross section of roughly 10\%.
 
 \subsection{NLO calculation of VBF-$Z\gamma jj$ with anomalous couplings}
 
@@ -4125,6 +4176,8 @@ Firstly, the processes that are accessed via the {\tt vbfnlo} executable are giv
 \hline
 &\\*
 \bf 600 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} W^{-} j \to \ell_{1}^{+}\nu_{\ell_1} \ell_{2}^{-} \bar{\nu}_{\ell_2} j $ & \bsmoptions{H}\\*
+\bf 601 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} W^{-} j \to q\bar{q} \ell^{-} \bar{\nu}_{\ell} j $ & \bsmoptions{L}\\*
+\bf 602 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} W^{-} j \to \ell^{+}\nu_{\ell} q\bar{q} j $ & \bsmoptions{L}\\*
 \bf 610 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{-} \gamma j \to \ell^{-} \bar \nu_{\ell} \gamma j $ &\bsmoptions{V}\\*
 \bf 620 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{+} \gamma j  \to \ell^{+} \nu_{\ell} \gamma j $ &\bsmoptions{V}\\*
 \bf 630 & $p \overset{\mbox{\tiny{(--)}}}{p}  \to W^{-} Z j \to \ell_{1}^{-} \bar \nu_{\ell_1} \ell_{2}^{-} \ell_{2}^{+} j$ &\bsmoptions{V}\\*
@@ -4238,6 +4291,8 @@ The gluon-fusion processes are given below.
 \hline
 &\\*
 \bf 4600 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to \ell_{1}^{+} \nu_{\ell_{1}} \ell_{2}^{-}\bar{\nu}_{\ell_{2}} j $ & \bsmgfoptions{GH}\\*
+\bf 4601 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to q\bar{q} \ell^{-}\bar{\nu}_{\ell} j $ & \bsmgfoptions{GL}\\*
+\bf 4602 & $p \overset{\mbox{\tiny{(--)}}}{p} \to W^{+}W^{-} j \to \ell^{+} \nu_{\ell} q\bar{q} j $ & \bsmgfoptions{GL}\\*
 \bf 4650 & $p \overset{\mbox{\tiny{(--)}}}{p} \to ZZ j \to \ell_{1}^{-} \ell_{1}^{+}  \ell_{2}^{-} \ell_{2}^{+} j $ & \bsmgfoptions{GH}\\*
 &\\* 
 \hline
@@ -5047,6 +5102,21 @@ T.~Binoth, G.~Ossola, C.~G. Papadopoulos and R.~Pittau, ``{NLO QCD corrections
   ``MadGraph 5 : Going Beyond,''
   JHEP {\bf 1106} (2011) 128
   \href{https://arXiv.org/abs/1106.0522}{\tt arXiv:1106.0522}.
+
+\bibitem{MarsagliaZaman:1990}
+  G.~Marsaglia, A.~Zaman and W.~Tsand, 
+  ``Toward a universal random number generator,''
+  \href{http://dx.doi.org/10.1016/0167-7152(90)90092-L}{{\em Statistics \& Probability
+      Letters} {\bf 9(1)} (1990), pp.35-39.}
+
+\bibitem{Sobol:1967}
+  I.~Sobol, ``Distribution of points in a cube and approximate evaluation of
+   integrals,''
+   {\em  U.S.S.R Comput. Maths. Math. Phys.} {\bf 7} (1967) 86–112.
+
+\bibitem{BratleyFox:1988}
+  P.~Bratley and B.~Fox, ``Algorithm 659: Implementing Sobol’s quasirandom
+  sequence generator,'' {\em ACM Trans. Math. Software} {\bf 14} 88–100.
 
 \end{thebibliography}\endgroup
 

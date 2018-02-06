@@ -3558,6 +3558,10 @@ c...flavours of 4 quarks and gluon
          lnup(listposition)=numParticles+1
       case(HjjjLO,AjjjLO)
          lnup(listposition)=numParticles-2
+      case(HHjjjLO) ! modif julien
+         lnup(listposition)=numParticles-1
+      case(HHjjjLO_bbtau,HHjjjLO_bbAA) ! modif julien
+         lnup(listposition)=numParticles+3
       case(HjjjLO_AA, HjjjLO_mu, HjjjLO_tau, HjjjLO_bbar, ZjjjLO_l,
      1     ZjjjLO_nu, WPjjjLO, WMjjjLO, AAjjjLO)
          lnup(listposition)=numParticles       

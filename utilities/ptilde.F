@@ -82,7 +82,7 @@ c qcdVVjj
       
 
 c DIBOSON PLUS JET -- neutral ones
-      CASE(WWJ, ZZJ)
+      CASE(WWJ, WPHADWMJ, WPWMHADJ, ZZJ)
           call VVJptildemake(p(0,1,1),xuz(1,2),v(0,1,1))
 
       CASE DEFAULT

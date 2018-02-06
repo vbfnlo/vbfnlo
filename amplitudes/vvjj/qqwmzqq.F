@@ -2618,6 +2618,7 @@ c     !	   				       p43(4)," < qsqAmin"
 c            print*,"res(k) at LO set to zero"
          do k = 1,4
             res(k) = 0
+            tree(k) = 0
          enddo
       endif
 

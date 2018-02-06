@@ -1,5 +1,6 @@
 pkglib_LTLIBRARIES = libVBFNLOPhasespace.la
 libVBFNLOPhasespace_la_SOURCES = \
+multires.inc \
 phasespace.F \
 ps_tools.F \
 ps_vnj.F \
@@ -19,6 +20,7 @@ endif
 if WITH_DIBOSONJET
 if !WITH_DIBOSON
 libVBFNLOPhasespace_la_SOURCES += \
+ps_qqVVj.F \
 ps_qqVHj.F \
 ps_qqVj.F
 endif
@@ -85,3 +87,4 @@ $(top_builddir)/include/%.mod: libVBFNLOPhasespace_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

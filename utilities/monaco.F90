@@ -19,6 +19,7 @@
 !   Subroutine performs n-dimensional monte carlo integ"n
 !      - by g.p. lepage    sept 1976/(rev)aug 1979
 !      - algorithm described in j comp phys 27,192(1978)
+
 module monaco
     use globalvars, only: lglobalprint
    implicit none
@@ -41,8 +42,13 @@ module monaco
    double precision :: alph = 0.875d0         !default convergence parameter
    integer :: ndmx = 48            !default number of grid divisions ! TODO combine with ngrid
    integer :: mds = 0            !use stratified and/or importance sampling
-   integer :: rtype = 0            !use Sobol quasi-random sequences
-   integer*8 ncall_monaco
+   
+   integer, public :: rtype  ! seed RTYPE_ defines
+   integer, public, parameter :: RTYPE_MZ=0
+   integer, public, parameter :: RTYPE_SOBOL=1
+   integer, public, parameter :: RTYPE_BUILTIN=2
+   integer, public, parameter :: RTYPE_XORSHIFT=3
+
    double precision calls
    double precision ti ! integral for one iteration
    double precision tsi ! sigma for one iteration
@@ -73,13 +79,15 @@ module monaco
    type(grid) :: g ! all values that get filled by monaco_put
 
    integer*8, allocatable, dimension(:) :: kg !(ndi)
-   integer*8 k ! dummy variable, counts 1..npg; misused in many places
    integer, public :: ndimen = 0
    double precision, allocatable, dimension(:) :: dx !(ndi)
    double precision :: dxg, xnd
    double precision avgi !total integral over all iterations
    double precision sd ! total sigma over all iterations
    double precision chi2a ! chi^2/iteration
+
+   integer, allocatable, dimension(:) :: ia ! ndimen
+
    save
    private
 
@@ -94,33 +102,35 @@ contains
    subroutine monaco_init1(ndim, npt)
    integer*4, intent(in) :: ndim !in:  number of dimensions in hypercube 
    integer*8, intent(in) :: npt !in:  number of evaluations per iteration 
-      call monaco_init(ndim, npt, 0, oldinitid=1)
+      call monaco_init(ndim, npt, oldinitid=1)
    end subroutine
 
    subroutine monaco_init2(ndim, npt)
    integer*4, intent(in) :: ndim !in:  number of dimensions in hypercube 
    integer*8, intent(in) :: npt !in:  number of evaluations per iteration 
-      call monaco_init(ndim, npt, 0, oldinitid=2)
+      call monaco_init(ndim, npt, oldinitid=2)
    end subroutine
    
    subroutine monaco_init3(ndim, npt)
    integer*4, intent(in) :: ndim !in:  number of dimensions in hypercube 
    integer*8, intent(in) :: npt !in:  number of evaluations per iteration 
-      call monaco_init(ndim, npt, 0, oldinitid=3)
+      call monaco_init(ndim, npt, oldinitid=3)
    end subroutine
 
-   subroutine monaco_init(ndim, npt, seed, oldinitid)
+   subroutine monaco_init(ndim, npt, oldinitid)
       use monaco_rng_mz, only: imonrn
       use monaco_rng_sob, only: imonso
+      use globalvars, only: seed
+      
    implicit none
 
    integer*4, intent(in) :: ndim !in:  number of dimensions in hypercube 
    integer*8, intent(in) :: npt !in:  number of evaluations per iteration 
-   integer, intent(in) :: seed     !in:  number for different seeds 
 
    integer, intent(in), optional :: oldinitid
 
    integer initid
+   integer k
    integer*4 seed1, seed2
 
 ! declare local variables
@@ -141,6 +151,10 @@ contains
 
       if (allocated(dx)) deallocate(dx)
       allocate(dx(ndimen))
+
+      if (allocated(ia)) deallocate(ia)
+      allocate(ia(ndimen))
+
    endif
 
    if (.not. lglobalprint) nprn = -1
@@ -165,10 +179,21 @@ contains
          stop
       end if
 
-      if (rtype == 0) then
+
+      if (rtype == RTYPE_MZ) then
          call imonrn( ndimen, seed1, seed2 )
-      elseif (rtype == 1) then
+      elseif (rtype == RTYPE_SOBOL) then
          call imonso( ndimen )
+      elseif (rtype == RTYPE_BUILTIN) then
+          ! TODO: put a seed here; handling depends on gfortran version, so dangerous
+          call random_seed()
+      elseif (rtype == RTYPE_XORSHIFT) then
+         call xorshift_seed(ndimen, seed)
+      else
+          write(ndev,*)
+          write(ndev,*) "MONACO:  invalid random sequence generator choice"
+          write(ndev,*) "rtype =", rtype
+          stop
       endif
       ndo = 1
       xi(1,1:ndimen) = 1.0d0
@@ -189,12 +214,11 @@ contains
    if (initid < 3) then
    ! no initialisation
 
-      ncall_monaco = npt
       nd = ndmx
       ng = 1
-      ! TODO: What does the code in this if statement do?
+      ! stratified sampling:
       if ( mds .ne. 0 ) then
-         ng = int( (dble( ncall_monaco ) / 2.0d0)**(1.0d0 / dble( ndimen )) )
+         ng = int( (dble( npt ) / 2.0d0)**(1.0d0 / dble( ndimen )) )
          mds = 1
          if ( (2 * ng - ndmx) .ge. 0 ) then
             mds = -1
@@ -204,7 +228,7 @@ contains
          end if
       end if
       k = ng**ndimen
-      npg = ncall_monaco / k
+      npg = npt / k
       if ( npg .lt. 2 ) then
          npg = 2
       end if
@@ -287,20 +311,19 @@ contains
    double precision, intent(out) :: wgt ! generated weight of point
    
 ! declare local variables
-   integer*8 ia(ndimen), j
+   integer*8 j
    double precision rand(ndimen), xn, xo, rc
 
 ! generate point, with accompanying weight
 
-   if ( rtype .eq. 0 ) then
+   if ( rtype .eq. RTYPE_MZ ) then
       call monran( rand )
-   else if ( rtype .eq. 1 ) then
+   else if ( rtype .eq. RTYPE_SOBOL ) then
       call monsob( rand )
-   else
-      write(ndev,*)
-      write(ndev,*) "MONACO:  invalid random sequence generator choice"
-      write(ndev,*) "rtype =", rtype
-      stop
+   else if ( rtype .eq. RTYPE_BUILTIN ) then
+      call random_number(rand)
+   else if ( rtype .eq. RTYPE_XORSHIFT ) then
+      call xorshift_getrand(rand)
    end if
    wgt = xjac
    do j = 1, ndimen
@@ -356,7 +379,7 @@ contains
    ! logical :: combine_grid
 
 ! declare local variables
-   integer*8 ia(ndimen), j
+   integer*8 j
    double precision fret, f, f2, rc
 
    ! if (present(combine)) then
@@ -390,27 +413,18 @@ contains
    f2 = f**2
 
 
-   do j = 1, ndimen
-      rc = ( r(j) - xl(j) ) / dx(j)
-      ia(j) = 1 ! holds index of bin in dimension j that this random point belongs to
-      do while ( (rc .ge. xi(ia(j),j)) .and. (ia(j) .lt. ngrid) ) 
-         ia(j) = ia(j) + 1
-      enddo
-      g%di(ia(j),j) = g%di(ia(j),j) + f
-      if ( mds .ge. 0 ) then 
-         g%d(ia(j),j) = g%d(ia(j),j) + f2
-      end if
-   end do
+   do j = 1,ndimen
+       g%di(ia(j),j) = g%di(ia(j),j) + f
+       if ( mds .ge. 0 ) then 
+           g%d(ia(j),j) = g%d(ia(j),j) + f2
+       end if
+   enddo
 
-   ! TODO: remove this call when mpi is used in all monaco-loops
-   ! if (g%ncalls >= npg .and. combine_grid) then
-   !    call monaco_end_of_iteration
-   ! end if
    end subroutine
 
    subroutine monaco_end_of_iteration()
    implicit none
-   integer*8 i, j, ia(ndimen)
+   integer*8 i, j, k
    character(len=500) fmt_iteration, fmt_griddata
 
    double precision wgt, ti2
@@ -419,6 +433,8 @@ contains
    g%f2b = (g%f2b - g%fb) * (g%f2b + g%fb)
    ti = ti + g%fb
    tsi = tsi + g%f2b
+
+   ! stratified sampling
    if ( mds .lt. 0 ) then
       do j = 1, ndimen
          g%d(ia(j),j) = g%d(ia(j),j) + g%f2b
@@ -427,12 +443,12 @@ contains
    k = ndimen
    do while (k > 0)
       kg(k) = mod( kg(k), ng ) + 1
-      if ( kg(k) .ne. 1 ) then ! TODO: this never happens?!
-         g%fb = 0.0d0
-         g%f2b = 0.0d0
-         k = 0
-         return
-      end if
+      ! if ( kg(k) .ne. 1 ) then
+      !    g%fb = 0.0d0
+      !    g%f2b = 0.0d0
+      !    k = 0
+      !    return
+      ! end if
       k = k - 1
    enddo
 
@@ -515,9 +531,10 @@ contains
    subroutine refine_grid()
 ! declare local variables
    implicit none
-   integer*8 ia(ndimen), i, j
+   integer*8 i, j
    double precision dt(ndimen), xin(ngrid), ri(ngrid)
    double precision xo, xn, rc, dr
+   integer k
 
    do j = 1, ndimen
       xo = g%d(1,j)

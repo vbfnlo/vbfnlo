@@ -492,7 +492,7 @@ c...open procinfo file
             endif
          endif
       endif
- 5100 format(1p,2i8,2e14.6,6i6)
+ 5100 format(1p,2i8,2e14.6,6i8)
  5200 format(1p,3e14.6,i6)
  5300 format(1p,2i6,4e14.6)
  5400 format(1p,i8,5i5,5e18.10,e9.1,e9.1)  
@@ -612,7 +612,14 @@ c...momenta of vector boson(s) decay products
             pup(2,i11)=v(2,i1,1)
             pup(3,i11)=v(3,i1,1)
             pup(4,i11)=v(0,i1,1)
-            pup(5,i11)=0d0
+            select case(procID)
+            case(HHjj)
+               spinup(i11)=9d0
+               pup(5,i11)=dsqrt(pup(4,i11)**2-pup(3,i11)**2
+     &              -pup(2,i11)**2-pup(1,i11)**2)
+            case DEFAULT
+               pup(5,i11)=0d0
+            end select
             if(taumass_switch) then
                if(abs(idflav(i1)).eq.15) pup(5,i11)=mtau
             endif
@@ -624,7 +631,7 @@ c...helicity configurations for some processes (decay of Higgs boson only)
       select case(procID)
       ! AA and bb final states: unpolarized
       case(Hjj_AA, Hjj_bbar, Hjjj_AA,Hjjj_bbar, HAjj_AA, HAjj_bbar,
-     -     GFHjj_AA, GFHjj_bbar)
+     -     GFHjj_AA, GFHjj_bbar, HHjj_bbAA)
          do i1=1,n_v
             i11=n_p+n_b+i1
             spinup(i11)=9d0
@@ -642,6 +649,24 @@ c...helicity configurations for some processes (decay of Higgs boson only)
             else
                spinup(i11)   = -1
                spinup(i11+1) = -1
+            endif
+         enddo
+      case(HHjj_bbtau) ! special case HHjj --> b bbar tau tau
+         do i1=1,n_v
+            i11=n_p+n_b+i1
+            if(i1.le.2) then
+               spinup(i11)=9d0
+            else
+               if(i1.eq.3) then
+                  rn=RandomNumber()
+                  if (rn.gt.0.5d0) then
+                     spinup(i11)   =  1
+                     spinup(i11+1) =  1
+                  else
+                     spinup(i11)   = -1
+                     spinup(i11+1) = -1
+                  endif
+               endif
             endif
          enddo
       ! WW and ZZ final states: helicity variable is set in subroutine m2s_VVsum
@@ -964,6 +989,19 @@ c------------------------------------------------------------------------------
          idflav(1) = 22
          idflav(2) = 22
          idflav(3) = 22
+      case(HHjj_bbAA)
+         idflav(1) = 5
+         idflav(2) =-5
+         idflav(3) = 22
+         idflav(4) = 22
+      case(HHjj_bbtau)
+         idflav(1) = 5
+         idflav(2) =-5
+         idflav(3) =-15
+         idflav(4) = 15
+      case(HHjj)
+         idflav(1) = 25
+         idflav(2) = 25
       case default
 c         print*,"no numbers for the final state particles assigned 
 c     1            in leshouches.f"
@@ -1055,6 +1093,13 @@ c...particle identity code
          lidup(n_p+1,listposition)= 39
       case(Hjjj, Hjjj_AA, Hjjj_mu, Hjjj_tau, Hjjj_bbar) !H
          lidup(n_p+1,listposition)= 25
+      case(HHjj)
+         n_b = 0
+         lidup(n_p+1,listposition)= 25
+         lidup(n_p+2,listposition)= 25
+      case(HHjj_bbtau, HHjj_bbAA)
+         lidup(n_p+1,listposition)= 25
+         lidup(n_p+2,listposition)= 25
       case(HAjj,  HAjj_AA, HAjj_mu, HAjj_tau, HAjj_bbar)
          lidup(n_p+1,listposition)= 25
          lidup(n_p+2,listposition)= 22
@@ -1261,6 +1306,11 @@ c...setting spin and mothers of photon(s) in diboson and triboson processes
          lmothup(2,nup-1,listposition) = 2
          lmothup(1,nup-2,listposition) = 1
          lmothup(2,nup-2,listposition) = 2
+      case(HHjj)
+         lmothup(1,nup,listposition) = 1
+         lmothup(2,nup,listposition) = 2
+         lmothup(1,nup-1,listposition) = 1
+         lmothup(2,nup-1,listposition) = 2
       end select
 
       call kf_leptons(idflav)
@@ -1280,11 +1330,15 @@ c...setting spin and mothers of photon(s) in diboson and triboson processes
             licolup(1,i11,listposition)= 0
             licolup(2,i11,listposition)= 0
             if(idflav(i1).eq.5)then
-              if(process.eq.Hjj_bbar.or.process.eq.HAjj_bbar)then
+              if(process.eq.Hjj_bbar.or.process.eq.HAjj_bbar
+     $                .or.process.eq.HHjj_bbtau
+     $                .or.process.eq.HHjj_bbAA)then
                  licolup(1,i11,listposition)= 503
                  licolup(2,i11,listposition)= 0
               elseif(process.eq.HjjjLO_bbar.or.process.eq.HAjjjLO_bbar
-     $                .or.process.eq.Hjjj_bbar)then
+     $                .or.process.eq.Hjjj_bbar
+     $                .or.process.eq.HHjjjLO_bbtau
+     $                .or.process.eq.HHjjjLO_bbAA)then
                  licolup(1,i11,listposition)= 504
                  licolup(2,i11,listposition)= 0
               elseif(process.eq.HjjjjLO_bbar)then
@@ -1295,11 +1349,15 @@ c...setting spin and mothers of photon(s) in diboson and triboson processes
                  licolup(2,i11,listposition)= 0
               endif
             elseif(idflav(i1).eq.-5) then
-              if(process.eq.Hjj_bbar.or.process.eq.HAjj_bbar)then            
+              if(process.eq.Hjj_bbar.or.process.eq.HAjj_bbar
+     $                .or.process.eq.HHjj_bbtau
+     $                .or.process.eq.HHjj_bbAA)then            
                  licolup(1,i11,listposition)= 0
                  licolup(2,i11,listposition)= 503               
               elseif(process.eq.HjjjLO_bbar.or.process.eq.HAjjjLO_bbar
-     $                .or.process.eq.Hjjj_bbar)then
+     $                .or.process.eq.Hjjj_bbar
+     $                .or.process.eq.HHjjjLO_bbtau
+     $                .or.process.eq.HHjjjLO_bbAA)then
                  licolup(1,i11,listposition)= 0
                  licolup(2,i11,listposition)= 504
               elseif(process.eq.HjjjjLO_bbar)then

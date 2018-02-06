@@ -21,18 +21,13 @@
       double precision helastestmom1(0:3,7),m2helastest(1),pdf(-6:6,2)
       double precision m2s_qqwgaglu,m2s_wgaglu
 
-      double precision helasmom(0:3,7) !blha momenta
+      double precision helasmom(0:3,8) !blha momenta
+      ! -- one entry more due to additional unused entry in MG
       double precision res(1) !blha amplitude
-      integer i !loop counter
-      integer phystodiag(3) !phystodiagmap
-      integer fsign(3) 
 
       double precision dotrr
 
       external m2s_qqwgaglu,m2s_wgaglu,dotrr
-
-      logical ldebug
-      parameter (ldebug=.true.)
 
       INTEGER init/0/
       SAVE init
@@ -71,50 +66,53 @@
 
          !TODO implement blha_ranhelcomb, helicity argument to SUDBGEPVEMUPMUM 
       if (ldoblha) then
-         physToDiag(1:3)=blha_physdiagmap(1:3,blha_cursubproc,blha_curproc)
-         fsign(1:3) = blha_fsign(1:3,blha_cursubproc,blha_curproc)
-         do i=1,3
-            helasmom(0:3,physToDiag(i)) = p(0:3, i)
-         enddo
-         helasmom(0:3,4:7) = v(0:3, 1:4) 
+        helasmom(0:3,1:3) = p(0:3, 1:3)
+        helasmom(0:3,4:7) = v(0:3, 1:4) 
 
-            
+        if (blha_fsign(3,blha_cursubproc,blha_curproc) == 1) then ! u dbar -> g
+          if (blha_physdiagmap(1,blha_cursubproc,blha_curproc) == 2) then ! dbar u -> g
+            helasmom(0:3,1) = p(0:3,2)
+            helasmom(0:3,2) = p(0:3,1)
+          endif
+          Call SUDBGEPVEMUPMUM(helasmom, res)
+          res = res * 36d0 / 2d0
+        else 
+          if (blha_physdiagmap(1,blha_cursubproc,blha_curproc) == 3) then ! g q -> q
+            helasmom(0:3,1) = p(0:3,2)
+            helasmom(0:3,2) = p(0:3,1)
+          endif
+          if (blha_fsign(1,blha_cursubproc,blha_curproc) == 1) then ! u g -> d
+            Call SUGDEPVEMUPMUM(helasmom, res)
+            res = res * 96d0 / 2d0
+          else ! dbar g -> ubar
+             Call SDBGUBEPVEMUPMU(helasmom, res)
+             res = res * 96d0 / 2d0
+          endif
+        endif
 
-         if (ldebug) then
-            print*, '\n\n'
-            print*, 'in m2s_qqwpzg.F'
-            print*, blha_particlemap(1:3, 1, blha_numproc)
-            print*, res
-            print*, phystodiag
-            do i=1,7
-               print*, helasmom(0:3, i)
-            enddo
-            print*, fsign
-         endif
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+res(1)
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      (blha_CA-2*blha_CF)*res(1)
+     &    )
+          ! 1-3
+          call BLHA_cctree(1,3,
+     &      -blha_CA*res(1)
+     &    )
+          ! 2-3
+          call BLHA_cctree(1,3,
+     &      -blha_CA*res(1)
+     &    )
+        else if (blha_amptype(blha_curproc).eq.3) then ! sctree
+          ! TODO
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
 
-         if (fsign(3) == 1) then ! u dbar -> g
-            Call SUDBGEPVEMUPMUM(helasmom, res)
-            print*, 'expect u dbar -> g'
-            print*, 1, -1, 1
-         else 
-            if (fsign(1) == 1) then ! u g -> d
-               Call SUGDEPVEMUPMUM(helasmom, res)
-               print*, 'expect u g -> d'
-               print*, 1, 1, -1
-            else if (fsign(1) == -1) then ! dbar g -> ubar
-               Call SUGDEPVEMUPMUM(helasmom, res)
-               print*, 'expect dbar g -> ubar'
-               print*, -1, -1, -1
-            endif
-         endif
-
-         if (blha_amptype(blha_curproc).eq.0) then ! tree
-            blha_amp(1)=blha_amp(1)+res(1)
-         else 
-            call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
-         endif
-
-         return
+        return
       endif
 
 

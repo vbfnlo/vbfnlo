@@ -7,5 +7,7 @@ module globalvars
   logical ldoscales, ldoblha
   logical isggflo ! corresponds to ggflo in VBFNLO < 3.0
 
+  integer seed ! input seed
+
 end module
 

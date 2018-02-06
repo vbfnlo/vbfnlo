@@ -25,4 +25,5 @@ uninstall-local:
 
 clean-local:
 	rm -rf VBFNLO
+	rm -f *.mod
 

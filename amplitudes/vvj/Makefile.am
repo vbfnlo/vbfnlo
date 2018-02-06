@@ -1,5 +1,9 @@
 noinst_LTLIBRARIES = libvvj.la
 libvvj_la_SOURCES = \
+tensor.inc \
+genps.inc \
+nexternal.inc \
+tensorlep.inc \
 leptens.F \
 m2s_qqVVj2.F \
 m2s_qqZZj2.F \
@@ -61,3 +65,4 @@ $(top_builddir)/include/%.mod: libvvj_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

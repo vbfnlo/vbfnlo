@@ -2479,6 +2479,7 @@ c     eliminate processes with photon virtuality below cutoff
      1     abs(p43(4)).lt.qsqAmin ) then
          do k = 1,4
             res(k) = 0
+            tree(k) = 0
          enddo
       endif
 

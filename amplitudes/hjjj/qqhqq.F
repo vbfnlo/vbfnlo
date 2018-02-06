@@ -68,6 +68,7 @@ C  Variables for the main part of the program
      1       p(0:3,4+max_v),q(0:4),p21(0:4),p43(0:4),p65(0:4),
      2       eps(0:3,0:2),p21g(0:4),p43g(0:4), res(6,2), resv(6,2),
      3       l21, l43
+      double complex scres(6,2)
       real*8 p87(0:4),ph(0:4)
       real*8 uucc_c(3),uuss_c(3),ddcc_c(3),ddss_c(3),udsc_c(3),ducs_c(3)
       integer sign(8), gsign
@@ -83,6 +84,8 @@ C  Variables for the main part of the program
       real*8 pk(0:4,4)
       complex*16 prop21(2:4), prop43(2:4), prop21g(2:4), prop43g(2:4)
       real*8 fac,colfac,ratio
+      double precision lnmusqp1p2, lnmusqp3p4, lnmusqp1pg, lnmusqp2pg,
+     &                 lnmusqp3pg, lnmusqp4pg
 
       real*8 qvec(0:3)          !q_mu from dips subr
 
@@ -92,6 +95,8 @@ C  Variables for the main part of the program
       logical ldebug 
       parameter(ldebug = .false.)
      
+      double precision dotrr
+      external dotrr
 
 C  Reset the coupling factors
       do i = 1,6
@@ -342,6 +347,8 @@ c
       enddo
 
 #ifdef WITH_NLO
+      ! set scale
+      if (ldoblha) mursq(1,1) = blha_scale**2
       if(lbox) then
          lbox21 = .true.
          lbox43 = .true.
@@ -564,7 +571,11 @@ c     needed for spin correlation
                                 ! to compensate for over computing q_mu M^mu
 c     Its probably more efficient just to compute i = 1
       else
-         fac = fac * 12         ! 12 = C_2*9 is the color factor
+        if (ldoblha) then
+          fac = fac * blha_CF*blha_CA**2
+        else
+          fac = fac * 12         ! 12 = C_2*9 is the color factor
+        endif
       endif
 c     
 c for initial gluon, i.e. gsign=-1, eliminate diagrams with V-->q qbar decay
@@ -602,6 +613,8 @@ c
          res(k,2) = 0
          resv(k,1) = 0
          resv(k,2) = 0
+         scres(k,1) = 0
+         scres(k,2) = 0
          do isig = 1,4
 c undo changes !
             do i = 1,2 
@@ -626,6 +639,20 @@ c undo changes !
                endif
 #endif /* WITH_NLO */
             enddo
+            ! sctree amplitudes - convert polvec to BLHA-helvec
+            ! <M,-|M,+> = (<M,1|M,1>-<M,2|M,2>-2i*gsign*Re(<M,1|M,2>))/2
+            if (ldoblha) then
+              scres(k,1) = scres(k,1) + l21*fac*(
+     &            abs(mm21(k,isig,1))**2
+     &          - abs(mm21(k,isig,2))**2
+     &          - 2d0*dcmplx(0d0,1d0)*gsign*dreal(
+     &            dconjg(mm21(k,isig,1))*mm21(k,isig,2)))/2d0
+              scres(k,2) = scres(k,2) + l43*fac*(
+     &            abs(mm43(k,isig,1))**2
+     &          - abs(mm43(k,isig,2))**2
+     &          - 2d0*dcmplx(0d0,1d0)*gsign*dreal(
+     &            dconjg(mm43(k,isig,1))*mm43(k,isig,2)))/2d0
+            endif
          enddo
       enddo
       
@@ -661,6 +688,163 @@ c     2Re[mborn mvirt*]
      &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
             blha_amp(1)=blha_amp(1)+
      &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+          endif
+
+        else if (blha_amptype(blha_curproc).eq.1) then ! loop
+          lnmusqp1p2 = log(blha_scale**2/(2d0*dotrr(pbar(0,1),pbar(0,2))))
+          lnmusqp3p4 = log(blha_scale**2/(2d0*dotrr(pbar(0,3),pbar(0,4))))
+          lnmusqp1pg = log(blha_scale**2/(2d0*dotrr(pbar(0,1),qbar(0))))
+          lnmusqp2pg = log(blha_scale**2/(2d0*dotrr(pbar(0,2),qbar(0))))
+          lnmusqp3pg = log(blha_scale**2/(2d0*dotrr(pbar(0,3),qbar(0))))
+          lnmusqp4pg = log(blha_scale**2/(2d0*dotrr(pbar(0,4),qbar(0))))
+
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+            blha_amp(1)=blha_amp(1)+
+     &       ( als(1,1)/(2d0*pi)*(-blha_CA-2*blha_CF)
+     &        +als(2,1)/(2d0*pi)*(-2*blha_CF) )*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+            blha_amp(2)=blha_amp(2)+
+     &       ( als(1,1)/(2d0*pi)*
+     &         (-2*(blha_gammaQuark+blha_CF*lnmusqp1p2)-blha_gammaGluon
+     &          +blha_CA*(lnmusqp1p2-lnmusqp1pg-lnmusqp2pg) )
+     &        +als(2,1)/(2d0*pi)*
+     &         (-2*(blha_gammaQuark+blha_CF*lnmusqp3p4)) )*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+             blha_amp(3)= blha_amp(3)+
+     &         resv(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &         +( als(1,1)/(2d0*pi)*(
+     &              blha_CF*(-cvirtH3j+pi**2/3d0-8d0)-2*blha_tgammaQuark
+     &             +(-blha_CA-2*blha_CF)*pi**2/6d0
+     &            )
+     &           +als(2,1)/(2d0*pi)*(
+     &              blha_CF*(-cvirtH3j+pi**2/3d0-8d0)-2*blha_tgammaQuark
+     &             +(-2*blha_CF)*pi**2/6d0
+     &             +(-2)*blha_gammaQuark*lnmusqp3p4
+     &             +(-blha_CF)*lnmusqp3p4**2
+     &            )
+     &          )*res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+            blha_amp(4)=blha_amp(4)+
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+            blha_amp(1)=blha_amp(1)+
+     &       ( als(1,1)/(2d0*pi)*(-2*blha_CF)
+     &        +als(2,1)/(2d0*pi)*(-blha_CA-2*blha_CF) )*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+            blha_amp(2)=blha_amp(2)+
+     &       ( als(1,1)/(2d0*pi)*
+     &         (-2*(blha_gammaQuark+blha_CF*lnmusqp1p2))
+     &        +als(2,1)/(2d0*pi)*
+     &         (-2*(blha_gammaQuark+blha_CF*lnmusqp3p4)-blha_gammaGluon
+     &          +blha_CA*(lnmusqp3p4-lnmusqp3pg-lnmusqp4pg) ) )*
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+             blha_amp(3)= blha_amp(3)+
+     &         resv(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &         +( als(1,1)/(2d0*pi)*(
+     &              blha_CF*(-cvirtH3j+pi**2/3d0-8d0)-2*blha_tgammaQuark
+     &             +(-2*blha_CF)*pi**2/6d0
+     &             +(-2)*blha_gammaQuark*lnmusqp1p2
+     &             +(-blha_CF)*lnmusqp1p2**2
+     &            )
+     &           +als(2,1)/(2d0*pi)*(
+     &              blha_CF*(-cvirtH3j+pi**2/3d0-8d0)-2*blha_tgammaQuark
+     &             +(-blha_CA-2*blha_CF)*pi**2/6d0
+     &            )
+     &          )*res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+            blha_amp(4)=blha_amp(4)+
+     &       res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+          endif
+
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+          ! gluon attached to 1-2 line
+            ! 1-2
+            call BLHA_cctree(1,2,
+     &         (blha_CA-2*blha_CF)/2d0*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &      )
+            ! 1-5
+            call BLHA_cctree(1,5,
+     &         -blha_CA/2d0*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &      )
+            ! 2-5
+            call BLHA_cctree(2,5,
+     &         -blha_CA/2d0*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &      )
+            ! 3-4
+            call BLHA_cctree(3,4,
+     &        -blha_CF*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &      )
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+          ! gluon attached to 3-4 line
+            ! 1-2
+            call BLHA_cctree(1,2,
+     &        -blha_CF*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &      )
+            ! 3-4
+            call BLHA_cctree(3,4,
+     &         (blha_CA-2*blha_CF)/2d0*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &      )
+            ! 3-5
+            call BLHA_cctree(3,5,
+     &         -blha_CA/2d0*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &      )
+            ! 4-5
+            call BLHA_cctree(4,5,
+     &         -blha_CA/2d0*
+     &         res(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &      )
+          endif
+
+        else if (blha_amptype(blha_curproc).eq.3) then ! sctree
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 2) ) then
+          ! gluon attached to 1-2 line
+            ! 5-1 = <5|15|5>
+            call BLHA_sctree(5,1,
+     &         -blha_CA/2d0*
+     &         scres(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &      )
+            ! 5-2 = <5|25|5>
+            call BLHA_sctree(5,2,
+     &         -blha_CA/2d0*
+     &         scres(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &      )
+            ! 5-5 = CA<5|5>
+            call BLHA_sctree(5,5,
+     &         blha_CA*
+     &         scres(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),1)
+     &      )
+          endif
+          if ( (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 1) .or.
+     &         (blha_idsubproc(blha_cursubproc,blha_curproc)/10 .eq. 3) ) then
+          ! gluon attached to 3-4 line
+            ! 5-3 = <5|35|5>
+            call BLHA_sctree(5,3,
+     &         -blha_CA/2d0*
+     &         scres(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &      )
+            ! 5-4 = <5|45|5>
+            call BLHA_sctree(5,4,
+     &         -blha_CA/2d0*
+     &         scres(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &      )
+            ! 5-5 = CA<5|5>
+            call BLHA_sctree(5,5,
+     &         blha_CA*
+     &         scres(mod(blha_idsubproc(blha_cursubproc,blha_curproc),10),2)
+     &      )
           endif
 
         else 

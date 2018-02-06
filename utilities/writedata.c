@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <string.h>
 
 FILE* datafile = NULL;
 int oldtype = 0;
@@ -84,7 +85,6 @@ void readdata_(int *numentries, double *ran, double *weight, int *nampl, double 
 
 void numdata_(long *numpts, int *numentries, int *nampl, int *type) {
   char filename[200];
-  long pos;
   int i;
   getfilelist(*type);
   ifilelisttot = 0;

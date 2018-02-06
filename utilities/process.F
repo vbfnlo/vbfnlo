@@ -920,23 +920,24 @@ c first set phase space dimension & NLO parameters
 
 
 #ifdef WITH_DIBOSONJET
-      CASE(WWJ)
+      CASE(WWJ,WPHADWMJ,WPWMHADJ)
          n_p = 3
          n_v = 4
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.true.  ! process at nlo
+         hasFLoops=.true.
          NLO_Loops = 4
          N_points(1) = N_points(0)
          N_points(2) = N_points(0)-4
          N_points(3) = N_points(0)-6
          N_points(4) = N_points(0)-6
-      CASE(WWJJLO)
+      CASE(WWJJLO,WPHADWMJJLO,WPWMHADJJLO)
          n_p = 4
          n_v = 4
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.false.  ! process at LO
          NLO_Loops = 0
-      CASE(GFWWj)
+      CASE(GFWWj,GFWPHADWMJ,GFWPWMHADJ)
          n_p = 3
          n_v = 4
          PS_dimension = 3*(n_p+n_v-nx)-3
@@ -973,6 +974,7 @@ c first set phase space dimension & NLO parameters
          n_v = 4
          PS_dimension = 3*(n_p+n_v-nx)-3
          hasNLO=.true.  ! process at nlo
+         hasFLoops=.true.
          NLO_Loops = 4
          N_points(1) = N_points(0)
          N_points(2) = N_points(0)-4
@@ -1585,13 +1587,13 @@ c now set particle ids
          enddo
          Particle_IDs(3) = 22
       ! diboson + jet processes where 1st boson decays hadronically
-      CASE(WMhadZJ, WPhadZJ)
+      CASE(WPHADWMJ,GFWPHADWMJ,WMhadZJ, WPhadZJ)
          Particle_IDs(1) = finalquarks(1)
          Particle_IDs(2) = finalquarks(2)
          Particle_IDs(3) = finallep(1)
          Particle_IDs(4) = finallep(2)
       ! diboson + jet processes where 2nd boson decays hadronically
-      CASE(WMZhadJ, WPZhadJ)
+      CASE(WPWMHADJ,GFWPWMHADJ,WMZhadJ, WPZhadJ)
          Particle_IDs(1) = finallep(1)
          Particle_IDs(2) = finallep(2)
          Particle_IDs(3) = finalquarks(1)
@@ -1808,6 +1810,7 @@ c*************************************************************************
          n_kin = 3 ! needed randomness for real emission
          PS_dimension = 3*(n_p+n_v-nx)-2
       CASE(WWJ,WMAJ,WPAJ,WMZJ,WPZJ,ZZJ,
+     &     WPHADWMJ,WPWMHADJ,
      &     WMhadZJ,WMZhadJ,WPhadZJ,WPZhadJ,
      &     WPJ, WMJ,
      1     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_bbar, WPHJ_WW, WPHJ_ZZ_ll, WPHJ_ZZ_lnu,
@@ -2832,6 +2835,20 @@ c   default values for the final state leptons
          finallep_default(2)= -11
          finallep_default(3)=  11
          finallep_default(4)= -12
+      CASE(WPHADWMJ)
+         if (LOplusjet) process = WPHADWMJJLO
+         if (.not.LOplusjet) process = WPHADWMJ
+         N_lepton = 2
+         N_decayquarks = 2
+         finallep_default(1)=  11
+         finallep_default(2)= -12
+      CASE(WPWMHADJ)
+         if (LOplusjet) process = WPWMHADJJLO
+         if (.not.LOplusjet) process = WPWMHADJ
+         N_lepton = 2
+         N_decayquarks = 2
+         finallep_default(1)=  12
+         finallep_default(2)= -11
       CASE(GFWWJ)
          process = GFWWJ
          N_lepton = 4
@@ -2839,6 +2856,18 @@ c   default values for the final state leptons
          finallep_default(2)= -11
          finallep_default(3)=  11
          finallep_default(4)= -12
+      CASE(GFWPHADWMJ)
+         process = GFWPHADWMJ
+         N_lepton = 2
+         N_decayquarks = 2
+         finallep_default(1)=  11
+         finallep_default(2)= -12
+      CASE(GFWPWMHADJ)
+         process = GFWPWMHADJ
+         N_lepton = 2
+         N_decayquarks = 2
+         finallep_default(1)=  12
+         finallep_default(2)= -11
       CASE(WMAJ)
          if (LOplusjet) process = WMAJLO
          if (.not.LOplusjet) process = WMAJ
@@ -3465,6 +3494,13 @@ c minimal number of jets in the final state for the different processes
             LOplusjet = .false.
          endif
          njet_min = 2
+      CASE(GFWPHADWMJ, GFWPWMHADj)
+         if (LOplusjet) then
+            print*,"No LO process with additional Jet implemented"
+            print*,"Process without additional jet is calculated"
+            LOplusjet = .false.
+         endif
+         njet_min = 3
       CASE(WWJ, WPZJ, WMZJ, WMAJ, WPAJ, ZZJ,
      &     WPJ, WMJ,
      3     WPHJ, WPHJ_AA, WPHJ_mu, WPHJ_tau, WPHJ_WW, WPHJ_ZZ_ll, WPHJ_ZZ_lnu,
@@ -3475,7 +3511,7 @@ c minimal number of jets in the final state for the different processes
       CASE( WPHJ_bbar, WMHJ_bbar) ! Higgsdecay b quarks are also included in jet algorithm
          if (LOplusjet) njet_min = 4
          if (.not.LOplusjet) njet_min = 3
-      CASE(WPhadZJ, WPZhadJ, WMhadZJ, WMZhadJ)
+      CASE(WPHADWMJ, WPWMHADJ, WPhadZJ, WPZhadJ, WMhadZJ, WMZhadJ)
          if (LOplusjet) njet_min = 4
          if (.not.LOplusjet) njet_min = 3
       END SELECT
@@ -3658,7 +3694,7 @@ c local variables
       case (WPhadWMlep,GFWPhadWMlep,WPhadZ,
      &      WPhadWMjj, WPhadZjj, WPhadWMZ, ZZWPhad, WPhadWMWP, WMWPhadWM, WPhadZJ,
      &      WPhadWMa, WPhadZA,
-     &      Hjj_WPhadWM, WPhadWPjj)
+     &      Hjj_WPhadWM, WPhadWPjj, WPhadWMj, GFWPhadWMj)
          if ( (quarks(1)+quarks(2).eq.1) .and. (abs(quarks(1))+abs(quarks(2)).le.7) 
      &        .and. (mod(quarks(1)**2+quarks(2)**2,5).eq.0) ) then
             ordered(1)=max(quarks(1),quarks(2))
@@ -3668,7 +3704,7 @@ c local variables
       case (WPlepWMhad,GFWPlepWMhad,WMhadZ,
      &      WPWMhadjj, WMhadZjj, WPWMhadZ, ZZWMhad, WPWMhadWP, WMhadWPWM, WMhadZJ,
      &      WPWMhadA, WMhadZA,
-     &      Hjj_WPWMhad, WMhadWMjj)
+     &      Hjj_WPWMhad, WMhadWMjj, WPWMhadj, GFWPWMhadj)
          if ( (quarks(1)+quarks(2).eq.-1) .and. (abs(quarks(1))+abs(quarks(2)).le.7) 
      &        .and. (mod(quarks(1)**2+quarks(2)**2,5).eq.0) ) then
             ordered(1)=max(quarks(1),quarks(2))
@@ -3986,13 +4022,13 @@ c (LEPTONS = 99 in vbfnlo.dat) has been chosen
          Particle_IDs(3) = finalquarks(1)
          Particle_IDs(4) = finalquarks(2)
       ! diboson + jet processes where 1st boson decays hadronically
-      CASE(WMhadZJ, WPhadZJ)
+      CASE(WPhadWMJ, GFWPhadWMJ, WMhadZJ, WPhadZJ)
          Particle_IDs(1) = finalquarks(1)
          Particle_IDs(2) = finalquarks(2)
          Particle_IDs(3) = finallep(1)
          Particle_IDs(4) = finallep(2)
       ! diboson + jet processes where 2nd boson decays hadronically
-      CASE(WMZhadJ, WPZhadJ)
+      CASE(WPWMhadJ, GFWPWMhadJ, WMZhadJ, WPZhadJ)
          Particle_IDs(1) = finallep(1)
          Particle_IDs(2) = finallep(2)
          Particle_IDs(3) = finalquarks(1)
@@ -4506,7 +4542,7 @@ c DIBOSON PLUS JET
          pout = " W- A j --> "//trim(lepout)//" A j"
          if (LOplusjet) pout = " W- A jj --> "//
      &        trim(lepout)//" A jj"
-      CASE(WWj,GFWWj)
+      CASE(WWj,WPHADWMJ,WPWMHADJ,GFWWj,GFWPHADWMJ,GFWPWMHADJ)
          pout = " W+ W- j --> "//trim(lepout)//" j"
          if (LOplusjet) pout = " W+ W- jj --> "//
      &        trim(lepout)//" jj"

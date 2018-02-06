@@ -6,6 +6,14 @@ libggf_la_FFLAGS = $(AM_FFLAGS)
 libggf_la_FFLAGS +=$(GFORTRAN_48_FIX_GGF)
 
 libggf_la_SOURCES = \
+ggf_params.inc \
+ggf_dotproducts.inc \
+ggf_process.inc \
+d_coefficients.inc \
+d_functions.inc \
+c_coefficients.inc \
+c_functions.inc \
+ggf_default.inc \
 gf_higgs_ME.F    \
 ggf_dotproducts.F    \
 c_functions.F       \
@@ -23,3 +31,4 @@ $(top_builddir)/include/%.mod: libggf_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

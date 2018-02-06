@@ -1479,10 +1479,8 @@ c     the 1d-histograms
       DO ID = 1,HISTMAX
          IF (hstored(ID)) THEN
             write (20,*)
-            write (20,*) "#",ID,": ",
-     &           htitles(id)(1:len_trim(htitles(id)))
-            write (20,"(A)") 'set title "'//
-     &           htitles(id)(1:len_trim(htitles(id)))//'"'
+            write (20,*) "#",ID,": ", trim(htitles(id))
+            write (20,"(A)") 'set title "'// trim(htitles(id))//'"'
             if (calcerrorGnuplot) then
               write (20,"(A)") 'plot "-", "-" with yerrorbars lt 1 pt 0'
             else
@@ -1549,8 +1547,7 @@ c     the 2d-histograms
       DO ID = 1, HIST2dMAX
          IF (h2dstored(ID)) THEN
             write (20,*)
-            write (20,*) "#",ID,": ",
-     &           h2dtitles(id)(1:len_trim(h2dtitles(id)))
+            write (20,*) "#",ID,": ", trim(h2dtitles(id))
             write (20,"(A)") "set view map"
             write (20,"(A)") "set size 3.9/5.0,3.4/3.0"
             write (20,"(A)") "unset surface"
@@ -1558,12 +1555,9 @@ c     the 2d-histograms
             write (20,"(A)") "set style function pm3d"
             write (20,"(A)") "set pm3d implicit at b"            
             write (20,"(A)") "set pm3d map corners2color c1"
-            write (20,"(A)") 'set title "'//
-     &           h2dtitles(id)(1:len_trim(h2dtitles(id)))//'"'
-            write (20,"(A)") 'set xlabel "'//
-     &           xlabels(id)(1:len_trim(xlabels(id)))//'"'
-            write (20,"(A)") 'set ylabel "'//
-     &           ylabels(id)(1:len_trim(ylabels(id)))//'"'
+            write (20,"(A)") 'set title "'// trim(h2dtitles(id))//'"'
+            write (20,"(A)") 'set xlabel "'// trim(xlabels(id))//'"'
+            write (20,"(A)") 'set ylabel "'// trim(ylabels(id))//'"'
 c            write (20,"(A)") "set palette rgbformulae 7, 5, 15 negative"
             write (20,"(A)") "set palette rgbformulae 30,31,32 negative"
 
@@ -1649,13 +1643,13 @@ c     the 1d-histograms
       DO ID = 1,HISTMAX
          IF (hstored(ID)) THEN
             write (20,*)
-            write (20,*) "#",ID,": ", htitles(id)(1:len_trim(htitles(id)))
-            write (20,"(A)") 'set title "'//htitles(id)(1:len_trim(htitles(id)))//'"'
+            write (20,*) "#",ID,": ", trim(htitles(id))
+            write (20,"(A)") 'set title "'//trim(htitles(id))//'"'
             write (20,*) "set xrange [",hlo(id),":",hup(id),"]"
             if (calcerror1d) then
                write (21,*)
-               write (21,*) "#",ID,": ", htitles(id)(1:len_trim(htitles(id)))
-               write (21,"(A)") 'set title "'//htitles(id)(1:len_trim(htitles(id)))//'"'
+               write (21,*) "#",ID,": ", trim(htitles(id))
+               write (21,"(A)") 'set title "'//trim(htitles(id))//'"'
                write (21,*) "set xrange [",hlo(id),":",hup(id),"]"
             endif
             if (id .le. NLOoffset) then
@@ -1690,8 +1684,7 @@ c     the 2d-histograms
       DO ID = 1, HIST2dMAX
          IF (h2dstored(ID)) THEN
             write (20,*)
-            write (20,*) "#",ID,": ",
-     &           h2dtitles(id)(1:len_trim(h2dtitles(id)))
+            write (20,*) "#",ID,": ", trim(h2dtitles(id))
             write (20,"(A)") "set view map"
             write (20,"(A)") "set size 3.9/5.0,3.4/3.0"
             write (20,"(A)") "unset surface"
@@ -1699,9 +1692,9 @@ c     the 2d-histograms
             write (20,"(A)") "set style function pm3d"
             write (20,"(A)") "set pm3d implicit at b"            
             write (20,"(A)") "set pm3d map corners2color c1"
-            write (20,"(A)") 'set title "'//h2dtitles(id)(1:len_trim(h2dtitles(id)))//'"'
-            write (20,"(A)") 'set xlabel "'//xlabels(id)(1:len_trim(xlabels(id)))//'"'
-            write (20,"(A)") 'set ylabel "'//ylabels(id)(1:len_trim(ylabels(id)))//'"'
+            write (20,"(A)") 'set title "'//trim(h2dtitles(id))//'"'
+            write (20,"(A)") 'set xlabel "'//trim(xlabels(id))//'"'
+            write (20,"(A)") 'set ylabel "'//trim(ylabels(id))//'"'
             write (20,"(A)") "set palette rgbformulae 30,31,32 negative"
             write (20,*) "set xrange [",hlox(id),":",hupx(id),"]"
             write (20,*) "set yrange [",hloy(id),":",hupy(id),"]"
@@ -1785,8 +1778,7 @@ c     the 1d-histograms
      &                             trim(charid)//".dat"
             endif
             OPEN(UNIT=20,FILE=tmpstr,STATUS="REPLACE")
-            write (20,*) "#",ID,": ",
-     &           htitles(id)(1:len_trim(htitles(id)))
+            write (20,*) "#",ID,": ", trim(htitles(id))
 
             DO  IBIN = 1,nbin(id)+2
                XRES(IBIN,1) = hlo(id) + dbin(id)*(IBIN-1.5d0)
@@ -1859,25 +1851,18 @@ c     the 2d-histograms
             if (id .le. NLOoffset2d) then
                write(charid,*) ID
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') trim(datafile)//
-     &                             "/LO/hist2."//
-     &                             trim(charid)//".dat"
+               write(tmpstr,'(A)') trim(datafile)// "/LO/hist2."// trim(charid)//".dat"
             else if (id .le. 2*NLOoffset2d) then
                write(charid,*) ID-NLOoffset2d
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') trim(datafile)//
-     &                             "/NLO/hist2."//
-     &                             trim(charid)//".dat"
+               write(tmpstr,'(A)') trim(datafile)// "/NLO/hist2."// trim(charid)//".dat"
             else
                write(charid,*) ID-2*NLOoffset2d
                charid = myadjustl(charid)
-               write(tmpstr,'(A)') trim(datafile)//
-     &                             "/Kfac/hist2."//
-     &                             trim(charid)//".dat"
+               write(tmpstr,'(A)') trim(datafile)// "/Kfac/hist2."//trim(charid)//".dat"
             endif
             OPEN(UNIT=20,FILE=tmpstr,STATUS="REPLACE")
-            write (20,*) "#",ID,": ",
-     &           h2dtitles(id)(1:len_trim(h2dtitles(id)))
+            write (20,*) "#",ID,": ", trim(h2dtitles(id))
             
             if (id .le. 2*NLOoffset2d) then
               DO IBIN = 1, NBINX(ID)+2

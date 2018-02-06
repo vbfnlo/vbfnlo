@@ -110,7 +110,8 @@ c         res(i) = msq21 + msq43
 c         print*,'msq43=',msq43
 c         print*,'msq21 + msq43=',msq21 + msq43,'='
 c         print*,'-------------'
-         call sus_usbbh(lpbar,lfsign,iflav(1,i),ph,res(0,i))
+cmr         call sus_usbbh(lpbar,lfsign,iflav(1,i),ph,res(0,i))
+         call sus_usuuh(lpbar,lfsign,iflav(1,i),ph,res(0,i))
 c         print*,res(i)
 c         print*,(msq21 + msq43)/res(i)
 c         print*,'-------------'

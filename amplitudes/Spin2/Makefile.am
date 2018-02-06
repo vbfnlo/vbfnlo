@@ -28,3 +28,4 @@ $(top_builddir)/include/%.mod: libSpin2_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

@@ -54,7 +54,7 @@ Makefile
 /depcomp
 /install-sh
 /missing
-/stamp-h1
+stamp-h1
 .dirstamp
 
 # VBFNLO custom files
@@ -75,30 +75,14 @@ Makefile
 /src/vbfnlo
 /src/vbfnlo_olpread
 
+/utilities/VBFNLOConfig.h
+/utilities/VBFNLOConfig.h.in
+
 # *.in files that get generated
 /loops/Integrals/FF/ff/aa.h
 /loops/Integrals/FF/ff/ff.h
 /loops/Integrals/FF/ff/ffinit.f
-/src/LTools.F
-/utilities/CC_boxes.F
-/utilities/CC_pentagons.F
-/utilities/CC_qqV.F
-/utilities/FHiggs.F
-/utilities/NC_boxes.F
-/utilities/NC_pentagons.F
-/utilities/NC_qqV.F
-/utilities/VBFNLOConfig.h
-/utilities/VBFNLOConfig.h.in
-/utilities/ew_formfactors.F
-/utilities/ew_qqV_eff.F
-/utilities/getPaths.F90
-/utilities/mat_elCC+.F
-/utilities/mat_elNC+.F
-/utilities/pdfsets.F90
-/utilities/renormalisation.F
-/utilities/stamp-h1
-/utilities/vbfnloversion.F90
-/utilities/version.tmp
+/utilities/vbfnloversion.inc
 
 # FF quad precision files that get generated
 loops/Integrals/FF/ff/ff.quad.h
@@ -113,13 +97,21 @@ loops/Integrals/FF/ff/ff*.quad.F
 
 # regress directory runs
 /regress/deletedat
-/regress/*/*.dat
-/regress/*/sps1a.slha
-/regress/*/grid*
-/regress/*/GRID
-/regress/*/LoopTools.out
-/regress/*/xsection.out
-/regress/*/histograms.dir
+/regress/runs/*/*.dat
+/regress/runs/*/sps1a.slha
+/regress/runs/*/check_*
+/regress/runs/*/grid*
+/regress/runs/*/GRID
+/regress/runs/*/LoopTools.out
+/regress/runs/*/xsection.out
+/regress/runs/*/histograms.dir
+/regress/vbfnlo.log
+/regress/vbfnlo.trs
+/regress/test-suite.log
+/regress/test_runs.log
 
 # ignore build directories, allow multiple
 /build*
+# automake dist/distcheck directories
+/_build
+/_inst

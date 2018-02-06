@@ -1,5 +1,6 @@
 noinst_LTLIBRARIES = libUtilities.la
 libUtilities_la_SOURCES = \
+GaugeTest.inc \
 Pent_to_boxes.F\
 pent45_noAbe.F\
 GaugeTest.F\
@@ -31,3 +32,4 @@ $(top_builddir)/include/%.mod: libUtilities_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

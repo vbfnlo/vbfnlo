@@ -1,5 +1,9 @@
 noinst_LTLIBRARIES = libdiboson.la
 libdiboson_la_SOURCES = \
+tensor.inc \
+vvv_anomal.inc \
+genps.inc \
+genpsr.inc \
 DIBOStoww.F \
 DIBOStoww_had.F \
 DIBOStoww_anomal.F \
@@ -54,7 +58,8 @@ qqWH.F \
 qqWHgg.F \
 qqWHj.F \
 qqWHj2.F \
-qqWHqq.F 
+qqWHqq.F \
+DIBOStoqqll.F
 
 if WITH_NLO
 libdiboson_la_SOURCES += \
@@ -119,3 +124,4 @@ $(top_builddir)/include/%.mod: libdiboson_la-%.lo
 	$(MAKE) $^
 
 include $(top_srcdir)/Makefile.dependencylist
+EXTRA_DIST = Makefile.dep

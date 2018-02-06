@@ -21,7 +21,7 @@ module vbfnlo_main
    !--------------------------------------------------------
    ! variables for the integration loops
    integer ps_number
-   integer iteration, seed
+   integer iteration
    integer*8 Ncall, i, two
    parameter (two = 2)
    common/Ncall1/Ncall,iteration
@@ -129,7 +129,7 @@ contains
 #ifdef WITH_MPI
       use vbfnlo_mpi
 #endif
-      use globalvars, only: isggflo
+      use globalvars, only: isggflo, seed
       use stopwatch, only: starttimer, stoptimer, printtime, printduration
 
       lglobalprint = .true.
@@ -416,7 +416,7 @@ contains
                   end if
 
                   if ( iteration .eq. 1 ) then
-                     call monaco_init( PS_dimension, Ncall, seed )
+                     call monaco_init( PS_dimension, Ncall)
                      call monaco_read(file_name_in)
                   else
                      call monaco_init2( PS_dimension, Ncall )
@@ -433,7 +433,7 @@ contains
                   ! i = 0
                   Ncall_LO = Ncall
 #ifdef WITH_MPI
-                  call mpi_prepare_loop(Ncall_LO)
+                  call mpi_prepare_loop(iteration, Ncall_LO)
                   do i = 1, ncall_thisproc
 #else
                   do i = 1, NCall_LO
@@ -772,7 +772,8 @@ subroutine fermion_loop
    call InitGaugeTest
 
    call InitFLoop
-   gnlo = 5
+   ! leave enough room for multiple loop contributions
+   gnlo = 11
 
    do ps_number = 1, PS_Loops !multi-channel
       if (PS_Loops.gt.1 .and. lglobalprint) then
@@ -827,7 +828,7 @@ subroutine fermion_loop
             end if
 
             if ( iteration .eq. 1 ) then
-               call monaco_init( PS_dimension, Ncall, seed )
+               call monaco_init( PS_dimension, Ncall)
                call monaco_read(file_name_in)
             else
                call monaco_init2( PS_dimension, Ncall )
@@ -836,7 +837,7 @@ subroutine fermion_loop
             !    call monran_set(1) ! save random number info, TODO: remove
             ! endif
 #ifdef WITH_MPI
-            call mpi_prepare_loop(Ncall)
+            call mpi_prepare_loop(iteration, Ncall)
             do i = 1, ncall_thisproc
 #else
             do i = 1, NCall
@@ -1036,7 +1037,7 @@ subroutine virtuals_loop
                   '.vout.'//digit(gnlo)
             end if
 
-            call monaco_init( PS_dimension, Ncall, seed )
+            call monaco_init( PS_dimension, Ncall)
             call monaco_read(file_name_in)
             ! call monran_set(2)
 
@@ -1048,7 +1049,7 @@ subroutine virtuals_loop
             end select
 
 #ifdef WITH_MPI
-            call mpi_prepare_loop(ncall)
+            call mpi_prepare_loop(iteration, ncall)
             do i = 1, ncall_thisproc
 #else
             do i = 1, ncall
@@ -1091,8 +1092,9 @@ subroutine virtuals_loop
             if (lglobalprint) then
                print *," "
                print *,'total result for virtual contns so far '
-               print *,' sigma = ',final_xsec(sub_number,ps_number,0),' +- ',sqrt(final_sdev2(sub_number,ps_number,0)), &
-                  ' fb'
+               print *,' sigma = ',sum(final_xsec(sub_number,ps_number,1:NLO_Loops)), &
+                       ' +- ',sqrt(sum(final_sdev2(sub_number,ps_number,1:NLO_Loops))), &
+                       ' fb'
                print *,' '
             endif
 
@@ -1232,14 +1234,14 @@ subroutine reals_loop
             end if
 
             if ( iteration .eq. 1 ) then
-               call monaco_init( PS_dimension, Ncall, seed )
+               call monaco_init( PS_dimension, Ncall)
                call monaco_read(file_name_in)
             else
                call monaco_init2( PS_dimension, Ncall )
             end if
 
 #ifdef WITH_MPI
-            call mpi_prepare_loop(ncall)
+            call mpi_prepare_loop(iteration, ncall)
             do i = 1, ncall_thisproc
 #else
             do i = 1, Ncall
@@ -1476,14 +1478,14 @@ subroutine real_photons_loop
             '.out.'//digit(iteration)
 
          if ( iteration .eq. 1 ) then
-            call monaco_init( PS_dimension, Ncall, seed )
+            call monaco_init( PS_dimension, Ncall )
             call monaco_read(file_name_in)
          else
             call monaco_init2( PS_dimension, Ncall )
          end if
 
 #ifdef WITH_MPI
-         call mpi_prepare_loop(ncall)
+         call mpi_prepare_loop(iteration, ncall)
          do i = 1, ncall_thisproc
 #else
          do i = 1, Ncall
@@ -1672,8 +1674,8 @@ subroutine print_final_xsection
    end if
    if (doFLoops.and.hasFloops.and.(floops.ne.0)) then
       print xsecformat,"NLO fermion loop result: ", &
-         final_xsec(0,0,5),sqrt(final_sdev2(0,0,5)), &
-         sqrt(final_sdev2(0,0,5))/final_xsec(0,0,5)*100d0
+         final_xsec(0,0,11),sqrt(final_sdev2(0,0,11)), &
+         sqrt(final_sdev2(0,0,11))/final_xsec(0,0,11)*100d0
    end if
    if (doEmissions.and.hasNLO) then
       print xsecformat,"QCD real emission:    ", &
