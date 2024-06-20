@@ -1,0 +1,109 @@
+#!/bin/bash
+
+usage() {
+cat << EOF
+
+usage: $0 options
+
+This scripts compares the stored results with a new run.
+
+OPTIONS:
+   -h      Show this message
+   -f      Force comparison even if calculation is not finished yet
+   -r      For each result from the new run ask if this should replace
+           the stored result.
+
+EOF
+}
+
+FORCE=0
+OVERWRITE=0
+while getopts "hfr" OPTION; do
+  case $OPTION in
+    f)
+      FORCE=1
+      ;;
+    r)
+      OVERWRITE=1
+      ;;
+    ?)
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+ALLDIRS=`make printalldirs`
+
+echo ""
+for process in $ALLDIRS
+do
+
+  cd runs/${process}
+  num=`echo "$process" | awk -F'_' '{print $1}'`
+  aid=`echo "$process" | awk -F'_' '{print $3}'`
+  NLO=1
+  if ( [ $num -ge 4000 ] && [ $num -lt 5000 ] ); then 
+    NLO=0
+  fi
+  if ( [ "x$aid" == "xkk" ] ); then 
+    NLO=0
+  fi  
+  READABLE=0
+  for i in check*.o*; do
+    test -r $i && READABLE=1
+  done
+  if test $READABLE -eq 1; then
+    echo "********************"
+    echo "* process ${process}: *"
+    echo "********************"
+    echo ""
+    if test -e xsection.out || test -e xsection.1.out || test $FORCE -eq 1; then
+      echo "Reference:"
+      grep "result (LO):" result.out | tail -1 | sed -e 's/Total (multi-channel) //'
+      if test $NLO -ne 0; then
+        echo "  result (NLO):" `grep -A 1 "final result at NLO" result.out | grep -v "final result at NLO"` | sed -e 's/sigma =//'
+      fi
+      echo ""
+      for i in check*.o*; do
+        echo "This run ($process/$i):"
+        grep "result (LO):" $i | tail -1 | sed -e 's/Total (multi-channel) //'
+        if test $NLO -ne 0; then
+          echo "  result (NLO): " `grep -A 1 "final result at NLO" $i | grep -v "final result at NLO"` | sed -e 's/sigma = //'
+          data=`grep -A 1 "final result at NLO" $i | grep -v "final result at NLO" | awk '{print $3}' | xargs printf '%.20f\n'`
+          reference=`grep -A 1 "final result at NLO" result.out | grep -v "final result at NLO" | awk '{print $3}' | xargs printf '%.20f\n'`
+          errdata=`grep -A 1 "final result at NLO" $i | grep -v "final result at NLO" | awk '{print $5}' | xargs printf '%.20f\n'`
+          errreference=`grep -A 1 "final result at NLO" result.out | grep -v "final result at NLO" | awk '{print $5}' | xargs printf '%.20f\n'`
+        else
+          data=`grep "result (LO):" $i | tail -1 | sed -e 's/TOTAL //' | sed -e 's/Total (multi-channel) //' | awk '{print $3}' | xargs printf '%.20f\n'`
+          reference=`grep "result (LO):" result.out | sed -e 's/TOTAL //' | tail -1 | sed -e 's/Total (multi-channel) //' | awk '{print $3}' | xargs printf '%.20f\n'`
+          errdata=`grep "result (LO):" $i | tail -1 | sed -e 's/TOTAL //' | sed -e 's/Total (multi-channel) //' | awk '{print $5}' | xargs printf '%.20f\n'`
+          errreference=`grep "result (LO):" result.out | tail -1 | sed -e 's/TOTAL //' | sed -e 's/Total (multi-channel) //' | awk '{print $5}' | xargs printf '%.20f\n'`
+        fi
+        result=`echo "${data}-${reference}" | bc -l`
+        errresult=`echo "sqrt((${errdata})^2+(${errreference})^2)" | bc -l`
+        relresult=`echo "(${data}/${reference}-1)*100" | bc -l | xargs printf '%f\n'`
+        sigresult=`echo "$result/$errresult" | bc -l | xargs printf '%f\n'`
+        result=`printf '%g\n' $result`
+        errresult=`printf '%g\n' $errresult`
+        if test $NLO -ne 0; then
+          echo -n " Difference in NLO cross section: " 
+        else
+          echo -n " Difference in LO cross section: " 
+        fi
+        echo $relresult "%  " $sigresult "sigma   (" $result "+-" $errresult "fb )" 
+        echo ""
+        if test $OVERWRITE -ne 0; then
+          cp -i $i result.out
+        fi
+      done
+    else
+      echo "not yet finished"
+    fi
+    echo ""
+    echo ""
+  fi
+  cd ../..
+
+done;
+

@@ -1,0 +1,40 @@
+BLHA example files 
+==================
+
+Herwig
+--------
+Three example files for different VBF processes are currently available
+for the Herwig 7 & VBFNLO 3.0 setup:
+
+* 100_Hjj_Herwig_ShowerHadron:
+VBF-H production at NLO QCD including parton shower using the MC@NLO
+matching scheme with the default, angular-ordered shower and including
+Higgs decays and hadronization. 
+Higgs branching fractions into the various final states correspond to
+the SM-Higgs expectation.
+
+* 220_WpZljj_Herwig_NLOevents
+VBF production of e+ nu_e mu+ mu- jj (W+Zjj) at NLO QCD.
+This is an example how to write out NLO event files. 
+The produced event file will get rather large (~3GB), so reduce the
+number of points first if you are low on disk space.
+
+* 250_WpWpjj_Herwig_anomK
+VBF production e+ nu_e mu+ mu- jj (W+W+jj) at NLO QCD including parton
+shower using the MC@NLO matching scheme with the dipole shower. As an
+example for anomalous couplings, the dimension-8 operator S_1 and
+K-matrix unitarization is switched on.
+
+
+In all cases, Herwig needs to run in three steps:
+  Herwig build LHC-Matchbox.in
+  Herwig integrate LHC.run
+  Herwig run LHC.run
+The first part sets up initialization and the second one the integration
+grid, the third one produces the actual results. These examples should
+run in a reasonable amount of time (few days) on a modern single CPU
+core.  Parallelizing the integration and run step and using several
+cores or machines can reduce this significantly. See the Herwig manual
+for more details, e.g. how to perform a parallel grid optimization.
+
+

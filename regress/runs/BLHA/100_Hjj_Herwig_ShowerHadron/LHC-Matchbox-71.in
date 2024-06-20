@@ -1,0 +1,190 @@
+##################################################
+## Herwig++/Matchbox input file
+##################################################
+
+##################################################
+## Collider type
+##################################################
+
+read snippets/Matchbox.in
+read snippets/PPCollider.in
+
+## generate weighted events
+cd /Herwig/EventHandlers
+set EventHandler:Weighted On
+
+cd /Herwig/Generators
+set EventGenerator:MaxErrors 0
+set EventGenerator:IntermediateOutput Yes
+## set default number of events
+set EventGenerator:NumberOfEvents 4000000
+
+##################################################
+## Beam energy sqrt(s)
+##################################################
+
+cd /Herwig/EventHandlers
+set EventHandler:LuminosityFunction:Energy 13000*GeV
+
+##################################################
+## Process selection
+##################################################
+
+cd /Herwig/MatrixElements/Matchbox
+set Factory:OrderInAlphaS 0
+set Factory:OrderInAlphaEW 3
+
+do Factory:Process p p j j h0
+read Matchbox/OnShellHProduction.in
+
+read Matchbox/VBFNLO.in
+read Matchbox/VBFDiagramsOnly.in
+cd /Herwig/MatrixElements/Matchbox/Amplitudes
+set VBFNLO:RandomHelicitySummation Yes
+
+## Model assumptions
+read Matchbox/StandardModelLike.in
+read Matchbox/DiagonalCKM.in
+
+##################################################
+## Cut selection
+##################################################
+
+cd /Herwig/Cuts
+
+read Matchbox/DefaultPPJets.in
+
+## Cuts on jets
+insert JetCuts:JetRegions 0 FirstJet
+insert JetCuts:JetRegions 1 SecondJet
+#insert JetCuts:JetRegions 2 ThirdJet 
+set JetFinder:Variant AntiKt
+set JetFinder:ConeRadius 0.4
+
+## example for VBF cuts 
+#create ThePEG::MultiJetRegion TwoJetRegion
+#insert TwoJetRegion:Regions 0 FirstJet
+#insert TwoJetRegion:Regions 1 SecondJet
+#set TwoJetRegion:MassMin 300*GeV
+#set TwoJetRegion:DeltaYMin 3.0
+#insert JetCuts:MultiJetRegions 0 TwoJetRegion
+
+## p_T,l > 15 GeV
+set ChargedLeptonCut:PtMin 15.0*GeV
+do  ChargedLeptonCut:YRange -3.0 3.0
+## p_T,gamma > 15 GeV
+set PhotonCut:PtMin 15.0*GeV
+do  PhotonCut:YRange -3.0 3.0
+## m_ll > 15 GeV
+set MassCut:MinM 0*GeV
+set MassCut:MaxM 14000*GeV
+set MassCut:CComb Gamma
+set ChargedLeptonPairMassCut:MinMass 15*GeV
+set ChargedLeptonPairMassCut:SameFlavourOnly No
+set ChargedLeptonPairMassCut:OppositeSignOnly Yes
+## DeltaR_lepton,photon cut
+cp MatchboxDeltaRCut ChargedLeptonPhotonDeltaRCut
+set ChargedLeptonPhotonDeltaRCut:DeltaRMin 0.4
+set ChargedLeptonPhotonDeltaRCut:FirstMatcher /Herwig/Matchers/ChargedLepton
+set ChargedLeptonPhotonDeltaRCut:SecondMatcher /Herwig/Matchers/Photon
+insert Cuts:TwoCuts[0] ChargedLeptonPhotonDeltaRCut
+## Frixione Cut
+set PhotonIsolationCut:CutType VBFNLO
+set PhotonIsolationCut:DeltaZero 0.7
+set PhotonIsolationCut:Efficiency 1.0
+insert Cuts:MultiCuts[0] PhotonIsolationCut
+
+##################################################
+## Scale choice
+## See the documentation for more options
+##################################################
+
+cd /Herwig/MatrixElements/Matchbox
+## set scale choice to maximum jet pT
+set Factory:ScaleChoice /Herwig/MatrixElements/Matchbox/Scales/MaxJetPtScale
+## set scale choice to fixed value
+# set Factory:ScaleChoice /Herwig/MatrixElements/Matchbox/Scales/FixedScale
+# set /Herwig/MatrixElements/Matchbox/Scales/FixedScale:FixedScale 100*GeV
+
+
+##################################################
+## Matching and shower selection
+## Please also see flavour scheme settings
+## towards the end of the input file.
+## !!! Be sure to modify IsShowered for the 
+## !!! Analysis below as well
+##################################################
+
+read Matchbox/MCatNLO-DefaultShower.in
+# read Matchbox/Powheg-DefaultShower.in
+## use for strict LO/NLO comparisons
+# read Matchbox/MCatLO-DefaultShower.in
+## use for improved LO showering
+# read Matchbox/LO-DefaultShower.in
+
+# read Matchbox/MCatNLO-DipoleShower.in
+# read Matchbox/Powheg-DipoleShower.in
+## use for strict LO/NLO comparisons
+# read Matchbox/MCatLO-DipoleShower.in
+## use for improved LO showering
+# read Matchbox/LO-DipoleShower.in
+
+# read Matchbox/NLO-NoShower.in
+# read Matchbox/LO-NoShower.in
+
+##################################################
+## Scale uncertainties
+##################################################
+
+# read Matchbox/MuDown.in
+# read Matchbox/MuUp.in
+
+##################################################
+## Shower scale uncertainties
+##################################################
+
+# read Matchbox/MuQDown.in
+# read Matchbox/MuQUp.in
+
+##################################################
+## PDF choice
+##################################################
+
+read Matchbox/FourFlavourScheme.in
+read Matchbox/MMHT2014.in
+
+##################################################
+## Analyses
+##################################################
+
+
+
+##################################################
+## Phasespace 
+##################################################
+
+## use VBFNLO phase space -- strongly recommended
+read Matchbox/VBFNLOPhasespace.in
+
+
+##################################################
+## Sampler 
+##################################################
+
+cd /Herwig/Samplers
+## Use Monaco sampler
+set MonacoSampler:InitialPoints 10000
+set MonacoSampler:NIterations 4
+set MonacoSampler:EnhancementFactor 1.2
+set MonacoSampler:RandomNumbers RanDist
+set Sampler:BinSampler MonacoSampler
+
+
+##################################################
+## Save the generator
+##################################################
+
+do /Herwig/MatrixElements/Matchbox/Factory:ProductionMode
+
+cd /Herwig/Generators
+saverun LHC EventGenerator

@@ -1,0 +1,77 @@
+!**********************************************************************
+!  This is the main input file for GGFLO
+!----------------------------------------------------------------------
+!  author   : Michael Kubocz
+!  modified : 24.05.2018
+!  author   : Francisco Campanario 
+!  modified : 12.01.2017
+!**********************************************************************
+
+!------------------------- loop particle(s) ---------------------------
+Q_LOOP       =  0      ! 0 : effective theory
+                       ! 1 : top-loop
+                       ! 2 : bottom-loop (varies with Higgs mass)
+                       ! 3 : top loop + bottom loop
+
+!------------------------- subprocess choice --------------------------
+SUBPRQQ      = true      ! quark-quark scattering
+SUBPRQG      = true      ! quark-gluon scattering
+SUBPRGG      = true      ! gluon-gluon scattering
+
+SUBPRQG_PART  =  0  !    1:   type : gg :> q~q g                          
+                         2:   type : gq :> gg q                           
+                         3:   type : qq :> ggg                            
+                                                                          
+SUBPRQQ_PART  =  0  !    1:   type : qq :> qq g                           
+                         2:   type : gq :> qq~q 
+
+
+!---------------- Mixing between different Higgs bosons ---------------
+HIGGS_MIX    = 0       ! whether higgs mixing is taken into account
+CP_EVEN_MOD  = 1d0     ! changes the strength of the cp-even coupling
+CP_ODD_MOD   = 1d0     ! changes the strength of the cp-odd coupling
+
+!---------------- m_top corrections to effective theory ---------------
+EFF_TH_CORR        = true   ! full FF
+EFF_TH_CORR_TAYLOR = false  ! Taylor expanded FF (for mH^2/(4mtop^2) < 1)
+
+!---------------------- Instabilities 
+GRAMCTO0     = 4d-5    ! Higher values will trigger the QUAD rescue system more often
+GRAMDTO0     = 1d-6    ! Higher values will trigger the QUAD rescue system more often
+GAUGELIMIT   = 0.5d-3  ! Lower values will trigger the QUAD rescue system more often
+
+!------- Debugging stuff (mostly for GF Hjjj) --------------------
+
+DBLE_SWITCH  = true    | Not evaluate in Dble if set to .false.
+QUAD_SWITCH  = false   ! Force evalation in QUAD always if .true. 
+
+HEX_EVALUATE = true
+PEN_EVALUATE = true
+BOX_EVALUATE = true
+
+GAUGE_SWITCH = false
+PENTAGONSTO0= false
+HEXAGONSTO0= false
+
+MG_DEBUG          = false
+MG_PRINT          = false
+MG_UU             = false
+MG_UUB            = false
+MG_GU             = false
+MG_EQUAL_FLAVOUR  = false
+
+PRINT_AMP = false
+
+!-----------------------------------------------------------------
+
+!Further important parameters are present in the file vbfnlo.dat and
+!have to be changed there:
+
+!PROCESS        41xx Identifier for gluon fusion (see /src/procinfo.dat or manual)
+!MODEL, HTYPE
+!TOPMASS
+!BOTTOMMASS
+!    .
+!    .
+!    .
+!...see vbfnlo.dat !

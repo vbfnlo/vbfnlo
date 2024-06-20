@@ -1,0 +1,25 @@
+MANUALNAME = Manual
+MANUALTEX = $(MANUALNAME).tex
+MANUALPDF = $(MANUALNAME).pdf
+
+EXTRA_DIST = $(MANUALTEX)
+
+if HAVE_PDFLATEX
+
+dist_doc_DATA = $(MANUALPDF)
+
+CLEANFILES = \
+  $(MANUALNAME).aux \
+  $(MANUALNAME).log \
+  $(MANUALNAME).out \
+  $(MANUALNAME).toc 
+
+DISTCLEANFILES = \
+  $(MANUALPDF)
+
+$(MANUALPDF): $(srcdir)/$(MANUALTEX)
+	$(PDFLATEX) $<
+	$(PDFLATEX) $<
+	$(PDFLATEX) $<
+
+endif

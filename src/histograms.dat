@@ -1,0 +1,24 @@
+!! This input file allows the user to alter the histogram ranges,
+!! enable smearing between adjacent bins and enable error calculation
+
+SMEARING    = true                ! enable or disable bin-smearing
+SMEAR_VALUE = 0.10d0              ! bin fraction where smearing to adjacent bin is used
+
+!! Error calculation for gnuplot histograms
+CALC_ERROR_GNUPLOT = false        ! calculate per bin error for 1-dim histograms in gnuplot file
+
+!! Error calculation for root histograms defined in histograms.F 
+!! (an error estimation for the histograms in rootuserhists.cc is not possible)
+CALC_ERROR_ROOT = false           ! calculate per bin error for 1-dim and 2-dim histograms in root file
+
+!!
+!! Error calculation for raw histogram data files
+!!
+!! Format for 1D data files:
+!! x   y   y-error
+!!
+!! Format for 2D data files:
+!! x   y   z   z-error
+!!
+CALC_ERROR_1D      = true         ! calculate per bin error for 1-dim histogram data files
+CALC_ERROR_2D      = false        ! calculate per bin error for 2-dim histogram data files

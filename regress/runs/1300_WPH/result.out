@@ -1,0 +1,790 @@
+   
+ -----------------------------------------------------------------
+ VBFNLO, version 3.0.0 GIT 1571c2fe
+ Comput. Phys. Commun. 180 (2009) 1661[arXiv:0811.4559 [hep-ph]]
+ arXiV:1107.4038, arXiV:1207.4975, arXiv:1404.3940
+ http://www.itp.kit.edu/vbfnlo
+ -----------------------------------------------------------------
+ Process-specific references (please cite as well if appropriate):
+ R. Roth diploma thesis
+ e-Print: http://www.itp.kit.edu/prep/diploma/PSFiles/Diplom_Roth.pdf
+ 
+ -----------------------------------------------------------------
+   
+   
+  
+        Information on global parameters
+ -----------------------------------------------
+   PROCESS               =     1300
+   LOPROCESS_PLUS_JET    =        F
+   KK_MOD                =        F
+   ANOM_CPL              =        F
+   LEPTONS               =    12  -11
+   LO_ITERATIONS         =        6
+   NLO_ITERATIONS        =        8
+   LO_POINTS             =       28
+   NLO_POINTS            =       28
+   NLO_SWITCH            =        T
+   EWCOR_SWITCH          =        F
+   FERMIONLOOP           =        3
+   LHA_SWITCH            =        F
+   HEPMC_SWITCH          =        F
+   LO_GRID               = grid2_1                                           
+   NLO_GRID              = grid3_1                                           
+   PHTN_GRID             = grid4_1                                           
+   FLOOP_GRID            = grid5_1                                           
+   ECM                   =  13600.0    
+   BEAM1                 =        1
+   BEAM2                 =        1
+   ID_MUF                =        0
+   ID_MUR                =        0
+   MUF_USER              =  91.1876    
+   MUR_USER              =  91.1876    
+   XIF                   =  1.00000    
+   XIR                   =  1.00000    
+ Warning: cannot read value for key = SHOWTIMING. Using default value :  T
+ 
+       information on the selected process 
+ -----------------------------------------------
+ 
+  pp -> W+ H -> l+ vl H
+ 
+ W+ H production with leptonic decay of the W boson and stable Higgs.
+ Anomalous couplings can be set in "anomV.dat".
+ Process is implemented at LO and NLO QCD.
+ References: R. Roth diploma thesis
+ e-Print: http://www.itp.kit.edu/prep/diploma/PSFiles/Diplom_Roth.pdf
+ 
+             Information on PDF sets            
+ -----------------------------------------------
+ Initializing PDF set CT18
+  
+               Physics parameters
+ -----------------------------------------------
+   HTYPE                 =        0
+   MODEL                 =        1
+   ANOM_CPL              =        F
+   KK_MOD                =        F
+   SPIN2                 =        F
+   HMASS                 =  125.000    
+   HWIDTH                = -999.000    
+   TOPMASS               =  172.500    
+   BOTTOMMASS            =  4.85500    
+   CHARMMASS             =  1.65000    
+   TAU_MASS              =  1.77684    
+   EWSCHEME              =        3
+   FERMI_CONST           = 0.116637E-04
+   WMASS                 =  80.3980    
+   ZMASS                 =  91.1876    
+   
+ Running in the SM
+   
+ Higgs mass =   125.00000000000000     
+   
+   
+  
+ Information on scale setting in InitScales 
+ -------------------------------------------
+  
+ Constant factorization scale chosen: mu_F =   91.187600000000003       GeV 
+ Constant value for alphas chosen: alphas(NLO) =  0.11798158748829392     
+ Constant value for alphas chosen: alphas(LO) =  0.12980813411832592     
+  
+  
+   Information on couplings, masses and widths
+ ===============================================
+  
+   SM coupling parameters 
+ ---------------------------
+   G_Fermi                         : 0.000011663700
+   SIN**2 of the weak mixing angle : 0.22264585
+   Q.E.D. fine structure constant  : 1/132.34070    
+   SU(2) coupling constant g       : 0.65305673
+   U(1) coupling constant g'       : 0.34950127
+   Q.C.D. LO alfas(MZ)             : 0.12980813
+   Q.C.D. NLO alfas(MZ)            : 0.11798159
+  
+      particle masses
+ ---------------------------
+   mass of the Z0 boson            :   91.1876
+   mass of the W+/- boson          :   80.3980
+   mass of the Higgs boson         :  125.0000
+   mass of the top quark           :  172.5000
+   mass of the bottom quark at MH  :    2.8039
+  (All other fermions have mass equal ZERO)
+  
+      particle widths
+ ---------------------------
+   total widths of Z0              :   2.508420 GeV
+   total widths of W+ or W-        :   2.097673 GeV
+   total widths of Higgs           :   0.004128 GeV
+   total widths of top quark       :   1.342520 GeV
+  
+     branching ratios
+ ---------------------------
+   W -> lepton anti-lepton         : 10.8397227 %
+   W -> massless quark anti-quark  : 33.7404159 %
+   W -> top bottom                 :  0.0000000 %
+  
+   Z -> neutrino anti-neutrino     :  6.6129820 %
+   Z -> charged lepton anti-lepton :  3.3460763 %
+   Z -> up-type quark anti-quark   : 11.9908090 %
+   Z -> down-type quark anti-quark : 15.3804024 %
+   Z -> top anti-top               :  0.0000000 %
+  
+   H -> WW                         : 20.4628169 %
+   H -> ZZ                         :  2.5390366 %
+   H -> bottom anti-bottom         : 58.7489081 %
+   H -> top anti-top               :  0.0000000 %
+   H -> charm anti-charm           :  3.4901975 %
+   H -> tau anti-tau               :  6.2665676 %
+   H -> mu anti-mu                 :  0.0221853 %
+   H -> gluon gluon                :  8.0504027 %
+   H -> gamma gamma                :  0.2383715 %
+   H -> Z gamma                    :  0.1815139 %
+  
+ Warning: cannot read value for key = MLL_OSONLY. Using default value :  T
+ Warning: cannot read value for key = PTMISS_MIN. Using default value :    0.0000000000000000     
+ Warning: cannot read value for key = EXISOLCUT. Using default value :    1.0000000000000000     
+ Warning: cannot read value for key = MJ_WINDOWV. Using default value :    0.0000000000000000     
+ 
+          information on cut parameters
+ -----------------------------------------------
+ 
+ minimum jet pt        (PT_JET_MIN):     30.00   
+ maximum jet rapidity                 (Y_JET_MAX):    4.5000000000000000     
+ maximum parton pseudorapidity          (Y_P_MAX):    20.000000000000000     
+ minimum jet-jet R-separation           (RJJ_MIN):   0.80000000000000004     
+ minimum number of jets                (NJET_MIN):            0
+ single jet from hadronic decay (SINGLE_DECAYJET):            0
+ exponent of generalised kT algorithm (PGENKTJET):    1.0000000000000000     
+ minimum lepton-lepton R-separation     (RLL_MIN):   0.40000000000000002     
+ maximum lepton-lepton R-separation     (RLL_MAX):    50.000000000000000     
+ minimum jet-lepton R-separation        (RJL_MIN):   0.59999999999999998     
+ minimum jet-photon R-separation        (RJG_MIN):   0.59999999999999998     
+ minimum lepton-photon R-separation     (RLG_MIN):   0.59999999999999998     
+ minimum photon-photon R-separation     (RGG_MIN):   0.40000000000000002     
+ maximum photon-photon R-separation     (RGG_MAX):    50.000000000000000     
+ maximum lepton rapidity                (Y_L_MAX):    2.5000000000000000     
+ minimum lepton pt       (PT_L_MIN):     20.00   
+ minimum invariant dilepton mass        (MLL_MIN):    15.000000000000000     
+ maximum invariant dilepton mass        (MLL_MAX):    1.0000000000000000E+020
+ m_ll cuts only on opposite-sign l   (MLL_OSONLY):  T
+ maximum photon rapidity                (Y_G_MAX):    2.5000000000000000     
+ minimum photon pt       (PT_G_MIN):    
+ photon isolation cut                 (PHISOLCUT):   0.69999999999999996     
+ efficiency of photon isolation cut   (EFISOLCUT):    1.0000000000000000     
+ exponent of photon isolation cut   (EXISOLCUT):    1.0000000000000000     
+ minimum invariant lepton-photon mass   (MLG_MIN):    0.0000000000000000     
+ maximum invariant lepton-photon mass   (MLG_MAX):    1.0000000000000000E+020
+ minimal missing transverse momentum (PTMISS_MIN):    0.0000000000000000     
+ minimum jet rapidity separation      (ETAJJ_MIN):    0.0000000000000000     
+ tagging jets in opposite hemispheres     (YSIGN):    F
+ leptons fall inside rapidity gap     (LRAPIDGAP):    F
+ min leptons y-dist from tagging jets   (DELY_JL):    0.0000000000000000     
+ photons fall inside rapidity gap     (GRAPIDGAP):    F
+ min photons y-dist from tagging jets   (DELY_JG):    0.0000000000000000     
+ dijet min mass cut on tag jets        (MDIJ_MIN):    600.00000000000000     
+ dijet max mass cut on tag jets        (MDIJ_MAX):    1.0000000000000000E+020
+ excluded jet-m window               (MJ_WINDOWV):    85.792800000000000        85.792800000000000     
+ veto criteria for jets                   (JVETO):    F
+ minimum veto-tag y-dist             (DELY_JVETO):    0.0000000000000000     
+ maximum |y| for veto jet             (YMAX_VETO):    4.5000000000000000     
+ minimum pT for veto jet             (PTMIN_VETO):    50.000000000000000     
+ 
+
+ --------------------PHASE SPACE VHj------------------
+
+ boson has mass    80.40 GeV and width     2.0977 GeV
+ integration range for boson   3 =      0.032  to     9616.652 GeV
+ boson has mass   125.00 GeV and width     0.0041 GeV
+ integration range for boson   6 =    120.872  to      129.128 GeV
+
+ machine energy =    13600.0  GeV
+
+ ---------------------------------------------------
+
+  Open error on file random.dat
+  Using default values.
+  Random number generator initialized with seed =            0
+ 
+          information on histogram config
+ -----------------------------------------------
+ 
+  Open error on file histograms.dat
+  Using default values.
+ SMEARING           =      T
+ SMEAR_VALUE        =       0.10000000000000001     
+ CALC_ERROR_GNUPLOT =      F
+ CALC_ERROR_ROOT    =      F
+ CALC_ERROR_1D      =      T
+ CALC_ERROR_2D      =      F
+ 
+HIST_ID1      =      0.00    250.00  # dS/dpT_j (fb/GeV)
+HIST_ID2      =      0.00    500.00  # dS/dpTmax_j (fb/GeV)
+HIST_ID3      =      0.00    200.00  # dS/dpTmin_j (fb/GeV)
+HIST_ID4      =     -5.00      5.00  # dS/dy_j (fb)
+HIST_ID5      =     -5.00      5.00  # dS/dy_j1 (fb)
+HIST_ID6      =     -5.00      5.00  # dS/dy_j2 (fb)
+HIST_ID7      =      0.00    500.00  # dS/dpTmax_l (fb/GeV)
+HIST_ID8      =      0.00    200.00  # dS/dpTmin_l (fb/GeV)
+HIST_ID9      =      0.00      5.00  # dS/d|eta|max_l (fb)
+HIST_ID10     =      0.00      5.00  # dS/d|eta|min_l (fb)
+HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
+2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/dy_jj dm_jj (fb/GeV)
+ 
+ -----------------------------------------------
+ 
+Starttime: 2024-04-30T16:03:09+0200
+
+ MONACO input parameters:
+ ndim =  9,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+  
+ W+H amplitude square information
+  External b-quark contributions are excluded
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  1:
+ integral =  6.688025E+01,  sigma = 3.722E-02
+ efficacy = 8.639E-02,  raw efficacy = 8.639E-02
+ f_positive = 4.383E-1,  f_zero = 5.617E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  6.688025E+01,  sigma = 3.722E-02,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.out.1
+
+ MONACO input parameters:
+ ndim =  9,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  2:
+ integral =  6.691837E+01,  sigma = 1.737E-02
+ efficacy = 1.328E-01,  raw efficacy = 8.623E-02
+ f_positive = 6.174E-1,  f_zero = 3.826E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  6.691155E+01,  sigma = 1.574E-02,  chi^2/iteration = 8.616E+05
+
+ MONACO:  grid written to file grid2_1.out.2
+
+ MONACO input parameters:
+ ndim =  9,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  3:
+ integral =  6.687097E+01,  sigma = 1.054E-02
+ efficacy = 1.057E-01,  raw efficacy = 8.608E-02
+ f_positive = 6.774E-1,  f_zero = 3.226E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  6.688354E+01,  sigma = 8.757E-03,  chi^2/iteration = 5.451E+00
+
+ MONACO:  grid written to file grid2_1.out.3
+
+ MONACO input parameters:
+ ndim =  9,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  4:
+ integral =  6.689331E+01,  sigma = 7.014E-03
+ efficacy = 7.796E-02,  raw efficacy = 8.568E-02
+ f_positive = 7.039E-1,  f_zero = 2.961E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  6.688949E+01,  sigma = 5.475E-03,  chi^2/iteration = 3.105E+00
+
+ MONACO:  grid written to file grid2_1.out.4
+
+ MONACO input parameters:
+ ndim =  9,  ncall =     128M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  5:
+ integral =  6.688479E+01,  sigma = 4.873E-03
+ efficacy = 4.205E-02,  raw efficacy = 8.562E-02
+ f_positive = 7.172E-1,  f_zero = 2.828E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  6.688687E+01,  sigma = 3.640E-03,  chi^2/iteration = 2.208E+00
+
+ MONACO:  grid written to file grid2_1.out.5
+
+ MONACO input parameters:
+ ndim =  9,  ncall =     256M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  6:
+ integral =  6.689634E+01,  sigma = 3.426E-03
+ efficacy = 2.532E-02,  raw efficacy = 8.195E-02
+ f_positive = 7.249E-1,  f_zero = 2.751E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  6.689189E+01,  sigma = 2.495E-03,  chi^2/iteration = 2.553E+00
+
+ MONACO:  grid written to file grid2_1.out.6
+ 
+  result (LO):    66.891887154139042       +-    2.4948265656613983E-003  fb     3.7296399784813475E-003 %
+ 
+   
+ Initialising FF ..
+   
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
+
+ MONACO input parameters:
+ ndim =  9,  ncall =     256M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_1.out.6                                                                                                                                                                                                                                             
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  1:
+ integral =  7.104648E+01,  sigma = 3.571E-03
+ efficacy = 3.126E-02,  raw efficacy = 9.003E-02
+ f_positive = 7.295E-1,  f_zero = 2.705E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  7.104648E+01,  sigma = 3.571E-03,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.vout.1
+  
+  result for virtual contribution, no.            1
+  sigma =    71.046484041970842       +-    3.5705184391277875E-003  fb  
+  
+ total result for virtual contns so far 
+  sigma =    71.046484041970842       +-    3.5705184391277875E-003  fb
+  
+   
+ Summary for FF ..
+   
+ 
+total number of errors and warnings
+===================================
+vbffferr: no errors
+the warning system has been disabled
+ 
+
+ MONACO input parameters:
+ ndim = 13,  ncall =       2M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+  
+ W+H j amplitude square information:
+ -----------------------------------------------
+  
+  External b-quark contributions are excluded
+  
+  creal =   -6.5797362673929038       cvirtual =    5.1594725347858095     
+
+ iteration  1:
+ integral =  6.513965E+00,  sigma = 1.659E-01
+ efficacy = 3.658E-05,  raw efficacy = 3.658E-05
+ f_positive = 1.278E-1,  f_zero = 7.470E-1,  f_negative = 1.252E-1
+ accumulated statistics:
+ integral =  6.513965E+00,  sigma = 1.659E-01,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid3_1.out.1
+
+ MONACO input parameters:
+ ndim = 13,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  2:
+ integral =  6.312800E+00,  sigma = 5.382E-02
+ efficacy = 7.672E-05,  raw efficacy = 8.364E-06
+ f_positive = 2.255E-1,  f_zero = 6.147E-1,  f_negative = 1.598E-1
+ accumulated statistics:
+ integral =  6.331945E+00,  sigma = 5.119E-02,  chi^2/iteration = 1.330E+06
+
+ MONACO:  grid written to file grid3_1.out.2
+
+ MONACO input parameters:
+ ndim = 13,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  3:
+ integral =  6.413660E+00,  sigma = 5.202E-02
+ efficacy = 1.688E-05,  raw efficacy = 7.778E-07
+ f_positive = 2.665E-1,  f_zero = 5.682E-1,  f_negative = 1.653E-1
+ accumulated statistics:
+ integral =  6.372145E+00,  sigma = 3.649E-02,  chi^2/iteration = 2.583E+00
+
+ MONACO:  grid written to file grid3_1.out.3
+
+ MONACO input parameters:
+ ndim = 13,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  4:
+ integral =  6.353334E+00,  sigma = 2.024E-02
+ efficacy = 1.178E-04,  raw efficacy = 1.989E-06
+ f_positive = 2.801E-1,  f_zero = 5.467E-1,  f_negative = 1.732E-1
+ accumulated statistics:
+ integral =  6.357759E+00,  sigma = 1.770E-02,  chi^2/iteration = 1.393E+00
+
+ MONACO:  grid written to file grid3_1.out.4
+
+ MONACO input parameters:
+ ndim = 13,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  5:
+ integral =  6.348080E+00,  sigma = 1.189E-02
+ efficacy = 6.851E-05,  raw efficacy = 4.915E-07
+ f_positive = 2.805E-1,  f_zero = 5.452E-1,  f_negative = 1.744E-1
+ accumulated statistics:
+ integral =  6.351091E+00,  sigma = 9.871E-03,  chi^2/iteration = 9.976E-01
+
+ MONACO:  grid written to file grid3_1.out.5
+
+ MONACO input parameters:
+ ndim = 13,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  6:
+ integral =  6.364647E+00,  sigma = 7.579E-03
+ efficacy = 9.188E-05,  raw efficacy = 5.876E-07
+ f_positive = 2.673E-1,  f_zero = 5.591E-1,  f_negative = 1.736E-1
+ accumulated statistics:
+ integral =  6.359619E+00,  sigma = 6.012E-03,  chi^2/iteration = 1.045E+00
+
+ MONACO:  grid written to file grid3_1.out.6
+
+ MONACO input parameters:
+ ndim = 13,  ncall =     128M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+
+ iteration  7:
+ integral =  6.349334E+00,  sigma = 5.343E-03
+ efficacy = 6.648E-05,  raw efficacy = 1.657E-07
+ f_positive = 2.631E-1,  f_zero = 5.632E-1,  f_negative = 1.737E-1
+ accumulated statistics:
+ integral =  6.353873E+00,  sigma = 3.994E-03,  chi^2/iteration = 1.163E+00
+
+ MONACO:  grid written to file grid3_1.out.7
+
+ MONACO input parameters:
+ ndim = 13,  ncall =     256M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph =  8.75E-1,  nd = 48,  mds =  0
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+ The reference vector     0.00        0.00        0.00        0.00     is not timelike.
+ R**2 =     0.00    
+
+ iteration  8:
+ integral =  6.361447E+00,  sigma = 3.625E-03
+ efficacy = 7.449E-05,  raw efficacy = 1.151E-07
+ f_positive = 2.537E-1,  f_zero = 5.741E-1,  f_negative = 1.722E-1
+ accumulated statistics:
+ integral =  6.358025E+00,  sigma = 2.684E-03,  chi^2/iteration = 1.298E+00
+
+ MONACO:  grid written to file grid3_1.out.8
+ 
+  result for real emissions 
+  sigma =    6.3580254680097479       +-    2.6840478460913890E-003  fb
+  
+  
+  final result at NLO 
+  sigma =    77.404509509980585       +-    4.4668461764716455E-003  fb   5.7707828713722265E-003 %
+ 
+   
+ TOTAL VIRTUAL CONTRIBUTIONS:
+ TOTAL borntype:
+   71.046484041970842        3.5705184391277875E-003   5.0256089196736280E-003  %
+  
+  created GNUplot file for histograms : histograms.gp                                     
+  
+  
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   
+  PROCESS:         1300   :   p p -->  W+ H -->  ve e+ H
+   
+  TOTAL result (LO):       66.89188715413904  +-    0.00249482656566 fb    0.00372963997848 %
+  NLO virtual result:      71.04648404197084  +-    0.00357051843913 fb    0.00502560891967 %
+  QCD real emission:        6.35802546800975  +-    0.00268404784609 fb    0.04221511630609 %
+  TOTAL result (NLO):      77.40450950998058  +-    0.00446684617647 fb    0.00577078287137 %
+  K-Factor:                  1.1571584059456612     
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+  
+  Endtime: 2024-04-30T19:01:44+0200
+  Runtime: 2:58:35 (10715 seconds)

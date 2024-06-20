@@ -1,0 +1,74 @@
+c************** Calling the Fa functions*************************
+       subroutine test_FaFunctionhexlineAbe9(p1mup2,p1mup3,p1mup4,p1mu
+     -   p5,p2mup2,p2mup3,p2mup4,p2mup5,p3mup2,p3mup3,p3mup4,p3mup5,p
+     -   4mup2,p4mup3,p4mup4,p4mup5,p5mup2,p5mup3,p5mup4,p5mup5,p6mup
+     -   2,p6mup3,p6mup4,p6mup5,mup2mup3,mup2mup4,mup2mup5,mup3mup4,m
+     -   up3mup5,mup4mup5,Fa9)
+       IMPLICIT NONE
+      Complex*16   p1mup2, p1mup3, p1mup4, p1mup5, p2mup2, p2mup3, 
+     -          p2mup4, p2mup5, p3mup2, p3mup3, p3mup4, p3mup5, 
+     -          p4mup2, p4mup3, p4mup4, p4mup5, p5mup2, p5mup3, 
+     -          p5mup4, p5mup5, p6mup2, p6mup3, p6mup4, p6mup5
+       Complex*16   mup2mup3, mup2mup4, mup2mup5, mup3mup4, mup3mup5, 
+     -          mup4mup5
+        common/test_FhlFunctionsAbe/F
+       COMMON/Invariants/p1sq,p2sq,p3sq,p4sq,p5sq,p6sq,s12,s23,s34,s45
+     -   ,s56,s16,s123,s234,s345
+       Real*8   p1sq 
+       Real*8   p2sq 
+       Real*8   p3sq 
+       Real*8   p4sq 
+       Real*8   p5sq 
+       Real*8   p6sq 
+       Real*8   s12, s16 
+       Real*8   s23 
+       Real*8   s34 
+       Real*8   s45 
+       Real*8   s56 
+       Real*8   s123,s234,s345
+      Complex*16 Fa(445),F(5930)
+      Real*8 P(11674) 
+        COMMON/test_PFunctionsAbe/P
+       Complex*16 Fa9(89:99)
+       COMMON/test_FaFunctionsAbe/Fa
+       Fa9(89) = (p1mup3+p2mup3+p3mup3)*p4mup2-p3mup2*p4mup3
+       Fa9(90) = (p1mup2+p2mup2)*(p3mup3*p4mup4*F(200)+p1mup4*p3mup3*F
+     -   (201)+p2mup4*p3mup3*F(201)+p3mup3*p3mup4*F(201)+p1mup3*(16*p
+     -   6mup4*F(199)+p4mup4*F(200)+(p1mup4+p2mup4+p3mup4)*F(201))+p2
+     -   mup3*(16*p6mup4*F(199)+p4mup4*F(200)+(p1mup4+p2mup4+p3mup4)*
+     -   F(201))+16*(p3mup3*p6mup4*F(199)+p4mup3*p6mup4*s123*F(202)+p
+     -   1mup4*p4mup3*s123*F(203)+p2mup4*p4mup3*s123*F(203)+p3mup4*p4
+     -   mup3*s123*F(203)-p4mup3*p4mup4*s123*F(204)))
+       Fa9(91) = p6mup4*F(205)+p4mup4*F(206)+(p1mup4+p2mup4+p3mup4)*F(
+     -   207)
+       Fa9(92) = 8*p4mup2*s123*(p6mup4*F(202)+(p1mup4+p2mup4+p3mup4)*F
+     -   (203)-p4mup4*F(204))+p3mup2*(8*p6mup4*F(199)+p4mup4*F(208)+(
+     -   p1mup4+p2mup4+p3mup4)*F(209))
+       Fa9(93) = -8*p4mup3*s123*(p6mup4*F(202)+(p1mup4+p2mup4+p3mup4)*
+     -   F(203)-p4mup4*F(204))+(p1mup3+p2mup3+p3mup3)*(p4mup4*F(211)+
+     -   8*(p6mup4*F(210)+(p1mup4+p2mup4+p3mup4)*F(212)))
+       Fa9(94) = (p1mup2+p2mup2)*(p4mup4*F(211)+8*(p6mup4*F(210)+(p1mu
+     -   p4+p2mup4+p3mup4)*F(212)))
+       Fa9(95) = 4*p6mup4*F(210)+p4mup4*F(215)+(p1mup4+p2mup4+p3mup4)*
+     -   F(216)
+       Fa9(96) = -((p1mup2+p2mup2)*(p3mup3*p4mup5*F(217)-p3mup3*p6mup5
+     -   *F(218)-p4mup3*p6mup5*s123*F(219)-p1mup5*p4mup3*s123*F(220)-
+     -   p2mup5*p4mup3*s123*F(220)-p3mup5*p4mup3*s123*F(220)-p1mup5*p
+     -   3mup3*F(221)-p2mup5*p3mup3*F(221)-p3mup3*p3mup5*F(221)+p1mup
+     -   3*(p4mup5*F(217)-p6mup5*F(218)-(p1mup5+p2mup5+p3mup5)*F(221)
+     -   )+p2mup3*(p4mup5*F(217)-p6mup5*F(218)-(p1mup5+p2mup5+p3mup5)
+     -   *F(221))-p4mup3*p4mup5*s123*F(222)))
+       Fa9(97) = -4*(p4mup5*F(217)-(p1mup5+p2mup5+p3mup5)*F(221))+p6mu
+     -   p5*F(223)
+       Fa9(98) = p4mup2*s123*(p6mup5*F(219)+(p1mup5+p2mup5+p3mup5)*F(2
+     -   20)+p4mup5*F(222))+p3mup2*(-(p4mup5*F(217))+(p1mup5+p2mup5+p
+     -   3mup5)*F(221)+p6mup5*F(224))
+       Fa9(99) = -(p3mup3*p4mup5*F(217))+p3mup3*p6mup5*F(218)+p4mup3*p
+     -   6mup5*s123*F(219)+p1mup5*p4mup3*s123*F(220)+p2mup5*p4mup3*s1
+     -   23*F(220)+p3mup5*p4mup3*s123*F(220)+p1mup5*p3mup3*F(221)+p2m
+     -   up5*p3mup3*F(221)+p3mup3*p3mup5*F(221)+p1mup3*(-(p4mup5*F(21
+     -   7))+p6mup5*F(218)+(p1mup5+p2mup5+p3mup5)*F(221))+p2mup3*(-(p
+     -   4mup5*F(217))+p6mup5*F(218)+(p1mup5+p2mup5+p3mup5)*F(221))+p
+     -   4mup3*p4mup5*s123*F(222)
+       Return
+       End

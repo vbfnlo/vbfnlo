@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [ -z $VBFNLOPATH ]; then
+    echo "This script should not be called direcly. Please run 'make check'."
+    exit 1
+fi
+
+if ! which python3 > /dev/null || ! python3 -c "import pytest" > /dev/null; then
+    echo "python3 with py.test is needed to run the VBFNLO tests. Please install py.test via a package manager or using pip."
+    exit 1
+fi
+
+if [ ! -x $VBFNLOPATH/vbfnlo ]; then
+    echo "Can't find vbfnlo in \"$(realpath $VBFNLOPATH)\"."
+    echo "Either the path is set incorrectly or the compilation did not finish."
+    exit 1
+fi
+
+
+if [ ! -e $TESTPATH/runs/100_Hjj ]; then
+    echo "Can't find tests in \"$(realpath $TESTPATH)\"."
+    echo "Either the path is set incorrectly or the compilation did not finish."
+    exit 1
+fi
+
+if [ ! -z $VBF_PDFSETS_PATH -a ! -e $VBF_PDFSETS_PATH/ct10.00.pds ]; then
+    echo "Can't find pdf sets in given path \"$(realpath $VBF_PDFSETS_PATH)\"."
+    exit 1
+fi
+
+echo Running tests in $PWD
+echo using test files in ${TESTPATH}, PDFs in ${VBF_PDFSETS_PATH} and binary in $VBFNLOPATH
+
+python3 -m pytest -vv -rsx $TESTPATH/test_runs.py
+exit 0

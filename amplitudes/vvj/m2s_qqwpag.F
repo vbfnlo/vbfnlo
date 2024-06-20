@@ -1,0 +1,1732 @@
+! This subroutine returns the full hadronic matrix element squared for the process
+! p p --> e- ve gamma jet at leading order. It basically uses the MADGRAPH-generated 
+! code which is subsequently interfaced with vbfnlo's phasespace
+
+
+      function m2s_qqwpgaglu_hel(xi,p,v,nlo,pdfchange)
+
+      use globalvars, only: ldoblha, lglobalprint
+
+      implicit none
+
+#include "VBFNLO/utilities/global.inc"
+#include "VBFNLO/utilities/scales.inc"
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/BLHAhelper.inc"
+#include "genps.inc"
+
+      integer nlo,k
+      logical pdfchange
+      double precision xi(nx), p(0:3,max_p), v(0:3,max_v),m2s_qqwpgaglu_hel
+
+      double precision helastestmom1(0:3,NEXTERNAL),m2helastest(1),pdf(-6:6,2)
+      double precision m2s_qqwgaglu,m2s_wgaglu
+
+      double precision helasmom(0:3,8) !blha momenta
+      ! -- one entry more due to additional unused entry in MG
+      double precision res(1) !blha amplitude
+
+      double precision dotrr
+
+      external m2s_qqwgaglu,m2s_wgaglu,dotrr
+
+      INTEGER init/0/
+      SAVE init
+
+      call getyourscalesready(xi,p(0,1),v(0,1),pdfchange,pdf,nlo,1)!.true.)
+
+      if ( init .eq. 0 .and. nlo .eq. 0 .and. .not. ldoblha) then
+        if(.not.pdfchange) then
+
+         if (lglobalprint) then
+            write(6,*) ' '
+            write(6,*) 'W-Aj amplitude square information:'
+            write(6,*) '-----------------------------------------------'
+            write(6,*) ' '
+            write(6,*) ' alfas =', als(1,1)
+            write(6,*) ' '
+            write(6,*) '-----------------------------------------------'
+         endif
+
+         call printnfl(.true.)
+      endif
+      elseif (pdfchange) then
+      if ( init .eq. 0 .and. nlo .eq. 0) then
+
+         if (lglobalprint) then
+            write(6,*) ' '
+            write(6,*) 'W+Aj amplitude square information:'
+            write(6,*) '-----------------------------------------------'
+            write(6,*) ' '
+            write(6,*) ' alfas =', als(1,1)
+            write(6,*) ' '
+            write(6,*) '-----------------------------------------------'
+         endif
+
+         call printnfl(.true.)
+       endif
+       
+      endif
+      init=1
+
+      m2s_qqwpgaglu_hel=0d0
+
+
+!      do k=0,3
+!         tmp(k)=v(k,1)+v(k,2)+v(k,3)
+!      enddo
+!
+!      print*, "rout", tmp(0)**2-tmp(1)**2-tmp(2)**2-tmp(3)**2
+
+
+!       call calcWgajScales(p(0,1),v(0,1),nlo)
+! 
+! ! pdfs
+!       q_sf = dsqrt(mufsq(1,1))
+!       call pdfproton( xi(1), q_sf, pdf(-6,1) )        ! f_a(x1)
+! 
+!       q_sf = dsqrt(mufsq(2,1))
+!       call pdfproton( xi(2), q_sf, pdf(-6,2) )        ! f_b(x2)
+! 
+!       do k=-6,6,1
+!         pdftmp(k,1)=pdf(k,1)/xi(1)
+!         pdftmp(k,2)=pdf(k,2)/xi(2)
+!       enddo
+!       do k=-6,6,1
+!         pdf(k,1)=pdftmp(sign1*k,1)
+!         pdf(k,2)=pdftmp(sign2*k,2)
+!       enddo
+! 
+! ! change pdfs for W+ case
+!       if (pdfchange) then
+!       do k=-6,6,1
+!         pdftmp(k,1)=pdf(k,1)
+!         pdftmp(k,2)=pdf(k,2)
+!       enddo
+!       do k=-6,6,1
+!         pdf(k,1)=pdftmp(-k,1)
+!         pdf(k,2)=pdftmp(-k,2)
+!       enddo
+!       endif
+
+!
+! Assign Momenta
+!
+      do k=0,3
+         helastestmom1(k,1)=p(k,1)
+         helastestmom1(k,2)=p(k,2)
+         helastestmom1(k,3)=p(k,3)
+         helastestmom1(k,4)=v(k,3)
+         helastestmom1(k,5)=v(k,1)
+         helastestmom1(k,6)=v(k,2)
+      enddo
+
+         !TODO implement blha_ranhelcomb, helicity argument to SUDBGEPVEMUPMUM 
+      if (ldoblha) then
+        helasmom(0:3,1:3) = p(0:3, 1:3)
+        helasmom(0:3,4  ) = v(0:3, 3  ) 
+        helasmom(0:3,5:6) = v(0:3, 1:2) 
+
+        if (blha_fsign(3,blha_cursubproc,blha_curproc) == 1) then ! u dbar -> g
+          if (blha_physdiagmap(1,blha_cursubproc,blha_curproc) == 2) then ! dbar u -> g
+            helasmom(0:3,1) = p(0:3,2)
+            helasmom(0:3,2) = p(0:3,1)
+          endif
+          Call SUDBGAEPVE(helasmom, res)
+          res = res * 36d0 / 2d0
+        else 
+          if (blha_physdiagmap(1,blha_cursubproc,blha_curproc) == 3) then ! g q -> q
+            helasmom(0:3,1) = p(0:3,2)
+            helasmom(0:3,2) = p(0:3,1)
+          endif
+          if (blha_fsign(1,blha_cursubproc,blha_curproc) == 1) then ! u g -> d
+            Call SUGDAEPVE(helasmom, res)
+            res = res * 96d0 / 2d0
+          else ! dbar g -> ubar
+             Call SDBGUBAEPVE(helasmom, res)
+             res = res * 96d0 / 2d0
+          endif
+        endif
+
+        if (blha_amptype(blha_curproc).eq.0) then ! tree
+          blha_amp(1)=blha_amp(1)+res(1)
+        else if (blha_amptype(blha_curproc).eq.2) then ! cctree
+          ! 1-2
+          call BLHA_cctree(1,2,
+     &      (blha_CA-2*blha_CF)*res(1)
+     &    )
+          ! 1-3
+          call BLHA_cctree(1,3,
+     &      -blha_CA*res(1)
+     &    )
+          ! 2-3
+          call BLHA_cctree(1,3,
+     &      -blha_CA*res(1)
+     &    )
+        else if (blha_amptype(blha_curproc).eq.3) then ! sctree
+          ! TODO
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        else 
+          call BLHA_amptypeerror(blha_amptype(blha_curproc),__FILE__,__LINE__)
+        endif
+
+        return
+      endif
+
+
+!
+! u d~ -> g a e+ ve 
+!
+      Call SUDBGAEPVE(helastestmom1,m2helastest)       !! PDF(5, 4, 3, 2, 1, 0, -1, ......, -5)
+                                                     !! for(b, c, s, u, d, g, d_bar, ..., b_bar)
+      m2s_qqwpgaglu_hel=m2s_qqwpgaglu_hel+m2helastest(1)  !! (switched u <-> d comp. to CTEQ)
+     &  *(pdf(-2,1)*pdf(1,2)+pdf(-4,1)*pdf(3,2))
+
+!
+! u g -> d ga e+ ve 
+!
+      Call SUGDAEPVE(helastestmom1,m2helastest)
+
+      m2s_qqwpgaglu_hel=m2s_qqwpgaglu_hel+m2helastest(1)
+     &  *(pdf(-2,1)*pdf(0,2)+pdf(-4,1)*pdf(0,2))
+
+!
+! d~ g -> u~ ga e+ ve 
+!
+      Call SDBGUBAEPVE(helastestmom1,m2helastest)
+
+      m2s_qqwpgaglu_hel=m2s_qqwpgaglu_hel+m2helastest(1)
+     &  *(pdf(1,1)*pdf(0,2)+pdf(3,1)*pdf(0,2))
+
+!
+! switch initial state
+!
+      do k=0,3
+         helastestmom1(k,1)=p(k,2)
+         helastestmom1(k,2)=p(k,1)
+      enddo
+
+!
+! d~ u -> g ga e+ ve
+!
+      Call SUDBGAEPVE(helastestmom1,m2helastest)
+
+      m2s_qqwpgaglu_hel=m2s_qqwpgaglu_hel+m2helastest(1)  !! switched u <-> d in cteq!
+     &  *(pdf(-2,2)*pdf(1,1)+pdf(-4,2)*pdf(3,1))
+!
+! g u -> d ga e+ ve
+!
+      Call SUGDAEPVE(helastestmom1,m2helastest)
+
+      m2s_qqwpgaglu_hel=m2s_qqwpgaglu_hel+m2helastest(1)
+     &  *(pdf(-2,2)*pdf(0,1)+pdf(-4,2)*pdf(0,1))
+!
+! g d~ -> u~ ga e+ ve 
+!
+      Call SDBGUBAEPVE(helastestmom1,m2helastest)
+
+      m2s_qqwpgaglu_hel=m2s_qqwpgaglu_hel+m2helastest(1)
+     &  *(pdf(1,2)*pdf(0,1)+pdf(3,2)*pdf(0,1))
+
+      m2s_qqwpgaglu_hel=m2s_qqwpgaglu_hel
+
+      end
+
+
+      SUBROUTINE SDBGUBAEPVE(P1,ANS)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C AND HELICITIES
+C FOR THE POINT IN PHASE SPACE P(0:3,NEXTERNAL)
+C  
+C FOR PROCESS : d~ g -> u~ a e+ ve  
+C  
+C Crossing   1 is d~ g -> u~ a e+ ve  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+#include "genps.inc"
+      INTEGER                 NCOMB,     NCROSS         
+      PARAMETER (             NCOMB=  64, NCROSS=  1)
+      INTEGER    THEL
+      PARAMETER (THEL=NCOMB*NCROSS)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P1(0:3,NEXTERNAL),ANS(NCROSS)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER NHEL(NEXTERNAL,NCOMB),NTRY
+      Double Precision T
+      Double Precision DBGUBAEPVE
+      INTEGER IHEL,IDEN(NCROSS),IC(NEXTERNAL,NCROSS)
+      INTEGER IPROC,JC(NEXTERNAL), I
+      LOGICAL GOODHEL(NCOMB,NCROSS)
+      INTEGER NGRAPHS
+      Double Precision hwgt, xtry, xrej
+      INTEGER idum, ngood, igood(ncomb), jhel, j
+      LOGICAL warned
+      REAL     xran1
+      EXTERNAL xran1
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_ampsDBGUBAEPVE/  amp2,       jamp2
+
+      character*79         hel_buff
+      common/to_helicityDBGUBAEPVE/  hel_buff
+
+      integer          isum_hel
+      logical                    multi_channel
+      common/to_matrixDBGUBAEPVE/isum_hel, multi_channel
+      INTEGER MAPCONFIG(0:LMAXCONFIGS), ICONFIG
+      common/to_mconfigsDBGUBAEPVE/mapconfig, iconfig
+      DATA NTRY,IDUM /0,-1/
+      DATA xtry, xrej, ngood /0,0,0/
+      DATA warned, isum_hel/.false.,0/
+      DATA multi_channel/.true./
+      SAVE igood, IDUM, jhel
+      DATA NGRAPHS /   10/          
+      DATA jamp2(0) /   1/          
+      DATA GOODHEL/THEL*.FALSE./
+      DATA (NHEL(IHEL,   1),IHEL=1,6) /-1,-1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,   2),IHEL=1,6) /-1,-1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,   3),IHEL=1,6) /-1,-1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,   4),IHEL=1,6) /-1,-1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,   5),IHEL=1,6) /-1,-1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,   6),IHEL=1,6) /-1,-1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,   7),IHEL=1,6) /-1,-1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,   8),IHEL=1,6) /-1,-1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,   9),IHEL=1,6) /-1,-1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  10),IHEL=1,6) /-1,-1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  11),IHEL=1,6) /-1,-1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  12),IHEL=1,6) /-1,-1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  13),IHEL=1,6) /-1,-1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  14),IHEL=1,6) /-1,-1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  15),IHEL=1,6) /-1,-1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  16),IHEL=1,6) /-1,-1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  17),IHEL=1,6) /-1, 1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  18),IHEL=1,6) /-1, 1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  19),IHEL=1,6) /-1, 1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  20),IHEL=1,6) /-1, 1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  21),IHEL=1,6) /-1, 1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  22),IHEL=1,6) /-1, 1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  23),IHEL=1,6) /-1, 1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  24),IHEL=1,6) /-1, 1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  25),IHEL=1,6) /-1, 1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  26),IHEL=1,6) /-1, 1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  27),IHEL=1,6) /-1, 1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  28),IHEL=1,6) /-1, 1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  29),IHEL=1,6) /-1, 1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  30),IHEL=1,6) /-1, 1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  31),IHEL=1,6) /-1, 1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  32),IHEL=1,6) /-1, 1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  33),IHEL=1,6) / 1,-1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  34),IHEL=1,6) / 1,-1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  35),IHEL=1,6) / 1,-1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  36),IHEL=1,6) / 1,-1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  37),IHEL=1,6) / 1,-1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  38),IHEL=1,6) / 1,-1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  39),IHEL=1,6) / 1,-1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  40),IHEL=1,6) / 1,-1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  41),IHEL=1,6) / 1,-1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  42),IHEL=1,6) / 1,-1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  43),IHEL=1,6) / 1,-1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  44),IHEL=1,6) / 1,-1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  45),IHEL=1,6) / 1,-1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  46),IHEL=1,6) / 1,-1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  47),IHEL=1,6) / 1,-1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  48),IHEL=1,6) / 1,-1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  49),IHEL=1,6) / 1, 1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  50),IHEL=1,6) / 1, 1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  51),IHEL=1,6) / 1, 1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  52),IHEL=1,6) / 1, 1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  53),IHEL=1,6) / 1, 1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  54),IHEL=1,6) / 1, 1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  55),IHEL=1,6) / 1, 1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  56),IHEL=1,6) / 1, 1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  57),IHEL=1,6) / 1, 1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  58),IHEL=1,6) / 1, 1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  59),IHEL=1,6) / 1, 1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  60),IHEL=1,6) / 1, 1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  61),IHEL=1,6) / 1, 1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  62),IHEL=1,6) / 1, 1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  63),IHEL=1,6) / 1, 1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  64),IHEL=1,6) / 1, 1, 1, 1, 1, 1/
+      DATA (  IC(IHEL,  1),IHEL=1,6) / 1, 2, 3, 4, 5, 6/
+      DATA (IDEN(IHEL),IHEL=  1,  1) /  96/
+C ----------
+C BEGIN CODE
+C ----------
+      NTRY=NTRY+1
+      DO IPROC=1,NCROSS
+!       CALL SWITCHMOM(P1,P,IC(1,IPROC),JC,NEXTERNAL)
+      DO IHEL=1,NEXTERNAL
+         JC(IHEL) = +1
+      ENDDO
+       
+!       IF (multi_channel) THEN
+!           DO IHEL=1,NGRAPHS
+!               amp2(ihel)=0d0
+!               jamp2(ihel)=0d0
+!           ENDDO
+!           DO IHEL=1,int(jamp2(0))
+!               jamp2(ihel)=0d0
+!           ENDDO
+!       ENDIF
+      ANS(IPROC) = 0D0
+      write(hel_buff,'(16i5)') (0,i=1,nexternal)
+      IF (ISUM_HEL .EQ. 0 .OR. NTRY .LT. 10) THEN
+          DO IHEL=1,NCOMB
+              IF (GOODHEL(IHEL,IPROC) .OR. NTRY .LT. 2) THEN
+                 T=DBGUBAEPVE(P1 ,NHEL(1,IHEL),JC(1))            
+                 ANS(IPROC)=ANS(IPROC)+T
+                  IF (T .GT. 0D0 .AND. .NOT. GOODHEL(IHEL,IPROC)) THEN
+                      GOODHEL(IHEL,IPROC)=.TRUE.
+                      NGOOD = NGOOD +1
+                      IGOOD(NGOOD) = IHEL
+C                WRITE(*,*) ngood,IHEL,T
+                  ENDIF
+              ENDIF
+          ENDDO
+          JHEL = 1
+          ISUM_HEL=MIN(ISUM_HEL,NGOOD)
+      ELSE              !RANDOM HELICITY
+          DO J=1,ISUM_HEL
+              JHEL=JHEL+1
+              IF (JHEL .GT. NGOOD) JHEL=1
+              HWGT = REAL(NGOOD)/REAL(ISUM_HEL)
+              IHEL = IGOOD(JHEL)
+              T=DBGUBAEPVE(P1 ,NHEL(1,IHEL),JC(1))            
+           ANS(IPROC)=ANS(IPROC)+T*HWGT
+          ENDDO
+          IF (ISUM_HEL .EQ. 1) THEN
+              WRITE(HEL_BUFF,'(16i5)')(NHEL(i,IHEL),i=1,nexternal)
+          ENDIF
+      ENDIF
+!       IF (MULTI_CHANNEL) THEN
+!           XTOT=0D0
+!           DO IHEL=1,MAPCONFIG(0)
+!               XTOT=XTOT+AMP2(MAPCONFIG(IHEL))
+!           ENDDO
+!           ANS(IPROC)=ANS(IPROC)*AMP2(MAPCONFIG(ICONFIG))/XTOT
+!       ENDIF
+      ANS(IPROC)=ANS(IPROC)/DBLE(IDEN(IPROC))
+      ENDDO
+      END
+       
+       
+      Double Precision FUNCTION DBGUBAEPVE(P,NHEL,IC)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : d~ g -> u~ a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+      INTEGER NHEL(NEXTERNAL), IC(NEXTERNAL)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER I,J
+      Double Complex ZTEMP
+      Double Precision DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
+      Double Complex AMP(NGRAPHS), JAMP(NCOLOR)
+      Double Complex W(6,NWAVEFUNCS)
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_ampsDBGUBAEPVE/  amp2,       jamp2
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+
+C  
+C COLOR DATA
+C  
+      DATA Denom(1  )/            1/                                       
+      DATA (CF(i,1  ),i=1  ,1  ) /     4/                                  
+C               T[1,3,2]                                                   
+C ----------
+C BEGIN CODE
+C ----------
+      CALL OXXXXX(P(0,1   ),ZERO ,NHEL(1   ),-1*IC(1   ),W(1,1   ))        
+      CALL VXXXXX(P(0,2   ),ZERO ,NHEL(2   ),-1*IC(2   ),W(1,2   ))        
+      CALL IXXXXX(P(0,3   ),ZERO ,NHEL(3   ),-1*IC(3   ),W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,NHEL(4   ),+1*IC(4   ),W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,NHEL(5   ),-1*IC(5   ),W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,NHEL(6   ),+1*IC(6   ),W(1,6   ))        
+      CALL FVIXXX(W(1,3   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVIXXX(W(1,7   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,8   ),W(1,1   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVOXXX(W(1,1   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVOXXX(W(1,10  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,3   ),W(1,12  ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,7   ),W(1,1   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      elseif(with_anom) then    
+      CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      endif                                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,7   ),W(1,10  ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVIXXX(W(1,3   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVIXXX(W(1,17  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,18  ),W(1,1   ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVOXXX(W(1,1   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVOXXX(W(1,19  ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,3   ),W(1,20  ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,3   ),W(1,19  ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then        
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))
+      elseif (with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))
+      endif                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,17  ),W(1,19  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      JAMP(   1) = -AMP(   1)-AMP(   2)-AMP(   3)-AMP(   4)-AMP(   5)
+     &             -AMP(   6)-AMP(   7)-AMP(   8)-AMP(   9)-AMP(  10)
+      DBGUBAEPVE = 0.D0 
+      DO I = 1, NCOLOR
+          ZTEMP = (0.D0,0.D0)
+          DO J = 1, NCOLOR
+              ZTEMP = ZTEMP + CF(J,I)*JAMP(J)
+          ENDDO
+          DBGUBAEPVE =DBGUBAEPVE+ZTEMP*DCONJG(JAMP(I))/DENOM(I)   
+      ENDDO
+      Do I = 1, NGRAPHS
+          amp2(i)=amp2(i)+amp(i)*dconjg(amp(i))
+      Enddo
+      Do I = 1, NCOLOR
+          Jamp2(i)=Jamp2(i)+Jamp(i)*dconjg(Jamp(i))
+      Enddo
+C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN) 
+      END
+
+
+      Double complex FUNCTION AMPDBGUBAEPVE(P,photin,gluin)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : d~ g -> u~ a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+      INTEGER IC(NEXTERNAL)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER I,photin,gluin
+
+      Double Precision DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
+      Double Complex AMP(NGRAPHS)
+      Double Complex W(6,NWAVEFUNCS)
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_ampsDBGUBAEPVE/  amp2,       jamp2
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+
+C  
+C COLOR DATA
+C  
+      DATA Denom(1  )/            1/                                       
+      DATA (CF(i,1  ),i=1  ,1  ) /     4/                                  
+C               T[1,3,2]                                                   
+C ----------
+C BEGIN CODE
+C ----------
+      CALL OXXXXX(P(0,1   ),ZERO ,1,-1,W(1,1   ))        
+      CALL VXXXXX(P(0,2   ),ZERO ,gluin,-1,W(1,2   ))        
+      CALL IXXXXX(P(0,3   ),ZERO ,1,-1,W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,photin,+1*IC(4   ),W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,1,-1,W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,-1,+1,W(1,6   ))        
+      CALL FVIXXX(W(1,3   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVIXXX(W(1,7   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,8   ),W(1,1   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVOXXX(W(1,1   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVOXXX(W(1,10  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,3   ),W(1,12  ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,7   ),W(1,1   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      elseif(with_anom) then    
+      CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      endif                                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,7   ),W(1,10  ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVIXXX(W(1,3   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVIXXX(W(1,17  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,18  ),W(1,1   ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVOXXX(W(1,1   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVOXXX(W(1,19  ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,3   ),W(1,20  ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,3   ),W(1,19  ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then        
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))
+      elseif (with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))
+      endif                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,17  ),W(1,19  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      AMPDBGUBAEPVE = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+
+      END
+
+
+      Subroutine DBGUBAEPVEM(P,DBGUBAEPVE)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : d~ g -> u~ a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER mu,nu
+
+
+      Double Complex AMP(NGRAPHS)
+      Double Complex W(6,NWAVEFUNCS),DBGUBAEPVE(0:3,-1:1)
+
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+
+C ----------
+C BEGIN CODE
+C ----------
+      do mu=0,3
+      do nu=-1,1,2   
+      CALL OXXXXX(P(0,1   ),ZERO ,1,-1,W(1,1   ))
+      CALL VCARTXDP(P(0,2   ),mu,-1,W(1,2   ))                
+      CALL IXXXXX(P(0,3   ),ZERO ,1,-1,W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,nu,+1,W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,1,-1,W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,-1,+1,W(1,6   ))        
+      CALL FVIXXX(W(1,3   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVIXXX(W(1,7   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,8   ),W(1,1   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVOXXX(W(1,1   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVOXXX(W(1,10  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,3   ),W(1,12  ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,7   ),W(1,1   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      elseif(with_anom) then    
+      CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      endif                                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,7   ),W(1,10  ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVIXXX(W(1,3   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVIXXX(W(1,17  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,18  ),W(1,1   ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVOXXX(W(1,1   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVOXXX(W(1,19  ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,3   ),W(1,20  ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,3   ),W(1,19  ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then        
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))
+      elseif (with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))
+      endif                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,17  ),W(1,19  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      DBGUBAEPVE(mu,nu) = AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+      enddo
+      enddo
+      END
+
+
+      SUBROUTINE SUGDAEPVE(P1,ANS)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C AND HELICITIES
+C FOR THE POINT IN PHASE SPACE P(0:3,NEXTERNAL)
+C  
+C FOR PROCESS : u g -> d a e+ ve  
+C  
+C Crossing   1 is u g -> d a e+ ve  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+#include "genps.inc"
+      INTEGER                 NCOMB,     NCROSS         
+      PARAMETER (             NCOMB=  64, NCROSS=  1)
+      INTEGER    THEL
+      PARAMETER (THEL=NCOMB*NCROSS)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P1(0:3,NEXTERNAL),ANS(NCROSS)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER NHEL(NEXTERNAL,NCOMB),NTRY
+      Double Precision T
+      Double Precision UGDAEPVE
+      INTEGER IHEL,IDEN(NCROSS),IC(NEXTERNAL,NCROSS)
+      INTEGER IPROC,JC(NEXTERNAL), I
+      LOGICAL GOODHEL(NCOMB,NCROSS)
+      INTEGER NGRAPHS
+      Double Precision hwgt, xtry, xrej
+      INTEGER idum, ngood, igood(ncomb), jhel, j
+      LOGICAL warned
+      REAL     xran1
+      EXTERNAL xran1
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_ampsUGDAEPVE/  amp2,       jamp2
+
+      character*79         hel_buff
+      common/to_helicityUGDAEPVE/  hel_buff
+
+      integer          isum_hel
+      logical                    multi_channel
+      common/to_matrixUGDAEPVE/isum_hel, multi_channel
+      INTEGER MAPCONFIG(0:LMAXCONFIGS), ICONFIG
+      common/to_mconfigsUGDAEPVE/mapconfig, iconfig
+      DATA NTRY,IDUM /0,-1/
+      DATA xtry, xrej, ngood /0,0,0/
+      DATA warned, isum_hel/.false.,0/
+      DATA multi_channel/.true./
+      SAVE igood, IDUM, jhel
+      DATA NGRAPHS /   10/          
+      DATA jamp2(0) /   1/          
+      DATA GOODHEL/THEL*.FALSE./
+      DATA (NHEL(IHEL,   1),IHEL=1,6) /-1,-1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,   2),IHEL=1,6) /-1,-1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,   3),IHEL=1,6) /-1,-1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,   4),IHEL=1,6) /-1,-1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,   5),IHEL=1,6) /-1,-1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,   6),IHEL=1,6) /-1,-1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,   7),IHEL=1,6) /-1,-1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,   8),IHEL=1,6) /-1,-1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,   9),IHEL=1,6) /-1,-1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  10),IHEL=1,6) /-1,-1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  11),IHEL=1,6) /-1,-1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  12),IHEL=1,6) /-1,-1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  13),IHEL=1,6) /-1,-1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  14),IHEL=1,6) /-1,-1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  15),IHEL=1,6) /-1,-1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  16),IHEL=1,6) /-1,-1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  17),IHEL=1,6) /-1, 1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  18),IHEL=1,6) /-1, 1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  19),IHEL=1,6) /-1, 1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  20),IHEL=1,6) /-1, 1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  21),IHEL=1,6) /-1, 1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  22),IHEL=1,6) /-1, 1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  23),IHEL=1,6) /-1, 1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  24),IHEL=1,6) /-1, 1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  25),IHEL=1,6) /-1, 1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  26),IHEL=1,6) /-1, 1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  27),IHEL=1,6) /-1, 1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  28),IHEL=1,6) /-1, 1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  29),IHEL=1,6) /-1, 1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  30),IHEL=1,6) /-1, 1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  31),IHEL=1,6) /-1, 1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  32),IHEL=1,6) /-1, 1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  33),IHEL=1,6) / 1,-1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  34),IHEL=1,6) / 1,-1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  35),IHEL=1,6) / 1,-1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  36),IHEL=1,6) / 1,-1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  37),IHEL=1,6) / 1,-1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  38),IHEL=1,6) / 1,-1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  39),IHEL=1,6) / 1,-1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  40),IHEL=1,6) / 1,-1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  41),IHEL=1,6) / 1,-1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  42),IHEL=1,6) / 1,-1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  43),IHEL=1,6) / 1,-1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  44),IHEL=1,6) / 1,-1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  45),IHEL=1,6) / 1,-1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  46),IHEL=1,6) / 1,-1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  47),IHEL=1,6) / 1,-1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  48),IHEL=1,6) / 1,-1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  49),IHEL=1,6) / 1, 1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  50),IHEL=1,6) / 1, 1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  51),IHEL=1,6) / 1, 1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  52),IHEL=1,6) / 1, 1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  53),IHEL=1,6) / 1, 1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  54),IHEL=1,6) / 1, 1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  55),IHEL=1,6) / 1, 1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  56),IHEL=1,6) / 1, 1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  57),IHEL=1,6) / 1, 1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  58),IHEL=1,6) / 1, 1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  59),IHEL=1,6) / 1, 1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  60),IHEL=1,6) / 1, 1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  61),IHEL=1,6) / 1, 1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  62),IHEL=1,6) / 1, 1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  63),IHEL=1,6) / 1, 1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  64),IHEL=1,6) / 1, 1, 1, 1, 1, 1/
+      DATA (  IC(IHEL,  1),IHEL=1,6) / 1, 2, 3, 4, 5, 6/
+      DATA (IDEN(IHEL),IHEL=  1,  1) /  96/
+C ----------
+C BEGIN CODE
+C ----------
+      NTRY=NTRY+1
+      DO IPROC=1,NCROSS
+!       CALL SWITCHMOM(P1,P,IC(1,IPROC),JC,NEXTERNAL)
+      DO IHEL=1,NEXTERNAL
+         JC(IHEL) = +1
+      ENDDO
+       
+!       IF (multi_channel) THEN
+!           DO IHEL=1,NGRAPHS
+!               amp2(ihel)=0d0
+!               jamp2(ihel)=0d0
+!           ENDDO
+!           DO IHEL=1,int(jamp2(0))
+!               jamp2(ihel)=0d0
+!           ENDDO
+!       ENDIF
+      ANS(IPROC) = 0D0
+      write(hel_buff,'(16i5)') (0,i=1,nexternal)
+      IF (ISUM_HEL .EQ. 0 .OR. NTRY .LT. 10) THEN
+          DO IHEL=1,NCOMB
+              IF (GOODHEL(IHEL,IPROC) .OR. NTRY .LT. 2) THEN
+                 T=UGDAEPVE(P1 ,NHEL(1,IHEL),JC(1))            
+                 ANS(IPROC)=ANS(IPROC)+T
+                  IF (T .GT. 0D0 .AND. .NOT. GOODHEL(IHEL,IPROC)) THEN
+                      GOODHEL(IHEL,IPROC)=.TRUE.
+                      NGOOD = NGOOD +1
+                      IGOOD(NGOOD) = IHEL
+C                WRITE(*,*) ngood,IHEL,T
+                  ENDIF
+              ENDIF
+          ENDDO
+          JHEL = 1
+          ISUM_HEL=MIN(ISUM_HEL,NGOOD)
+      ELSE              !RANDOM HELICITY
+          DO J=1,ISUM_HEL
+              JHEL=JHEL+1
+              IF (JHEL .GT. NGOOD) JHEL=1
+              HWGT = REAL(NGOOD)/REAL(ISUM_HEL)
+              IHEL = IGOOD(JHEL)
+              T=UGDAEPVE(P1 ,NHEL(1,IHEL),JC(1))            
+           ANS(IPROC)=ANS(IPROC)+T*HWGT
+          ENDDO
+          IF (ISUM_HEL .EQ. 1) THEN
+              WRITE(HEL_BUFF,'(16i5)')(NHEL(i,IHEL),i=1,nexternal)
+          ENDIF
+      ENDIF
+!       IF (MULTI_CHANNEL) THEN
+!           XTOT=0D0
+!           DO IHEL=1,MAPCONFIG(0)
+!               XTOT=XTOT+AMP2(MAPCONFIG(IHEL))
+!           ENDDO
+!           ANS(IPROC)=ANS(IPROC)*AMP2(MAPCONFIG(ICONFIG))/XTOT
+!       ENDIF
+      ANS(IPROC)=ANS(IPROC)/DBLE(IDEN(IPROC))
+      ENDDO
+      END
+       
+       
+      Double Precision FUNCTION UGDAEPVE(P,NHEL,IC)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : u g -> d a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+      INTEGER NHEL(NEXTERNAL), IC(NEXTERNAL)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER I,J
+      Double Complex ZTEMP
+      Double Precision DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
+      Double Complex AMP(NGRAPHS), JAMP(NCOLOR)
+      Double Complex W(6,NWAVEFUNCS)
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_ampsUGDAEPVE/  amp2,       jamp2
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+C  
+C COLOR DATA
+C  
+      DATA Denom(1  )/            1/                                       
+      DATA (CF(i,1  ),i=1  ,1  ) /     4/                                  
+C               T[3,1,2]                                                   
+C ----------
+C BEGIN CODE
+C ----------
+      CALL IXXXXX(P(0,1   ),ZERO ,NHEL(1   ),+1*IC(1   ),W(1,1   ))        
+      CALL VXXXXX(P(0,2   ),ZERO ,NHEL(2   ),-1*IC(2   ),W(1,2   ))        
+      CALL OXXXXX(P(0,3   ),ZERO ,NHEL(3   ),+1*IC(3   ),W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,NHEL(4   ),+1*IC(4   ),W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,NHEL(5   ),-1*IC(5   ),W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,NHEL(6   ),+1*IC(6   ),W(1,6   ))        
+      CALL FVOXXX(W(1,3   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVOXXX(W(1,7   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,1   ),W(1,8   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVIXXX(W(1,1   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVIXXX(W(1,10  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,12  ),W(1,3   ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,1   ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      elseif(with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      endif                                         
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,10  ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVOXXX(W(1,3   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVOXXX(W(1,17  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,1   ),W(1,18  ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVIXXX(W(1,1   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVIXXX(W(1,19  ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,20  ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,19  ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then     
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  )) 
+      elseif (with_anom) then  
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  )) 
+      endif                                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,19  ),W(1,17  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      JAMP(   1) = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+      UGDAEPVE = 0.D0 
+      DO I = 1, NCOLOR
+          ZTEMP = (0.D0,0.D0)
+          DO J = 1, NCOLOR
+              ZTEMP = ZTEMP + CF(J,I)*JAMP(J)
+          ENDDO
+          UGDAEPVE =UGDAEPVE+ZTEMP*DCONJG(JAMP(I))/DENOM(I)   
+      ENDDO
+      Do I = 1, NGRAPHS
+          amp2(i)=amp2(i)+amp(i)*dconjg(amp(i))
+      Enddo
+      Do I = 1, NCOLOR
+          Jamp2(i)=Jamp2(i)+Jamp(i)*dconjg(Jamp(i))
+      Enddo
+C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN) 
+      END
+
+
+      Double Complex FUNCTION AMPUGDAEPVE(P,photin,gluin)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : u g -> d a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+      INTEGER IC(NEXTERNAL)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER I,photin,gluin
+
+      Double Precision DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
+      Double Complex AMP(NGRAPHS)
+      Double Complex W(6,NWAVEFUNCS)
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_ampsUGDAEPVE/  amp2,       jamp2
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+C  
+C COLOR DATA
+C  
+      DATA Denom(1  )/            1/                                       
+      DATA (CF(i,1  ),i=1  ,1  ) /     4/                                  
+C               T[3,1,2]                                                   
+C ----------
+C BEGIN CODE
+C ----------
+
+      CALL IXXXXX(P(0,1   ),ZERO ,-1,+1,W(1,1   ))        
+      CALL VXXXXX(P(0,2   ),ZERO ,gluin,-1,W(1,2   ))        
+      CALL OXXXXX(P(0,3   ),ZERO ,-1,+1,W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,photin,+1,W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,1,-1*IC(5   ),W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,-1,+1*IC(6   ),W(1,6   ))        
+      CALL FVOXXX(W(1,3   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVOXXX(W(1,7   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,1   ),W(1,8   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVIXXX(W(1,1   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVIXXX(W(1,10  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,12  ),W(1,3   ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,1   ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      elseif(with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      endif                                         
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,10  ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVOXXX(W(1,3   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVOXXX(W(1,17  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,1   ),W(1,18  ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVIXXX(W(1,1   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVIXXX(W(1,19  ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,20  ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,19  ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then     
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  )) 
+      elseif (with_anom) then  
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  )) 
+      endif                                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,19  ),W(1,17  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      AMPUGDAEPVE = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+      END
+
+
+      subroutine UGDAEPVEm(P,UGDAEPVE)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : u g -> d a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER mu,nu
+
+
+      Double Complex AMP(NGRAPHS)
+      Double Complex W(6,NWAVEFUNCS),UGDAEPVE(0:3,-1:1)
+C  
+C GLOBAL VARIABLES
+C  
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+C ----------
+C BEGIN CODE
+C ----------
+      do mu=0,3
+      do nu=-1,1,2
+      CALL IXXXXX(P(0,1   ),ZERO ,-1,+1,W(1,1   ))        
+      CALL VCARTXDP(P(0,2   ),mu,-1,W(1,2   ))      
+      CALL OXXXXX(P(0,3   ),ZERO ,-1,+1,W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,nu,+1,W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,1,-1,W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,-1,+1,W(1,6   ))        
+      CALL FVOXXX(W(1,3   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVOXXX(W(1,7   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,1   ),W(1,8   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVIXXX(W(1,1   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVIXXX(W(1,10  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,12  ),W(1,3   ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,1   ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      elseif(with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  )) 
+      endif                                         
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,10  ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVOXXX(W(1,3   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVOXXX(W(1,17  ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,1   ),W(1,18  ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVIXXX(W(1,1   ),W(1,2   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVIXXX(W(1,19  ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,20  ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,19  ),W(1,3   ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then     
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  )) 
+      elseif (with_anom) then  
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  )) 
+      endif                                                      
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,19  ),W(1,17  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      UGDAEPVE(mu,nu) = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+      enddo
+      enddo
+      END
+
+
+      SUBROUTINE SUDBGAEPVE(P1,ANS)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C AND HELICITIES
+C FOR THE POINT IN PHASE SPACE P(0:3,NEXTERNAL)
+C  
+C FOR PROCESS : u d~ -> g a e+ ve  
+C  
+C Crossing   1 is u d~ -> g a e+ ve  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+#include "genps.inc"
+      INTEGER                 NCOMB,     NCROSS         
+      PARAMETER (             NCOMB=  64, NCROSS=  1)
+      INTEGER    THEL
+      PARAMETER (THEL=NCOMB*NCROSS)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P1(0:3,NEXTERNAL),ANS(NCROSS)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER NHEL(NEXTERNAL,NCOMB),NTRY
+      Double Precision T
+      Double Precision UDBGAEPVE
+      INTEGER IHEL,IDEN(NCROSS),IC(NEXTERNAL,NCROSS)
+      INTEGER IPROC,JC(NEXTERNAL), I
+      LOGICAL GOODHEL(NCOMB,NCROSS)
+      INTEGER NGRAPHS
+      Double Precision hwgt, xtry, xrej
+      INTEGER idum, ngood, igood(ncomb), jhel, j
+      LOGICAL warned
+      REAL     xran1
+      EXTERNAL xran1
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_ampsUDBGAEPVE/  amp2,       jamp2
+
+      character*79         hel_buff
+      common/to_helicityUDBGAEPVE/  hel_buff
+
+      integer          isum_hel
+      logical                    multi_channel
+      common/to_matrixUDBGAEPVE/isum_hel, multi_channel
+      INTEGER MAPCONFIG(0:LMAXCONFIGS), ICONFIG
+      common/to_mconfigsUDBGAEPVE/mapconfig, iconfig
+      DATA NTRY,IDUM /0,-1/
+      DATA xtry, xrej, ngood /0,0,0/
+      DATA warned, isum_hel/.false.,0/
+      DATA multi_channel/.true./
+      SAVE igood, IDUM, jhel
+      DATA NGRAPHS /   10/          
+      DATA jamp2(0) /   1/          
+      DATA GOODHEL/THEL*.FALSE./
+      DATA (NHEL(IHEL,   1),IHEL=1,6) /-1,-1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,   2),IHEL=1,6) /-1,-1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,   3),IHEL=1,6) /-1,-1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,   4),IHEL=1,6) /-1,-1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,   5),IHEL=1,6) /-1,-1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,   6),IHEL=1,6) /-1,-1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,   7),IHEL=1,6) /-1,-1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,   8),IHEL=1,6) /-1,-1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,   9),IHEL=1,6) /-1,-1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  10),IHEL=1,6) /-1,-1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  11),IHEL=1,6) /-1,-1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  12),IHEL=1,6) /-1,-1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  13),IHEL=1,6) /-1,-1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  14),IHEL=1,6) /-1,-1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  15),IHEL=1,6) /-1,-1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  16),IHEL=1,6) /-1,-1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  17),IHEL=1,6) /-1, 1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  18),IHEL=1,6) /-1, 1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  19),IHEL=1,6) /-1, 1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  20),IHEL=1,6) /-1, 1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  21),IHEL=1,6) /-1, 1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  22),IHEL=1,6) /-1, 1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  23),IHEL=1,6) /-1, 1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  24),IHEL=1,6) /-1, 1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  25),IHEL=1,6) /-1, 1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  26),IHEL=1,6) /-1, 1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  27),IHEL=1,6) /-1, 1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  28),IHEL=1,6) /-1, 1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  29),IHEL=1,6) /-1, 1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  30),IHEL=1,6) /-1, 1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  31),IHEL=1,6) /-1, 1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  32),IHEL=1,6) /-1, 1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  33),IHEL=1,6) / 1,-1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  34),IHEL=1,6) / 1,-1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  35),IHEL=1,6) / 1,-1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  36),IHEL=1,6) / 1,-1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  37),IHEL=1,6) / 1,-1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  38),IHEL=1,6) / 1,-1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  39),IHEL=1,6) / 1,-1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  40),IHEL=1,6) / 1,-1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  41),IHEL=1,6) / 1,-1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  42),IHEL=1,6) / 1,-1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  43),IHEL=1,6) / 1,-1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  44),IHEL=1,6) / 1,-1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  45),IHEL=1,6) / 1,-1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  46),IHEL=1,6) / 1,-1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  47),IHEL=1,6) / 1,-1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  48),IHEL=1,6) / 1,-1, 1, 1, 1, 1/
+      DATA (NHEL(IHEL,  49),IHEL=1,6) / 1, 1,-1,-1,-1,-1/
+      DATA (NHEL(IHEL,  50),IHEL=1,6) / 1, 1,-1,-1,-1, 1/
+      DATA (NHEL(IHEL,  51),IHEL=1,6) / 1, 1,-1,-1, 1,-1/
+      DATA (NHEL(IHEL,  52),IHEL=1,6) / 1, 1,-1,-1, 1, 1/
+      DATA (NHEL(IHEL,  53),IHEL=1,6) / 1, 1,-1, 1,-1,-1/
+      DATA (NHEL(IHEL,  54),IHEL=1,6) / 1, 1,-1, 1,-1, 1/
+      DATA (NHEL(IHEL,  55),IHEL=1,6) / 1, 1,-1, 1, 1,-1/
+      DATA (NHEL(IHEL,  56),IHEL=1,6) / 1, 1,-1, 1, 1, 1/
+      DATA (NHEL(IHEL,  57),IHEL=1,6) / 1, 1, 1,-1,-1,-1/
+      DATA (NHEL(IHEL,  58),IHEL=1,6) / 1, 1, 1,-1,-1, 1/
+      DATA (NHEL(IHEL,  59),IHEL=1,6) / 1, 1, 1,-1, 1,-1/
+      DATA (NHEL(IHEL,  60),IHEL=1,6) / 1, 1, 1,-1, 1, 1/
+      DATA (NHEL(IHEL,  61),IHEL=1,6) / 1, 1, 1, 1,-1,-1/
+      DATA (NHEL(IHEL,  62),IHEL=1,6) / 1, 1, 1, 1,-1, 1/
+      DATA (NHEL(IHEL,  63),IHEL=1,6) / 1, 1, 1, 1, 1,-1/
+      DATA (NHEL(IHEL,  64),IHEL=1,6) / 1, 1, 1, 1, 1, 1/
+      DATA (  IC(IHEL,  1),IHEL=1,6) / 1, 2, 3, 4, 5, 6/
+      DATA (IDEN(IHEL),IHEL=  1,  1) /  36/
+C ----------
+C BEGIN CODE
+C ----------
+      NTRY=NTRY+1
+      DO IPROC=1,NCROSS
+!       CALL SWITCHMOM(P1,P,IC(1,IPROC),JC,NEXTERNAL)
+      DO IHEL=1,NEXTERNAL
+         JC(IHEL) = +1
+      ENDDO
+       
+!       IF (multi_channel) THEN
+!           DO IHEL=1,NGRAPHS
+!               amp2(ihel)=0d0
+!               jamp2(ihel)=0d0
+!           ENDDO
+!           DO IHEL=1,int(jamp2(0))
+!               jamp2(ihel)=0d0
+!           ENDDO
+!       ENDIF
+      ANS(IPROC) = 0D0
+      write(hel_buff,'(16i5)') (0,i=1,nexternal)
+      IF (ISUM_HEL .EQ. 0 .OR. NTRY .LT. 10) THEN
+          DO IHEL=1,NCOMB
+              IF (GOODHEL(IHEL,IPROC) .OR. NTRY .LT. 2) THEN
+                 T=UDBGAEPVE(P1 ,NHEL(1,IHEL),JC(1))            
+                 ANS(IPROC)=ANS(IPROC)+T
+                  IF (T .GT. 0D0 .AND. .NOT. GOODHEL(IHEL,IPROC)) THEN
+                      GOODHEL(IHEL,IPROC)=.TRUE.
+                      NGOOD = NGOOD +1
+                      IGOOD(NGOOD) = IHEL
+C                WRITE(*,*) ngood,IHEL,T
+                  ENDIF
+              ENDIF
+          ENDDO
+          JHEL = 1
+          ISUM_HEL=MIN(ISUM_HEL,NGOOD)
+      ELSE              !RANDOM HELICITY
+          DO J=1,ISUM_HEL
+              JHEL=JHEL+1
+              IF (JHEL .GT. NGOOD) JHEL=1
+              HWGT = REAL(NGOOD)/REAL(ISUM_HEL)
+              IHEL = IGOOD(JHEL)
+              T=UDBGAEPVE(P1 ,NHEL(1,IHEL),JC(1))            
+           ANS(IPROC)=ANS(IPROC)+T*HWGT
+          ENDDO
+          IF (ISUM_HEL .EQ. 1) THEN
+              WRITE(HEL_BUFF,'(16i5)')(NHEL(i,IHEL),i=1,nexternal)
+          ENDIF
+      ENDIF
+!       IF (MULTI_CHANNEL) THEN
+!           XTOT=0D0
+!           DO IHEL=1,MAPCONFIG(0)
+!               XTOT=XTOT+AMP2(MAPCONFIG(IHEL))
+!           ENDDO
+!           ANS(IPROC)=ANS(IPROC)*AMP2(MAPCONFIG(ICONFIG))/XTOT
+!       ENDIF
+      ANS(IPROC)=ANS(IPROC)/DBLE(IDEN(IPROC))
+      ENDDO
+      END
+       
+       
+      Double Precision FUNCTION UDBGAEPVE(P,NHEL,IC)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : u d~ -> g a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+      INTEGER NHEL(NEXTERNAL), IC(NEXTERNAL)
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER I,J
+      Double Complex ZTEMP
+      Double Precision DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
+      Double Complex AMP(NGRAPHS), JAMP(NCOLOR)
+      Double Complex W(6,NWAVEFUNCS)
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_amps/  amp2,       jamp2
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+C  
+C COLOR DATA
+C  
+      DATA Denom(1  )/            1/                                       
+      DATA (CF(i,1  ),i=1  ,1  ) /     4/                                  
+C               T[2,1,3]                                                   
+C ----------
+C BEGIN CODE
+C ----------
+      CALL IXXXXX(P(0,1   ),ZERO ,NHEL(1   ),+1*IC(1   ),W(1,1   ))        
+      CALL OXXXXX(P(0,2   ),ZERO ,NHEL(2   ),-1*IC(2   ),W(1,2   ))        
+      CALL VXXXXX(P(0,3   ),ZERO ,NHEL(3   ),+1*IC(3   ),W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,NHEL(4   ),+1*IC(4   ),W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,NHEL(5   ),-1*IC(5   ),W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,NHEL(6   ),+1*IC(6   ),W(1,6   ))        
+      CALL FVOXXX(W(1,2   ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVOXXX(W(1,7   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,1   ),W(1,8   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVIXXX(W(1,1   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVIXXX(W(1,10  ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,12  ),W(1,2   ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,1   ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  ))
+      elseif(with_anom) then
+       CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  ))
+      endif                                                         
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,10  ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVOXXX(W(1,2   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVOXXX(W(1,17  ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,1   ),W(1,18  ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVIXXX(W(1,1   ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVIXXX(W(1,19  ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,20  ),W(1,2   ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,19  ),W(1,2   ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))   
+      elseif (with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))   
+      endif                                                              
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,19  ),W(1,17  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      JAMP(   1) = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+      UDBGAEPVE = 0.D0 
+      DO I = 1, NCOLOR
+          ZTEMP = (0.D0,0.D0)
+          DO J = 1, NCOLOR
+              ZTEMP = ZTEMP + CF(J,I)*JAMP(J)
+          ENDDO
+          UDBGAEPVE =UDBGAEPVE+ZTEMP*DCONJG(JAMP(I))/DENOM(I)   
+      ENDDO
+      Do I = 1, NGRAPHS
+          amp2(i)=amp2(i)+amp(i)*dconjg(amp(i))
+      Enddo
+      Do I = 1, NCOLOR
+          Jamp2(i)=Jamp2(i)+Jamp(i)*dconjg(Jamp(i))
+      Enddo
+C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN) 
+      END
+
+
+      Double Complex FUNCTION AMPUDBGAEPVE(P,photin,gluin)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : u d~ -> g a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER I,photin,gluin
+
+      Double Precision DENOM(NCOLOR), CF(NCOLOR,NCOLOR)
+      Double Complex AMP(NGRAPHS)
+      Double Complex W(6,NWAVEFUNCS)
+C  
+C GLOBAL VARIABLES
+C  
+      Double Precision amp2(maxamps), jamp2(0:maxamps)
+      common/to_amps/  amp2,       jamp2
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+C  
+C COLOR DATA
+C  
+      DATA Denom(1  )/            1/                                       
+      DATA (CF(i,1  ),i=1  ,1  ) /     4/                                  
+C               T[2,1,3]                                                   
+C ----------
+C BEGIN CODE
+C ----------
+      CALL IXXXXX(P(0,1   ),ZERO ,-1,+1,W(1,1   ))        
+      CALL OXXXXX(P(0,2   ),ZERO ,1,-1,W(1,2   ))        
+      CALL VXXXXX(P(0,3   ),ZERO ,gluin,+1,W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,photin,+1,W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,1,-1,W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,-1,+1,W(1,6   ))        
+      CALL FVOXXX(W(1,2   ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVOXXX(W(1,7   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,1   ),W(1,8   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVIXXX(W(1,1   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVIXXX(W(1,10  ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,12  ),W(1,2   ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,1   ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  ))
+      elseif(with_anom) then
+       CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  ))
+      endif                                                         
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,10  ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVOXXX(W(1,2   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVOXXX(W(1,17  ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,1   ),W(1,18  ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVIXXX(W(1,1   ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVIXXX(W(1,19  ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,20  ),W(1,2   ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,19  ),W(1,2   ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))   
+      elseif (with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))   
+      endif                                                              
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,19  ),W(1,17  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+       AMPUDBGAEPVE = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+      END
+
+
+      Subroutine UDBGAEPVEm(P,UDBGAEPVE)
+C  
+C Generated by MadGraph II Version 3.0. Updated 02/19/04                
+C RETURNS AMPLITUDE SQUARED SUMMED/AVG OVER COLORS
+C FOR THE POINT WITH EXTERNAL LINES W(0:6,NEXTERNAL)
+C  
+C FOR PROCESS : u d~ -> g a e+ ve  
+C  
+      IMPLICIT NONE
+C  
+C CONSTANTS
+C  
+      INTEGER    NGRAPHS,    NEIGEN 
+      PARAMETER (NGRAPHS=  10,NEIGEN=  1) 
+#include "genps.inc"
+      INTEGER    NWAVEFUNCS     , NCOLOR
+      PARAMETER (NWAVEFUNCS=  24, NCOLOR=   1) 
+      Double Precision     ZERO
+      PARAMETER (ZERO=0D0)
+C  
+C ARGUMENTS 
+C  
+      Double Precision P(0:3,NEXTERNAL)
+
+C  
+C LOCAL VARIABLES 
+C  
+      INTEGER mu,nu
+
+
+      Double Complex AMP(NGRAPHS)
+      Double Complex W(6,NWAVEFUNCS),UDBGAEPVE(0:3,-1:1)
+C  
+C GLOBAL VARIABLES
+C  
+#include "VBFNLO/utilities/coupl.inc"
+#include "VBFNLO/utilities/global.inc"
+
+C ----------
+C BEGIN CODE
+C ----------
+      do mu=0,3
+      do nu=-1,1,2
+      CALL IXXXXX(P(0,1   ),ZERO ,-1,+1,W(1,1   ))        
+      CALL OXXXXX(P(0,2   ),ZERO ,1,-1,W(1,2   ))        
+      CALL VCARTXDP(P(0,3   ),mu,+1,W(1,3   ))        
+      CALL VXXXXX(P(0,4   ),ZERO ,nu,+1,W(1,4   ))        
+      CALL IXXXXX(P(0,5   ),ZERO ,1,-1,W(1,5   ))        
+      CALL OXXXXX(P(0,6   ),ZERO ,-1,+1,W(1,6   ))        
+      CALL FVOXXX(W(1,2   ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,7   ))     
+      CALL FVOXXX(W(1,7   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,8   ))    
+      CALL JIOXXX(W(1,1   ),W(1,8   ),GWF ,WMASS   ,WWIDTH  ,W(1,9   ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,9   ),GWF ,AMP(1   ))            
+      CALL FVIXXX(W(1,1   ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,10  ))    
+      CALL JIOXXX(W(1,5   ),W(1,6   ),GWF ,WMASS   ,WWIDTH  ,W(1,11  ))    
+      CALL FVIXXX(W(1,10  ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,12  ))     
+      CALL IOVXXX(W(1,12  ),W(1,2   ),W(1,11  ),GWF ,AMP(2   ))            
+      CALL JIOXXX(W(1,1   ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,13  ))
+      if (.not.with_anom) then    
+      CALL JVVXXX(W(1,4   ),W(1,13  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  ))
+      elseif(with_anom) then
+       CALL JVVXXX_anomwaj2(W(1,13   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     14  ))
+      endif                                                         
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,14  ),GWF ,AMP(3   ))            
+      CALL FVIXXX(W(1,5   ),W(1,4   ),GAL ,ZERO    ,ZERO    ,W(1,15  ))    
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,13  ),GWF ,AMP(4   ))            
+      CALL JIOXXX(W(1,10  ),W(1,7   ),GWF ,WMASS   ,WWIDTH  ,W(1,16  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,16  ),GWF ,AMP(5   ))            
+      CALL FVOXXX(W(1,2   ),W(1,4   ),GAD ,ZERO    ,ZERO    ,W(1,17  ))    
+      CALL FVOXXX(W(1,17  ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,18  ))     
+      CALL IOVXXX(W(1,1   ),W(1,18  ),W(1,11  ),GWF ,AMP(6   ))            
+      CALL FVIXXX(W(1,1   ),W(1,3   ),GG ,ZERO    ,ZERO    ,W(1,19  ))     
+      CALL FVIXXX(W(1,19  ),W(1,4   ),GAU ,ZERO    ,ZERO    ,W(1,20  ))    
+      CALL JIOXXX(W(1,20  ),W(1,2   ),GWF ,WMASS   ,WWIDTH  ,W(1,21  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,21  ),GWF ,AMP(7   ))            
+      CALL JIOXXX(W(1,19  ),W(1,2   ),GWF ,WMASS   ,WWIDTH  ,W(1,22  ))
+      if (.not.with_anom) then
+      CALL JVVXXX(W(1,4   ),W(1,22  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))   
+      elseif (with_anom) then
+      CALL JVVXXX_anomwaj2(W(1,22   ),W(1,4  ),GWWA ,WMASS   ,WWIDTH  ,W(1,         
+     &     23  ))   
+      endif                                                              
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,23  ),GWF ,AMP(8   ))            
+      CALL IOVXXX(W(1,15  ),W(1,6   ),W(1,22  ),GWF ,AMP(9   ))            
+      CALL JIOXXX(W(1,19  ),W(1,17  ),GWF ,WMASS   ,WWIDTH  ,W(1,24  ))    
+      CALL IOVXXX(W(1,5   ),W(1,6   ),W(1,24  ),GWF ,AMP(10  ))            
+      UDBGAEPVE(mu,nu) = +AMP(   1)+AMP(   2)+AMP(   3)+AMP(   4)+AMP(   5)
+     &             +AMP(   6)+AMP(   7)+AMP(   8)+AMP(   9)+AMP(  10)
+      enddo
+      enddo
+C      CALL GAUGECHECK(JAMP,ZTEMP,EIGEN_VEC,EIGEN_VAL,NCOLOR,NEIGEN) 
+      END
+
+

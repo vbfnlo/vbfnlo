@@ -1,0 +1,822 @@
+running on itppc83
+command to run:
+/itp/fast/robin/vbfnlo-installs/mpi-disable/bin/vbfnlo
+   
+ -----------------------------------------------------------------
+ VBFNLO, version 3.0.0 beta2 GIT a9d9ebca
+ Comput. Phys. Commun. 180 (2009) 1661[arXiv:0811.4559 [hep-ph]]
+ arXiV:1107.4038, arXiV:1207.4975, arXiv:1404.3940
+ http://www.itp.kit.edu/vbfnlo
+ -----------------------------------------------------------------
+   
+   
+  
+        Information on global parameters
+ -----------------------------------------------
+   PROCESS               =      451
+   LOPROCESS_PLUS_JET    =        F
+   KK_MOD                =        F
+   ANOM_CPL              =        F
+   LEPTONS               =    98
+   DECAY_QUARKS          =    93
+   LO_ITERATIONS         =        6
+   NLO_ITERATIONS        =        6
+   LO_POINTS             =       26
+   NLO_POINTS            =       26
+   NLO_SWITCH            =        T
+   EWCOR_SWITCH          =        F
+   FERMIONLOOP           =        3
+   NLO_SEMILEP_DECAY     =        0
+   LHA_SWITCH            =        F
+   HEPMC_SWITCH          =        F
+   LO_GRID               = grid2_1                                           
+                           grid2_2                                           
+   NLO_GRID              = grid3_1                                           
+                           grid3_2                                           
+   PHTN_GRID             = grid4_1                                           
+                           grid4_2                                           
+   FLOOP_GRID            = grid5_1                                           
+                           grid5_2                                           
+   ECM                   =  8000.00    
+   BEAM1                 =        1
+   BEAM2                 =        1
+   ID_MUF                =        4
+   ID_MUR                =        4
+   MUF_USER              =  100.000    
+   MUR_USER              =  100.000    
+   XIF                   =  1.00000    
+   XIR                   =  1.00000    
+ Warning: cannot read value for key = SHOWTIMING. Using default value :  T
+ 
+       information on the selected process 
+ -----------------------------------------------
+ 
+  pp -> Z Z Z -> q q~ l- l+ l- l+
+ 
+ Z Z Z production with subsequent decay of one Z boson to quarks and
+ the other Z bosons to leptons.
+ Process is implemented at LO and NLO QCD.
+ Anomalous couplings can be set in "anomV.dat".
+ B. Feigl, PhD-thesis, http://digbib.ubka.uni-karlsruhe.de/volltexte/1000037298
+ 
+ Initializing PDF set CT10
+  
+               Physics parameters
+ -----------------------------------------------
+   HTYPE                 =        0
+   MODEL                 =        1
+   ANOM_CPL              =        F
+   KK_MOD                =        F
+   SPIN2                 =        F
+   HMASS                 =  126.000    
+   HWIDTH                = -999.000    
+   TOPMASS               =  172.400    
+   BOTTOMMASS            =  4.85500    
+   CHARMMASS             =  1.65000    
+   TAU_MASS              =  1.77684    
+   EWSCHEME              =        3
+   FERMI_CONST           = 0.116637E-04
+   WMASS                 =  80.3980    
+   ZMASS                 =  91.1876    
+   
+ Running in the SM
+   
+ Higgs mass =   126.00000000000000     
+   
+   
+  
+ Information on scale setting in InitScales 
+ -------------------------------------------
+  
+ Dynamical factorization scale chosen:
+       invariant VVV mass 
+ Dynamical value for alphas chosen:
+ alphas = alpha(invariant VVV mass)
+ Initializing PDF set cteq6l1
+  
+  
+  
+  
+   Information on couplings, masses and widths
+ ===============================================
+  
+   SM coupling parameters 
+ ---------------------------
+   G_Fermi                         : 0.000011663700
+   SIN**2 of the weak mixing angle : 0.22264585
+   Q.E.D. fine structure constant  : 1/132.34070    
+   SU(2) coupling constant g       : 0.65305673
+   U(1) coupling constant g'       : 0.34950127
+   Q.C.D. LO alfas(MZ)             : 0.12980813
+   Q.C.D. NLO alfas(MZ)            : 0.11798159
+  
+      particle masses
+ ---------------------------
+   mass of the Z0 boson            :   91.1876
+   mass of the W+/- boson          :   80.3980
+   mass of the Higgs boson         :  126.0000
+   mass of the top quark           :  172.4000
+   mass of the bottom quark at MH  :    2.8020
+  (All other fermions have mass equal ZERO)
+  
+      particle widths
+ ---------------------------
+   total widths of Z0              :   2.508420 GeV
+   total widths of W+ or W-        :   2.097673 GeV
+   total widths of Higgs           :   0.004266 GeV
+   total widths of top quark       :   1.339784 GeV
+  
+     branching ratios
+ ---------------------------
+   W -> lepton anti-lepton         : 10.8397227 %
+   W -> massless quark anti-quark  : 33.7404159 %
+   W -> top bottom                 :  0.0000000 %
+  
+   Z -> neutrino anti-neutrino     :  6.6129820 %
+   Z -> charged lepton anti-lepton :  3.3460763 %
+   Z -> up-type quark anti-quark   : 11.9908090 %
+   Z -> down-type quark anti-quark : 15.3804024 %
+   Z -> top anti-top               :  0.0000000 %
+  
+   H -> WW                         : 22.0654221 %
+   H -> ZZ                         :  2.7791171 %
+   H -> bottom anti-bottom         : 57.2146401 %
+   H -> top anti-top               :  0.0000000 %
+   H -> charm anti-charm           :  3.3990464 %
+   H -> tau anti-tau               :  6.1125329 %
+   H -> mu anti-mu                 :  0.0216396 %
+   H -> gluon gluon                :  7.9785074 %
+   H -> gamma gamma                :  0.2385994 %
+   H -> Z gamma                    :  0.1904951 %
+  
+ 
+          information on cut parameters
+ -----------------------------------------------
+ 
+ minimum jet pt        (PT_JET_MIN):     20.00    20.00    20.00   
+ maximum jet rapidity                 (Y_JET_MAX):    4.5000000000000000     
+ maximum parton pseudorapidity          (Y_P_MAX):    5.0000000000000000     
+ minimum jet-jet R-separation           (RJJ_MIN):   0.80000000000000004     
+ minimum number of jets                (NJET_MIN):            2
+ single jet from hadronic decay (SINGLE_DECAYJET):            0
+ exponent of generalised kT algorithm (PGENKTJET):    1.0000000000000000     
+ minimum lepton-lepton R-separation     (RLL_MIN):   0.40000000000000002     
+ maximum lepton-lepton R-separation     (RLL_MAX):    50.000000000000000     
+ minimum jet-lepton R-separation        (RJL_MIN):   0.59999999999999998     
+ minimum jet-photon R-separation        (RJG_MIN):   0.59999999999999998     
+ minimum lepton-photon R-separation     (RLG_MIN):   0.59999999999999998     
+ minimum photon-photon R-separation     (RGG_MIN):   0.59999999999999998     
+ maximum photon-photon R-separation     (RGG_MAX):    50.000000000000000     
+ maximum lepton rapidity                (Y_L_MAX):    2.5000000000000000     
+ minimum lepton pt       (PT_L_MIN):     10.00    10.00    10.00    10.00   
+ minimum invariant dilepton mass        (MLL_MIN):    15.000000000000000     
+ maximum invariant dilepton mass        (MLL_MAX):    1.0000000000000000E+020
+ m_ll cuts only on opposite-sign l   (MLL_OSONLY):  T
+ maximum photon rapidity                (Y_G_MAX):    1.5000000000000000     
+ minimum photon pt       (PT_G_MIN):    
+ photon isolation cut                 (PHISOLCUT):   0.69999999999999996     
+ efficiency of photon isolation cut   (EFISOLCUT):    1.0000000000000000     
+ minimum invariant lepton-photon mass   (MLG_MIN):    0.0000000000000000     
+ maximum invariant lepton-photon mass   (MLG_MAX):    1.0000000000000000E+020
+ minimal missing transverse momentum (PTMISS_MIN):    0.0000000000000000     
+ minimum jet rapidity separation      (ETAJJ_MIN):    0.0000000000000000     
+ tagging jets in opposite hemispheres     (YSIGN):    F
+ leptons fall inside rapidity gap     (LRAPIDGAP):    F
+ min leptons y-dist from tagging jets   (DELY_JL):    0.0000000000000000     
+ photons fall inside rapidity gap     (GRAPIDGAP):    F
+ min photons y-dist from tagging jets   (DELY_JG):    0.0000000000000000     
+ dijet min mass cut on tag jets        (MDIJ_MIN):    600.00000000000000     
+ dijet max mass cut on tag jets        (MDIJ_MAX):    1.0000000000000000E+020
+ veto criteria for jets                   (JVETO):    F
+ minimum veto-tag y-dist             (DELY_JVETO):    0.0000000000000000     
+ maximum |y| for veto jet             (YMAX_VETO):    4.5000000000000000     
+ minimum pT for veto jet             (PTMIN_VETO):    50.000000000000000     
+ definition of tagging jets          (DEF_TAGJET):            1
+ minimal pt for harder tagging jet  (PTMIN_TAG_1):    20.000000000000000     
+ minimal pt for softer tagging jet  (PTMIN_TAG_2):    20.000000000000000     
+ mass reconst. cut for V -> had   (RECONST_HAD_V):            0
+ mass range for RECONST_HAD_V      (V_MASS_RANGE):    20.000000000000000     
+ 
+
+ --------------------PHASE SPACE--------------------
+
+ boson has mass    91.19 GeV and width     2.5084 GeV
+ integration range for boson   2 =      0.032  to     5656.854 GeV
+ boson has mass    91.19 GeV and width     2.5084 GeV
+ integration range for boson   2 =      0.032  to     5656.854 GeV
+ boson has mass    91.19 GeV and width     2.5084 GeV
+ integration range for boson   2 =      0.032  to     5656.854 GeV
+
+ machine energy =     8000.0  GeV
+
+ ---------------------------------------------------
+
+  Open error on file random.dat
+  Using default values.
+  Random number generator initialized with seed =            0
+ 
+          information on histogram config
+ -----------------------------------------------
+ 
+  Open error on file histograms.dat
+  Using default values.
+ SMEARING           =      F
+ CALC_ERROR_GNUPLOT =      F
+ CALC_ERROR_ROOT    =      F
+ CALC_ERROR_1D      =      T
+ CALC_ERROR_2D      =      F
+ 
+HIST_ID1      =      0.00    250.00  # dS/dpT_j (fb/GeV)
+HIST_ID2      =      0.00    500.00  # dS/dpTmax_j (fb/GeV)
+HIST_ID3      =      0.00    200.00  # dS/dpTmin_j (fb/GeV)
+HIST_ID4      =     -5.00      5.00  # dS/dy_j (fb)
+HIST_ID5      =     -5.00      5.00  # dS/dy_j1 (fb)
+HIST_ID6      =     -5.00      5.00  # dS/dy_j2 (fb)
+HIST_ID7      =      0.00    500.00  # dS/dpTmax_l (fb/GeV)
+HIST_ID8      =      0.00    200.00  # dS/dpTmin_l (fb/GeV)
+HIST_ID9      =      0.00      5.00  # dS/d|eta|max_l (fb)
+HIST_ID10     =      0.00      5.00  # dS/d|eta|min_l (fb)
+HIST_ID11     =   -180.00    180.00  # dS/dPhi_jj (fb)
+2DHIST_ID1    =      0.00      6.00      0.00    800.00  # d2S/dy_jj dm_jj (fb/GeV)
+ 
+ -----------------------------------------------
+ 
+ 
+ 
+Starttime: 2016-11-30T11:43:29+0100
+  
+ PHASE SPACE           1
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       2M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+  
+ ZZZ amplitude square information:
+ -----------------------------------------------
+  
+  precalculated tensors initialized to  (  0.0000000000000000     ,  0.0000000000000000     )
+  External b-quark contributions are included
+
+ iteration  1:
+ integral =  1.028923E-02,  sigma = 5.487E-04
+ efficacy = 2.278E-05,  raw efficacy = 2.278E-05
+ f_positive = 8.750E-3,  f_zero = 9.911E-1,  f_negative = 1.554E-4
+ accumulated statistics:
+ integral =  1.028923E-02,  sigma = 5.487E-04,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.out.1
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  2:
+ integral =  1.062216E-02,  sigma = 1.764E-04
+ efficacy = 2.719E-05,  raw efficacy = 2.593E-06
+ f_positive = 4.303E-2,  f_zero = 9.564E-1,  f_negative = 5.853E-4
+ accumulated statistics:
+ integral =  1.059097E-02,  sigma = 1.679E-04,  chi^2/iteration = 3.337E+05
+
+ MONACO:  grid written to file grid2_1.out.2
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  3:
+ integral =  1.072827E-02,  sigma = 1.003E-04
+ efficacy = 2.291E-05,  raw efficacy = 7.289E-07
+ f_positive = 7.186E-2,  f_zero = 9.273E-1,  f_negative = 8.745E-4
+ accumulated statistics:
+ integral =  1.069215E-02,  sigma = 8.613E-05,  chi^2/iteration = 8.263E-01
+
+ MONACO:  grid written to file grid2_1.out.3
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  4:
+ integral =  1.055449E-02,  sigma = 5.639E-05
+ efficacy = 6.351E-05,  raw efficacy = 4.407E-07
+ f_positive = 7.003E-2,  f_zero = 9.292E-1,  f_negative = 7.454E-4
+ accumulated statistics:
+ integral =  1.059579E-02,  sigma = 4.718E-05,  chi^2/iteration = 1.307E+00
+
+ MONACO:  grid written to file grid2_1.out.4
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  5:
+ integral =  1.064843E-02,  sigma = 4.752E-05
+ efficacy = 1.518E-05,  raw efficacy = 2.443E-07
+ f_positive = 7.690E-2,  f_zero = 9.223E-1,  f_negative = 7.624E-4
+ accumulated statistics:
+ integral =  1.062192E-02,  sigma = 3.348E-05,  chi^2/iteration = 1.077E+00
+
+ MONACO:  grid written to file grid2_1.out.5
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  6:
+ integral =  1.056711E-02,  sigma = 3.164E-05
+ efficacy = 1.116E-05,  raw efficacy = 2.092E-07
+ f_positive = 6.867E-2,  f_zero = 9.306E-1,  f_negative = 6.833E-4
+ accumulated statistics:
+ integral =  1.059297E-02,  sigma = 2.300E-05,  chi^2/iteration = 1.162E+00
+
+ MONACO:  grid written to file grid2_1.out.6
+ 
+  result (LO):    1.0592973808562977E-002  +-    2.2997321192613230E-005  fb    0.21709976450638466      %
+ 
+  
+ PHASE SPACE           2
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       2M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+
+ iteration  1:
+ integral =  4.788912E-03,  sigma = 2.849E-04
+ efficacy = 2.941E-05,  raw efficacy = 2.941E-05
+ f_positive = 8.149E-3,  f_zero = 9.919E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  4.788912E-03,  sigma = 2.849E-04,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_2.out.1
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  2:
+ integral =  4.708987E-03,  sigma = 1.005E-04
+ efficacy = 3.187E-05,  raw efficacy = 4.568E-06
+ f_positive = 2.178E-2,  f_zero = 9.782E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  4.717827E-03,  sigma = 9.476E-05,  chi^2/iteration = 6.997E+04
+
+ MONACO:  grid written to file grid2_2.out.2
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  3:
+ integral =  4.696506E-03,  sigma = 4.708E-05
+ efficacy = 4.927E-05,  raw efficacy = 4.003E-06
+ f_positive = 2.855E-2,  f_zero = 9.715E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  4.700727E-03,  sigma = 4.216E-05,  chi^2/iteration = 1.106E-01
+
+ MONACO:  grid written to file grid2_2.out.3
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  4:
+ integral =  4.719922E-03,  sigma = 2.869E-05
+ efficacy = 3.242E-05,  raw efficacy = 2.346E-06
+ f_positive = 3.404E-2,  f_zero = 9.660E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  4.713847E-03,  sigma = 2.372E-05,  chi^2/iteration = 1.261E-01
+
+ MONACO:  grid written to file grid2_2.out.4
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  5:
+ integral =  4.724935E-03,  sigma = 1.828E-05
+ efficacy = 6.445E-05,  raw efficacy = 1.651E-06
+ f_positive = 3.950E-2,  f_zero = 9.605E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  4.720805E-03,  sigma = 1.448E-05,  chi^2/iteration = 1.298E-01
+
+ MONACO:  grid written to file grid2_2.out.5
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  6:
+ integral =  4.717142E-03,  sigma = 1.267E-05
+ efficacy = 4.232E-05,  raw efficacy = 5.974E-07
+ f_positive = 4.224E-2,  f_zero = 9.578E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  4.718730E-03,  sigma = 9.532E-06,  chi^2/iteration = 1.064E-01
+
+ MONACO:  grid written to file grid2_2.out.6
+ 
+  result (LO):    4.7187300031433631E-003  +-    9.5322966692448762E-006  fb    0.20200979210285341      %
+ 
+ 
+  Total (multi-channel) result (LO):    1.5311703811706340E-002  +-    2.4894607083196043E-005  fb    0.16258547963919753      %
+  
+   
+ Initialising FF ..
+   
+ ====================================================
+   FF 2.0, a package to evaluate one-loop integrals
+ written by G. J. van Oldenborgh, NIKHEF-H, Amsterdam
+ ====================================================
+ for the algorithms used see preprint NIKHEF-H 89/17,
+ 'New Algorithms for One-loop Integrals', by G.J. van
+ Oldenborgh and J.A.M. Vermaseren, published in 
+ Zeitschrift fuer Physik C46(1990)425.
+ ====================================================
+ Initializing PDF set CT10
+  
+ PHASE SPACE            1
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_1.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  1.357847E-02,  sigma = 2.969E-04
+ efficacy = 7.327E-07,  raw efficacy = 2.686E-07
+ f_positive = 6.835E-2,  f_zero = 9.310E-1,  f_negative = 6.347E-4
+ accumulated statistics:
+ integral =  1.357847E-02,  sigma = 2.969E-04,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.vout.1
+  
+  result for virtual contribution, no.            1
+  sigma =    1.3578465005189668E-002  +-    2.9690624619802263E-004  fb  
+  
+ total result for virtual contns so far 
+  sigma =    1.3578465005189668E-002  +-    2.9690624619802263E-004  fb
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_1.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  2.282019E-05,  sigma = 1.825E-06
+ efficacy = 8.966E-07,  raw efficacy = 2.041E-07
+ f_positive = 4.133E-2,  f_zero = 9.309E-1,  f_negative = 2.775E-2
+ accumulated statistics:
+ integral =  2.282019E-05,  sigma = 1.825E-06,  chi^2/iteration = 2.842E-14
+
+ MONACO:  grid written to file grid2_1.vout.2
+  
+  result for virtual contribution, no.            2
+  sigma =    2.2820191487307051E-005  +-    1.8245604234462974E-006  fb  
+  
+ total result for virtual contns so far 
+  sigma =    1.3601285196676974E-002  +-    2.9691185232681369E-004  fb
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_1.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  1.498020E-03,  sigma = 3.487E-05
+ efficacy = 1.215E-05,  raw efficacy = 5.976E-07
+ f_positive = 6.181E-2,  f_zero = 9.310E-1,  f_negative = 7.180E-3
+ accumulated statistics:
+ integral =  1.498020E-03,  sigma = 3.487E-05,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_1.vout.3
+  
+  result for virtual contribution, no.            3
+  sigma =    1.4980197710710748E-003  +-    3.4873129342760186E-005  fb  
+  
+ total result for virtual contns so far 
+  sigma =    1.5099304967748049E-002  +-    2.9895281099581001E-004  fb
+  
+  
+ PHASE SPACE            2
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_2.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  5.393527E-03,  sigma = 1.662E-05
+ efficacy = 1.131E-05,  raw efficacy = 1.426E-06
+ f_positive = 4.473E-2,  f_zero = 9.553E-1,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  5.393527E-03,  sigma = 1.662E-05,  chi^2/iteration = 2.910E-11
+
+ MONACO:  grid written to file grid2_2.vout.1
+  
+  result for virtual contribution, no.            1
+  sigma =    5.3935272502591862E-003  +-    1.6615334493433988E-005  fb  
+  
+ total result for virtual contns so far 
+  sigma =    5.3935272502591862E-003  +-    1.6615334493433988E-005  fb
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_2.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  0.000000E+00,  sigma = 0.000E+00
+ efficacy = 0.000E+00,  raw efficacy = 0.000E+00
+ f_positive = 0.000E+0,  f_zero = 1.000E+0,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  0.000000E+00,  sigma = 0.000E+00,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_2.vout.2
+  
+  result for virtual contribution, no.            2
+  sigma =    0.0000000000000000       +-    0.0000000000000000       fb  
+  
+ total result for virtual contns so far 
+  sigma =    5.3935272502591862E-003  +-    1.6615334493433988E-005  fb
+  
+
+ MONACO input parameters:
+ ndim = 16,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  grid read from file grid2_2.out.6                                                                                                                                                                                                                                             
+
+ iteration  1:
+ integral =  0.000000E+00,  sigma = 0.000E+00
+ efficacy = 0.000E+00,  raw efficacy = 0.000E+00
+ f_positive = 0.000E+0,  f_zero = 1.000E+0,  f_negative = 0.000E+0
+ accumulated statistics:
+ integral =  0.000000E+00,  sigma = 0.000E+00,  chi^2/iteration = 0.000E+00
+
+ MONACO:  grid written to file grid2_2.vout.3
+  
+  result for virtual contribution, no.            3
+  sigma =    0.0000000000000000       +-    0.0000000000000000       fb  
+  
+ total result for virtual contns so far 
+  sigma =    5.3935272502591862E-003  +-    1.6615334493433988E-005  fb
+  
+ 
+  Total (multi-channel) result (NLO virtual):    2.0492832218007236E-002  +-    2.9941418226701487E-004  fb     1.4610678459755160      %
+ 
+   
+ Summary for FF ..
+   
+ 
+total number of errors and warnings
+===================================
+vbffferr: no errors
+the warning system has been disabled
+ 
+  
+ PHASE SPACE            1
+  
+
+ MONACO input parameters:
+ ndim = 19,  ncall =       2M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+  External b-quark contributions are included
+  
+  creal =   -6.5797362673929038       cvirtual =    5.1594725347858095     
+  
+
+ iteration  1:
+ integral =  2.514546E-03,  sigma = 2.600E-04
+ efficacy = 1.051E-05,  raw efficacy = 1.051E-05
+ f_positive = 4.022E-2,  f_zero = 9.376E-1,  f_negative = 2.213E-2
+ accumulated statistics:
+ integral =  2.514546E-03,  sigma = 2.600E-04,  chi^2/iteration = 1.421E-14
+
+ MONACO:  grid written to file grid3_1.out.1
+
+ MONACO input parameters:
+ ndim = 19,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  2:
+ integral =  2.593378E-03,  sigma = 1.325E-04
+ efficacy = 1.511E-05,  raw efficacy = 5.112E-06
+ f_positive = 6.889E-2,  f_zero = 9.062E-1,  f_negative = 2.487E-2
+ accumulated statistics:
+ integral =  2.577120E-03,  sigma = 1.181E-04,  chi^2/iteration = 7.298E+04
+
+ MONACO:  grid written to file grid3_1.out.2
+
+ MONACO input parameters:
+ ndim = 19,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  3:
+ integral =  2.654786E-03,  sigma = 9.673E-05
+ efficacy = 8.829E-06,  raw efficacy = 1.194E-06
+ f_positive = 7.275E-2,  f_zero = 9.047E-1,  f_negative = 2.253E-2
+ accumulated statistics:
+ integral =  2.623592E-03,  sigma = 7.482E-05,  chi^2/iteration = 3.319E-01
+
+ MONACO:  grid written to file grid3_1.out.3
+
+ MONACO input parameters:
+ ndim = 19,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  4:
+ integral =  2.677066E-03,  sigma = 8.680E-05
+ efficacy = 3.214E-06,  raw efficacy = 1.713E-07
+ f_positive = 7.497E-2,  f_zero = 9.036E-1,  f_negative = 2.141E-2
+ accumulated statistics:
+ integral =  2.646387E-03,  sigma = 5.667E-05,  chi^2/iteration = 2.748E-01
+
+ MONACO:  grid written to file grid3_1.out.4
+
+ MONACO input parameters:
+ ndim = 19,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  5:
+ integral =  2.619264E-03,  sigma = 4.883E-05
+ efficacy = 5.330E-06,  raw efficacy = 1.292E-07
+ f_positive = 6.922E-2,  f_zero = 9.122E-1,  f_negative = 1.862E-2
+ accumulated statistics:
+ integral =  2.630820E-03,  sigma = 3.699E-05,  chi^2/iteration = 2.270E-01
+
+ MONACO:  grid written to file grid3_1.out.5
+
+ MONACO input parameters:
+ ndim = 19,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  6:
+ integral =  2.702228E-03,  sigma = 5.982E-05
+ efficacy = 1.472E-06,  raw efficacy = 1.419E-07
+ f_positive = 6.887E-2,  f_zero = 9.126E-1,  f_negative = 1.850E-2
+ accumulated statistics:
+ integral =  2.650576E-03,  sigma = 3.146E-05,  chi^2/iteration = 4.280E-01
+
+ MONACO:  grid written to file grid3_1.out.6
+ 
+  result for real emissions 
+  sigma =    2.6505756937269618E-003  +-    3.1463376595125798E-005  fb
+  
+  
+ PHASE SPACE            2
+  
+
+ MONACO input parameters:
+ ndim = 19,  ncall =       2M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ MONACO:  continuing with uniform grid
+
+ iteration  1:
+ integral =  2.186516E-03,  sigma = 2.398E-04
+ efficacy = 9.561E-06,  raw efficacy = 9.561E-06
+ f_positive = 1.900E-2,  f_zero = 9.706E-1,  f_negative = 1.040E-2
+ accumulated statistics:
+ integral =  2.186516E-03,  sigma = 2.398E-04,  chi^2/iteration = 1.421E-14
+
+ MONACO:  grid written to file grid3_2.out.1
+
+ MONACO input parameters:
+ ndim = 19,  ncall =       4M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  2:
+ integral =  2.215702E-03,  sigma = 1.591E-04
+ efficacy = 7.112E-06,  raw efficacy = 1.130E-06
+ f_positive = 3.612E-2,  f_zero = 9.535E-1,  f_negative = 1.037E-2
+ accumulated statistics:
+ integral =  2.206784E-03,  sigma = 1.326E-04,  chi^2/iteration = 1.028E+04
+
+ MONACO:  grid written to file grid3_2.out.2
+
+ MONACO input parameters:
+ ndim = 19,  ncall =       8M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  3:
+ integral =  2.233243E-03,  sigma = 8.504E-05
+ efficacy = 6.016E-06,  raw efficacy = 4.125E-07
+ f_positive = 4.589E-2,  f_zero = 9.433E-1,  f_negative = 1.085E-2
+ accumulated statistics:
+ integral =  2.225529E-03,  sigma = 7.158E-05,  chi^2/iteration = 3.851E-02
+
+ MONACO:  grid written to file grid3_2.out.3
+
+ MONACO input parameters:
+ ndim = 19,  ncall =      16M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  4:
+ integral =  2.237551E-03,  sigma = 5.010E-05
+ efficacy = 5.979E-06,  raw efficacy = 1.289E-07
+ f_positive = 4.773E-2,  f_zero = 9.401E-1,  f_negative = 1.212E-2
+ accumulated statistics:
+ integral =  2.233598E-03,  sigma = 4.104E-05,  chi^2/iteration = 2.872E-02
+
+ MONACO:  grid written to file grid3_2.out.4
+
+ MONACO input parameters:
+ ndim = 19,  ncall =      32M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  5:
+ integral =  2.234771E-03,  sigma = 3.922E-05
+ efficacy = 2.991E-06,  raw efficacy = 9.952E-08
+ f_positive = 4.746E-2,  f_zero = 9.393E-1,  f_negative = 1.321E-2
+ accumulated statistics:
+ integral =  2.234211E-03,  sigma = 2.836E-05,  chi^2/iteration = 1.929E-02
+
+ MONACO:  grid written to file grid3_2.out.5
+
+ MONACO input parameters:
+ ndim = 19,  ncall =      64M,   rtype = 0
+ nprn =  0,  acc = -1.0E+0,  alph = 8.75E-1,  nd = 48,  mds =  0
+
+ iteration  6:
+ integral =  2.218720E-03,  sigma = 2.469E-05
+ efficacy = 3.843E-06,  raw efficacy = 3.730E-08
+ f_positive = 4.930E-2,  f_zero = 9.351E-1,  f_negative = 1.562E-2
+ accumulated statistics:
+ integral =  2.225400E-03,  sigma = 1.862E-05,  chi^2/iteration = 5.691E-02
+
+ MONACO:  grid written to file grid3_2.out.6
+ 
+  result for real emissions 
+  sigma =    2.2253996640711057E-003  +-    1.8620264457844490E-005  fb
+  
+ 
+  Total (multi-channel) result (NLO real):    4.8759753577980675E-003  +-    3.6560338007829973E-005  fb    0.74980563528401811      %
+ 
+  
+  final result at NLO 
+  sigma =    2.5368807575805306E-002  +-    3.0163804610471804E-004  fb   1.1890115260773855      %
+ 
+ 
+ LO for different PHASESPACE:
+   1.0592973808562977E-002  +-    2.2997321192613230E-005  fb  0.21709976450638466     
+   4.7187300031433631E-003  +-    9.5322966692448762E-006  fb  0.20200979210285341     
+  
+  
+ VIRTUAL CONTRIBUTIONS for different PHASESPACE:
+  borntype for different PHASESPACE:
+   1.3578465005189668E-002  +-    2.9690624619802263E-004  fb   2.1865965415424022     
+   5.3935272502591862E-003  +-    1.6615334493433988E-005  fb  0.30806063865971084     
+  boxes for different PHASESPACE:
+   2.2820191487307051E-005  +-    1.8245604234462974E-006  fb   7.9953773589548822     
+   0.0000000000000000       +-    0.0000000000000000       fb                       NaN
+ pentagons for different PHASESPACE:
+   1.4980197710710748E-003  +-    3.4873129342760186E-005  fb   2.3279485368758595     
+   0.0000000000000000       +-    0.0000000000000000       fb                       NaN
+   
+ TOTAL VIRTUAL CONTRIBUTIONS:
+ TOTAL borntype:
+   1.8971992255448853E-002   2.9737079273481034E-004   1.5674199563801947       %
+ TOTAL boxes:
+   2.2820191487307051E-005   1.8245604234462974E-006   7.9953773589548822       %
+ TOTAL pentagons:
+   1.4980197710710748E-003   3.4873129342760186E-005   2.3279485368758595       %
+  
+  
+  REAL EMISSION for different PHASESPACE:
+   2.6505756937269618E-003   3.1463376595125798E-005   1.1870393541142490       %
+   2.2253996640711057E-003   1.8620264457844490E-005  0.83671552388845594       %
+  
+  
+  
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   
+  PROCESS:          451   :   p p -->  ZZZ -->  q q~ e/mu- e/mu+ e/mu- e/mu+
+    with leading order hadronic decay of one vector boson
+   
+  TOTAL result (LO):          1.5311703811706340E-002  +-    2.4894607083196043E-005  fb    0.16258547963919753      %
+  NLO virtual result:         2.0492832218007236E-002  +-    2.9941418226701487E-004  fb     1.4610678459755160      %
+  QCD real emission:          4.8759753577980675E-003  +-    3.6560338007829973E-005  fb    0.74980563528401811      %
+  TOTAL result (NLO):         2.5368807575805306E-002  +-    3.0163804610471804E-004  fb     1.1890115260773855      %
+  K-Factor:                   1.6568246021327786     
+ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+  
+  Endtime: 2016-11-30T17:21:02+0100
+  Runtime: 5:37:33 (20253 seconds)
