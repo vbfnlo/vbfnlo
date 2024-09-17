@@ -156,7 +156,7 @@ c      common/indexes/indx_C,indx_D,indx_E
       write(*,'(A6,E30.22,E30.22)') 'C0 =',C0
       do i1=1,2
          do i2=1,indx_C(i1)
-      write(*,'(A7,2I2,A2,E30.22,E30.22)') Cij//'(',i2,i1,')=',QCMPLX(CijR(i2,i1),CijI(i2,i1))
+      write(*,'(A7,2I2,A2,E30.22,E30.22)') Cij//'(',i2,i1,')=',DCMPLX(CijR(i2,i1),CijI(i2,i1))
          enddo
       enddo
       return
