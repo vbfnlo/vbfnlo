@@ -288,12 +288,12 @@ if test "x$enable_kk" = "xyes"; then
   else
 	if test "`uname -m`" = "x86_64" -a \( -e "$with_gsl/lib64/libgsl.a" -o -e "$with_gsl/lib64/libgsl.so" \) -a -d "$with_gsl/include/gsl"; then
 		AC_MSG_RESULT([found in $with_gsl])
-		GSLLIBS="-L$with_gsl/lib64 -Wl,-rpath,$with_gsl/lib64 -lgslcblas -lgsl -lm"
+		GSLLIBS="-L$with_gsl/lib64 -Wl,-rpath,$with_gsl/lib64  -lgsl -lgslcblas -lm"
             GSLLDFLAGS="-L$with_gsl/lib64 -Wl,-rpath,$with_gsl/lib64"
 		GSLINCLUDE="-I$with_gsl/include"
 	elif test \( -e "$with_gsl/lib/libgsl.a" -o -e "$with_gsl/lib/libgsl.so" \) -a -d "$with_gsl/include/gsl"; then
 		AC_MSG_RESULT([found in $with_gsl])
-		GSLLIBS="-L$with_gsl/lib -Wl,-rpath,$with_gsl/lib -lgslcblas -lgsl -lm"
+		GSLLIBS="-L$with_gsl/lib -Wl,-rpath,$with_gsl/lib  -lgsl -lgslcblas  -lm"
             GSLLDFLAGS="-L$with_gsl/lib64 -Wl,-rpath,$with_gsl/lib64"
 		GSLINCLUDE="-I$with_gsl/include"
 	else
@@ -672,7 +672,9 @@ AC_DEFUN([VBFNLO_CHECK_FC],
 	 , [], [])
 
      VBFFC="gfortran"
-     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none -ffree-line-length-none -fimplicit-none -fbacktrace"
+     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none"
+     AM_FCFLAGS="$AM_FCFLAGS -ffree-line-length-none -fimplicit-none -fbacktrace"
+     AM_FCFLAGS="$AM_FCFLAGS -fallow-argument-mismatch"
      GFORTRAN_48_FIX_LOOPS="-fautomatic"
      GFORTRAN_48_FIX_GGF="-O1"
   elif test -n "$check_ifort" ; then
@@ -685,7 +687,9 @@ AC_DEFUN([VBFNLO_CHECK_FC],
      GFORTRAN_48_FIX_GGF="-O1"
   else
      VBFFC="unrecognized, assuming gfortran behaviour"
-     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none -ffree-line-length-none -fimplicit-none -fbacktrace"
+     AM_FCFLAGS="$AM_FCFLAGS -fno-automatic -ffixed-line-length-none"
+     AM_FCFLAGS="$AM_FCFLAGS -ffree-line-length-none -fimplicit-none -fbacktrace"
+     AM_FCFLAGS="$AM_FCFLAGS -fallow-argument-mismatch"
 
      GFORTRAN_48_FIX_LOOPS="-fautomatic"
      GFORTRAN_48_FIX_GGF="-O1"
