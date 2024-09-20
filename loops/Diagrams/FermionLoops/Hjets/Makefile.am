@@ -37,7 +37,11 @@ HiggsOddtempvert.F \
 HiggsEventemppenT.F \
 HiggsEventemppenT_QUAD.F \
 HiggsOddtemppenT.F \
-HiggsOddtemppenT_QUAD.F
+HiggsOddtemppenT_QUAD.F \
+QUAD_HiggsOddtempbox.F \
+QUAD_HiggsOddtemppen.F \
+QUAD_HiggsEventemp.F \
+QUAD_HiggsEventempbox.F
 
 
 if WITH_QUAD
