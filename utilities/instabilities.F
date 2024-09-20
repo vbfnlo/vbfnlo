@@ -327,8 +327,9 @@ c include global variables via include-files, e.g. "procID"
                   endif
                   print*
                   print*
-               endif
-#endif               
+#endif
+              endif
+
             endif
          endif
 c     stop
